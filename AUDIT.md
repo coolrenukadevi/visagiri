@@ -190,4 +190,13 @@ Role-gated (`/admin/`, Super Admin / Admin / Consultant / Document Reviewer / Fi
 
 ## Next step
 
-Per your instruction, no code has been written for the 18-phase sequence — only the pre-existing hotfix noted in §3. Waiting for **"START PHASE 1"** to begin Phase 1 (Audit is effectively this document + the fuller `docs/audit/...` report — Phase 1 can be considered satisfied by these two documents unless you want additional inspection) and Phase 2 (architecture/schema finalization) of your 18-phase list.
+**Phase 2 (Architecture) is now complete**, built on top of this audit:
+
+- Folder skeleton matching §6: `public/`, `includes/`, `pages/`, `auth/`, `dashboard/`, `admin/`, `visa/`, `visa-type/`, `countries/`, `blog/`, `uploads/`.
+- `includes/config.php` — `.env`-driven config (no secrets committed; `.env.example` documents the required variables), `includes/database.php` — PDO connection (prepared statements only, exceptions on error), `includes/security.php` — CSRF tokens, security headers, a basic rate limiter, `includes/auth.php` — hardened sessions, `password_hash()`/`password_verify()` wrappers, `require_login()`/`require_role()` guards, `includes/functions.php` — shared helpers (`e()`, `redirect()`, `slugify()`, application-number generator).
+- `public/index.php` — single front controller routing every URL from the §6 URL scheme to its handler; `public/.htaccess` — forces HTTPS, routes everything through the controller, blocks dotfile access.
+- `database/schema.sql` — all 23 tables from §7, with foreign keys, indexes, timestamps, and soft-deletes on `users`/`applications`/`application_documents`; seeded with legitimate catalog data only (roles, the 8 visa types, the document-type catalog, blog categories) — no country content, fees, or company statistics.
+- **Verified**: every PHP file passes `php -l`; the router was exercised end-to-end with `php -S` — content routes return their scaffold stub with 200, `/dashboard/` and `/admin/` correctly redirect unauthenticated requests to `/login/` (302, with security headers and a hardened session cookie already present), a genuinely missing route returns a real 404 (caught and fixed a bug during this pass where the 404 page was silently returning HTTP 200). `schema.sql` was reviewed by hand for FK ordering and type-matching (all 23 tables checked) but **could not be executed against a live MySQL server** — none is available in this sandbox. Recommend running it against a real staging DB before Phase 7 data entry begins.
+- Each page/route handler currently renders a plain-text scaffold stub identifying itself and the phase that will replace it with real content — deliberately not styled or worded like a real page, so nothing resembling "Coming Soon" placeholder content risks shipping.
+
+Waiting for your go-ahead to continue to **Phase 3 (Design System)**.

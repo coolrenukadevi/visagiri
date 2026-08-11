@@ -1,0 +1,19 @@
+RewriteEngine On
+
+# Force HTTPS (matches the redirect the legacy site already relied on).
+RewriteCond %{HTTPS} off
+RewriteCond %{HTTP:X-Forwarded-SSL} !on
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Serve real files (CSS/JS/images) and directories as-is.
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Everything else goes through the front controller.
+RewriteRule ^ index.php [L]
+
+# Never serve dotfiles (.env, .git, etc.) even if they end up under /public.
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
