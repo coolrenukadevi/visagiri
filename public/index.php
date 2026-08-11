@@ -93,6 +93,21 @@ switch ($segments[0] ?? '') {
     case 'visa-search':
         $dispatch("$root/pages/visa-search.php");
 
+    case 'attestation':
+        $dispatch("$root/attestation/index.php");
+
+    case 'careers':
+        $dispatch("$root/pages/careers.php");
+
+    case 'partners':
+        $dispatch("$root/pages/partners.php");
+
+    case 'corporate-services':
+        $dispatch("$root/pages/corporate-services.php");
+
+    case 'document-checklists':
+        $dispatch("$root/pages/document-checklists.php");
+
     case 'countries':
         $dispatch("$root/countries/index.php");
 

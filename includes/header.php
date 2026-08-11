@@ -17,6 +17,7 @@ $activeUser = current_user();
 
 $navLinks = [
     ['label' => 'Countries', 'href' => '/countries/'],
+    ['label' => 'Attestation', 'href' => '/attestation/'],
     ['label' => 'Visa Process', 'href' => '/visa-process/'],
     ['label' => 'Visa Updates', 'href' => '/blog/'],
     ['label' => 'About', 'href' => '/about/'],

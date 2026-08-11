@@ -5,7 +5,9 @@ declare(strict_types=1);
  * Shared global footer + closing tags. Pairs with includes/header.php,
  * which opens <main> — this file closes it. Facts in the bottom bar
  * (founding date, CIN) are client-confirmed, not invented; see
- * AUDIT.md §7/§1 for sourcing.
+ * AUDIT.md §7/§1 for sourcing. Region slugs are hardcoded (not
+ * DB-queried) since the 6-region taxonomy is fixed and matches the
+ * anchors rendered on /countries/.
  */
 ?>
 </main>
@@ -15,7 +17,7 @@ declare(strict_types=1);
         <div class="site-footer__brand">
             <div class="site-header__logo-mark">VISA<span>GIRI</span></div>
             <p class="site-footer__tagline">Seamless Visas. Limitless Journeys.</p>
-            <p class="site-footer__muted">A Unit of Tripgation Pvt Ltd</p>
+            <p class="site-footer__muted">Technology-enabled visa consultancy and document attestation assistance for travellers, students, professionals, and businesses. A Unit of Tripgation Pvt Ltd.</p>
         </div>
 
         <div class="site-footer__col">
@@ -31,38 +33,49 @@ declare(strict_types=1);
         </div>
 
         <div class="site-footer__col">
-            <h3>Explore</h3>
+            <h3>Attestation Services</h3>
             <ul>
-                <li><a href="/countries/">Countries</a></li>
-                <li><a href="/visa-process/">Visa Process</a></li>
-                <li><a href="/blog/">Visa Updates</a></li>
-                <li><a href="/faq/">FAQ</a></li>
-                <li><a href="/track-visa/">Track Application</a></li>
+                <li><a href="/attestation/apostille/">Apostille</a></li>
+                <li><a href="/attestation/mea-attestation/">MEA Attestation</a></li>
+                <li><a href="/attestation/embassy-attestation/">Embassy Attestation</a></li>
+                <li><a href="/attestation/commercial-attestation/">Commercial Attestation</a></li>
+            </ul>
+        </div>
+
+        <div class="site-footer__col">
+            <h3>Explore Countries</h3>
+            <ul>
+                <li><a href="/countries/#region-asia">Asia</a></li>
+                <li><a href="/countries/#region-europe">Europe</a></li>
+                <li><a href="/countries/#region-north-america">North America</a></li>
+                <li><a href="/countries/#region-south-america">South America</a></li>
+                <li><a href="/countries/#region-africa">Africa</a></li>
+                <li><a href="/countries/#region-oceania">Oceania</a></li>
+                <li><a href="/countries/">Explore 200+ Countries &rarr;</a></li>
             </ul>
         </div>
 
         <div class="site-footer__col">
             <h3>Company</h3>
             <ul>
-                <li><a href="/about/">About</a></li>
-                <li><a href="/contact/">Contact</a></li>
+                <li><a href="/about/">About Visagiri</a></li>
+                <li><a href="/about/#why-visagiri">Why Visagiri</a></li>
+                <li><a href="/contact/">Contact Us</a></li>
+                <li><a href="/careers/">Careers</a></li>
+                <li><a href="/partners/">Partners</a></li>
+                <li><a href="/corporate-services/">Corporate Services</a></li>
             </ul>
         </div>
 
         <div class="site-footer__col">
-            <h3>Legal &amp; Support</h3>
+            <h3>Resources</h3>
             <ul>
-                <li><a href="/privacy/">Privacy Policy</a></li>
-                <li><a href="/terms/">Terms &amp; Conditions</a></li>
-                <li><a href="/travel-terms/">Travel Terms</a></li>
-                <li><a href="/payment-policy/">Payment Policy</a></li>
-                <li><a href="/refund-policy/">Refund Policy</a></li>
-                <li><a href="/cookie-policy/">Cookie Policy</a></li>
-                <li><a href="/grievance/">Grievance Redressal</a></li>
-                <li><a href="/sitemap/">Sitemap</a></li>
-                <li><a href="/track-request/">Track Request</a></li>
-                <li><a href="/payment-link/">Payment Link</a></li>
-                <li><a href="/support/">Contact Support</a></li>
+                <li><a href="/visa-process/">Visa Information</a></li>
+                <li><a href="/faq/">Visa FAQs</a></li>
+                <li><a href="/blog/">Travel Guides</a></li>
+                <li><a href="/blog/">Visa Updates</a></li>
+                <li><a href="/document-checklists/">Document Checklists</a></li>
+                <li><a href="/blog/">Blog</a></li>
             </ul>
         </div>
     </div>
@@ -70,6 +83,25 @@ declare(strict_types=1);
     <div class="site-footer__disclaimer">
         <div class="container">
             <p>Visa decisions are made solely by the relevant embassy, consulate, or government immigration authority. Visagiri provides visa consultancy and application-management assistance and does not guarantee visa approval.</p>
+        </div>
+    </div>
+
+    <div class="site-footer__legal-row">
+        <div class="container">
+            <nav aria-label="Legal and support">
+                <a href="/privacy/">Privacy Policy</a>
+                <a href="/terms/">Terms &amp; Conditions</a>
+                <a href="/travel-terms/">Travel Terms</a>
+                <a href="/payment-policy/">Payment Policy</a>
+                <a href="/refund-policy/">Refund Policy</a>
+                <a href="/cookie-policy/">Cookie Policy</a>
+                <a href="/grievance/">Grievance Redressal</a>
+                <a href="/sitemap/">Sitemap</a>
+                <a href="/track-visa/">Track Application</a>
+                <a href="/track-request/">Track Request</a>
+                <a href="/payment-link/">Payment Link</a>
+                <a href="/support/">Contact Support</a>
+            </nav>
         </div>
     </div>
 

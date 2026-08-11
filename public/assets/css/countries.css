@@ -1,0 +1,69 @@
+/*
+ * Country directory — Phase 7. Built only from tokens.css.
+ */
+
+.country-directory__search {
+  max-width: 420px;
+  margin-bottom: var(--space-8);
+}
+
+.country-directory__subheading {
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--space-4);
+}
+
+.country-directory__jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-8);
+}
+
+.country-directory__jump a {
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+  color: var(--text-dark);
+}
+
+.country-directory__jump a:hover {
+  border-color: var(--visa-blue);
+  color: var(--visa-blue);
+}
+
+.country-directory__region {
+  margin-bottom: var(--space-8);
+}
+
+.country-directory__grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-1) var(--space-4);
+}
+
+.country-directory__item a {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-2);
+  border-radius: var(--radius-sm);
+  color: var(--text-dark);
+  font-size: var(--font-size-sm);
+}
+
+.country-directory__item a:hover {
+  background: var(--visa-blue-light);
+  color: var(--visa-blue-dark);
+}
+
+@media (min-width: 640px) {
+  .country-directory__grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (min-width: 1024px) {
+  .country-directory__grid { grid-template-columns: repeat(4, 1fr); }
+}
