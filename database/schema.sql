@@ -421,15 +421,15 @@ INSERT INTO roles (name, description) VALUES
     ('support', 'View and respond to enquiries and support tickets'),
     ('customer', 'Applicant / end user');
 
-INSERT INTO visa_types (name, slug, sort_order) VALUES
-    ('Tourist Visa', 'tourist', 1),
-    ('Business Visa', 'business', 2),
-    ('Student Visa', 'student', 3),
-    ('Work Visa', 'work', 4),
-    ('Family Visit Visa', 'family', 5),
-    ('Transit Visa', 'transit', 6),
-    ('Medical Visa', 'medical', 7),
-    ('Conference Visa', 'conference', 8);
+INSERT INTO visa_types (name, slug, description, sort_order) VALUES
+    ('Tourist Visa', 'tourist', 'For leisure travel, sightseeing, and visiting a country as a tourist.', 1),
+    ('Business Visa', 'business', 'For meetings, conferences, and short-term commercial activity abroad.', 2),
+    ('Student Visa', 'student', 'For enrolled students travelling to study at a foreign institution.', 3),
+    ('Work Visa', 'work', 'For employment-based travel under a valid job offer or work contract.', 4),
+    ('Family Visit Visa', 'family', 'For visiting family members residing in another country.', 5),
+    ('Transit Visa', 'transit', 'For passing through a country en route to a final destination.', 6),
+    ('Medical Visa', 'medical', 'For travelling abroad to receive medical treatment.', 7),
+    ('Conference Visa', 'conference', 'For attending conferences, seminars, or official events abroad.', 8);
 
 INSERT INTO documents (name, slug, is_required_default) VALUES
     ('Passport', 'passport', 1),
@@ -450,3 +450,45 @@ INSERT INTO blog_categories (name, slug) VALUES
     ('Visa Guides', 'visa-guides'),
     ('Document Guides', 'document-guides'),
     ('Travel Alerts', 'travel-alerts');
+
+-- Popular-destination countries (Phase 5 homepage needs real entries
+-- to link to). Names + standard ISO codes only — objective reference
+-- data, not fabricated. NO visa_requirements rows are seeded: fees,
+-- processing times, and eligibility rules must come from verified
+-- sources during Phase 7/8 data entry, never invented here. Schengen
+-- is a multi-country zone, not a single country, so it carries no
+-- ISO code.
+INSERT INTO countries (name, slug, iso2, iso3, region, is_popular_destination, is_active) VALUES
+    ('United States', 'usa', 'US', 'USA', 'North America', 1, 1),
+    ('Canada', 'canada', 'CA', 'CAN', 'North America', 1, 1),
+    ('United Kingdom', 'uk', 'GB', 'GBR', 'Europe', 1, 1),
+    ('Schengen Area', 'schengen', NULL, NULL, 'Europe', 1, 1),
+    ('Australia', 'australia', 'AU', 'AUS', 'Oceania', 1, 1),
+    ('Japan', 'japan', 'JP', 'JPN', 'Asia', 1, 1),
+    ('South Korea', 'south-korea', 'KR', 'KOR', 'Asia', 1, 1),
+    ('United Arab Emirates', 'uae', 'AE', 'ARE', 'Middle East', 1, 1),
+    ('Singapore', 'singapore', 'SG', 'SGP', 'Asia', 1, 1),
+    ('New Zealand', 'new-zealand', 'NZ', 'NZL', 'Oceania', 1, 1),
+    ('China', 'china', 'CN', 'CHN', 'Asia', 1, 1),
+    ('Thailand', 'thailand', 'TH', 'THA', 'Asia', 1, 1);
+
+-- General, non-country-specific FAQs. Deliberately process-level
+-- (how search/tracking/documents work) rather than fabricated stats
+-- or country-specific rules — those require verified per-country
+-- data and belong in Phase 7/8, not here.
+INSERT INTO faqs (question, answer, category, sort_order, is_active) VALUES
+    ('Do I need a visa to travel abroad?',
+     'Visa requirements depend on your nationality, destination country, and purpose of travel. Use the visa search tool to check requirements for your specific situation.',
+     'general', 1, 1),
+    ('How long does visa processing take?',
+     'Processing times vary significantly by country, visa type, and application volume. Each visa''s detail page lists the current processing time as last verified, along with its source.',
+     'general', 2, 1),
+    ('What documents do I typically need for a visa application?',
+     'Common documents include a valid passport, passport-size photographs, proof of financial means, and travel or accommodation details. Exact requirements vary by country and visa type — see the specific visa page for the full checklist.',
+     'general', 3, 1),
+    ('Can Visagiri guarantee my visa will be approved?',
+     'No. Visa decisions are made solely by the relevant embassy, consulate, or government immigration authority. Visagiri assists with preparation, documentation, and application management, but cannot guarantee approval outcomes.',
+     'general', 4, 1),
+    ('How can I track my visa application?',
+     'Once your application is submitted, you can track its status anytime using your application number on the Track Application page.',
+     'general', 5, 1);

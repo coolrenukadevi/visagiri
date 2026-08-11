@@ -1,0 +1,373 @@
+/*
+ * Homepage-specific styles — Phase 5. Reusable pieces (buttons, cards,
+ * badges, accordion) come from components.css; this file is only the
+ * layout patterns unique to the homepage (hero, search widget,
+ * process steps, portal preview).
+ */
+
+.hero {
+  background: var(--visa-blue-dark);
+  background-image: radial-gradient(circle at 85% 20%, rgba(244, 180, 0, 0.12), transparent 55%);
+  color: var(--white);
+  padding-top: var(--space-12);
+  padding-bottom: var(--space-10);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero__grid {
+  display: grid;
+  gap: var(--space-8);
+  align-items: center;
+  grid-template-columns: 1fr;
+}
+
+.hero__label {
+  display: inline-block;
+  color: var(--visa-gold);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-4);
+}
+
+.hero h1 {
+  color: var(--white);
+  margin-bottom: var(--space-4);
+}
+
+.hero__subtitle {
+  color: var(--visa-blue-light);
+  font-size: var(--font-size-lg);
+  max-width: 46ch;
+  margin-bottom: var(--space-6);
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.hero__actions .btn-outline {
+  border-color: rgba(255, 255, 255, 0.4);
+  color: var(--white);
+}
+
+.hero__actions .btn-outline:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--white);
+}
+
+.hero__visual {
+  display: flex;
+  justify-content: center;
+}
+
+.hero__visual svg {
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+}
+
+/* ---------- Search widget (floats over the hero on desktop) ---------- */
+
+.search-widget {
+  position: relative;
+  z-index: 5;
+  margin-top: calc(-1 * var(--space-10));
+  margin-bottom: var(--space-10);
+}
+
+.search-widget__card {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-6);
+}
+
+.search-widget__title {
+  margin-bottom: var(--space-1);
+}
+
+.search-widget__hint {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--space-5);
+}
+
+.search-widget__grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: 1fr;
+  align-items: end;
+}
+
+.search-widget__grid .form-group {
+  margin-bottom: 0;
+}
+
+@media (min-width: 768px) {
+  .hero__grid { grid-template-columns: 1.1fr 0.9fr; }
+  .search-widget__grid { grid-template-columns: repeat(4, 1fr) auto; }
+}
+
+/* ---------- Section scaffolding ---------- */
+
+.section {
+  padding-top: var(--space-10);
+  padding-bottom: var(--space-10);
+}
+
+.section-heading {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto var(--space-8);
+}
+
+.section-heading p {
+  margin: 0;
+}
+
+.section-eyebrow {
+  display: block;
+  color: var(--visa-blue-secondary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-2);
+}
+
+/* ---------- Destination + service cards ---------- */
+
+.destination-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+}
+
+.destination-card__flag {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.destination-card__name {
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-dark);
+  margin-bottom: var(--space-1);
+}
+
+.destination-card__link {
+  font-size: var(--font-size-sm);
+}
+
+.service-card {
+  text-align: left;
+}
+
+.service-card__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: var(--visa-blue-light);
+  color: var(--visa-blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-4);
+  font-size: var(--font-size-xl);
+}
+
+/* ---------- Process steps ---------- */
+
+.process-steps {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: 1fr;
+  counter-reset: step;
+}
+
+.process-step {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.process-step__number {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background: var(--visa-blue);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--font-weight-bold);
+}
+
+.process-step__title {
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-1);
+}
+
+.process-step__desc {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  margin: 0;
+}
+
+@media (min-width: 640px) {
+  .process-steps { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 1024px) {
+  .process-steps { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* ---------- Why Visagiri ---------- */
+
+.feature-card {
+  text-align: left;
+}
+
+.feature-card__icon {
+  color: var(--visa-gold-dark);
+  font-size: var(--font-size-2xl);
+  margin-bottom: var(--space-3);
+}
+
+/* ---------- Tracking band ---------- */
+
+.tracking-band {
+  background: var(--visa-blue-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+}
+
+.tracking-band form {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.tracking-band .form-input {
+  min-width: 220px;
+  background: var(--white);
+}
+
+/* ---------- Customer portal preview ---------- */
+
+.portal-preview {
+  display: grid;
+  gap: var(--space-8);
+  grid-template-columns: 1fr;
+  align-items: center;
+}
+
+.portal-preview__mock {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+.portal-preview__mock-header {
+  background: var(--visa-blue);
+  color: var(--white);
+  padding: var(--space-3) var(--space-5);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.portal-preview__mock-body {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+}
+
+.portal-preview__mock-body .sidebar-nav {
+  padding: var(--space-4);
+  border-right: 1px solid var(--border);
+}
+
+.portal-preview__mock-body .sidebar-nav a {
+  font-size: var(--font-size-xs);
+  padding: var(--space-2) var(--space-3);
+}
+
+.portal-preview__mock-content {
+  padding: var(--space-5);
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.portal-preview__stat {
+  background: var(--background);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+}
+
+.portal-preview__stat-label {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+.portal-preview__stat-value {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-dark);
+}
+
+@media (min-width: 768px) {
+  .portal-preview { grid-template-columns: 1fr 1fr; }
+}
+
+/* ---------- Updates grid ---------- */
+
+.updates-grid {
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .updates-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.update-card__meta {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  margin-bottom: var(--space-2);
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--text-muted);
+  padding: var(--space-8);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-lg);
+}
+
+/* ---------- Final CTA ---------- */
+
+.final-cta {
+  background: var(--visa-blue);
+  color: var(--white);
+  border-radius: var(--radius-lg);
+  padding: var(--space-10);
+  text-align: center;
+}
+
+.final-cta h2 {
+  color: var(--white);
+}

@@ -215,4 +215,26 @@ Role-gated (`/admin/`, Super Admin / Admin / Consultant / Document Reviewer / Fi
 
 Confirmed via headless Chromium: dropdown opens correctly, scroll-compact class toggles correctly (verified directly since the short stub pages don't have enough content to scroll on their own), mobile menu opens/closes, zero console errors on desktop or mobile.
 
-Waiting for your go-ahead to continue to **Phase 5 (Homepage)**.
+**Phase 5 (Homepage) is now complete**, and along the way this session finally got access to a real MySQL-compatible server (MariaDB, installed locally for testing) — so `schema.sql`, which Phase 2 could only hand-review, has now actually been executed for the first time: it loaded cleanly with zero errors across all 23 tables, and foreign keys/joins were verified with real inserts.
+
+**Real (non-fabricated) catalog data added to the seed:**
+- 12 popular-destination countries (name + standard ISO codes only — the exact list from your brief) — no visa requirements, fees, or processing times seeded, since those need verified sourcing in Phase 7/8, not invented here.
+- Short factual one-line descriptions for the 8 visa types (what each category means, not a claim about Visagiri).
+- 5 general, non-country-specific FAQs (how search/tracking/documents work, and one that directly restates the "Visagiri does not guarantee visa approval" disclaimer) — no fabricated stats or country-specific rules.
+
+**Homepage built** (`pages/home.php`), all 11 sections from your spec, DB-driven wherever real data exists:
+1. Hero — original inline-SVG illustration (abstract passport/globe motif in brand colors), not stock photography
+2. Find the Right Visa search widget — floats over the hero, dropdowns populated from the real `countries`/`visa_types` tables (full search logic is Phase 6, per your own sequence — this phase is the UI + real catalog data)
+3. Popular Destinations — the 12 seeded countries, flag emoji + link to `/visa/{country}/`
+4. Visa Services — the 8 seeded visa types with real descriptions, linking to `/visa-type/{type}/`
+5. How Visagiri Works — 7 steps
+6. Why Visagiri — 6 feature blocks, zero invented numbers
+7. Application tracking band
+8. Customer portal preview (visual dashboard mockup + Login/Create Account)
+9. Latest Visa Updates — queries `blog_posts`; renders an honest **empty state** ("no updates published yet") since there is no real content to show — not a single fabricated article
+10. FAQ accordion — the 5 real seeded FAQs, zero-JS native accordion
+11. Final CTA
+
+**Verified against the real database**, not mocked: page loads with real SQL query results, zero PHP warnings/errors in the response, zero browser console errors on desktop or mobile, no horizontal overflow on mobile (checked programmatically, not just visually).
+
+Waiting for your go-ahead to continue to **Phase 6 (Visa Search)**.
