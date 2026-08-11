@@ -269,3 +269,18 @@ The new prompt also includes what read as specific new business facts (two offic
 - **Open item**: "since April 2015" vs. "since 2014" — you've stated both at different points; holding April 2015 as authoritative (it was an explicit correction) until you confirm.
 
 Verified: all new/changed PHP passes `php -l`; full route sweep against the real database (200s for valid routes, 404s for invalid country/attestation slugs); zero browser console errors after the CSP fix; live search confirmed working (filters 208 entries correctly); footer/header verified via screenshots at desktop and mobile.
+
+---
+
+## Phase 8 (Country Pages) — complete
+
+Most of "country pages" was already delivered in Phase 6 (the single reusable `/visa/{country}/{type}/` template — never hundreds of hand-written files, exactly per the brief). Phase 8 filled in what was still missing from the full spec:
+
+- **Embassy / Consulate / VAC information** — new `fetch_country_contact_points()` + a shared `includes/contact-points.php` partial, rendered on both the country overview and visa detail pages. Zero embassy/consulate/VAC rows are seeded (same rule as visa requirements — addresses and contact details need verified sourcing, not invention), so every country honestly shows "hasn't been published yet" with a Contact CTA today. Verified the populated-state template renders correctly using one throwaway test embassy + VAC row in the local dev DB, screenshotted, then deleted immediately (never in `schema.sql`, never committed).
+- **Contextual FAQs on the visa detail page** — `fetch_relevant_faqs()` pulls the general FAQs plus any tagged specifically to that country or visa type (none tagged yet, so the 5 general ones surface everywhere, which is honest and correct).
+- **Country overview page improved**: a neutral, templated intro paragraph (no per-country facts invented) and a region badge.
+- **About page went from stub to real content**, using your confirmed facts: the "Since April 2015..." line you provided, the Tripgation/CIN facts, and a "Why Visagiri" section — pulled from a new shared `why_visagiri_features()` function so the homepage and About page can never drift out of sync with each other.
+
+Verified: `php -l` on every changed file, full route sweep, zero console errors, and the temporary-test-data QA technique (insert → screenshot → delete → reconfirm empty state) used again for the embassy/VAC template.
+
+**Still open**: the real logo file (needs to arrive as an upload, not chat content) and, now resolved, the founding-date conflict — **April 2015 confirmed correct**, applied to the About page.

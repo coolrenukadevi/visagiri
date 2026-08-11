@@ -46,14 +46,7 @@ $processSteps = [
     ['title' => 'Receive Decision', 'desc' => 'Get notified as soon as a decision is available.'],
 ];
 
-$whyFeatures = [
-    ['title' => 'Expert Visa Guidance', 'desc' => 'Guidance from a team familiar with country-specific visa requirements.'],
-    ['title' => 'Digital Application Management', 'desc' => 'Manage your entire application online, from documents to payment.'],
-    ['title' => 'Secure Document Handling', 'desc' => 'Documents are stored privately and access is controlled and audited.'],
-    ['title' => 'Transparent Process', 'desc' => 'Clear status updates at every stage of your application.'],
-    ['title' => 'Application Tracking', 'desc' => 'Check your application status anytime with your reference number.'],
-    ['title' => 'Human Support', 'desc' => 'Reach a consultant when you have questions about your application.'],
-];
+$whyFeatures = why_visagiri_features();
 
 $pageTitle = 'Your Visa Journey, Simplified - Visagiri';
 $pageDescription = 'Expert visa guidance with secure digital application management from Visagiri, a unit of Tripgation Pvt Ltd.';

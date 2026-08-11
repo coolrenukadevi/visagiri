@@ -95,6 +95,62 @@ function render_scaffold_page(
     require __DIR__ . '/footer.php';
 }
 
+/** Shared "Why Visagiri" feature list — used on the homepage and the About page. */
+function why_visagiri_features(): array
+{
+    return [
+        ['title' => 'Expert Visa Guidance', 'desc' => 'Guidance from a team familiar with country-specific visa requirements.'],
+        ['title' => 'Digital Application Management', 'desc' => 'Manage your entire application online, from documents to payment.'],
+        ['title' => 'Secure Document Handling', 'desc' => 'Documents are stored privately and access is controlled and audited.'],
+        ['title' => 'Transparent Process', 'desc' => 'Clear status updates at every stage of your application.'],
+        ['title' => 'Application Tracking', 'desc' => 'Check your application status anytime with your reference number.'],
+        ['title' => 'Human Support', 'desc' => 'Reach a consultant when you have questions about your application.'],
+    ];
+}
+
+/**
+ * Fetches embassy/consulate/VAC rows for a country. Phase 8 — used by
+ * both the country overview and visa detail pages so the query lives
+ * in one place. Returns empty arrays if none are published yet;
+ * callers must render an honest empty state, never invent an address.
+ */
+function fetch_country_contact_points(PDO $pdo, int $countryId): array
+{
+    $embassies = $pdo->prepare('SELECT * FROM embassies WHERE country_id = :id ORDER BY name');
+    $embassies->execute(['id' => $countryId]);
+
+    $consulates = $pdo->prepare('SELECT * FROM consulates WHERE country_id = :id ORDER BY name');
+    $consulates->execute(['id' => $countryId]);
+
+    $vacs = $pdo->prepare('SELECT * FROM vac_centers WHERE country_id = :id ORDER BY name');
+    $vacs->execute(['id' => $countryId]);
+
+    return [
+        'embassies' => $embassies->fetchAll(),
+        'consulates' => $consulates->fetchAll(),
+        'vac_centers' => $vacs->fetchAll(),
+    ];
+}
+
+/**
+ * Fetches FAQs relevant to a page: general (no country/visa-type tag)
+ * plus any tagged specifically for this country or visa type.
+ */
+function fetch_relevant_faqs(PDO $pdo, ?int $countryId = null, ?int $visaTypeId = null): array
+{
+    $stmt = $pdo->prepare(
+        'SELECT question, answer FROM faqs
+         WHERE is_active = 1 AND (
+             (country_id IS NULL AND visa_type_id IS NULL)
+             OR country_id = :country_id
+             OR visa_type_id = :visa_type_id
+         )
+         ORDER BY sort_order'
+    );
+    $stmt->execute(['country_id' => $countryId, 'visa_type_id' => $visaTypeId]);
+    return $stmt->fetchAll();
+}
+
 /** Renders a real 404 inside the shared chrome with a specific, honest message. */
 function render_not_found(string $message = "The page you're looking for doesn't exist."): never
 {

@@ -53,6 +53,10 @@ if ($typeSlug !== null) {
     $stmt->execute(['country_id' => $country['id'], 'visa_type_id' => $visaType['id']]);
     $requirement = $stmt->fetch();
 
+    $contactPoints = fetch_country_contact_points($pdo, (int) $country['id']);
+    $countryName = $country['name'];
+    $faqs = fetch_relevant_faqs($pdo, (int) $country['id'], (int) $visaType['id']);
+
     $pageTitle = "{$visaType['name']} for {$country['name']} - Visagiri";
     $pageDescription = "{$visaType['name']} requirements, documents, fees, and processing time for {$country['name']}.";
     $canonicalUrl = APP_URL . "/visa/{$country['slug']}/{$visaType['slug']}/";
@@ -123,6 +127,24 @@ if ($typeSlug !== null) {
                 <a href="/visa/<?= e($country['slug']) ?>/" class="btn btn-outline">See other visa types for <?= e($country['name']) ?></a>
             </div>
             <?php endif; ?>
+
+            <div style="margin-top:var(--space-10)">
+                <?php require __DIR__ . '/../includes/contact-points.php'; ?>
+            </div>
+
+            <?php if ($faqs): ?>
+            <div style="margin-top:var(--space-10);max-width:760px">
+                <h2 class="country-directory__subheading">Frequently Asked Questions</h2>
+                <?php foreach ($faqs as $faq): ?>
+                <div class="accordion-item">
+                    <details>
+                        <summary><?= e($faq['question']) ?></summary>
+                        <div class="accordion-body"><?= e($faq['answer']) ?></div>
+                    </details>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <?php endif; ?>
         </div>
     </section>
     <?php
@@ -133,6 +155,8 @@ if ($typeSlug !== null) {
 // Country overview: no specific visa type requested — list the
 // catalog of visa types to explore for this country.
 $visaTypes = $pdo->query('SELECT * FROM visa_types WHERE is_active = 1 ORDER BY sort_order')->fetchAll();
+$contactPoints = fetch_country_contact_points($pdo, (int) $country['id']);
+$countryName = $country['name'];
 
 $pageTitle = "{$country['name']} Visa Requirements - Visagiri";
 $pageDescription = "Visa types, requirements, and application information for {$country['name']}.";
@@ -151,7 +175,11 @@ require __DIR__ . '/../includes/header.php';
             <span class="destination-card__flag"><?= flag_emoji($country['iso2']) ?></span>
             <div>
                 <h1><?= e($country['name']) ?> Visa Requirements</h1>
-                <p>Select a visa type to view eligibility, documents, fees, and processing time.</p>
+                <?php if (!empty($country['region'])): ?><span class="badge badge-neutral"><?= e($country['region']) ?></span><?php endif; ?>
+                <p style="margin-top:var(--space-3)">
+                    Visa requirements for <?= e($country['name']) ?> vary by nationality, purpose of travel, and visa type.
+                    Select a visa type below to check eligibility, required documents, fees, and processing time.
+                </p>
             </div>
         </div>
 
@@ -163,6 +191,10 @@ require __DIR__ . '/../includes/header.php';
                 <p><?= e($t['description']) ?></p>
             </a>
             <?php endforeach; ?>
+        </div>
+
+        <div style="margin-top:var(--space-10)">
+            <?php require __DIR__ . '/../includes/contact-points.php'; ?>
         </div>
     </div>
 </section>
