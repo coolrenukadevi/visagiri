@@ -1,0 +1,366 @@
+
+.coaching-details{
+  padding: 150px 0px;
+}
+
+.coaching-details-content{
+  position: relative;
+  display: block;
+}
+
+.coaching-details-content h2{
+  display: block;
+  font-size: 36px;
+  line-height: 50px;
+  font-weight: 700;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.coaching-details-content h2:before{
+  position: absolute;
+  content: '';
+  background: #5E789C;
+  width: 87px;
+  height: 1px;
+  left: 0px;
+  bottom: 0px;
+}
+
+.coaching-details-content .upper-box .text-box{
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.coaching-details-content .upper-box .text-box p{
+  max-width: 575px;
+  font-size: 18px;
+}
+
+.coaching-details-content .upper-box .text-box ul li{
+  position: relative;
+  float: left;
+  width: 50%;
+  margin-bottom: 20px;
+}
+
+.coaching-details-content .upper-box .text-box ul li a{
+  position: relative;
+  display: inline-block;
+  font-size: 18px;
+  line-height: 40px;
+  font-weight: 500;
+  color: var(--secondary-color);
+  padding-left: 55px;
+}
+
+.coaching-details-content .upper-box .text-box ul li a span{
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 40px;
+  height: 40px;
+  line-height: 36px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 500;
+  border: 3px solid #B4C4D9;
+  color: var(--secondary-color);
+  border-radius: 50%;
+  transition: all 500ms ease;
+}
+
+.coaching-details-content .upper-box .text-box ul li a:hover span{
+  color: #fff;
+  background: var(--secondary-color);
+  border-color: var(--secondary-color);
+}
+
+.coaching-details-content .upper-box .image-box{
+  position: relative;
+  display: block;
+  border-radius: 10px;
+}
+
+.coaching-details-content .upper-box .image-box img{
+  width: 100%;
+  border-radius: 10px;
+}
+
+.coaching-details-content .content-one .text{
+  margin-right: -40px;
+}
+
+.coaching-details-content .content-one .text h3{
+  display: block;
+  font-size: 24px;
+  line-height: 34px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.coaching-details-content .content-one .text p{
+  margin-bottom: 15px;
+}
+
+.coaching-details-content .content-one .text p:last-child{
+  margin-bottom: 0px;
+}
+
+.coaching-details-content .content-one .image-box{
+  position: relative;
+  display: block;
+  border-radius: 10px;
+  margin-left: 41px;
+}
+
+.coaching-details-content .content-one .image-box img{
+  width: 100%;
+  border-radius: 10px;
+}
+
+.coaching-details-content .tab-btn-box{
+  position: relative;
+  width: 100%;
+  border-bottom: 1px solid rgba(94, 120, 156, 0.3);
+}
+
+.coaching-details-content .tab-btn-box .tab-btns li{
+  position: relative;
+  display: inline-block;
+  float: left;
+  margin-right: 50px;
+  padding-right: 50px;
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: 500;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding-bottom: 20px;
+  color: var(--secondary-color);
+  transition: all 500ms ease;
+}
+
+.coaching-details-content .tab-btn-box .tab-btns li:last-child{
+  margin: 0px;
+}
+
+.coaching-details-content .tab-btn-box .tab-btns li.active-btn,
+.coaching-details-content .tab-btn-box .tab-btns li:hover{
+  color: var(--main-color);
+}
+
+.coaching-details-content .tab-btn-box .tab-btns li:before{
+  position: absolute;
+  content: '';
+  background: var(--main-color);
+  width: 0%;
+  height: 1px;
+  left: 0px;
+  bottom: -1px;
+  transition: all 500ms ease;
+}
+
+.coaching-details-content .tab-btn-box .tab-btns li.active-btn:before,
+.coaching-details-content .tab-btn-box .tab-btns li:hover:before{
+  width: 100%;
+}
+
+.coaching-details-content .content-two .single-item{
+  position: relative;
+  display: block;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.05);
+  margin-bottom: 30px;
+}
+
+.coaching-details-content .content-two .single-item .image-box{
+  position: relative;
+  display: block;
+}
+
+.coaching-details-content .content-two .single-item .image-box img{
+  width: 100%;
+}
+
+.coaching-details-content .content-two .single-item .lower-content{
+  position: relative;
+  display: block;
+  padding: 50px;
+}
+
+.coaching-details-content .content-two .single-item .lower-content .title-box{
+  position: relative;
+  display: block;
+  padding-left: 75px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid #B4C4D9;
+}
+
+.coaching-details-content .content-two .single-item .lower-content .title-box .icon-box{
+  position: absolute;
+  display: inline-block;
+  left: 0px;
+  top: 6px;
+  font-size: 50px;
+  color: var(--main-color);
+}
+
+.coaching-details-content .content-two .single-item .lower-content .title-box h3{
+  display: block;
+  font-size: 24px;
+  line-height: 34px;
+  font-weight: 700;
+}
+
+.coaching-details-content .content-two .single-item .lower-content .title-box p{
+  display: block;
+  font-size: 12px;
+  line-height: 26px;
+  color: var(--secondary-color);
+}
+
+.coaching-details-content .content-two .single-item .lower-content .feature-list li{
+  position: relative;
+  display: block;
+  padding: 18px 0px;
+  border-bottom: 1px solid #B4C4D9;
+}
+
+.coaching-details-content .content-two .single-item .lower-content .feature-list li h5{
+  display: block;
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: 500;
+  font-family: var(--heebo);
+}
+
+.coaching-details-content .content-two .single-item .lower-content .feature-list li span{
+  position: relative;
+  display: block;
+  font-size: 12px;
+  line-height: 26px;
+}
+
+.coaching-details-content .content-two .single-item .lower-content .btn-box a{
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: middle;
+  font-size: 18px;
+  line-height: 28px;
+  color: var(--white-color);
+  font-weight: 500;
+  background: var(--secondary-color);
+  padding: 20px 55px;
+  text-align: center;
+}
+
+.coaching-details-content .content-two .single-item .lower-content .btn-box a:hover{
+  background: var(--main-color);
+  border-radius: 20px 20px 0px 0px;
+}
+
+.coaching-details-content .content-two .single-item .lower-content .btn-box a .text{
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  left: 0px;
+  top: 30px;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: all 500ms ease;
+}
+
+.coaching-details-content .content-two .single-item .lower-content .btn-box a:hover .text{
+  opacity: 1;
+  top: 0px;
+}
+
+.coaching-details-content .content-two .single-item .lower-content .btn-box a .price{
+  transition: all 500ms ease;
+}
+
+.coaching-details-content .content-two .single-item .lower-content .btn-box a:hover .price{
+  opacity: 0;
+}
+
+.coaching-details-content .google-map{
+  position: relative !important;
+  width: 100% !important;
+  height: 584px !important;
+}
+
+.coaching-details-content .map-inner{
+  margin-right: -42px;
+}
+
+.coaching-details-content .content-three .content-inner{
+  margin-left: 42px;
+}
+
+.coaching-details-content .content-three .content-inner .image-box{
+  position: relative;
+  display: block;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.coaching-details-content .content-three .content-inner .image-box img{
+  width: 100%;
+  border-radius: 10px;
+}
+
+.coaching-details-content .content-three .content-inner h5{
+  position: relative;
+  display: block;
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: 500;
+  font-family: var(--heebo);
+}
+
+.coaching-details-content .content-three .content-inner span{
+  position: relative;
+  display: block;
+  font-size: 12px;
+  line-height: 26px;
+  color: var(--main-color);
+  margin-bottom: 10px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
