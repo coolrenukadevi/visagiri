@@ -1,0 +1,10 @@
+/*
+ * Visagiri 2.0 — single stylesheet entry point.
+ * Import order matters: tokens before base before components.
+ * Bundling/minification is a Phase 17 (Performance) concern, not
+ * addressed here — Phase 3 is about the design system existing and
+ * being correct, not about request-count optimization yet.
+ */
+@import url("tokens.css");
+@import url("base.css");
+@import url("components.css");

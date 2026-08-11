@@ -1,0 +1,375 @@
+/*
+ * Component library — Visagiri 2.0 design system.
+ * Every component below is built only from tokens.css variables.
+ * Loaded after tokens.css and base.css.
+ */
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+  line-height: var(--line-height-tight);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-sm { padding: var(--space-2) var(--space-4); font-size: var(--font-size-sm); }
+.btn-lg { padding: var(--space-4) var(--space-6); font-size: var(--font-size-lg); }
+
+.btn-primary {
+  background: var(--visa-blue);
+  color: var(--white);
+}
+.btn-primary:hover { background: var(--visa-blue-dark); color: var(--white); }
+
+.btn-gold {
+  background: var(--visa-gold);
+  color: var(--text-dark);
+}
+.btn-gold:hover { background: var(--visa-gold-dark); color: var(--text-dark); }
+
+.btn-outline {
+  background: transparent;
+  border-color: var(--visa-blue);
+  color: var(--visa-blue);
+}
+.btn-outline:hover { background: var(--visa-blue-light); color: var(--visa-blue-dark); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--visa-blue);
+}
+.btn-ghost:hover { background: var(--visa-blue-light); }
+
+/* ---------- Cards ---------- */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+}
+
+.card-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-2);
+}
+
+.card-grid {
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+/* ---------- Badges / status pills ---------- */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.badge-success { background: var(--success-bg); color: var(--success); }
+.badge-warning { background: var(--warning-bg); color: var(--warning); }
+.badge-danger  { background: var(--danger-bg);  color: var(--danger); }
+.badge-info    { background: var(--info-bg);    color: var(--info); }
+.badge-neutral { background: var(--border);     color: var(--text-muted); }
+
+/* ---------- Forms ---------- */
+
+.form-group {
+  margin-bottom: var(--space-5);
+}
+
+.form-label {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+  color: var(--text-dark);
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--white);
+  color: var(--text-dark);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  border-color: var(--visa-blue-secondary);
+  box-shadow: 0 0 0 3px var(--visa-blue-light);
+  outline: none;
+}
+
+.form-input.is-invalid,
+.form-select.is-invalid,
+.form-textarea.is-invalid {
+  border-color: var(--danger);
+}
+
+.form-error {
+  display: block;
+  margin-top: var(--space-1);
+  font-size: var(--font-size-sm);
+  color: var(--danger);
+}
+
+.form-hint {
+  display: block;
+  margin-top: var(--space-1);
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}
+
+/* ---------- Alerts (flash messages) ---------- */
+
+.alert {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--space-5);
+}
+
+.alert-success { background: var(--success-bg); color: var(--success); border-color: var(--success); }
+.alert-warning { background: var(--warning-bg); color: var(--warning); border-color: var(--warning); }
+.alert-danger  { background: var(--danger-bg);  color: var(--danger);  border-color: var(--danger); }
+.alert-info    { background: var(--info-bg);    color: var(--info);    border-color: var(--info); }
+
+/* ---------- Breadcrumbs ---------- */
+
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--space-5);
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}
+
+.breadcrumb li:not(:last-child)::after {
+  content: "/";
+  margin-left: var(--space-2);
+  color: var(--border);
+}
+
+.breadcrumb a { color: var(--text-muted); }
+.breadcrumb a:hover { color: var(--visa-blue); }
+.breadcrumb li:last-child { color: var(--text-dark); font-weight: var(--font-weight-medium); }
+
+/* ---------- Accordion (FAQ) — native <details>/<summary>, no JS required ---------- */
+
+.accordion-item {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-3);
+  overflow: hidden;
+}
+
+.accordion-item summary {
+  cursor: pointer;
+  list-style: none;
+  padding: var(--space-4) var(--space-5);
+  font-weight: var(--font-weight-semibold);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--surface);
+}
+
+.accordion-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.accordion-item summary::after {
+  content: "+";
+  font-size: var(--font-size-xl);
+  color: var(--visa-blue);
+  transition: transform var(--transition-base);
+}
+
+.accordion-item[open] summary::after {
+  transform: rotate(45deg);
+}
+
+.accordion-item .accordion-body {
+  padding: 0 var(--space-5) var(--space-5);
+  color: var(--text-muted);
+}
+
+/* ---------- Table (admin/dashboard listings) ---------- */
+
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+.table th,
+.table td {
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.table th {
+  background: var(--background);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-dark);
+}
+
+.table tbody tr:hover {
+  background: var(--visa-blue-light);
+}
+
+/* ---------- Status timeline (application tracking) ---------- */
+
+.status-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.status-timeline li {
+  position: relative;
+  padding-left: var(--space-8);
+  padding-bottom: var(--space-6);
+  border-left: 2px solid var(--border);
+  margin-left: var(--space-3);
+}
+
+.status-timeline li:last-child {
+  border-color: transparent;
+  padding-bottom: 0;
+}
+
+.status-timeline li::before {
+  content: "";
+  position: absolute;
+  left: calc(-1 * var(--space-3) - 5px);
+  top: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--border);
+  border: 2px solid var(--surface);
+}
+
+.status-timeline li.is-complete::before { background: var(--success); }
+.status-timeline li.is-current::before { background: var(--visa-gold); }
+
+.status-timeline .status-title {
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-dark);
+}
+
+.status-timeline .status-meta {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}
+
+/* ---------- Sidebar navigation (dashboard/admin) ---------- */
+
+.sidebar-nav {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar-nav li + li {
+  margin-top: var(--space-1);
+}
+
+.sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  font-weight: var(--font-weight-medium);
+}
+
+.sidebar-nav a:hover {
+  background: var(--visa-blue-light);
+  color: var(--visa-blue-dark);
+}
+
+.sidebar-nav a.is-active {
+  background: var(--visa-blue);
+  color: var(--white);
+}
+
+/* ---------- Pagination ---------- */
+
+.pagination {
+  display: flex;
+  gap: var(--space-2);
+  list-style: none;
+  padding: 0;
+  margin: var(--space-6) 0 0;
+}
+
+.pagination a,
+.pagination span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  color: var(--text-dark);
+  font-size: var(--font-size-sm);
+}
+
+.pagination a:hover {
+  border-color: var(--visa-blue);
+  color: var(--visa-blue);
+}
+
+.pagination .is-active {
+  background: var(--visa-blue);
+  border-color: var(--visa-blue);
+  color: var(--white);
+}

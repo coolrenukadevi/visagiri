@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Visagiri 2.0 — Design System Preview</title>
+<link rel="stylesheet" href="../public/assets/css/main.css">
+<style>
+  /* Preview-page-only scaffolding, not part of the shipped design system. */
+  .preview-section { padding: var(--space-10) 0; border-bottom: 1px solid var(--border); }
+  .swatch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: var(--space-4); }
+  .swatch { border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border); }
+  .swatch-color { height: 64px; }
+  .swatch-label { padding: var(--space-2) var(--space-3); font-size: var(--font-size-xs); background: var(--surface); }
+  .btn-row, .badge-row { display: flex; gap: var(--space-3); flex-wrap: wrap; align-items: center; margin-bottom: var(--space-4); }
+  .preview-header { background: var(--visa-blue); color: var(--white); padding: var(--space-8) 0; }
+  .preview-header p { color: var(--visa-blue-light); }
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="preview-header">
+  <div class="container">
+    <h1 style="color:var(--white)">Visagiri 2.0 — Design System</h1>
+    <p>Phase 3 preview. Every color, spacing value, and component below comes from <code>tokens.css</code> / <code>base.css</code> / <code>components.css</code> — nothing on this page is hardcoded outside those files.</p>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="preview-section">
+  <div class="container">
+    <h2>Palette</h2>
+    <div class="swatch-grid">
+      <div class="swatch"><div class="swatch-color" style="background:var(--visa-blue)"></div><div class="swatch-label">--visa-blue<br>#123F91</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:var(--visa-blue-dark)"></div><div class="swatch-label">--visa-blue-dark<br>#082A67</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:var(--visa-blue-secondary)"></div><div class="swatch-label">--visa-blue-secondary<br>#1557B8</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:var(--visa-blue-light)"></div><div class="swatch-label">--visa-blue-light<br>#EAF2FF</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:var(--visa-gold)"></div><div class="swatch-label">--visa-gold<br>#F4B400</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:var(--visa-gold-dark)"></div><div class="swatch-label">--visa-gold-dark<br>#C98F00</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:var(--visa-gold-light)"></div><div class="swatch-label">--visa-gold-light<br>#FFF5D6</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:var(--text-dark)"></div><div class="swatch-label">--text-dark<br>#172033</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:var(--text-muted)"></div><div class="swatch-label">--text-muted<br>#667085</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:var(--background);border-bottom:1px solid var(--border)"></div><div class="swatch-label">--background<br>#F7F9FC</div></div>
+      <div class="swatch"><div class="swatch-color" style="background:var(--border)"></div><div class="swatch-label">--border<br>#E5EAF2</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="preview-section">
+  <div class="container">
+    <h2>Status colors</h2>
+    <div class="badge-row">
+      <span class="badge badge-success">Approved</span>
+      <span class="badge badge-warning">Under Review</span>
+      <span class="badge badge-danger">Rejected</span>
+      <span class="badge badge-info">Submitted</span>
+      <span class="badge badge-neutral">Draft</span>
+    </div>
+  </div>
+</section>
+
+<section class="preview-section">
+  <div class="container">
+    <h2>Typography</h2>
+    <h1>H1 — Your Visa Journey, Simplified.</h1>
+    <h2>H2 — Find the Right Visa</h2>
+    <h3>H3 — Popular Destinations</h3>
+    <h4>H4 — Application Status</h4>
+    <p>Body text — Expert visa guidance with secure digital application management. This is the default paragraph style using <code>--text-muted</code> for readable, non-competing body copy.</p>
+    <p><a href="#">This is a link in body text</a> using <code>--visa-blue-secondary</code>.</p>
+  </div>
+</section>
+
+<section class="preview-section">
+  <div class="container">
+    <h2>Buttons</h2>
+    <div class="btn-row">
+      <button class="btn btn-primary">Start Your Application</button>
+      <button class="btn btn-gold">Check Visa Requirements</button>
+      <button class="btn btn-outline">Track Application</button>
+      <button class="btn btn-ghost">Learn More</button>
+      <button class="btn btn-primary" disabled>Disabled</button>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary btn-sm">Small</button>
+      <button class="btn btn-primary">Default</button>
+      <button class="btn btn-primary btn-lg">Large</button>
+    </div>
+  </div>
+</section>
+
+<section class="preview-section">
+  <div class="container">
+    <h2>Cards</h2>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-title">Tourist Visa</div>
+        <p>Explore requirements, documents, and processing time for short-term travel.</p>
+        <a href="#" class="btn btn-outline btn-sm">View details</a>
+      </div>
+      <div class="card">
+        <div class="card-title">Business Visa</div>
+        <p>For conferences, meetings, and short-term commercial activity abroad.</p>
+        <a href="#" class="btn btn-outline btn-sm">View details</a>
+      </div>
+      <div class="card">
+        <div class="card-title">Student Visa</div>
+        <p>Requirements for enrolled students travelling for academic programs.</p>
+        <a href="#" class="btn btn-outline btn-sm">View details</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="preview-section">
+  <div class="container">
+    <h2>Forms</h2>
+    <div class="card" style="max-width:480px">
+      <div class="form-group">
+        <label class="form-label" for="p-name">Full name</label>
+        <input class="form-input" id="p-name" type="text" placeholder="Your name">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="p-country">Destination country</label>
+        <select class="form-select" id="p-country">
+          <option>Select a country</option>
+          <option>United States</option>
+          <option>Canada</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="p-invalid">Email (invalid state)</label>
+        <input class="form-input is-invalid" id="p-invalid" type="text" value="not-an-email">
+        <span class="form-error">Enter a valid email address.</span>
+      </div>
+      <button class="btn btn-primary">Submit</button>
+    </div>
+  </div>
+</section>
+
+<section class="preview-section">
+  <div class="container">
+    <h2>Alerts</h2>
+    <div class="alert alert-success">Your document was approved.</div>
+    <div class="alert alert-warning">2 documents are still pending upload.</div>
+    <div class="alert alert-danger">Payment failed — please try again.</div>
+    <div class="alert alert-info">Your application is under processing.</div>
+  </div>
+</section>
+
+<section class="preview-section">
+  <div class="container">
+    <h2>Breadcrumbs</h2>
+    <ul class="breadcrumb">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Visa</a></li>
+      <li>United States</li>
+    </ul>
+  </div>
+</section>
+
+<section class="preview-section">
+  <div class="container">
+    <h2>Accordion (FAQ) — no JavaScript required</h2>
+    <div class="accordion-item">
+      <details>
+        <summary>Do I need a visa to visit the USA?</summary>
+        <div class="accordion-body">Requirements depend on your nationality and purpose of travel. Use the visa search tool to check current requirements.</div>
+      </details>
+    </div>
+    <div class="accordion-item">
+      <details>
+        <summary>How long does visa processing take?</summary>
+        <div class="accordion-body">Processing time varies by country and visa type and is shown on each visa's detail page with a last-verified date.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="preview-section">
+  <div class="container">
+    <h2>Application status timeline</h2>
+    <ul class="status-timeline">
+      <li class="is-complete">
+        <div class="status-title">Application Created</div>
+        <div class="status-meta">10 Aug 2026, 10:02 AM</div>
+      </li>
+      <li class="is-complete">
+        <div class="status-title">Documents Verified</div>
+        <div class="status-meta">10 Aug 2026, 4:40 PM</div>
+      </li>
+      <li class="is-current">
+        <div class="status-title">Under Processing</div>
+        <div class="status-meta">Awaiting embassy decision</div>
+      </li>
+      <li>
+        <div class="status-title">Decision Received</div>
+        <div class="status-meta">Pending</div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="preview-section">
+  <div class="container" style="display:flex; gap:var(--space-8); flex-wrap:wrap;">
+    <div style="width:220px">
+      <h2>Sidebar nav</h2>
+      <ul class="sidebar-nav">
+        <li><a href="#" class="is-active">Dashboard</a></li>
+        <li><a href="#">My Applications</a></li>
+        <li><a href="#">Documents</a></li>
+        <li><a href="#">Payments</a></li>
+        <li><a href="#">Support</a></li>
+      </ul>
+    </div>
+    <div style="flex:1; min-width:280px">
+      <h2>Table</h2>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr><th>Application</th><th>Country</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>VIS-2026-000042</td><td>Canada</td><td><span class="badge badge-warning">Under Review</span></td></tr>
+            <tr><td>VIS-2026-000041</td><td>USA</td><td><span class="badge badge-success">Approved</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="preview-section" style="border-bottom:none">
+  <div class="container">
+    <h2>Pagination</h2>
+    <ul class="pagination">
+      <li><a href="#">Prev</a></li>
+      <li><span class="is-active">1</span></li>
+      <li><a href="#">2</a></li>
+      <li><a href="#">3</a></li>
+      <li><a href="#">Next</a></li>
+    </ul>
+  </div>
+</section>
+
+</main>
+</body>
+</html>
