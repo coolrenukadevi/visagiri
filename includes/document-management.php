@@ -47,6 +47,21 @@ function fetch_owned_application_document(PDO $pdo, int $documentRowId, int $use
     return $row ?: null;
 }
 
+/** Admin/staff variant — no per-customer ownership constraint, access is gated by require_role() at the router level instead. */
+function fetch_application_document(PDO $pdo, int $documentRowId): ?array
+{
+    $stmt = $pdo->prepare(
+        'SELECT ad.*, d.name AS document_name, a.id AS application_id, a.application_number, a.user_id
+         FROM application_documents ad
+         JOIN documents d ON d.id = ad.document_id
+         JOIN applications a ON a.id = ad.application_id
+         WHERE ad.id = :id AND ad.deleted_at IS NULL AND a.deleted_at IS NULL'
+    );
+    $stmt->execute(['id' => $documentRowId]);
+    $row = $stmt->fetch();
+    return $row ?: null;
+}
+
 /** Renders one document row with the upload/download/remove actions appropriate to its status. */
 function render_document_row(array $doc, bool $showApplicationContext = false): void
 {
@@ -87,7 +102,7 @@ function render_document_row(array $doc, bool $showApplicationContext = false): 
             <button type="submit" class="btn btn-sm btn-primary"><?= $doc['stored_filename'] ? 'Replace' : 'Upload' ?></button>
         </form>
         <?php if ($doc['stored_filename']): ?>
-        <form method="post" action="/dashboard/documents/<?= (int) $doc['id'] ?>/delete/" onsubmit="return confirm('Remove this uploaded file?');">
+        <form method="post" action="/dashboard/documents/<?= (int) $doc['id'] ?>/delete/" data-confirm="Remove this uploaded file?">
             <?= csrf_field() ?>
             <button type="submit" class="btn btn-sm btn-outline">Remove</button>
         </form>

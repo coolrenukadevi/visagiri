@@ -14,6 +14,7 @@ $canonicalUrl ??= APP_URL . ($_SERVER['REQUEST_URI'] ?? '/');
 
 $currentPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
 $activeUser = current_user();
+$accountHomeHref = $activeUser && in_array($activeUser['role_name'], ['super_admin', 'admin'], true) ? '/admin/' : '/dashboard/';
 
 $navLinks = [
     ['label' => 'Countries', 'href' => '/countries/'],
@@ -81,7 +82,7 @@ $isActive = static fn(string $href): bool => $href !== '/' && str_starts_with($c
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="6.5" stroke="currentColor" stroke-width="1.6"/><path d="M17 17L13.6 13.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
             </a>
             <?php if ($activeUser): ?>
-                <a href="/dashboard/" class="btn btn-ghost btn-sm"><?= e(strtok($activeUser['full_name'], ' ')) ?></a>
+                <a href="<?= e($accountHomeHref) ?>" class="btn btn-ghost btn-sm"><?= e(strtok($activeUser['full_name'], ' ')) ?></a>
                 <a href="/logout/" class="btn btn-outline btn-sm">Logout</a>
             <?php else: ?>
                 <a href="/login/" class="site-header__text-link">Login</a>
@@ -106,7 +107,7 @@ $isActive = static fn(string $href): bool => $href !== '/' && str_starts_with($c
         </nav>
         <div class="site-header__mobile-actions">
             <?php if ($activeUser): ?>
-                <a href="/dashboard/" class="btn btn-outline">My Dashboard</a>
+                <a href="<?= e($accountHomeHref) ?>" class="btn btn-outline"><?= $accountHomeHref === '/admin/' ? 'Admin Panel' : 'My Dashboard' ?></a>
                 <a href="/logout/" class="btn btn-ghost">Logout</a>
             <?php else: ?>
                 <a href="/login/" class="btn btn-outline">Login</a>

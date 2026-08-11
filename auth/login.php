@@ -8,7 +8,8 @@ declare(strict_types=1);
  */
 
 if (is_logged_in()) {
-    redirect('/dashboard/');
+    $activeRole = current_user()['role_name'];
+    redirect(in_array($activeRole, ['super_admin', 'admin'], true) ? '/admin/' : '/dashboard/');
 }
 
 $errors = [];
@@ -28,8 +29,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $pdo = db();
         $stmt = $pdo->prepare(
-            'SELECT id, password_hash, status FROM users
-             WHERE (email = :identifier OR mobile = :identifier2) AND deleted_at IS NULL'
+            'SELECT u.id, u.password_hash, u.status, r.name AS role_name FROM users u
+             JOIN roles r ON r.id = u.role_id
+             WHERE (u.email = :identifier OR u.mobile = :identifier2) AND u.deleted_at IS NULL'
         );
         $stmt->execute(['identifier' => $old['identifier'], 'identifier2' => $old['identifier']]);
         $user = $stmt->fetch();
@@ -44,7 +46,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $update = $pdo->prepare('UPDATE users SET last_login_at = NOW() WHERE id = :id');
             $update->execute(['id' => $user['id']]);
 
-            $redirectTo = $_SESSION['redirect_after_login'] ?? '/dashboard/';
+            $defaultRedirect = in_array($user['role_name'], ['super_admin', 'admin'], true) ? '/admin/' : '/dashboard/';
+            $redirectTo = $_SESSION['redirect_after_login'] ?? $defaultRedirect;
             unset($_SESSION['redirect_after_login']);
             redirect($redirectTo);
         }

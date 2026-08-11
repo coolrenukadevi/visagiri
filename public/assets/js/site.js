@@ -23,4 +23,17 @@
       burger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
     });
   }
+
+  // Confirm-before-submit for destructive forms (document removal,
+  // account suspension, etc). Inline onsubmit="return confirm(...)"
+  // attributes are inline scripts and get silently blocked by our own
+  // CSP (script-src 'self') — same class of bug as the Phase 7
+  // country-search fix, so this lives here as a delegated listener
+  // instead: add data-confirm="message" to any form that needs it.
+  document.addEventListener('submit', function (event) {
+    var form = event.target;
+    if (form instanceof HTMLFormElement && form.dataset.confirm && !window.confirm(form.dataset.confirm)) {
+      event.preventDefault();
+    }
+  });
 })();
