@@ -284,3 +284,19 @@ Most of "country pages" was already delivered in Phase 6 (the single reusable `/
 Verified: `php -l` on every changed file, full route sweep, zero console errors, and the temporary-test-data QA technique (insert → screenshot → delete → reconfirm empty state) used again for the embassy/VAC template.
 
 **Still open**: the real logo file (needs to arrive as an upload, not chat content) and, now resolved, the founding-date conflict — **April 2015 confirmed correct**, applied to the About page.
+
+---
+
+## Phase 9 (Authentication) — complete
+
+Real, working authentication — not stubs. `/register/`, `/login/`, `/logout/`, `/forgot-password/`, and a new `/reset-password/` (the link destination, needed to complete the flow — wasn't a named route in the brief but is required for "forgot password" to mean anything).
+
+- **Registration**: full name, email, mobile, password/confirm — server-side validated (email format, mobile format, 8+ char password, match check, duplicate-email check backed by the DB's UNIQUE constraint as a race-condition guard), `password_hash()`, auto-login on success, rate-limited per IP.
+- **Login**: email-or-mobile + password, generic "Invalid email/mobile or password" on failure (never confirms which emails exist), session ID regenerated on success (fixation prevention), "Remember me" extends the session cookie to 30 days, `last_login_at` updated.
+- **Forgot/reset password**: a real, secure token flow — random 32-byte token, only its SHA-256 hash stored, 1-hour expiry, single-use (cleared on successful reset). **No email-sending integration exists yet anywhere in this project**, so the reset link can't actually reach an inbox; the confirmation page always shows the same generic message either way (no user enumeration), and only when `APP_DEBUG` is on (never in production) does it also print the link directly, so the flow is fully testable without pretending mail delivery works.
+- **CSRF** on every POST (419 on missing/invalid token, verified by testing a request with no token).
+- **Every route already built in Phase 2** (`require_login()`/`require_role()` on `/dashboard/` and `/admin/`) now gates a *real* session instead of just "nobody's logged in" — verified a real customer account gets into `/dashboard/` and correctly gets a 403 on `/admin/`.
+
+**A real security bug was found and fixed during this phase's verification**: the rate limiter built in Phase 2 stored its counters in `$_SESSION`, which meant an attacker who simply didn't send their session cookie back between attempts got a fresh, empty counter every time — the login rate limit was trivially bypassable and wasn't actually protecting anything. Fixed by moving to a new DB-backed `rate_limits` table, keyed by identifier+IP rather than session. Confirmed the fix by literally attacking it: 6 login attempts using a fresh cookie jar for each one (i.e. simulating an attacker who never persists cookies) — attempts 1–5 got the normal "invalid password" response, attempt 6 correctly got "Too many login attempts." A first attempt at the DB-backed fix also had a bug (comparing a MySQL timestamp string via PHP's `strtotime()` against PHP's `time()`, which silently breaks under DB/PHP timezone mismatches and reset the counter on every call) — fixed by moving the entire expiry comparison into a single atomic SQL statement so it happens in MySQL's own clock domain.
+
+**Full flow verified end-to-end against the real database** with a throwaway test account (registered, logged in with correct/wrong password, tested duplicate-email rejection, tested CSRF rejection, ran the complete forgot-password → dev-mode reset link → set new password → old password rejected → new password accepted chain, confirmed the reset token can't be reused a second time) — then the test account and all rate-limit rows were deleted, nothing left behind.

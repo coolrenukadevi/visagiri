@@ -28,6 +28,8 @@ CREATE TABLE users (
     mobile_verified_at  TIMESTAMP NULL,
     status              ENUM('active','suspended') NOT NULL DEFAULT 'active',
     last_login_at       TIMESTAMP NULL,
+    password_reset_token_hash    VARCHAR(255) NULL,
+    password_reset_expires_at    TIMESTAMP NULL,
     created_at          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deleted_at          TIMESTAMP NULL,
@@ -401,6 +403,17 @@ CREATE TABLE audit_logs (
     created_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_audit_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
     INDEX idx_audit_entity (entity_type, entity_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Server-side rate limiting (login, registration, forgot-password).
+-- Deliberately NOT session-based: an attacker who discards cookies
+-- between requests would otherwise get a fresh limit every time.
+CREATE TABLE rate_limits (
+    id                  BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    rate_key            VARCHAR(191) NOT NULL UNIQUE,
+    attempt_count       INT UNSIGNED NOT NULL DEFAULT 1,
+    window_started_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 SET FOREIGN_KEY_CHECKS = 1;

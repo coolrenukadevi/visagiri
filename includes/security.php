@@ -52,21 +52,39 @@ function csrf_require(): void
 }
 
 /**
- * Very small per-key rate limiter backed by the session, good enough
- * for login/contact-form abuse until a shared store (Redis/DB) is
- * introduced. $key should already include the caller's IP.
+ * Per-key rate limiter backed by the `rate_limits` DB table —
+ * deliberately NOT session-based. A session-backed limiter can be
+ * bypassed entirely by an attacker who just doesn't send the session
+ * cookie back (a fresh session means a fresh, empty counter), which
+ * defeats the point for exactly the login/registration abuse this
+ * exists to stop. $key should already include the caller's IP.
  */
 function rate_limit_check(string $key, int $maxAttempts, int $windowSeconds): bool
 {
-    $now = time();
-    $bucket = $_SESSION['rate_limits'][$key] ?? ['count' => 0, 'reset_at' => $now + $windowSeconds];
+    $pdo = db();
 
-    if ($now > $bucket['reset_at']) {
-        $bucket = ['count' => 0, 'reset_at' => $now + $windowSeconds];
-    }
+    // The whole expiry comparison happens in MySQL's own clock domain
+    // (NOW() vs. the stored window_started_at) rather than in PHP —
+    // comparing a MySQL-generated timestamp string via PHP's
+    // strtotime() against PHP's time() silently breaks the moment the
+    // DB server and PHP process disagree on default timezone (e.g.
+    // DB SYSTEM tz = UTC, PHP default tz = Asia/Kolkata from
+    // config.php): strtotime() parses the naive string in PHP's zone,
+    // producing a timestamp hours off from the DB's intended instant,
+    // so the window looks expired on almost every call and attempts
+    // never accumulate. Doing it in SQL sidesteps that entirely.
+    $stmt = $pdo->prepare(
+        'INSERT INTO rate_limits (rate_key, attempt_count, window_started_at)
+         VALUES (:key, 1, NOW())
+         ON DUPLICATE KEY UPDATE
+             attempt_count = IF(window_started_at + INTERVAL :window1 SECOND < NOW(), 1, attempt_count + 1),
+             window_started_at = IF(window_started_at + INTERVAL :window2 SECOND < NOW(), NOW(), window_started_at)'
+    );
+    $stmt->execute(['key' => $key, 'window1' => $windowSeconds, 'window2' => $windowSeconds]);
 
-    $bucket['count']++;
-    $_SESSION['rate_limits'][$key] = $bucket;
+    $select = $pdo->prepare('SELECT attempt_count FROM rate_limits WHERE rate_key = :key');
+    $select->execute(['key' => $key]);
+    $attemptCount = (int) $select->fetchColumn();
 
-    return $bucket['count'] <= $maxAttempts;
+    return $attemptCount <= $maxAttempts;
 }

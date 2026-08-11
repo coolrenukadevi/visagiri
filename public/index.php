@@ -134,6 +134,9 @@ switch ($segments[0] ?? '') {
     case 'forgot-password':
         $dispatch("$root/auth/forgot-password.php");
 
+    case 'reset-password':
+        $dispatch("$root/auth/reset-password.php");
+
     case 'dashboard':
         $dispatch("$root/dashboard/index.php");
 

@@ -151,6 +151,17 @@ function fetch_relevant_faqs(PDO $pdo, ?int $countryId = null, ?int $visaTypeId 
     return $stmt->fetchAll();
 }
 
+function is_valid_email(string $value): bool
+{
+    return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
+}
+
+/** Accepts an optional leading + and 7-15 digits — deliberately loose to cover international formats. */
+function is_valid_mobile(string $value): bool
+{
+    return (bool) preg_match('/^\+?[0-9]{7,15}$/', trim($value));
+}
+
 /** Renders a real 404 inside the shared chrome with a specific, honest message. */
 function render_not_found(string $message = "The page you're looking for doesn't exist."): never
 {
