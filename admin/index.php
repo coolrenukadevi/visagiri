@@ -6,4 +6,10 @@ declare(strict_types=1);
 // /login/, and a non-staff account should get a 403.
 require_role(['super_admin', 'admin']);
 
-render_scaffold_stub('admin/index.php', 'Phase 13 — Admin panel');
+render_scaffold_page(
+    title: 'Admin',
+    description: 'Visagiri admin panel.',
+    canonicalPath: '/admin/',
+    handlerPath: 'admin/index.php',
+    plannedInPhase: 'Phase 13 — Admin panel'
+);

@@ -6,4 +6,10 @@ declare(strict_types=1);
 // /login/ rather than reach the stub below.
 require_login();
 
-render_scaffold_stub('dashboard/index.php', 'Phase 10 — Customer dashboard');
+render_scaffold_page(
+    title: 'Dashboard',
+    description: 'Manage your Visagiri visa applications, documents, and payments.',
+    canonicalPath: '/dashboard/',
+    handlerPath: 'dashboard/index.php',
+    plannedInPhase: 'Phase 10 — Customer dashboard'
+);

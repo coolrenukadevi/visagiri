@@ -1,3 +1,22 @@
 <?php
 declare(strict_types=1);
-render_scaffold_stub('pages/legal.php', 'Phase 5 — Header/Footer + core pages (Privacy/Terms/Refund/Cookie/Grievance/Disclaimer)');
+
+$legalTitles = [
+    'privacy' => 'Privacy Policy',
+    'terms' => 'Terms & Conditions',
+    'refund-policy' => 'Refund Policy',
+    'cookie-policy' => 'Cookie Policy',
+    'grievance' => 'Grievance Redressal',
+    'disclaimer' => 'Disclaimer',
+];
+
+$path = trim(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/', '/');
+$title = $legalTitles[$path] ?? 'Legal';
+
+render_scaffold_page(
+    title: $title,
+    description: "Visagiri's $title.",
+    canonicalPath: "/$path/",
+    handlerPath: 'pages/legal.php',
+    plannedInPhase: 'Phase 5 — Header/Footer + core pages (Privacy/Terms/Refund/Cookie/Grievance/Disclaimer)'
+);

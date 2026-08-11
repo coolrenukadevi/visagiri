@@ -201,4 +201,18 @@ Role-gated (`/admin/`, Super Admin / Admin / Consultant / Document Reviewer / Fi
 
 **Phase 3 (Design System) is now complete** — see `docs/design-system.md` and `docs/design-system-preview.html`. Tokens (`public/assets/css/tokens.css`), base/reset (`base.css`), and a full component library (`components.css`: buttons, cards, badges/status pills, forms, alerts, breadcrumbs, a zero-JS accordion, tables, the application status timeline, sidebar nav, pagination) are built entirely from the logo palette, verified by rendering the preview page at desktop and mobile widths with zero console errors.
 
-Waiting for your go-ahead to continue to **Phase 4 (Header/Footer)**.
+**Phase 4 (Header/Footer) is now complete:**
+
+- `includes/header.php` — sticky global header: logo wordmark, a "Visa Services" dropdown (Tourist/Business/Student/Work/Family/Transit — consolidates the brief's "Visa Services"/"Visa Types" nav items into one clean mega-menu instead of two redundant top-level entries), Countries/Visa Process/Visa Updates/About, search icon, Login/Sign Up (or account name + Logout when signed in — pulled from `current_user()`), gold "Start Application" CTA. Compacts on scroll via vanilla JS; full `<head>` (title/description/canonical/OG tags) driven by variables each page sets.
+- `includes/footer.php` — 4-column footer (Visa Services / Explore / Company + brand column), the required "visa decisions are made by the embassy/consulate, not guaranteed by Visagiri" disclaimer, and the bottom bar with the confirmed facts (Tripgation Pvt Ltd, since April 2015, CIN U63030UP2020PTC128661).
+- Mobile: hamburger toggles a full nav panel (with a working burger→X animation), no horizontal scroll.
+- Added `/visa-process/` as a new route (was implied by the header nav but didn't exist yet).
+- Every existing route stub (home, about, contact, FAQ, legal pages, track, countries, visa, visa-type, blog, login, register, logout, forgot-password, dashboard, admin, 404) now renders inside this real header/footer instead of plain text — bodies are still an explicit "Content pending — Phase X" notice, not real copy.
+
+**Verified, and 2 real bugs caught and fixed in this pass:**
+1. PHP's built-in dev server routes *every* request (including real CSS/JS files) through the front controller unless it explicitly declines — `public/index.php` was missing that check, so `/assets/css/main.css` 404'd. Fixed with the standard `PHP_SAPI === 'cli-server'` bypass (Apache in production already handles this via `.htaccess`, so this only affects local dev).
+2. A too-broad CSS selector (`.site-header__nav ul`) leaked the horizontal flex layout into the nested dropdown menu, making "Visa Services" render as a cramped horizontal row instead of a vertical list. Scoped to `.site-header__nav > ul` and reverified.
+
+Confirmed via headless Chromium: dropdown opens correctly, scroll-compact class toggles correctly (verified directly since the short stub pages don't have enough content to scroll on their own), mobile menu opens/closes, zero console errors on desktop or mobile.
+
+Waiting for your go-ahead to continue to **Phase 5 (Homepage)**.

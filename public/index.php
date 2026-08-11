@@ -9,6 +9,18 @@ declare(strict_types=1);
  * disk outside /public and /uploads is web-reachable directly.
  */
 
+// PHP's built-in dev server (php -S) runs this router for every
+// request, including real static files — unlike Apache, which
+// public/.htaccess already tells to serve existing files directly.
+// Bow out here so `php -S ... index.php` matches production behavior.
+if (PHP_SAPI === 'cli-server') {
+    $staticPath = urldecode(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/');
+    $staticFile = __DIR__ . $staticPath;
+    if ($staticPath !== '/' && is_file($staticFile)) {
+        return false;
+    }
+}
+
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/database.php';
 require_once __DIR__ . '/../includes/functions.php';
@@ -60,6 +72,9 @@ switch ($segments[0] ?? '') {
 
     case 'track-visa':
         $dispatch("$root/pages/track.php");
+
+    case 'visa-process':
+        $dispatch("$root/pages/process.php");
 
     case 'countries':
         $dispatch("$root/countries/index.php");

@@ -45,17 +45,40 @@ function asset_url(string $path): string
 }
 
 /**
- * Phase 2 scaffolding only: confirms the router reached the right
- * handler file while real page content is still pending its own
- * phase. Never used once a handler has real content.
+ * Phase 4+ scaffolding: same purpose as render_scaffold_stub(), but
+ * rendered inside the real header/footer chrome instead of as plain
+ * text, so header/footer can be verified against every route while
+ * each page's actual body content is still pending its own phase.
+ * The "content pending" block is deliberately plain/internal-sounding
+ * (not marketing copy) so it can never be mistaken for shipped copy.
  */
-function render_scaffold_stub(string $handlerPath, string $plannedInPhase, int $statusCode = 200): void
-{
+function render_scaffold_page(
+    string $title,
+    string $description,
+    string $canonicalPath,
+    string $handlerPath,
+    string $plannedInPhase,
+    int $statusCode = 200
+): void {
     http_response_code($statusCode);
-    header('Content-Type: text/plain; charset=UTF-8');
-    echo "Visagiri scaffold stub\n";
-    echo "Handler: $handlerPath\n";
-    echo "Real content lands in: $plannedInPhase\n";
+
+    $pageTitle = $title . ' - Visagiri';
+    $pageDescription = $description;
+    $canonicalUrl = APP_URL . $canonicalPath;
+
+    require __DIR__ . '/header.php';
+    ?>
+    <section class="container" style="padding-top: var(--space-10); padding-bottom: var(--space-10);">
+        <div class="alert alert-info" role="status">
+            <div>
+                <strong>Content pending.</strong>
+                Handler: <code><?= e($handlerPath) ?></code> &middot;
+                Scheduled for: <?= e($plannedInPhase) ?>
+            </div>
+        </div>
+    </section>
+    <?php
+    require __DIR__ . '/footer.php';
 }
 
 /** Generates a Visagiri application reference number, e.g. VIS-2026-000001. */
