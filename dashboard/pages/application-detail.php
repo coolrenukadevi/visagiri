@@ -70,9 +70,8 @@ render_dashboard_start('applications', $app['visa_type_name'] . ' — ' . $app['
 <h2 class="country-directory__subheading" style="margin-top:var(--space-8)">Documents</h2>
 <?php if ($documents): ?>
 <?php foreach ($documents as $doc): ?>
-<div class="list-row">
-    <span class="list-row__title"><?= e($doc['document_name']) ?></span>
-    <span class="badge badge-<?= match ($doc['status']) { 'approved' => 'success', 'rejected' => 'danger', 'under_review' => 'warning', default => 'neutral' } ?>"><?= e(str_replace('_', ' ', $doc['status'])) ?></span>
+<div class="card" style="margin-bottom:var(--space-4)">
+    <?php render_document_row($doc); ?>
 </div>
 <?php endforeach; ?>
 <?php else: ?>

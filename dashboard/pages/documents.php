@@ -20,13 +20,12 @@ render_dashboard_start('documents', 'Documents');
 ?>
 <?php if ($documents): ?>
 <?php foreach ($documents as $doc): ?>
-<a href="/dashboard/applications/<?= (int) $doc['application_id'] ?>/" class="list-row">
-    <span>
-        <span class="list-row__title"><?= e($doc['document_name']) ?></span><br>
-        <span class="list-row__meta"><?= e($doc['application_number']) ?> &middot; <?= e($doc['visa_type_name']) ?> &mdash; <?= e($doc['country_name']) ?></span>
-    </span>
-    <span class="badge badge-<?= match ($doc['status']) { 'approved' => 'success', 'rejected' => 'danger', 'under_review' => 'warning', default => 'neutral' } ?>"><?= e(str_replace('_', ' ', $doc['status'])) ?></span>
-</a>
+<div class="card" style="margin-bottom:var(--space-4)">
+    <p class="list-row__meta" style="margin-bottom:var(--space-2)">
+        <a href="/dashboard/applications/<?= (int) $doc['application_id'] ?>/"><?= e($doc['visa_type_name']) ?> &mdash; <?= e($doc['country_name']) ?></a>
+    </p>
+    <?php render_document_row($doc, true); ?>
+</div>
 <?php endforeach; ?>
 <?php else: ?>
 <p class="empty-state">No documents requested yet. Documents appear here once you start a visa application.</p>
