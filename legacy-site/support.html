@@ -255,9 +255,18 @@ s0.parentNode.insertBefore(s1,s0);
                             <form class="contact-us__form" id="contact-us__form" method="POST" action="./mail.php">
                                 <div class="row">
                                     <div class="col-sm-6">
+                                        <div class="contact-us__input wow fadeInLeft animated" data-wow-delay=".3s">
+                                            <span>Your Name</span>
+                                            <input name="name" id="name" type="text" placeholder="Your Name" required>
+                                            <div class="icon">
+                                                <i class="fa-solid fa-user"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
                                         <div class="contact-us__input wow fadeInLeft animated" data-wow-delay=".4s">
                                             <span>Your Email</span>
-                                            <input name="email" id="email" type="email" placeholder="Your Email">
+                                            <input name="email" id="email" type="email" placeholder="Your Email" required>
                                             <div class="icon">
                                                 <i class="fa-solid fa-paper-plane"></i>
                                             </div>
@@ -272,10 +281,19 @@ s0.parentNode.insertBefore(s1,s0);
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-sm-12">
+                                    <div class="col-sm-6">
                                         <div class="contact-us__input wow fadeInLeft animated" data-wow-delay=".6s">
+                                            <span>Subject</span>
+                                            <input name="subject" id="subject" type="text" placeholder="Subject">
+                                            <div class="icon">
+                                                <i class="fa-solid fa-tag"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="contact-us__input wow fadeInLeft animated" data-wow-delay=".65s">
                                             <span>Your Address</span>
-                                            <input name="address" id="address" type="email" placeholder="Your Address">
+                                            <input name="address" id="address" type="text" placeholder="Your Address">
                                             <div class="icon">
                                                 <i class="fa-solid fa-location-dot"></i>
                                             </div>
@@ -284,7 +302,7 @@ s0.parentNode.insertBefore(s1,s0);
                                     <div class="col-12">
                                         <div class="contact-us__textarea wow fadeInLeft animated" data-wow-delay=".7s">
                                             <span>Message</span>
-                                            <textarea name="textarea" id="textarea" cols="30" rows="10" placeholder="Write Message.."></textarea>
+                                            <textarea name="textarea" id="textarea" cols="30" rows="10" placeholder="Write Message.." required></textarea>
                                             <div class="icon">
                                                 <i class="fa-solid fa-envelope"></i>
                                             </div>

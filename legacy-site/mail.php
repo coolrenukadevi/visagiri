@@ -11,8 +11,8 @@ class ContactForm {
         $this->fromEmail = $fromEmail;
     }
 
-    public function sendEmail($name, $email, $phone, $subject, $message) {
-        $email_content = $this->buildEmailContent($name, $email, $phone, $subject, $message);
+    public function sendEmail($name, $email, $phone, $address, $subject, $message) {
+        $email_content = $this->buildEmailContent($name, $email, $phone, $address, $subject, $message);
         $email_headers = $this->buildEmailHeaders();
 
         if (mail($this->recipient, $subject, $email_content, $email_headers)) {
@@ -24,12 +24,13 @@ class ContactForm {
         }
     }
 
-    private function buildEmailContent($name, $email, $phone, $subject, $message) {
+    private function buildEmailContent($name, $email, $phone, $address, $subject, $message) {
         $content = "";
         $fields = array(
             "Name" => $name,
             "Email" => $email,
             "Phone" => $phone,
+            "Address" => $address,
             "Subject" => $subject,
             "Message" => $message
         );
@@ -50,27 +51,28 @@ class ContactForm {
 }
 
 
-$recipient = "support@envato.com";
-$fromName = "RRDevs";
-$fromEmail = "hellow@rrdevs.net";
+$recipient = "info@visagiri.com, accounts@visagiri.com";
+$fromName = "Visagiri Website";
+$fromEmail = "info@visagiri.com";
 
 $contactForm = new ContactForm($recipient, $fromName, $fromEmail);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = strip_tags(trim($_POST["name"]));
+    $name = strip_tags(trim($_POST["name"] ?? ""));
     $name = str_replace(array("\r","\n"),array(" "," "),$name);
-    $email = filter_var(trim($_POST["email"]), FILTER_SANITIZE_EMAIL);
-    $phone = trim($_POST["phone"]);
-    $subject = trim($_POST["subject"]);
-    $message = trim($_POST["textarea"]);
+    $email = filter_var(trim($_POST["email"] ?? ""), FILTER_SANITIZE_EMAIL);
+    $phone = str_replace(array("\r","\n"),array(" "," "),trim($_POST["phone"] ?? ""));
+    $address = str_replace(array("\r","\n"),array(" "," "),trim($_POST["address"] ?? ""));
+    $subject = str_replace(array("\r","\n"),array(" "," "),trim($_POST["subject"] ?? ""));
+    $message = trim($_POST["textarea"] ?? "");
 
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    if ($name === "" || $message === "" || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         http_response_code(400);
         echo "Please complete the form and try again.";
         exit;
     }
 
-    $contactForm->sendEmail($name, $email, $phone, $subject, $message);
+    $contactForm->sendEmail($name, $email, $phone, $address, $subject, $message);
 } else {
     http_response_code(403);
     echo "There was a problem with your submission, please try again.";

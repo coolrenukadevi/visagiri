@@ -1,8 +1,12 @@
 # Visagiri.com — Phase 1 & 2: Website Audit + Migration/IA Plan
 
-**Date:** 2026-08-11
+**Date:** 2026-08-11 (updated same day with client-confirmed facts and a hotfix)
 **Scope:** Full audit of the existing visagiri.com static site (uploaded zip export from the live host `/home/tripgation/public_html/visagiri.com/`), preserved at `legacy-site/` in this repo for reference during rebuild.
-**Status:** Audit complete. No rebuild code has been written yet — this document is the deliverable for Phase 1 (Audit) and the first pass of Phase 2 (Information Architecture) per the modernization brief.
+**Status:** Audit complete. A targeted hotfix has been applied to the highest-impact bug found (see §10). No further rebuild code has been written — this document remains the deliverable for Phase 1 (Audit) and the first pass of Phase 2 (Information Architecture) per the modernization brief.
+
+**Client-confirmed facts (resolving §7 below):**
+- Real contact-form recipients: **info@visagiri.com** and **accounts@visagiri.com** (not `support@envato.com`).
+- Real founding date: **Tripgation has been in business since April 2015.** This supersedes the site's own footer claim of "2014" and replaces the contradictory "12+/15+ years, 98% approval rate" language — use *"Serving visa and travel-related requirements since April 2015"* going forward, not a computed "X years" figure.
 
 ---
 
@@ -141,7 +145,7 @@ Not everything needs to be thrown away:
 
 Per our earlier agreement, I'm not going to invent these — flagging them now so Phase 2+ isn't blocked later:
 
-1. **Founding year** — is "serving visa/travel-related requirements since 2014" (the site's own footer claim) confirmed and safe to use platform-wide? Should the "12+/15+ years" and "98% approval rate" lines simply be deleted, or is there a real, current figure you want used instead?
+1. ~~**Founding year**~~ — **Resolved:** confirmed as April 2015. Use *"Serving visa and travel-related requirements since April 2015"*; delete the "12+/15+ years" and "98% approval rate" lines everywhere they appear rather than replacing them with a computed year-count (a computed number goes stale and re-invites the same "contradictory claims" problem).
 2. **CIN / legal entity** — confirm `U63030UP2020PTC128661` under Tripgation Pvt Ltd is current and correct for footer/invoice use.
 3. **Real office address(es), phone number(s), business hours, and support email** for the Contact page and LocalBusiness schema (I did not find a verified current address in this export worth reusing as-is).
 4. **Actual visa processing times, fees, and service fees per country/visa type** — none of this exists in a trustworthy, structured form today; it needs to come from you or your consultants per country.
@@ -186,6 +190,27 @@ Mapping the brief's 15 phases onto what this audit unlocks:
 | 4–15 | Not started — all genuinely new build (no existing PHP app to modernize), sequenced as the brief specifies |
 
 **Recommended immediate next step:** confirm the §7 answers you can provide now (even partial), then I'll move to Phase 2 proper — the normalized MySQL schema (`countries`, `visa_types`, `country_visa_types`, `visa_requirements`, `applications`, etc.) and the PHP folder skeleton from the brief's §23, before any homepage code is written.
+
+---
+
+## 10. Hotfix applied to `legacy-site/` (2026-08-11)
+
+Two of the §1 critical findings were fixed directly, since they were small, surgical, and low-risk — this is a reference fix inside the preserved archive, not a production deploy. If `legacy-site/mail.php` and `legacy-site/support.html` are still what's actually running on the live server, upload these two files to production to stop losing leads immediately, independent of the full rebuild timeline:
+
+- **`mail.php`**: recipient changed from `support@envato.com` to `info@visagiri.com, accounts@visagiri.com`; from-identity changed from `RRDevs <hellow@rrdevs.net>` to `Visagiri Website <info@visagiri.com>`; added an `address` field to the email body; switched to `?? ""` null-coalescing on every `$_POST` read so the script never throws `Undefined array key` warnings again regardless of which fields a form does or doesn't send; added a minimal required-field check (name, valid email, message) before attempting to send.
+- **`support.html`**: added the missing `name` and `subject` inputs the PHP script was already trying (and failing) to read; changed the `address` field from `type="email"` to `type="text"` so real postal addresses aren't rejected by browser validation; marked name/email/message as `required`.
+
+**Pages removed** (confirmed unedited template demo content, not real Visagiri copy, per your request to drop the unnecessary pages among the four with leaked "RouteX" titles):
+- `pricing.html` — generic SaaS-style plans ($19 Starter / $29 Basic / $89 Premium / etc.), unrelated to real visa service fees.
+- `team-details.html` — bio page for "Ashikur Rahman," the template's own placeholder team member, not a real Visagiri staff member.
+
+**Pages kept and fixed** (both are legitimate, necessary pages — the template leak was only in the `<title>`/meta/footer, not the substance):
+- `404.html` — retitled to "Page Not Found - Visagiri", real meta description added, footer credit changed from "© RRDevs 2024" to the real Visagiri/Tripgation line.
+- `visa.html` — retitled to "Visa Services - Visagiri | Tripgation Pvt Ltd", real meta description added, same footer fix.
+
+Note: many pages across the site still link to `pricing.html` and `team-details.html` in their nav/footer (template boilerplate, same as the other broken links catalogued in §3.1) — those references now point to genuinely removed pages rather than merely unedited ones. This is expected to be resolved when the real navigation is built in Phase 3, not patched link-by-link in the legacy archive.
+
+`/new/sendemail.php` has the same placeholder-recipient bug as old `mail.php` did, but was left as-is: per §8, the entire `/new/` draft is not being carried into the rebuild, so patching it has no practical benefit.
 
 ---
 
