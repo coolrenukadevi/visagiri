@@ -237,4 +237,19 @@ Confirmed via headless Chromium: dropdown opens correctly, scroll-compact class 
 
 **Verified against the real database**, not mocked: page loads with real SQL query results, zero PHP warnings/errors in the response, zero browser console errors on desktop or mobile, no horizontal overflow on mobile (checked programmatically, not just visually).
 
-Waiting for your go-ahead to continue to **Phase 6 (Visa Search)**.
+**Phase 6 (Visa Search) is now complete:**
+
+- `/visa-search/` — validates the submitted country/visa-type slugs against the real catalog (never trusts raw input as a redirect target) and sends the visitor to the canonical `/visa/{country}/` or `/visa/{country}/{type}/` page; invalid input gets a flash notice and a safe fallback to `/countries/`. The homepage widget now posts here instead of the Phase 5 placeholder.
+- `/visa/{country}/` and `/visa/{country}/{type}/` are now real, DB-backed pages — not stubs. The detail page renders the brief's full spec sheet (eligibility, documents, process, processing time, fees, validity/stay/entry type, biometrics/interview, notes, last-verified date, official source link) whenever a verified `visa_requirements` row exists. **None do yet** — zero were fabricated — so every combination currently and correctly shows an honest "Requirements not yet verified" notice with a Contact CTA, ready to switch on the moment Phase 7/8 adds real, sourced data.
+- Added, per your request: a 5th footer column, **Legal & Support** (Privacy, Terms, Travel Terms, Payment Policy, Refund Policy, Cookie Policy, Grievance, Sitemap, Track Request, Payment Link, Contact Support), plus the new routes it needed (`/travel-terms/`, `/payment-policy/`, `/track-request/`, `/payment-link/`, `/support/`) and a fully real `/sitemap/` page (simple enough to build for real rather than stub).
+
+**Verified, and one more real bug caught:** a CSS class (`.hero__actions`) was reused outside the hero for a button row, silently inheriting white-on-white button styling from the hero's dark-background context — invisible button, caught by screenshot review, fixed with a proper `.button-group` utility. Also ran an end-to-end QA pass by temporarily inserting one throwaway test requirements row directly into the local dev database (never touched `schema.sql`, never committed) to confirm the populated-data template renders every field correctly, screenshotted it, then deleted the row and confirmed the page correctly reverted to the honest empty state.
+
+---
+
+**⚠️ Flagging before continuing — please read:** a large new "master prompt" arrived mid-Phase-6 with two direct contradictions to everything built so far:
+
+1. **Tech stack**: it recommends Next.js/React/TypeScript/Node.js/PostgreSQL/headless CMS/Algolia. Every phase so far (1–6) is vanilla PHP 8 + MySQL, per the original brief's explicit and repeated instruction ("the entire website must remain PHP based... do NOT convert to React/Next.js/Node-only"). These are irreconcilable — I have not switched anything.
+2. **Tagline**: it proposes "Your Gateway to the World." — the tagline used everywhere so far ("Seamless Visas. Limitless Journeys.") comes directly off your uploaded logo image itself, not something I chose. I have not changed it.
+
+The new prompt also includes what read as specific new business facts (two office addresses in Noida and Patna, WhatsApp numbers) and a much larger 200+-country scope, a mega-menu nav (dropping "Visa Process"/"Visa Updates" in favor of "Visa Information"/"Business & Corporate"/"Resources"), and many new feature ideas (AI assistant, document checklist generator, Algolia-style search). None of this has been applied yet — I paused to confirm scope rather than guess on a change this size. See the chat message accompanying this commit for the specific questions.

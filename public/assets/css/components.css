@@ -340,6 +340,14 @@
   color: var(--white);
 }
 
+/* ---------- Button group (generic light-background row) ---------- */
+
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
 /* ---------- Pagination ---------- */
 
 .pagination {

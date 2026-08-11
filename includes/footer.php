@@ -46,10 +46,23 @@ declare(strict_types=1);
             <ul>
                 <li><a href="/about/">About</a></li>
                 <li><a href="/contact/">Contact</a></li>
+            </ul>
+        </div>
+
+        <div class="site-footer__col">
+            <h3>Legal &amp; Support</h3>
+            <ul>
                 <li><a href="/privacy/">Privacy Policy</a></li>
                 <li><a href="/terms/">Terms &amp; Conditions</a></li>
+                <li><a href="/travel-terms/">Travel Terms</a></li>
+                <li><a href="/payment-policy/">Payment Policy</a></li>
                 <li><a href="/refund-policy/">Refund Policy</a></li>
+                <li><a href="/cookie-policy/">Cookie Policy</a></li>
                 <li><a href="/grievance/">Grievance Redressal</a></li>
+                <li><a href="/sitemap/">Sitemap</a></li>
+                <li><a href="/track-request/">Track Request</a></li>
+                <li><a href="/payment-link/">Payment Link</a></li>
+                <li><a href="/support/">Contact Support</a></li>
             </ul>
         </div>
     </div>

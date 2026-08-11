@@ -64,17 +64,34 @@ switch ($segments[0] ?? '') {
 
     case 'privacy':
     case 'terms':
+    case 'travel-terms':
+    case 'payment-policy':
     case 'refund-policy':
     case 'cookie-policy':
     case 'grievance':
     case 'disclaimer':
         $dispatch("$root/pages/legal.php");
 
+    case 'sitemap':
+        $dispatch("$root/pages/sitemap.php");
+
+    case 'track-request':
+        $dispatch("$root/pages/track-request.php");
+
+    case 'payment-link':
+        $dispatch("$root/pages/payment-link.php");
+
+    case 'support':
+        $dispatch("$root/pages/support.php");
+
     case 'track-visa':
         $dispatch("$root/pages/track.php");
 
     case 'visa-process':
         $dispatch("$root/pages/process.php");
+
+    case 'visa-search':
+        $dispatch("$root/pages/visa-search.php");
 
     case 'countries':
         $dispatch("$root/countries/index.php");

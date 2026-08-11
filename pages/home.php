@@ -9,15 +9,6 @@ declare(strict_types=1);
  * no placeholder articles.
  */
 
-function flag_emoji(?string $iso2): string
-{
-    if ($iso2 === null || strlen($iso2) !== 2) {
-        return '🌐';
-    }
-    $codePoints = array_map(static fn($c) => 0x1F1E6 + (ord($c) - 65), str_split(strtoupper($iso2)));
-    return mb_convert_encoding('&#' . $codePoints[0] . ';&#' . $codePoints[1] . ';', 'UTF-8', 'HTML-ENTITIES');
-}
-
 $popularCountries = [];
 $visaTypes = [];
 $faqs = [];
@@ -106,7 +97,7 @@ require __DIR__ . '/../includes/header.php';
         <div class="search-widget__card">
             <h2 class="search-widget__title">Find the Right Visa</h2>
             <p class="search-widget__hint">Search by destination, visa type, and nationality to check requirements.</p>
-            <form class="search-widget__grid" action="/countries/" method="get">
+            <form class="search-widget__grid" action="/visa-search/" method="get">
                 <div class="form-group">
                     <label class="form-label" for="search-country">Where are you travelling?</label>
                     <select class="form-select" id="search-country" name="country">
