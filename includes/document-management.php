@@ -62,6 +62,41 @@ function fetch_application_document(PDO $pdo, int $documentRowId): ?array
     return $row ?: null;
 }
 
+/** Consultant variant — only documents on applications assigned to $consultantId. */
+function fetch_application_document_for_consultant(PDO $pdo, int $documentRowId, int $consultantId): ?array
+{
+    $stmt = $pdo->prepare(
+        'SELECT ad.*, d.name AS document_name, a.id AS application_id, a.application_number, a.user_id
+         FROM application_documents ad
+         JOIN documents d ON d.id = ad.document_id
+         JOIN applications a ON a.id = ad.application_id
+         WHERE ad.id = :id AND a.assigned_consultant_id = :consultant_id AND ad.deleted_at IS NULL AND a.deleted_at IS NULL'
+    );
+    $stmt->execute(['id' => $documentRowId, 'consultant_id' => $consultantId]);
+    $row = $stmt->fetch();
+    return $row ?: null;
+}
+
+/** Shared by the admin and consultant approve handlers — caller is responsible for the access check. */
+function mark_document_approved(PDO $pdo, int $documentId, int $reviewerId): void
+{
+    $pdo->prepare(
+        'UPDATE application_documents
+         SET status = "approved", reviewer_comment = NULL, reviewed_by = :reviewed_by, reviewed_at = NOW()
+         WHERE id = :id'
+    )->execute(['reviewed_by' => $reviewerId, 'id' => $documentId]);
+}
+
+/** Shared by the admin and consultant reject handlers — caller is responsible for the access check. */
+function mark_document_rejected(PDO $pdo, int $documentId, int $reviewerId, string $comment): void
+{
+    $pdo->prepare(
+        'UPDATE application_documents
+         SET status = "rejected", reviewer_comment = :comment, reviewed_by = :reviewed_by, reviewed_at = NOW()
+         WHERE id = :id'
+    )->execute(['comment' => $comment, 'reviewed_by' => $reviewerId, 'id' => $documentId]);
+}
+
 /** Renders one document row with the upload/download/remove actions appropriate to its status. */
 function render_document_row(array $doc, bool $showApplicationContext = false): void
 {

@@ -8,8 +8,7 @@ declare(strict_types=1);
  */
 
 if (is_logged_in()) {
-    $activeRole = current_user()['role_name'];
-    redirect(in_array($activeRole, ['super_admin', 'admin'], true) ? '/admin/' : '/dashboard/');
+    redirect(account_home_href(current_user()['role_name']));
 }
 
 $errors = [];
@@ -46,8 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $update = $pdo->prepare('UPDATE users SET last_login_at = NOW() WHERE id = :id');
             $update->execute(['id' => $user['id']]);
 
-            $defaultRedirect = in_array($user['role_name'], ['super_admin', 'admin'], true) ? '/admin/' : '/dashboard/';
-            $redirectTo = $_SESSION['redirect_after_login'] ?? $defaultRedirect;
+            $redirectTo = $_SESSION['redirect_after_login'] ?? account_home_href($user['role_name']);
             unset($_SESSION['redirect_after_login']);
             redirect($redirectTo);
         }

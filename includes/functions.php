@@ -13,6 +13,16 @@ function redirect(string $path): never
     exit;
 }
 
+/** Where a logged-in user's "My Account"-type link should point, based on role. */
+function account_home_href(string $roleName): string
+{
+    return match ($roleName) {
+        'super_admin', 'admin' => '/admin/',
+        'consultant' => '/consultant/',
+        default => '/dashboard/',
+    };
+}
+
 function slugify(string $text): string
 {
     $text = trim($text);

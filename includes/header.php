@@ -14,7 +14,7 @@ $canonicalUrl ??= APP_URL . ($_SERVER['REQUEST_URI'] ?? '/');
 
 $currentPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
 $activeUser = current_user();
-$accountHomeHref = $activeUser && in_array($activeUser['role_name'], ['super_admin', 'admin'], true) ? '/admin/' : '/dashboard/';
+$accountHomeHref = $activeUser ? account_home_href($activeUser['role_name']) : '/dashboard/';
 
 $navLinks = [
     ['label' => 'Countries', 'href' => '/countries/'],
@@ -107,7 +107,7 @@ $isActive = static fn(string $href): bool => $href !== '/' && str_starts_with($c
         </nav>
         <div class="site-header__mobile-actions">
             <?php if ($activeUser): ?>
-                <a href="<?= e($accountHomeHref) ?>" class="btn btn-outline"><?= $accountHomeHref === '/admin/' ? 'Admin Panel' : 'My Dashboard' ?></a>
+                <a href="<?= e($accountHomeHref) ?>" class="btn btn-outline"><?= match ($accountHomeHref) { '/admin/' => 'Admin Panel', '/consultant/' => 'Consultant Panel', default => 'My Dashboard' } ?></a>
                 <a href="/logout/" class="btn btn-ghost">Logout</a>
             <?php else: ?>
                 <a href="/login/" class="btn btn-outline">Login</a>

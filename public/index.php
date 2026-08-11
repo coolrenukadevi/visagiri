@@ -155,6 +155,9 @@ switch ($segments[0] ?? '') {
     case 'admin':
         $dispatch("$root/admin/index.php");
 
+    case 'consultant':
+        $dispatch("$root/consultant/index.php");
+
     default:
         $dispatch("$root/pages/404.php");
 }
