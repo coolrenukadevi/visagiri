@@ -167,6 +167,9 @@ CREATE TABLE applications (
     country_id             BIGINT UNSIGNED NOT NULL,
     visa_type_id           BIGINT UNSIGNED NOT NULL,
     assigned_consultant_id BIGINT UNSIGNED NULL,
+    applicant_passport_number  VARCHAR(30) NULL,
+    applicant_dob               DATE NULL,
+    applicant_nationality        VARCHAR(100) NULL,
     status                 ENUM(
                                'created','documents_pending','documents_verified',
                                'payment_completed','appointment_scheduled','submitted',

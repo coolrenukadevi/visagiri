@@ -62,7 +62,7 @@ render_dashboard_start('overview', 'Welcome back, ' . $user['full_name']);
 </div>
 
 <div class="button-group" style="margin-bottom:var(--space-6)">
-    <a href="/countries/" class="btn btn-gold">Start New Application</a>
+    <a href="/apply/" class="btn btn-gold">Start New Application</a>
     <a href="/dashboard/documents/" class="btn btn-outline">Upload Documents</a>
     <a href="/track-visa/" class="btn btn-outline">Track Application</a>
     <a href="/contact/" class="btn btn-outline">Contact Consultant</a>

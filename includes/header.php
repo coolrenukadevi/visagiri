@@ -87,7 +87,7 @@ $isActive = static fn(string $href): bool => $href !== '/' && str_starts_with($c
                 <a href="/login/" class="site-header__text-link">Login</a>
                 <a href="/register/" class="site-header__text-link">Sign Up</a>
             <?php endif; ?>
-            <a href="/dashboard/" class="btn btn-gold btn-sm site-header__cta">Start Application</a>
+            <a href="/apply/" class="btn btn-gold btn-sm site-header__cta">Start Application</a>
         </div>
 
         <button type="button" class="site-header__burger" id="site-header-burger" aria-expanded="false" aria-controls="site-header-mobile" aria-label="Open menu">
@@ -112,7 +112,7 @@ $isActive = static fn(string $href): bool => $href !== '/' && str_starts_with($c
                 <a href="/login/" class="btn btn-outline">Login</a>
                 <a href="/register/" class="btn btn-ghost">Sign Up</a>
             <?php endif; ?>
-            <a href="/dashboard/" class="btn btn-gold">Start Application</a>
+            <a href="/apply/" class="btn btn-gold">Start Application</a>
         </div>
     </div>
 </header>

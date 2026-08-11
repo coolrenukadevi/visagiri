@@ -76,6 +76,7 @@ if ($typeSlug !== null) {
                 <div>
                     <h1><?= e($visaType['name']) ?> &mdash; <?= e($country['name']) ?></h1>
                     <p><?= e($visaType['description'] ?? '') ?></p>
+                    <a href="/apply/?country=<?= e($country['slug']) ?>&amp;type=<?= e($visaType['slug']) ?>" class="btn btn-gold">Start Application</a>
                 </div>
             </div>
 

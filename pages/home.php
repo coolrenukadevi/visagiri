@@ -64,7 +64,7 @@ require __DIR__ . '/../includes/header.php';
             <p class="hero__subtitle">Expert visa guidance with secure digital application management.</p>
             <div class="hero__actions">
                 <a href="#visa-search" class="btn btn-gold">Check Visa Requirements</a>
-                <a href="/dashboard/" class="btn btn-primary" style="background:var(--white);color:var(--visa-blue)">Start Your Application</a>
+                <a href="/apply/" class="btn btn-primary" style="background:var(--white);color:var(--visa-blue)">Start Your Application</a>
                 <a href="/track-visa/" class="btn btn-outline">Track Application</a>
             </div>
         </div>
@@ -333,7 +333,7 @@ require __DIR__ . '/../includes/header.php';
     <div class="container">
         <div class="final-cta">
             <h2>Ready to start your visa journey?</h2>
-            <a href="/dashboard/" class="btn btn-gold btn-lg">Start Your Application</a>
+            <a href="/apply/" class="btn btn-gold btn-lg">Start Your Application</a>
         </div>
     </div>
 </section>

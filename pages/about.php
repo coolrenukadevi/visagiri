@@ -57,7 +57,7 @@ require __DIR__ . '/../includes/header.php';
     <div class="container">
         <div class="final-cta">
             <h2>Ready to start your visa journey?</h2>
-            <a href="/dashboard/" class="btn btn-gold btn-lg">Start Your Application</a>
+            <a href="/apply/" class="btn btn-gold btn-lg">Start Your Application</a>
         </div>
     </div>
 </section>

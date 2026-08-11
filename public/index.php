@@ -96,6 +96,18 @@ switch ($segments[0] ?? '') {
     case 'attestation':
         $dispatch("$root/attestation/index.php");
 
+    case 'apply':
+        switch ($segments[1] ?? null) {
+            case null:
+                $dispatch("$root/apply/index.php");
+            case 'details':
+                $dispatch("$root/apply/details.php");
+            case 'review':
+                $dispatch("$root/apply/review.php");
+            default:
+                $dispatch("$root/pages/404.php");
+        }
+
     case 'careers':
         $dispatch("$root/pages/careers.php");
 
