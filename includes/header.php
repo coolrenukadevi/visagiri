@@ -190,7 +190,7 @@ foreach ([
                     </ul>
                 </li>
                 <li class="has-dropdown has-mega-menu">
-                    <a href="/attestation/" id="attestation-mega-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="attestation-mega-menu"<?= $isActive('/attestation/') ? ' class="is-active"' : '' ?>>Attestation Services</a>
+                    <a href="/attestation/" id="attestation-mega-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="attestation-mega-menu"<?= $isActive('/attestation/') ? ' class="is-active"' : '' ?>>Attestation</a>
                     <div class="mega-menu" id="attestation-mega-menu" aria-labelledby="attestation-mega-trigger">
                         <div class="mega-menu__columns">
                             <?php foreach ($attestationCategories as $megaCategoryName => $megaCategoryServices): ?>
@@ -418,7 +418,7 @@ foreach ([
                 <li><a href="/visa-type/">Visa Services</a></li>
                 <li class="site-header__mobile-accordion">
                     <details>
-                        <summary>Attestation Services</summary>
+                        <summary>Attestation</summary>
                         <div class="site-header__mobile-accordion-body">
                             <?php foreach ($attestationCategories as $megaCategoryName => $megaCategoryServices): ?>
                             <div class="site-header__mobile-subgroup">

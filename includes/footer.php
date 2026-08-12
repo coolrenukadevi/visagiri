@@ -30,7 +30,7 @@ declare(strict_types=1);
         </div>
 
         <div class="site-footer__col">
-            <h3>Attestation Services</h3>
+            <h3>Attestation</h3>
             <ul>
                 <?php
                 // One representative service per category, kept short
