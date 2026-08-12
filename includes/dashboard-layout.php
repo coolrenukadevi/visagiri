@@ -37,7 +37,7 @@ function render_dashboard_start(string $activeKey, string $title): void
                 <?php foreach (DASHBOARD_NAV as $key => $item): ?>
                 <li><a href="<?= e($item['href']) ?>" class="<?= $key === $activeKey ? 'is-active' : '' ?>"><?= e($item['label']) ?></a></li>
                 <?php endforeach; ?>
-                <li><a href="/logout/">Logout</a></li>
+                <li><form method="post" action="/logout/" style="margin:0"><?= csrf_field() ?><button type="submit">Logout</button></form></li>
             </ul>
         </aside>
         <div class="dashboard-shell__content">

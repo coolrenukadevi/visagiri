@@ -76,7 +76,7 @@ $update = $pdo->prepare(
      WHERE id = :id'
 );
 $update->execute([
-    'original_filename' => mb_substr(basename($file['name']), 0, 255),
+    'original_filename' => sanitize_uploaded_filename(basename($file['name'])),
     'stored_filename' => $storedFilename,
     'mime_type' => $detectedMime,
     'file_size' => $file['size'],

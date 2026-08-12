@@ -112,7 +112,7 @@ $isActive = static fn(string $href): bool => $href !== '/' && str_starts_with($c
             </a>
             <?php if ($activeUser): ?>
                 <a href="<?= e($accountHomeHref) ?>" class="btn btn-ghost btn-sm"><?= e(strtok($activeUser['full_name'], ' ')) ?></a>
-                <a href="/logout/" class="btn btn-outline btn-sm">Logout</a>
+                <form method="post" action="/logout/" style="display:contents"><?= csrf_field() ?><button type="submit" class="btn btn-outline btn-sm">Logout</button></form>
             <?php else: ?>
                 <a href="/login/" class="site-header__text-link">Login</a>
                 <a href="/register/" class="site-header__text-link">Sign Up</a>
@@ -137,7 +137,7 @@ $isActive = static fn(string $href): bool => $href !== '/' && str_starts_with($c
         <div class="site-header__mobile-actions">
             <?php if ($activeUser): ?>
                 <a href="<?= e($accountHomeHref) ?>" class="btn btn-outline"><?= match ($accountHomeHref) { '/admin/' => 'Admin Panel', '/consultant/' => 'Consultant Panel', default => 'My Dashboard' } ?></a>
-                <a href="/logout/" class="btn btn-ghost">Logout</a>
+                <form method="post" action="/logout/" style="display:contents"><?= csrf_field() ?><button type="submit" class="btn btn-ghost">Logout</button></form>
             <?php else: ?>
                 <a href="/login/" class="btn btn-outline">Login</a>
                 <a href="/register/" class="btn btn-ghost">Sign Up</a>

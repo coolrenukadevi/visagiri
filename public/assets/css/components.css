@@ -320,17 +320,26 @@
   margin-top: var(--space-1);
 }
 
-.sidebar-nav a {
+.sidebar-nav a,
+.sidebar-nav button {
   display: flex;
   align-items: center;
+  width: 100%;
   gap: var(--space-3);
   padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-md);
   color: var(--text-muted);
   font-weight: var(--font-weight-medium);
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
+  text-align: left;
+  cursor: pointer;
 }
 
-.sidebar-nav a:hover {
+.sidebar-nav a:hover,
+.sidebar-nav button:hover {
   background: var(--visa-blue-light);
   color: var(--visa-blue-dark);
 }

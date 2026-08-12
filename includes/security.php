@@ -12,6 +12,11 @@ function send_security_headers(): void
     header('Referrer-Policy: strict-origin-when-cross-origin');
     header('Permissions-Policy: geolocation=(), microphone=(), camera=()');
     header("Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; frame-ancestors 'none'");
+    // Browsers ignore this entirely over plain HTTP (harmless in local
+    // dev), and public/.htaccess already forces HTTP -> HTTPS, so this
+    // just closes the one-request gap before that redirect lands and
+    // pins HTTPS for a year once it does.
+    header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
 }
 
 /**

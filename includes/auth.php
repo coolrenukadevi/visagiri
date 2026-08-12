@@ -97,6 +97,18 @@ function verify_password(string $plainPassword, string $hash): bool
 }
 
 /**
+ * A precomputed bcrypt hash with no corresponding real password —
+ * used to keep login's response time constant when no matching user
+ * exists. Without this, `!$user || !verify_password(...)` short-
+ * circuits and skips the (comparatively slow) hash comparison
+ * entirely for unknown identifiers, making "no such account" and
+ * "wrong password" measurably different in timing — an oracle an
+ * attacker can use to enumerate registered emails/mobiles even
+ * though the error message itself is identical either way.
+ */
+const DUMMY_PASSWORD_HASH = '$2y$12$fd5G7zkjbudoZUB5IgqZO.JuRuCKGyLlRGwZIOW9OfYKEmziAq7NO';
+
+/**
  * Login attempt limiter: 5 attempts per 15 minutes per identifier+IP,
  * independent of the general-purpose rate_limit_check() in
  * security.php so it survives session regeneration on success/failure.

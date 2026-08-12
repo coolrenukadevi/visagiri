@@ -35,7 +35,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute(['identifier' => $old['identifier'], 'identifier2' => $old['identifier']]);
         $user = $stmt->fetch();
 
-        if (!$user || !verify_password($password, $user['password_hash'])) {
+        // Always run password_verify(), even for an identifier that
+        // doesn't exist — against a dummy hash in that case — so the
+        // response time doesn't itself reveal whether the account is
+        // registered (see DUMMY_PASSWORD_HASH's docblock).
+        $passwordValid = verify_password($password, $user['password_hash'] ?? DUMMY_PASSWORD_HASH);
+
+        if (!$user || !$passwordValid) {
             $errors[] = 'Invalid email/mobile or password.';
         } elseif ($user['status'] !== 'active') {
             $errors[] = 'This account is suspended. Contact support for help.';

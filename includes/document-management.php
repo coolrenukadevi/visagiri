@@ -29,6 +29,22 @@ function document_upload_dir(int $applicationId): string
 }
 
 /**
+ * Strips control characters (including CR/LF) from a client-supplied
+ * upload filename before it's stored. PHP's header() already refuses
+ * to emit a header value containing a raw newline, so this isn't
+ * exploitable as HTTP response splitting today — but the
+ * Content-Disposition filename in document-download.php is built
+ * directly from this value, and that shouldn't depend on one
+ * runtime's defense being the only thing standing between user input
+ * and a response header.
+ */
+function sanitize_uploaded_filename(string $filename): string
+{
+    $filename = preg_replace('/[\x00-\x1F\x7F]/', '', $filename) ?? '';
+    return mb_substr(trim($filename), 0, 255);
+}
+
+/**
  * Fetches one application_documents row, but ONLY if it belongs to an
  * application owned by $userId — every handler below calls this first
  * so a guessed/incremented ID can never touch another customer's file.
