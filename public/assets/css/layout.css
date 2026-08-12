@@ -920,6 +920,11 @@
   text-transform: uppercase;
   letter-spacing: 0.06em;
   margin-bottom: var(--space-4);
+  /* Keep every column heading on one line so they all sit parallel
+     along the same row, regardless of column width — a two-word
+     heading wrapping while its neighbors don't was throwing the
+     whole header row out of alignment. */
+  white-space: nowrap;
 }
 
 .site-footer__col ul {

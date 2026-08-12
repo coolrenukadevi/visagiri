@@ -52,7 +52,7 @@ declare(strict_types=1);
         </div>
 
         <div class="site-footer__col">
-            <h3>Explore Countries</h3>
+            <h3>Countries</h3>
             <ul>
                 <li><a href="/countries/#region-asia">Asia</a></li>
                 <li><a href="/countries/#region-europe">Europe</a></li>
@@ -60,7 +60,7 @@ declare(strict_types=1);
                 <li><a href="/countries/#region-south-america">South America</a></li>
                 <li><a href="/countries/#region-africa">Africa</a></li>
                 <li><a href="/countries/#region-oceania">Oceania</a></li>
-                <li><a href="/countries/">Explore 200+ Countries &rarr;</a></li>
+                <li><a href="/countries/">View All &rarr;</a></li>
             </ul>
         </div>
 
