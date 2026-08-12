@@ -70,6 +70,45 @@
   margin-bottom: var(--space-2);
 }
 
+/* ---------- Leader card (/leadership/) ---------- */
+
+.leader-card {
+  text-align: center;
+}
+
+.leader-card__avatar {
+  width: 88px;
+  height: 88px;
+  margin: 0 auto var(--space-4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background: var(--visa-blue);
+  border: 3px solid var(--visa-gold);
+  color: var(--white);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.02em;
+}
+
+.leader-card__title {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--space-3);
+  text-align: center;
+}
+
+.leader-card__linkedin {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--visa-blue);
+}
+
+.leader-card__linkedin:hover {
+  color: var(--visa-blue-dark);
+}
+
 .card-grid {
   display: grid;
   gap: var(--space-5);
