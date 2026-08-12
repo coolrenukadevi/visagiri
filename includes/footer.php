@@ -32,10 +32,22 @@ declare(strict_types=1);
         <div class="site-footer__col">
             <h3>Attestation Services</h3>
             <ul>
-                <li><a href="/attestation/apostille/">Apostille</a></li>
-                <li><a href="/attestation/mea-attestation/">MEA Attestation</a></li>
-                <li><a href="/attestation/embassy-attestation/">Embassy Attestation</a></li>
-                <li><a href="/attestation/commercial-attestation/">Commercial Attestation</a></li>
+                <?php
+                // One representative service per category, kept short
+                // so the column doesn't outgrow the others now that
+                // there are 13 real services — see /attestation/ for
+                // the full, categorized list.
+                $footerAttestationLinks = array_filter([
+                    $attestationCategories['Apostille'][0] ?? null,
+                    $attestationCategories['Attestation'][0] ?? null,
+                    $attestationCategories['Documents'][0] ?? null,
+                    $attestationCategories['Legalization'][0] ?? null,
+                ]);
+                ?>
+                <?php foreach ($footerAttestationLinks as $service): ?>
+                <li><a href="/attestation/<?= e($service['slug']) ?>/"><?= e($service['menu_label']) ?></a></li>
+                <?php endforeach; ?>
+                <li><a href="/attestation/">View All Attestation Services &rarr;</a></li>
             </ul>
         </div>
 

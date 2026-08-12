@@ -32,11 +32,10 @@ $staticUrls = [
     ['loc' => '/faq/', 'priority' => '0.5', 'changefreq' => 'monthly'],
     ['loc' => '/track-visa/', 'priority' => '0.4', 'changefreq' => 'yearly'],
     ['loc' => '/attestation/', 'priority' => '0.7', 'changefreq' => 'monthly'],
-    ['loc' => '/attestation/apostille/', 'priority' => '0.6', 'changefreq' => 'monthly'],
-    ['loc' => '/attestation/mea-attestation/', 'priority' => '0.6', 'changefreq' => 'monthly'],
-    ['loc' => '/attestation/embassy-attestation/', 'priority' => '0.6', 'changefreq' => 'monthly'],
-    ['loc' => '/attestation/commercial-attestation/', 'priority' => '0.6', 'changefreq' => 'monthly'],
 ];
+foreach (array_keys(attestation_services()) as $attestationSlug) {
+    $staticUrls[] = ['loc' => "/attestation/{$attestationSlug}/", 'priority' => '0.6', 'changefreq' => 'monthly'];
+}
 
 echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 ?>

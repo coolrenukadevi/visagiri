@@ -37,6 +37,80 @@
     }
   });
 
+  // Attestation Services mega-menu. Desktop already opens on hover/
+  // focus-within via CSS (same pattern as the existing Visa Services
+  // dropdown), which covers mouse and keyboard tabbing for free. This
+  // layers click-to-toggle on top for touch/tablet devices that don't
+  // fire :hover, plus outside-click and Escape to close — mirroring
+  // the enquiry-widget toggle pattern below.
+  var megaMenuTrigger = document.getElementById('attestation-mega-trigger');
+  var megaMenu = document.getElementById('attestation-mega-menu');
+  if (megaMenuTrigger && megaMenu) {
+    var megaMenuItem = megaMenuTrigger.closest('.has-mega-menu');
+    var setMegaMenuOpen = function (open) {
+      megaMenu.classList.toggle('is-open', open);
+      megaMenuTrigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
+    megaMenuTrigger.addEventListener('click', function (event) {
+      // Only intercept on devices without real hover (touch/tablet);
+      // desktop mouse users get the plain link + hover-opened panel.
+      if (window.matchMedia('(hover: none)').matches) {
+        event.preventDefault();
+        setMegaMenuOpen(!megaMenu.classList.contains('is-open'));
+      }
+    });
+    document.addEventListener('click', function (event) {
+      if (megaMenu.classList.contains('is-open') && megaMenuItem && !megaMenuItem.contains(event.target)) {
+        setMegaMenuOpen(false);
+      }
+    });
+    document.addEventListener('keydown', function (event) {
+      if (event.key !== 'Escape' || !megaMenuItem) {
+        return;
+      }
+      var isOpen = megaMenu.classList.contains('is-open') || megaMenuItem.contains(document.activeElement) || megaMenuItem.matches(':hover');
+      if (isOpen) {
+        setMegaMenuOpen(false);
+        // :hover/:focus-within would otherwise keep the CSS-only panel
+        // visible even after the class above is removed, since Escape
+        // doesn't move the mouse or blur the trigger — force it closed
+        // until the pointer/focus actually leaves the item.
+        megaMenu.classList.add('is-force-closed');
+        megaMenuTrigger.focus();
+      }
+    });
+    megaMenuItem.addEventListener('mouseleave', function () {
+      megaMenu.classList.remove('is-force-closed');
+    });
+    megaMenuItem.addEventListener('mouseenter', function () {
+      megaMenu.classList.remove('is-force-closed');
+    });
+    megaMenuItem.addEventListener('focusout', function (event) {
+      if (!megaMenuItem.contains(event.relatedTarget)) {
+        megaMenu.classList.remove('is-force-closed');
+      }
+    });
+  }
+
+  // Mobile Attestation accordion — closes any other open <details> in
+  // the mobile nav when one is opened, so only one panel is expanded
+  // at a time and the menu stays easy to scroll (native <details>
+  // already handles the expand/collapse itself, matching the FAQ
+  // accordion pattern elsewhere on the site — no JS needed for that
+  // part).
+  var mobileAccordions = document.querySelectorAll('.site-header__mobile-accordion > details');
+  mobileAccordions.forEach(function (details) {
+    details.addEventListener('toggle', function () {
+      if (details.open) {
+        mobileAccordions.forEach(function (other) {
+          if (other !== details) {
+            other.open = false;
+          }
+        });
+      }
+    });
+  });
+
   // Floating enquiry widget (WhatsApp/Call/Email).
   var enquiryWidget = document.getElementById('enquiry-widget');
   var enquiryToggle = document.getElementById('enquiry-widget-toggle');

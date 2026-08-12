@@ -40,7 +40,6 @@ $accountHomeHref = $activeUser ? account_home_href($activeUser['role_name']) : '
 
 $navLinks = [
     ['label' => 'Countries', 'href' => '/countries/'],
-    ['label' => 'Attestation', 'href' => '/attestation/'],
     ['label' => 'Visa Process', 'href' => '/visa-process/'],
     ['label' => 'Visa Updates', 'href' => '/blog/'],
     ['label' => 'About', 'href' => '/about/'],
@@ -54,6 +53,12 @@ $visaServiceLinks = array_map(
     static fn(array $t) => ['label' => $t['name'], 'href' => "/visa-type/{$t['slug']}/"],
     db()->query('SELECT name, slug FROM visa_types WHERE is_active = 1 ORDER BY sort_order')->fetchAll()
 );
+
+// Attestation mega-menu — reads from the same attestation_categories()
+// source of truth as attestation/index.php and includes/footer.php,
+// so the nav can never fall out of sync with the routable services
+// the way the old hardcoded visa-type arrays did.
+$attestationCategories = attestation_categories();
 
 $isActive = static fn(string $href): bool => $href !== '/' && str_starts_with($currentPath, $href);
 ?>
@@ -119,6 +124,30 @@ foreach ([
                         <?php endforeach; ?>
                     </ul>
                 </li>
+                <li class="has-dropdown has-mega-menu">
+                    <a href="/attestation/" id="attestation-mega-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="attestation-mega-menu"<?= $isActive('/attestation/') ? ' class="is-active"' : '' ?>>Attestation Services</a>
+                    <div class="mega-menu" id="attestation-mega-menu" aria-labelledby="attestation-mega-trigger">
+                        <div class="mega-menu__columns">
+                            <?php foreach ($attestationCategories as $megaCategoryName => $megaCategoryServices): ?>
+                            <div class="mega-menu__col">
+                                <div class="mega-menu__col-heading"><span class="mega-menu__col-icon" aria-hidden="true"><?= attestation_category_icon($megaCategoryName) ?></span><?= e($megaCategoryName) ?></div>
+                                <ul>
+                                    <?php foreach ($megaCategoryServices as $megaService): ?>
+                                    <li><a href="/attestation/<?= e($megaService['slug']) ?>/"><span class="mega-menu__icon" aria-hidden="true"><?= $megaService['icon'] ?></span><?= e($megaService['menu_label']) ?></a></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <div class="mega-menu__cta">
+                            <div class="mega-menu__cta-copy">
+                                <strong>Need Document Attestation?</strong>
+                                <p>Get professional assistance with document attestation, apostille and legalization.</p>
+                            </div>
+                            <a href="<?= e(whatsapp_enquiry_href('Hi Visagiri, I would like to get a quote for document attestation services.')) ?>" class="btn btn-gold btn-sm" target="_blank" rel="noopener noreferrer">Get Attestation Quote &rarr;</a>
+                        </div>
+                    </div>
+                </li>
                 <?php foreach ($navLinks as $link): ?>
                 <li><a href="<?= e($link['href']) ?>"<?= $isActive($link['href']) ? ' class="is-active"' : '' ?>><?= e($link['label']) ?></a></li>
                 <?php endforeach; ?>
@@ -148,6 +177,24 @@ foreach ([
         <nav aria-label="Mobile primary">
             <ul>
                 <li><a href="/visa-type/">Visa Services</a></li>
+                <li class="site-header__mobile-accordion">
+                    <details>
+                        <summary>Attestation Services</summary>
+                        <div class="site-header__mobile-accordion-body">
+                            <?php foreach ($attestationCategories as $megaCategoryName => $megaCategoryServices): ?>
+                            <div class="site-header__mobile-subgroup">
+                                <span class="site-header__mobile-subheading"><span aria-hidden="true"><?= attestation_category_icon($megaCategoryName) ?></span> <?= e($megaCategoryName) ?></span>
+                                <ul>
+                                    <?php foreach ($megaCategoryServices as $megaService): ?>
+                                    <li><a href="/attestation/<?= e($megaService['slug']) ?>/"><span aria-hidden="true"><?= $megaService['icon'] ?></span> <?= e($megaService['menu_label']) ?></a></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                            <?php endforeach; ?>
+                            <a href="/attestation/" class="site-header__mobile-viewall">View All Attestation Services &rarr;</a>
+                        </div>
+                    </details>
+                </li>
                 <?php foreach ($navLinks as $link): ?>
                 <li><a href="<?= e($link['href']) ?>"><?= e($link['label']) ?></a></li>
                 <?php endforeach; ?>

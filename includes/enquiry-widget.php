@@ -17,14 +17,12 @@ declare(strict_types=1);
 
 $enquiryPhoneDisplay = '+91 7065 819 819';
 $enquiryPhoneDial = '+917065819819';
-$enquiryWhatsAppNumber = '917065819819';
-$enquiryWhatsAppMessage = rawurlencode("Hi Visagiri, I'd like to know more about your visa services.");
 $enquiryEmail = 'info@visagiri.com';
 ?>
 <div class="enquiry-widget" id="enquiry-widget">
     <div class="enquiry-widget__actions" id="enquiry-widget-actions">
         <a
-            href="https://wa.me/<?= e($enquiryWhatsAppNumber) ?>?text=<?= e($enquiryWhatsAppMessage) ?>"
+            href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to know more about your visa services.")) ?>"
             class="enquiry-widget__action enquiry-widget__action--whatsapp"
             target="_blank" rel="noopener noreferrer"
             aria-label="Chat with Visagiri on WhatsApp"

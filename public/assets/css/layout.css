@@ -124,6 +124,209 @@
   color: var(--visa-blue-dark);
 }
 
+/* ---------- Attestation mega-menu ---------- */
+
+/* Escapes .has-dropdown's position:relative so .mega-menu positions
+   against .site-header (the nearest remaining positioned ancestor)
+   instead of the nav <li> — centering it under the whole header
+   regardless of where the trigger sits horizontally, so it's never
+   clipped by the right edge of the viewport. */
+.has-mega-menu {
+  position: static;
+}
+
+.mega-menu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  width: min(880px, calc(100vw - var(--space-8)));
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  margin-top: var(--space-2);
+  padding: var(--space-6);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transition-fast), transform var(--transition-fast), visibility var(--transition-fast);
+  z-index: 110;
+}
+
+.has-mega-menu:hover .mega-menu,
+.has-mega-menu:focus-within .mega-menu,
+.mega-menu.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Escape needs to win over :hover/:focus-within — pressing it doesn't
+   necessarily move the mouse or blur the trigger, so this is the only
+   way to actually hide the panel until the pointer/focus genuinely
+   leaves (see the matching JS in site.js). */
+.mega-menu.is-force-closed {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+.mega-menu__columns {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-6);
+}
+
+.mega-menu__col-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  padding-bottom: var(--space-2);
+  margin-bottom: var(--space-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.mega-menu__col-icon {
+  font-size: var(--font-size-base);
+}
+
+.mega-menu__col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mega-menu__col li a {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  color: var(--text-dark);
+  line-height: var(--line-height-tight);
+}
+
+.mega-menu__col li a:hover,
+.mega-menu__col li a:focus-visible {
+  background: var(--visa-blue-light);
+  color: var(--visa-blue-dark);
+}
+
+.mega-menu__icon {
+  flex-shrink: 0;
+  font-size: var(--font-size-base);
+}
+
+.mega-menu__cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+  margin-top: var(--space-5);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--border);
+}
+
+.mega-menu__cta-copy strong {
+  display: block;
+  color: var(--text-dark);
+  font-size: var(--font-size-base);
+}
+
+.mega-menu__cta-copy p {
+  margin: var(--space-1) 0 0;
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  text-align: left;
+}
+
+.mega-menu__cta .btn {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+@media (max-width: 1279px) {
+  .mega-menu__columns {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-5);
+  }
+}
+
+/* ---------- Mobile Attestation accordion ---------- */
+
+.site-header__mobile-accordion > details > summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3) var(--space-2);
+  color: var(--text-dark);
+  font-weight: var(--font-weight-medium);
+  border-bottom: 1px solid var(--border);
+}
+
+.site-header__mobile-accordion > details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.site-header__mobile-accordion > details > summary::after {
+  content: "+";
+  font-size: var(--font-size-xl);
+  color: var(--visa-blue);
+  transition: transform var(--transition-base);
+}
+
+.site-header__mobile-accordion > details[open] > summary::after {
+  transform: rotate(45deg);
+}
+
+.site-header__mobile-accordion-body {
+  padding: var(--space-3) var(--space-2) var(--space-2) var(--space-4);
+}
+
+.site-header__mobile-subgroup + .site-header__mobile-subgroup {
+  margin-top: var(--space-4);
+}
+
+.site-header__mobile-subheading {
+  display: block;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-bottom: var(--space-2);
+}
+
+.site-header__mobile-accordion-body ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.site-header__mobile-accordion-body li a {
+  display: block;
+  padding: var(--space-3) var(--space-2);
+  border-bottom: none;
+  font-weight: var(--font-weight-regular);
+  font-size: var(--font-size-sm);
+}
+
+.site-header__mobile-viewall {
+  display: block;
+  margin-top: var(--space-3);
+  padding: var(--space-2);
+  font-weight: var(--font-weight-semibold);
+  color: var(--visa-blue);
+  border-bottom: none;
+}
+
 .site-header__actions {
   display: none;
   align-items: center;

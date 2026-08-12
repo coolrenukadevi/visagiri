@@ -21,9 +21,9 @@ function asset_url(string $path): string
     return $path . '?v=' . $version;
 }
 
-function redirect(string $path): never
+function redirect(string $path, int $status = 302): never
 {
-    header('Location: ' . $path, true, 302);
+    header('Location: ' . $path, true, $status);
     exit;
 }
 
@@ -73,6 +73,19 @@ function flag_emoji(?string $iso2): string
     return mb_convert_encoding('&#' . $codePoints[0] . ';&#' . $codePoints[1] . ';', 'UTF-8', 'HTML-ENTITIES');
 }
 
+/**
+ * Real, client-confirmed WhatsApp number (see includes/enquiry-widget.php
+ * for sourcing) — the single existing enquiry/quotation channel on the
+ * site. Any "Get a Quote"-style CTA should link here with a relevant
+ * pre-filled message rather than standing up a duplicate contact form.
+ */
+const ENQUIRY_WHATSAPP_NUMBER = '917065819819';
+
+function whatsapp_enquiry_href(string $message): string
+{
+    return 'https://wa.me/' . ENQUIRY_WHATSAPP_NUMBER . '?text=' . rawurlencode($message);
+}
+
 /** A distinctive icon per visa type (slug), used on the /visa-type/ hub and detail pages. */
 function visa_type_icon(string $slug): string
 {
@@ -86,6 +99,165 @@ function visa_type_icon(string $slug): string
         'medical' => '🏥',
         'conference' => '🎤',
         'sports' => '🏅',
+        default => '📄',
+    };
+}
+
+/**
+ * Single source of truth for every attestation service — used by
+ * includes/header.php's mega-menu, attestation/index.php's hub +
+ * detail routing, and includes/footer.php's Attestation column. This
+ * exists to avoid a repeat of the stale-hardcoded-nav-array bug fixed
+ * three times already for visa types (header, footer, sitemap): one
+ * array, three consumers, never three copies. Fixed set of 13
+ * industry-standard document-attestation service categories, not
+ * fabricated per-service claims — same discipline already applied to
+ * Sports Visa.
+ */
+function attestation_services(): array
+{
+    static $services = null;
+    if ($services !== null) {
+        return $services;
+    }
+
+    $services = [
+        'mea-apostille' => [
+            'menu_label' => 'MEA Apostille',
+            'name' => 'MEA Apostille Services',
+            'category' => 'Apostille',
+            'icon' => '📜',
+            'description' => 'Apostille certification via the Ministry of External Affairs for documents used in Hague Apostille Convention member countries.',
+            'meta_description' => 'MEA apostille certification for Indian documents used in Hague Apostille Convention countries. Reliable apostille assistance from Visagiri.',
+        ],
+        'e-apostille' => [
+            'menu_label' => 'E-Apostille',
+            'name' => 'E-Apostille Services',
+            'category' => 'Apostille',
+            'icon' => '💻',
+            'description' => 'Digital apostille issued electronically by the Ministry of External Affairs for eligible document categories.',
+            'meta_description' => 'E-Apostille services for eligible documents — digital apostille issued electronically by the Ministry of External Affairs. Apply with Visagiri.',
+        ],
+        'mea-attestation' => [
+            'menu_label' => 'MEA Attestation',
+            'name' => 'MEA Attestation Services',
+            'category' => 'Attestation',
+            'icon' => '🏛️',
+            'description' => 'Ministry of External Affairs attestation for Indian documents used abroad, for countries outside the Hague Convention.',
+            'meta_description' => 'MEA attestation for Indian documents used abroad in non-Hague Convention countries. Trusted document attestation assistance from Visagiri.',
+        ],
+        'embassy-attestation' => [
+            'menu_label' => 'Embassy Attestation',
+            'name' => 'Embassy Attestation Services',
+            'category' => 'Attestation',
+            'icon' => '🏢',
+            'description' => "Attestation of documents by the destination country's embassy or consulate in India.",
+            'meta_description' => "Embassy attestation of your documents by the destination country's embassy or consulate, a required step for many visas. Assistance from Visagiri.",
+        ],
+        'consulate-attestation' => [
+            'menu_label' => 'Consulate Attestation',
+            'name' => 'Consulate Attestation Services',
+            'category' => 'Attestation',
+            'icon' => '🛂',
+            'description' => 'Attestation of documents through the relevant consulate for destinations without direct embassy processing.',
+            'meta_description' => 'Consulate attestation assistance for documents requiring consular authentication before use abroad. Apply online with Visagiri.',
+        ],
+        'educational-document-attestation' => [
+            'menu_label' => 'Educational',
+            'name' => 'Educational Document Attestation',
+            'category' => 'Documents',
+            'icon' => '🎓',
+            'description' => 'Attestation of degree certificates, mark sheets, and other educational documents for study or work abroad.',
+            'meta_description' => 'Educational document attestation for degree certificates and mark sheets, required for study or work visas abroad. Apply with Visagiri.',
+        ],
+        'commercial-document-attestation' => [
+            'menu_label' => 'Commercial',
+            'name' => 'Commercial Document Attestation',
+            'category' => 'Documents',
+            'icon' => '🧾',
+            'description' => 'Attestation of commercial documents such as invoices, certificates of origin, and business agreements.',
+            'meta_description' => 'Commercial document attestation for invoices, certificates of origin, and business agreements used internationally. Apply with Visagiri.',
+        ],
+        'personal-document-attestation' => [
+            'menu_label' => 'Personal',
+            'name' => 'Personal Document Attestation',
+            'category' => 'Documents',
+            'icon' => '🪪',
+            'description' => 'Attestation of personal documents such as identity, address, and other individual records for use abroad.',
+            'meta_description' => 'Personal document attestation for identity, address, and other individual records required for use abroad. Assistance from Visagiri.',
+        ],
+        'birth-certificate-attestation' => [
+            'menu_label' => 'Birth Certificate',
+            'name' => 'Birth Certificate Attestation',
+            'category' => 'Documents',
+            'icon' => '👶',
+            'description' => 'Attestation of birth certificates for visa, immigration, and family visa applications abroad.',
+            'meta_description' => 'Birth certificate attestation for visa, immigration, and family sponsorship applications abroad. Apply online with Visagiri.',
+        ],
+        'marriage-certificate-attestation' => [
+            'menu_label' => 'Marriage Certificate',
+            'name' => 'Marriage Certificate Attestation',
+            'category' => 'Documents',
+            'icon' => '💍',
+            'description' => 'Attestation of marriage certificates for spouse visa, family visa, and residency applications abroad.',
+            'meta_description' => 'Marriage certificate attestation for spouse visa, family visa, and residency applications abroad. Apply online with Visagiri.',
+        ],
+        'document-legalization' => [
+            'menu_label' => 'Document Legalization',
+            'name' => 'Document Legalization Services',
+            'category' => 'Legalization',
+            'icon' => '⚖️',
+            'description' => 'End-to-end legalization of documents through notarization, government, and embassy stages for use abroad.',
+            'meta_description' => 'Document legalization services covering notarization, government, and embassy stages for documents used abroad. Assistance from Visagiri.',
+        ],
+        'chamber-of-commerce-attestation' => [
+            'menu_label' => 'Chamber of Commerce',
+            'name' => 'Chamber of Commerce Attestation',
+            'category' => 'Legalization',
+            'icon' => '🤝',
+            'description' => 'Attestation of commercial invoices and certificates of origin by the Chamber of Commerce.',
+            'meta_description' => 'Chamber of Commerce attestation for commercial invoices and certificates of origin used in international trade. Apply with Visagiri.',
+        ],
+        'hrd-state-attestation' => [
+            'menu_label' => 'HRD / State Attestation',
+            'name' => 'HRD / State Attestation Services',
+            'category' => 'Legalization',
+            'icon' => '📋',
+            'description' => 'State Human Resources Department attestation of educational certificates, a prerequisite step before MEA attestation in many states.',
+            'meta_description' => 'HRD and State attestation of educational certificates, a required step before MEA attestation in many Indian states. Apply with Visagiri.',
+        ],
+    ];
+
+    return $services;
+}
+
+/** Old attestation slugs that must 301-redirect to their current equivalents (renamed for clearer SEO labels). */
+function attestation_service_redirects(): array
+{
+    return [
+        'apostille' => 'mea-apostille',
+        'commercial-attestation' => 'commercial-document-attestation',
+    ];
+}
+
+/** Attestation services grouped by category, in menu display order — the single source both the header mega-menu and the hub page render from. */
+function attestation_categories(): array
+{
+    $grouped = ['Apostille' => [], 'Attestation' => [], 'Documents' => [], 'Legalization' => []];
+    foreach (attestation_services() as $slug => $service) {
+        $grouped[$service['category']][] = ['slug' => $slug] + $service;
+    }
+    return $grouped;
+}
+
+/** A distinctive icon per attestation category, used as the mega-menu column heading icon. */
+function attestation_category_icon(string $category): string
+{
+    return match ($category) {
+        'Apostille' => '📜',
+        'Attestation' => '🏛️',
+        'Documents' => '📄',
+        'Legalization' => '⚖️',
         default => '📄',
     };
 }

@@ -3,47 +3,43 @@ declare(strict_types=1);
 
 /**
  * Attestation Services — a distinct service line from visa
- * consultancy (document legalization: apostille/MEA/embassy/
- * commercial attestation). Only 4 fixed items, so kept as a static
- * array here rather than a new DB table — real content per service
- * still needs Phase 8-equivalent verified authoring before it ships;
- * these stubs describe what each service generically is, not a
- * Visagiri-specific claim.
+ * consultancy (document legalization: apostille/attestation/
+ * document-category/legalization services). Routes and hub grid
+ * both read from attestation_services()/attestation_categories() in
+ * includes/functions.php — the single source of truth also used by
+ * the header mega-menu, so this can never drift out of sync with the
+ * nav the way the old hardcoded visa-type arrays did. Only 13 fixed
+ * categories, so kept as a static array rather than a DB table; real
+ * content per service still needs Phase 8-equivalent verified
+ * authoring before it ships — these stubs describe what each service
+ * generically is, not a Visagiri-specific claim.
  */
-
-$services = [
-    'apostille' => [
-        'name' => 'Apostille',
-        'description' => 'Apostille certification for documents to be used in countries that are part of the Hague Apostille Convention.',
-        'meta_description' => 'Apostille certification for documents used in Hague Convention countries. Fast, reliable apostille attestation services from Visagiri.',
-    ],
-    'mea-attestation' => [
-        'name' => 'MEA Attestation',
-        'description' => "Ministry of External Affairs (MEA) attestation for Indian documents used abroad, for countries outside the Hague Convention.",
-        'meta_description' => 'MEA attestation for Indian documents used abroad, for countries outside the Hague Convention. Trusted document attestation from Visagiri.',
-    ],
-    'embassy-attestation' => [
-        'name' => 'Embassy Attestation',
-        'description' => "Attestation of documents by the destination country's embassy or consulate.",
-        'meta_description' => "Embassy attestation of your documents by the destination country's embassy or consulate — a required step for many visas and overseas processes.",
-    ],
-    'commercial-attestation' => [
-        'name' => 'Commercial Attestation',
-        'description' => 'Attestation of commercial documents such as invoices, certificates of origin, and business agreements.',
-        'meta_description' => 'Commercial document attestation for invoices, certificates of origin, and business agreements used internationally. Apply with Visagiri.',
-    ],
-];
 
 $slug = $segments[1] ?? null;
 
 if ($slug !== null) {
+    $redirects = attestation_service_redirects();
+    if (isset($redirects[$slug])) {
+        redirect("/attestation/{$redirects[$slug]}/", 301);
+    }
+
+    $services = attestation_services();
     if (!isset($services[$slug])) {
         render_not_found("We couldn't find that attestation service.");
     }
     $service = $services[$slug];
-    $pageTitle = "{$service['name']} Services | Visagiri";
+    $pageTitle = "{$service['name']} | Visagiri";
     $pageDescription = $service['meta_description'];
     $canonicalUrl = APP_URL . "/attestation/{$slug}/";
+    $structuredData = [[
+        '@context' => 'https://schema.org',
+        '@type' => 'BreadcrumbList',
+        'itemListElement' => [
+            ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => APP_URL . '/'],
+            ['@type' => 'ListItem', 'position' => 2, 'name' => 'Attestation Services', 'item' => APP_URL . '/attestation/'],
+            ['@type' => 'ListItem', 'position' => 3, 'name' => $service['name'], 'item' => $canonicalUrl],
+        ],
+    ]];
     require __DIR__ . '/../includes/header.php';
     ?>
     <section class="visa-detail">
@@ -53,8 +49,14 @@ if ($slug !== null) {
                 <li><a href="/attestation/">Attestation Services</a></li>
                 <li><?= e($service['name']) ?></li>
             </ul>
-            <h1><?= e($service['name']) ?></h1>
-            <p><?= e($service['description']) ?></p>
+            <div class="visa-detail__header">
+                <span class="destination-card__flag"><?= $service['icon'] ?></span>
+                <div>
+                    <h1><?= e($service['name']) ?></h1>
+                    <p><?= e($service['description']) ?></p>
+                    <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to get a quote for {$service['name']}.")) ?>" class="btn btn-gold" target="_blank" rel="noopener noreferrer">Get Attestation Quote</a>
+                </div>
+            </div>
             <div class="alert alert-info">
                 Detailed requirements and process information for this service are being finalized.
                 <a href="/contact/">Contact us</a> for current guidance.
@@ -66,8 +68,10 @@ if ($slug !== null) {
     exit;
 }
 
+$categories = attestation_categories();
+
 $pageTitle = 'Document Attestation Services | Visagiri';
-$pageDescription = 'Apostille, MEA attestation, embassy attestation, and commercial document attestation services for documents used abroad — apply online with Visagiri.';
+$pageDescription = 'Apostille, attestation, document-category, and legalization services for documents used abroad — apply online with Visagiri.';
 $canonicalUrl = APP_URL . '/attestation/';
 require __DIR__ . '/../includes/header.php';
 ?>
@@ -77,15 +81,18 @@ require __DIR__ . '/../includes/header.php';
             <span class="section-eyebrow">Document Services</span>
             <h1>Attestation Services</h1>
         </div>
-        <div class="card-grid">
-            <?php foreach ($services as $slug => $service): ?>
-            <a href="/attestation/<?= e($slug) ?>/" class="card service-card">
-                <div class="service-card__icon">&#128196;</div>
+        <?php foreach ($categories as $categoryName => $categoryServices): ?>
+        <h2 class="country-directory__subheading"><?= attestation_category_icon($categoryName) ?> <?= e($categoryName) ?></h2>
+        <div class="card-grid" style="margin-bottom:var(--space-8)">
+            <?php foreach ($categoryServices as $service): ?>
+            <a href="/attestation/<?= e($service['slug']) ?>/" class="card service-card">
+                <div class="service-card__icon"><?= $service['icon'] ?></div>
                 <div class="card-title"><?= e($service['name']) ?></div>
                 <p><?= e($service['description']) ?></p>
             </a>
             <?php endforeach; ?>
         </div>
+        <?php endforeach; ?>
     </div>
 </section>
 <?php require __DIR__ . '/../includes/footer.php'; ?>

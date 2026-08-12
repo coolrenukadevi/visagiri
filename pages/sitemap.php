@@ -17,8 +17,16 @@ foreach (db()->query('SELECT name, slug FROM visa_types WHERE is_active = 1 ORDE
     $visaServiceSection["/visa-type/{$t['slug']}/"] = $t['name'];
 }
 
+// Same shared source as the header mega-menu and /attestation/ routing —
+// see includes/functions.php's attestation_services().
+$attestationSection = ['/attestation/' => 'All Attestation Services'];
+foreach (attestation_services() as $slug => $service) {
+    $attestationSection["/attestation/{$slug}/"] = $service['name'];
+}
+
 $sections = [
     'Visa Services' => $visaServiceSection,
+    'Attestation Services' => $attestationSection,
     'Explore' => [
         '/countries/' => 'Countries',
         '/visa-process/' => 'Visa Process',
