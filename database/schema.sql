@@ -52,6 +52,10 @@ CREATE TABLE countries (
     flag_image              VARCHAR(255) NULL,
     region                  VARCHAR(100) NULL,
     is_popular_destination  TINYINT(1) NOT NULL DEFAULT 0,
+    -- Real, public, static fact (Schengen Area membership), not a
+    -- business claim — added for the Country mega-menu's Schengen
+    -- highlight. Seeded for the 27 actual member states below.
+    is_schengen             TINYINT(1) NOT NULL DEFAULT 0,
     is_active               TINYINT(1) NOT NULL DEFAULT 1,
     created_at              TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at              TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -691,6 +695,16 @@ INSERT INTO countries (name, slug, iso2, iso3, region, is_popular_destination, i
     ('Vanuatu', 'vanuatu', 'VU', 'VUT', 'Oceania', 0, 1),
     ('French Polynesia', 'french-polynesia', 'PF', 'PYF', 'Oceania', 0, 1),
     ('New Caledonia', 'new-caledonia', 'NC', 'NCL', 'Oceania', 0, 1);
+
+-- Schengen Area membership (27 states as of writing) — real, public,
+-- static geopolitical fact, same treatment as the ISO codes above,
+-- not a business claim. Used for the Country mega-menu's Schengen
+-- highlight (see includes/functions.php's country_mega_menu_data()).
+UPDATE countries SET is_schengen = 1 WHERE slug IN (
+    'austria', 'belgium', 'croatia', 'czech-republic', 'denmark', 'estonia', 'finland', 'france', 'germany',
+    'greece', 'hungary', 'iceland', 'italy', 'latvia', 'liechtenstein', 'lithuania', 'luxembourg', 'malta',
+    'netherlands', 'norway', 'poland', 'portugal', 'slovakia', 'slovenia', 'spain', 'sweden', 'switzerland'
+);
 
 -- General, non-country-specific FAQs. Deliberately process-level
 -- (how search/tracking/documents work) rather than fabricated stats

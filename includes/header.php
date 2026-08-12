@@ -39,10 +39,40 @@ $activeUser = current_user();
 $accountHomeHref = $activeUser ? account_home_href($activeUser['role_name']) : '/dashboard/';
 
 $navLinks = [
-    ['label' => 'Countries', 'href' => '/countries/'],
     ['label' => 'Visa Process', 'href' => '/visa-process/'],
     ['label' => 'Visa Updates', 'href' => '/blog/'],
 ];
+
+// Country mega-menu — see includes/functions.php's country_mega_menu_data().
+$countryMenuData = country_mega_menu_data();
+// "Find Visa By Purpose" reuses the same query $visaServiceLinks was
+// built from, just kept as the raw rows too so icons are available.
+$visaTypesRaw = db()->query('SELECT name, slug FROM visa_types WHERE is_active = 1 ORDER BY sort_order')->fetchAll();
+
+// Per-region shortlist for the mega-menu columns (popular destinations
+// first, then alphabetical — PHP's usort is stable since 8.0, so the
+// query's existing ORDER BY name is preserved within each group).
+// "View All {Region} (N) →" links to the real, unabridged full list
+// on /countries/ for everything not shown here.
+$topCountries = static function (array $countries, int $limit): array {
+    usort($countries, static fn(array $a, array $b): int => ((int) $b['is_popular_destination']) <=> ((int) $a['is_popular_destination']));
+    return array_slice($countries, 0, $limit);
+};
+$asiaTop = $topCountries($countryMenuData['by_region']['Asia'] ?? [], 6);
+// Excludes the 'schengen' aggregate row itself — it already has its
+// own highlight box below, so listing it again here as a plain
+// country link would just duplicate it.
+$europeNonSchengenTop = $topCountries(
+    array_values(array_filter(
+        $countryMenuData['by_region']['Europe'] ?? [],
+        static fn(array $c): bool => !$c['is_schengen'] && $c['slug'] !== 'schengen'
+    )),
+    5
+);
+$africaTop = $topCountries($countryMenuData['by_region']['Africa'] ?? [], 6);
+$northAmericaTop = $topCountries($countryMenuData['by_region']['North America'] ?? [], 3);
+$southAmericaTop = $topCountries($countryMenuData['by_region']['South America'] ?? [], 3);
+$oceaniaTop = $topCountries($countryMenuData['by_region']['Oceania'] ?? [], 3);
 
 // Company mega-menu. Reused/linked pages only where real content
 // already exists (About, its Why-Us/Our-Story sections, and the
@@ -183,6 +213,148 @@ foreach ([
                         </div>
                     </div>
                 </li>
+                <li class="has-dropdown has-mega-menu has-mega-menu--countries">
+                    <a href="/countries/" id="countries-mega-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="countries-mega-menu"<?= ($isActive('/countries/') || $isActive('/visa/')) ? ' class="is-active"' : '' ?>>Countries <?= nav_chevron_icon() ?></a>
+                    <div class="mega-menu mega-menu--countries" id="countries-mega-menu" aria-labelledby="countries-mega-trigger">
+                        <div class="mega-menu__countries-search">
+                            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="6.5" stroke="currentColor" stroke-width="1.6"/><path d="M17 17L13.6 13.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                            <input type="search" id="mega-country-filter" class="form-input" placeholder="Search country, visa or destination&hellip;" aria-label="Search countries">
+                        </div>
+
+                        <div class="mega-menu__col-heading">Popular Destinations</div>
+                        <div class="mega-menu__chip-row" data-mega-country-col>
+                            <?php foreach ($countryMenuData['popular'] as $c): ?>
+                            <a href="/visa/<?= e($c['slug']) ?>/" class="mega-menu__chip" data-mega-country-name="<?= e(strtolower($c['name'])) ?>">
+                                <span aria-hidden="true"><?= flag_emoji($c['iso2']) ?></span> <?= e($c['name']) ?>
+                            </a>
+                            <?php endforeach; ?>
+                        </div>
+
+                        <div class="mega-menu__countries-columns" id="mega-country-results">
+                            <div class="mega-menu__col mega-menu__col--popular">
+                                <div class="mega-menu__col-heading">Find Visa By Purpose</div>
+                                <div class="mega-menu__purpose-grid">
+                                    <?php foreach ($visaTypesRaw as $vt): ?>
+                                    <a href="/visa-type/<?= e($vt['slug']) ?>/"><span class="mega-menu__icon" aria-hidden="true"><?= visa_type_icon($vt['slug']) ?></span><?= e($vt['name']) ?></a>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+
+                            <div class="mega-menu__col">
+                                <div class="mega-menu__col-heading">Asia</div>
+                                <div data-mega-country-col>
+                                    <ul>
+                                        <?php foreach ($asiaTop as $c): ?>
+                                        <li data-mega-country-name="<?= e(strtolower($c['name'])) ?>"><a href="/visa/<?= e($c['slug']) ?>/"><span aria-hidden="true"><?= flag_emoji($c['iso2']) ?></span> <?= e($c['name']) ?></a></li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                </div>
+                                <a href="/countries/#region-asia" class="mega-menu__viewall">View All Asia (<?= count($countryMenuData['by_region']['Asia'] ?? []) ?>) &rarr;</a>
+                            </div>
+
+                            <div class="mega-menu__col">
+                                <div class="mega-menu__col-heading">Europe</div>
+                                <div class="mega-menu__schengen-box" data-mega-country-name="schengen area schengen visa">
+                                    <div class="mega-menu__schengen-title">🇪🇺 Schengen Visa</div>
+                                    <p class="mega-menu__schengen-copy"><?= count($countryMenuData['schengen']) ?> European countries, one visa.</p>
+                                    <a href="/visa/schengen/" class="mega-menu__schengen-link">Explore Schengen &rarr;</a>
+                                </div>
+                                <div data-mega-country-col style="margin-top:var(--space-3)">
+                                    <ul>
+                                        <?php foreach ($europeNonSchengenTop as $c): ?>
+                                        <li data-mega-country-name="<?= e(strtolower($c['name'])) ?>"><a href="/visa/<?= e($c['slug']) ?>/"><span aria-hidden="true"><?= flag_emoji($c['iso2']) ?></span> <?= e($c['name']) ?></a></li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                </div>
+                                <a href="/countries/#region-europe" class="mega-menu__viewall">View All Europe (<?= count($countryMenuData['by_region']['Europe'] ?? []) ?>) &rarr;</a>
+                            </div>
+
+                            <div class="mega-menu__col">
+                                <div class="mega-menu__col-heading">Africa</div>
+                                <div data-mega-country-col>
+                                    <ul>
+                                        <?php foreach ($africaTop as $c): ?>
+                                        <li data-mega-country-name="<?= e(strtolower($c['name'])) ?>"><a href="/visa/<?= e($c['slug']) ?>/"><span aria-hidden="true"><?= flag_emoji($c['iso2']) ?></span> <?= e($c['name']) ?></a></li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                </div>
+                                <a href="/countries/#region-africa" class="mega-menu__viewall">View All Africa (<?= count($countryMenuData['by_region']['Africa'] ?? []) ?>) &rarr;</a>
+                            </div>
+
+                            <div class="mega-menu__col">
+                                <div class="mega-menu__col-heading">Americas &amp; Oceania</div>
+                                <div data-mega-country-col>
+                                    <ul>
+                                        <?php foreach ($northAmericaTop as $c): ?>
+                                        <li data-mega-country-name="<?= e(strtolower($c['name'])) ?>"><a href="/visa/<?= e($c['slug']) ?>/"><span aria-hidden="true"><?= flag_emoji($c['iso2']) ?></span> <?= e($c['name']) ?></a></li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                </div>
+                                <a href="/countries/#region-north-america" class="mega-menu__viewall">View All N. America (<?= count($countryMenuData['by_region']['North America'] ?? []) ?>) &rarr;</a>
+                                <div class="mega-menu__col-heading" style="margin-top:var(--space-4)">South America</div>
+                                <div data-mega-country-col>
+                                    <ul>
+                                        <?php foreach ($southAmericaTop as $c): ?>
+                                        <li data-mega-country-name="<?= e(strtolower($c['name'])) ?>"><a href="/visa/<?= e($c['slug']) ?>/"><span aria-hidden="true"><?= flag_emoji($c['iso2']) ?></span> <?= e($c['name']) ?></a></li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                </div>
+                                <a href="/countries/#region-south-america" class="mega-menu__viewall">View All S. America (<?= count($countryMenuData['by_region']['South America'] ?? []) ?>) &rarr;</a>
+                                <div class="mega-menu__col-heading" style="margin-top:var(--space-4)">Oceania</div>
+                                <div data-mega-country-col>
+                                    <ul>
+                                        <?php foreach ($oceaniaTop as $c): ?>
+                                        <li data-mega-country-name="<?= e(strtolower($c['name'])) ?>"><a href="/visa/<?= e($c['slug']) ?>/"><span aria-hidden="true"><?= flag_emoji($c['iso2']) ?></span> <?= e($c['name']) ?></a></li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                </div>
+                                <a href="/countries/#region-oceania" class="mega-menu__viewall">View All Oceania (<?= count($countryMenuData['by_region']['Oceania'] ?? []) ?>) &rarr;</a>
+                            </div>
+                        </div>
+
+                        <p id="mega-country-empty" class="mega-menu__countries-empty" hidden>No matches &mdash; try a different destination, or <a href="/countries/">browse the full directory</a>.</p>
+
+                        <div class="mega-menu__featured-row">
+                            <a href="/visa/schengen/" class="mega-menu__featured-card mega-menu__featured-card--highlight" data-mega-country-name="schengen">
+                                <span class="mega-menu__featured-card-flag" aria-hidden="true">🇪🇺</span>
+                                <span class="mega-menu__featured-card-title">Schengen Visa</span>
+                                <span class="mega-menu__featured-card-copy"><?= count($countryMenuData['schengen']) ?> European countries</span>
+                                <span class="mega-menu__featured-card-link">Explore Schengen &rarr;</span>
+                            </a>
+                            <a href="/visa/usa/" class="mega-menu__featured-card" data-mega-country-name="usa united states">
+                                <span class="mega-menu__featured-card-flag" aria-hidden="true">🇺🇸</span>
+                                <span class="mega-menu__featured-card-title">USA Visa</span>
+                                <span class="mega-menu__featured-card-copy">Tourist, business, student &amp; more</span>
+                                <span class="mega-menu__featured-card-link">Explore USA Visa &rarr;</span>
+                            </a>
+                            <a href="/visa/canada/" class="mega-menu__featured-card" data-mega-country-name="canada">
+                                <span class="mega-menu__featured-card-flag" aria-hidden="true">🇨🇦</span>
+                                <span class="mega-menu__featured-card-title">Canada Visa</span>
+                                <span class="mega-menu__featured-card-copy">Visitor, business, study &amp; work</span>
+                                <span class="mega-menu__featured-card-link">Explore Canada Visa &rarr;</span>
+                            </a>
+                            <a href="/visa/uk/" class="mega-menu__featured-card" data-mega-country-name="uk united kingdom">
+                                <span class="mega-menu__featured-card-flag" aria-hidden="true">🇬🇧</span>
+                                <span class="mega-menu__featured-card-title">UK Visa</span>
+                                <span class="mega-menu__featured-card-copy">Visitor, business, student &amp; work</span>
+                                <span class="mega-menu__featured-card-link">Explore UK Visa &rarr;</span>
+                            </a>
+                        </div>
+
+                        <div class="mega-menu__countries-footer">
+                            <div class="mega-menu__guided-search">
+                                <strong>Not sure which visa you need?</strong>
+                                <p>Tell us your destination and purpose of travel &mdash; we'll help you find the right visa type.</p>
+                                <a href="/#visa-search" class="btn btn-outline btn-sm">Find My Visa &rarr;</a>
+                            </div>
+                            <div class="mega-menu__directory-cta">
+                                <strong>&#127760; Explore All Countries</strong>
+                                <p>Visa requirements, application procedures, and document checklists for <?= (int) $countryMenuData['total'] ?>+ countries worldwide.</p>
+                                <a href="/countries/" class="btn btn-gold btn-sm">View Complete Country Directory &rarr;</a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
                 <?php foreach ($navLinks as $link): ?>
                 <li><a href="<?= e($link['href']) ?>"<?= $isActive($link['href']) ? ' class="is-active"' : '' ?>><?= e($link['label']) ?></a></li>
                 <?php endforeach; ?>
@@ -259,6 +431,88 @@ foreach ([
                             </div>
                             <?php endforeach; ?>
                             <a href="/attestation/" class="site-header__mobile-viewall">View All Attestation Services &rarr;</a>
+                        </div>
+                    </details>
+                </li>
+                <li class="site-header__mobile-accordion">
+                    <details>
+                        <summary>Countries</summary>
+                        <div class="site-header__mobile-accordion-body">
+                            <div class="site-header__mobile-subgroup">
+                                <span class="site-header__mobile-subheading">Popular Destinations</span>
+                                <ul>
+                                    <?php foreach ($countryMenuData['popular'] as $c): ?>
+                                    <li><a href="/visa/<?= e($c['slug']) ?>/"><span aria-hidden="true"><?= flag_emoji($c['iso2']) ?></span> <?= e($c['name']) ?></a></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                            <div class="site-header__mobile-subgroup">
+                                <span class="site-header__mobile-subheading">Asia</span>
+                                <ul>
+                                    <?php foreach ($asiaTop as $c): ?>
+                                    <li><a href="/visa/<?= e($c['slug']) ?>/"><span aria-hidden="true"><?= flag_emoji($c['iso2']) ?></span> <?= e($c['name']) ?></a></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                                <a href="/countries/#region-asia" class="site-header__mobile-viewall">View All Asia (<?= count($countryMenuData['by_region']['Asia'] ?? []) ?>) &rarr;</a>
+                            </div>
+                            <div class="site-header__mobile-subgroup">
+                                <span class="site-header__mobile-subheading">Europe</span>
+                                <ul>
+                                    <li><a href="/visa/schengen/" class="site-header__mobile-schengen">🇪🇺 Schengen Visa <span>(<?= count($countryMenuData['schengen']) ?> countries)</span></a></li>
+                                </ul>
+                                <span class="site-header__mobile-subheading" style="margin-top:var(--space-3)">Other Europe</span>
+                                <ul>
+                                    <?php foreach ($europeNonSchengenTop as $c): ?>
+                                    <li><a href="/visa/<?= e($c['slug']) ?>/"><span aria-hidden="true"><?= flag_emoji($c['iso2']) ?></span> <?= e($c['name']) ?></a></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                                <a href="/countries/#region-europe" class="site-header__mobile-viewall">View All Europe (<?= count($countryMenuData['by_region']['Europe'] ?? []) ?>) &rarr;</a>
+                            </div>
+                            <div class="site-header__mobile-subgroup">
+                                <span class="site-header__mobile-subheading">Africa</span>
+                                <ul>
+                                    <?php foreach ($africaTop as $c): ?>
+                                    <li><a href="/visa/<?= e($c['slug']) ?>/"><span aria-hidden="true"><?= flag_emoji($c['iso2']) ?></span> <?= e($c['name']) ?></a></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                                <a href="/countries/#region-africa" class="site-header__mobile-viewall">View All Africa (<?= count($countryMenuData['by_region']['Africa'] ?? []) ?>) &rarr;</a>
+                            </div>
+                            <div class="site-header__mobile-subgroup">
+                                <span class="site-header__mobile-subheading">North America</span>
+                                <ul>
+                                    <?php foreach ($northAmericaTop as $c): ?>
+                                    <li><a href="/visa/<?= e($c['slug']) ?>/"><span aria-hidden="true"><?= flag_emoji($c['iso2']) ?></span> <?= e($c['name']) ?></a></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                                <a href="/countries/#region-north-america" class="site-header__mobile-viewall">View All N. America (<?= count($countryMenuData['by_region']['North America'] ?? []) ?>) &rarr;</a>
+                            </div>
+                            <div class="site-header__mobile-subgroup">
+                                <span class="site-header__mobile-subheading">South America</span>
+                                <ul>
+                                    <?php foreach ($southAmericaTop as $c): ?>
+                                    <li><a href="/visa/<?= e($c['slug']) ?>/"><span aria-hidden="true"><?= flag_emoji($c['iso2']) ?></span> <?= e($c['name']) ?></a></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                                <a href="/countries/#region-south-america" class="site-header__mobile-viewall">View All S. America (<?= count($countryMenuData['by_region']['South America'] ?? []) ?>) &rarr;</a>
+                            </div>
+                            <div class="site-header__mobile-subgroup">
+                                <span class="site-header__mobile-subheading">Oceania</span>
+                                <ul>
+                                    <?php foreach ($oceaniaTop as $c): ?>
+                                    <li><a href="/visa/<?= e($c['slug']) ?>/"><span aria-hidden="true"><?= flag_emoji($c['iso2']) ?></span> <?= e($c['name']) ?></a></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                                <a href="/countries/#region-oceania" class="site-header__mobile-viewall">View All Oceania (<?= count($countryMenuData['by_region']['Oceania'] ?? []) ?>) &rarr;</a>
+                            </div>
+                            <div class="site-header__mobile-subgroup">
+                                <span class="site-header__mobile-subheading">Visa By Purpose</span>
+                                <ul>
+                                    <?php foreach ($visaTypesRaw as $vt): ?>
+                                    <li><a href="/visa-type/<?= e($vt['slug']) ?>/"><span aria-hidden="true"><?= visa_type_icon($vt['slug']) ?></span> <?= e($vt['name']) ?></a></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                            <a href="/countries/" class="site-header__mobile-viewall">&#127760; Complete Country Directory &rarr;</a>
                         </div>
                     </details>
                 </li>

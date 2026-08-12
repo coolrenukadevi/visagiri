@@ -357,6 +357,49 @@ function attestation_categories(): array
     return $grouped;
 }
 
+/**
+ * Single source of truth for the Country mega-menu — one query over
+ * the real countries table (208 rows), grouped by region plus the
+ * popular-destination and Schengen-membership flags. Reused by
+ * includes/header.php only (desktop mega-menu + mobile accordion);
+ * countries/index.php has its own equivalent query since the two
+ * pages were built independently, but neither one hardcodes a country
+ * list that could fall out of sync with the DB.
+ */
+function country_mega_menu_data(): array
+{
+    static $data = null;
+    if ($data !== null) {
+        return $data;
+    }
+
+    $rows = db()->query(
+        'SELECT name, slug, iso2, region, is_popular_destination, is_schengen
+         FROM countries WHERE is_active = 1 ORDER BY region, name'
+    )->fetchAll();
+
+    $byRegion = [];
+    $popular = [];
+    $schengen = [];
+    foreach ($rows as $row) {
+        $byRegion[$row['region']][] = $row;
+        if ((int) $row['is_popular_destination'] === 1) {
+            $popular[] = $row;
+        }
+        if ((int) $row['is_schengen'] === 1) {
+            $schengen[] = $row;
+        }
+    }
+
+    $data = [
+        'by_region' => $byRegion,
+        'popular' => $popular,
+        'schengen' => $schengen,
+        'total' => count($rows),
+    ];
+    return $data;
+}
+
 /** A distinctive icon per attestation category, used as the mega-menu column heading icon. */
 function attestation_category_icon(string $category): string
 {

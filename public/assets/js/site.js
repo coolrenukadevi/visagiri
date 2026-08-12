@@ -102,6 +102,42 @@
   };
   initMegaMenu('attestation-mega-trigger', 'attestation-mega-menu');
   initMegaMenu('company-mega-trigger', 'company-mega-menu');
+  initMegaMenu('countries-mega-trigger', 'countries-mega-menu');
+
+  // Countries mega-menu live search. Same substring-match approach as
+  // countries.js's /countries/ page filter, but scoped to the
+  // mega-menu's own elements (distinct IDs — both this and the
+  // /countries/ page's own search box exist in the DOM at once when
+  // viewing /countries/ itself, so they can't share an id). Filters
+  // country chips/links (data-mega-country-name) and hides an entire
+  // column group (data-mega-country-col) when none of its entries
+  // match; the "Find Visa By Purpose" list has no data-mega-country-*
+  // attributes, so it's untouched by the country search, same as the
+  // "View All" links, which stay usable regardless of the query.
+  var megaCountryFilter = document.getElementById('mega-country-filter');
+  if (megaCountryFilter) {
+    var megaCountryEmpty = document.getElementById('mega-country-empty');
+    var megaCountryItems = Array.prototype.slice.call(document.querySelectorAll('[data-mega-country-name]'));
+    var megaCountryCols = Array.prototype.slice.call(document.querySelectorAll('[data-mega-country-col]'));
+    megaCountryFilter.addEventListener('input', function () {
+      var q = megaCountryFilter.value.trim().toLowerCase();
+      var anyVisible = false;
+      megaCountryItems.forEach(function (item) {
+        var match = q === '' || item.getAttribute('data-mega-country-name').indexOf(q) !== -1;
+        item.hidden = !match;
+        if (match) {
+          anyVisible = true;
+        }
+      });
+      megaCountryCols.forEach(function (col) {
+        var hasMatch = q === '' || col.querySelector('[data-mega-country-name]:not([hidden])') !== null;
+        col.hidden = !hasMatch;
+      });
+      if (megaCountryEmpty) {
+        megaCountryEmpty.hidden = anyVisible;
+      }
+    });
+  }
 
   // Mobile Attestation accordion — closes any other open <details> in
   // the mobile nav when one is opened, so only one panel is expanded

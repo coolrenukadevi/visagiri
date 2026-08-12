@@ -151,6 +151,11 @@
   visibility: hidden;
   transition: opacity var(--transition-fast), transform var(--transition-fast), visibility var(--transition-fast);
   z-index: 110;
+  /* .site-header__nav > ul sets white-space: nowrap for the flat
+     top-level links; reset it here at the root rather than per leaf
+     element, so no mega-menu built on top of this ever silently
+     inherits it again (see the Company mega-menu's overflow bug). */
+  white-space: normal;
 }
 
 .has-mega-menu:hover .mega-menu,
@@ -430,6 +435,280 @@
   .mega-menu__featured-link {
     padding-top: var(--space-2);
   }
+}
+
+/* ---------- Countries mega-menu ---------- */
+
+.mega-menu--countries {
+  width: min(1140px, calc(100vw - var(--space-8)));
+  padding: var(--space-5);
+}
+
+.mega-menu__countries-search {
+  position: relative;
+  margin-bottom: var(--space-5);
+}
+
+.mega-menu__countries-search svg {
+  position: absolute;
+  left: var(--space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.mega-menu__countries-search .form-input {
+  padding-left: calc(var(--space-3) * 2 + 16px);
+}
+
+.mega-menu__countries-columns {
+  display: grid;
+  grid-template-columns: 1.15fr repeat(4, 1fr);
+  gap: var(--space-6);
+}
+
+.mega-menu__countries-columns > .mega-menu__col {
+  min-width: 0;
+}
+
+.mega-menu__col--popular .mega-menu__col ul,
+.mega-menu__countries-columns ul {
+  list-style: none;
+  margin: 0 0 var(--space-2);
+  padding: 0;
+}
+
+.mega-menu__countries-columns li a {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  color: var(--text-dark);
+}
+
+.mega-menu__countries-columns li a:hover,
+.mega-menu__countries-columns li a:focus-visible {
+  background: var(--visa-blue-light);
+  color: var(--visa-blue-dark);
+}
+
+.mega-menu__viewall {
+  display: inline-block;
+  margin-top: var(--space-1);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--visa-blue);
+}
+
+.mega-menu__viewall:hover {
+  color: var(--visa-blue-dark);
+}
+
+.mega-menu__purpose-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px var(--space-2);
+}
+
+.mega-menu__purpose-grid a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  color: var(--text-dark);
+}
+
+.mega-menu__purpose-grid a:hover,
+.mega-menu__purpose-grid a:focus-visible {
+  background: var(--visa-blue-light);
+  color: var(--visa-blue-dark);
+}
+
+.mega-menu__chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-5);
+  padding-bottom: var(--space-5);
+  border-bottom: 1px solid var(--border);
+}
+
+.mega-menu__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-dark);
+  background: var(--surface);
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.mega-menu__chip:hover,
+.mega-menu__chip:focus-visible {
+  background: var(--visa-blue-light);
+  border-color: var(--visa-blue);
+  color: var(--visa-blue-dark);
+}
+
+.mega-menu__schengen-box {
+  display: block;
+  padding: var(--space-3);
+  background: var(--visa-gold-light);
+  border: 1px solid var(--visa-gold);
+  border-radius: var(--radius-md);
+}
+
+.mega-menu__schengen-title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-dark);
+}
+
+.mega-menu__schengen-copy {
+  margin: var(--space-1) 0 var(--space-2);
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+.mega-menu__schengen-link {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--visa-gold-dark);
+}
+
+.mega-menu__schengen-link:hover {
+  color: var(--visa-blue-dark);
+}
+
+.mega-menu__countries-empty {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  padding: var(--space-5) 0;
+}
+
+.mega-menu__featured-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+}
+
+.mega-menu__featured-card {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  transition: box-shadow var(--transition-base), transform var(--transition-base), border-color var(--transition-base);
+  min-width: 0;
+}
+
+.mega-menu__featured-card:hover,
+.mega-menu__featured-card:focus-visible {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  border-color: var(--visa-blue);
+}
+
+.mega-menu__featured-card--highlight {
+  background: var(--visa-gold-light);
+  border-color: var(--visa-gold);
+}
+
+.mega-menu__featured-card-flag {
+  font-size: var(--font-size-xl);
+}
+
+.mega-menu__featured-card-title {
+  margin-top: var(--space-2);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+  color: var(--text-dark);
+}
+
+.mega-menu__featured-card-copy {
+  margin-top: 2px;
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+.mega-menu__featured-card-link {
+  margin-top: var(--space-2);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--visa-blue);
+}
+
+.mega-menu__countries-footer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+}
+
+.mega-menu__guided-search,
+.mega-menu__directory-cta {
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--background);
+}
+
+.mega-menu__guided-search strong,
+.mega-menu__directory-cta strong {
+  display: block;
+  font-size: var(--font-size-sm);
+  color: var(--text-dark);
+}
+
+.mega-menu__guided-search p,
+.mega-menu__directory-cta p {
+  margin: var(--space-1) 0 var(--space-3);
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  text-align: left;
+}
+
+@media (max-width: 1279px) {
+  .mega-menu__countries-columns {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .mega-menu__col--popular {
+    grid-column: 1 / -1;
+  }
+  .mega-menu__featured-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .mega-menu__countries-footer {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Mobile Countries accordion (Schengen highlight) ---------- */
+
+.site-header__mobile-schengen {
+  background: var(--visa-gold-light) !important;
+  font-weight: var(--font-weight-semibold) !important;
+}
+
+.site-header__mobile-schengen span:last-child {
+  margin-left: var(--space-1);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
 }
 
 /* ---------- Mobile Attestation accordion ---------- */
