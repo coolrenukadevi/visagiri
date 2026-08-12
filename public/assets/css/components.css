@@ -109,6 +109,33 @@
   color: var(--visa-blue-dark);
 }
 
+.leader-card {
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+}
+
+.leader-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.leader-card__social {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--visa-blue);
+  border-radius: var(--radius-full);
+  color: var(--visa-blue);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  transition: background var(--transition-base), color var(--transition-base);
+}
+
+.leader-card__social:hover {
+  background: var(--visa-blue);
+  color: var(--white);
+}
+
 .card-grid {
   display: grid;
   gap: var(--space-5);

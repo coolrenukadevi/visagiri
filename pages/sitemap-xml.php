@@ -27,6 +27,7 @@ $staticUrls = [
     ['loc' => '/', 'priority' => '1.0', 'changefreq' => 'weekly'],
     ['loc' => '/about/', 'priority' => '0.6', 'changefreq' => 'monthly'],
     ['loc' => '/leadership/', 'priority' => '0.4', 'changefreq' => 'monthly'],
+    ['loc' => '/our-team/', 'priority' => '0.4', 'changefreq' => 'monthly'],
     ['loc' => '/countries/', 'priority' => '0.9', 'changefreq' => 'weekly'],
     ['loc' => '/visa-type/', 'priority' => '0.8', 'changefreq' => 'monthly'],
     ['loc' => '/visa-process/', 'priority' => '0.6', 'changefreq' => 'monthly'],

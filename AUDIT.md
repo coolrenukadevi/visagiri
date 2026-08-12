@@ -614,3 +614,15 @@ The client provided two real facts directly in chat: Anisha Bharti (Director) an
 **A real CSS bug caught and fixed on the spot**: the leader's title text ("Director") rendered left-aligned instead of centered under the name, because the sitewide `p { text-align: justify }` rule (added earlier this session for body copy) overrides inherited `text-align: center` on any `<p>` specifically — the exact same class of bug already hit twice this session in the mega-menus' cards. Fixed with an explicit `text-align: center` on `.leader-card__title`.
 
 **Verified**: `/leadership/` returns 200 with `index, follow`; both names/titles/LinkedIn URLs render correctly; Playwright screenshots at desktop and mobile confirm centered layout, on-brand avatar styling, zero console errors; `php -l` clean.
+
+---
+
+## Leadership + Team pages redesigned — per request
+
+Upgraded `/leadership/` with an intro paragraph above the leader cards, a hover-lift on the cards, and a proper LinkedIn button (icon + label) replacing the plain text link. No new facts invented — same two real directors, same confirmed LinkedIn URLs as before.
+
+**`/our-team/`** converted from a noindexed stub to a real, indexed page — but still no individual team-member names beyond the two directors already on Leadership, so rather than inventing people it describes the three real functional roles behind Visagiri's actual services (Visa Consultants, Document & Attestation Specialists, Application Support), reusing the existing `.feature-card` component already established for "Why Visagiri" on `/about/` — same discipline, generic-but-real category descriptions, not fabricated headcounts or bios. Closes with an honest note that individual profiles are coming, plus links to Leadership and Contact.
+
+A real double-escaping bug was caught before shipping: `&amp;` HTML-entity literals inside PHP string values (e.g. `'Document &amp; Attestation Specialists'`) would have been re-escaped by `e()`/`htmlspecialchars()` into `&amp;amp;` on output. Fixed by using a literal `&` in the PHP source and letting `e()` do the escaping — verified by checking the rendered HTML for `&amp;amp;` directly, not just eyeballing the source.
+
+**Verified**: both pages return 200 with `index, follow` (were `noindex, nofollow`); `/leadership/` title lengthened from 21 to 36 chars (was under the 30-char floor) and description re-tuned to 136 chars; `/our-team/` title/description land at 55/143 chars, both in range; both added to `sitemap.xml`; Playwright screenshots at desktop and mobile show correct layout, hover states, and zero horizontal overflow; zero console errors; `php -l` clean on both files.
