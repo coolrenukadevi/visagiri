@@ -15,9 +15,9 @@ declare(strict_types=1);
  * here. Same number used for both Call and WhatsApp.
  */
 
-$enquiryPhoneDisplay = '+91 7065 819 819';
-$enquiryPhoneDial = '+917065819819';
-$enquiryEmail = 'info@visagiri.com';
+$enquiryPhoneDisplay = setting('contact_phone_display', '+91 7065 819 819');
+$enquiryPhoneDial = setting('contact_phone_dial', '+917065819819');
+$enquiryEmail = setting('contact_email', 'info@visagiri.com');
 ?>
 <div class="enquiry-widget" id="enquiry-widget">
     <div class="enquiry-widget__actions" id="enquiry-widget-actions">

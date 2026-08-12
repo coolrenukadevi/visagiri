@@ -17,7 +17,7 @@ function start_secure_session(): void
         'lifetime' => 0,
         'path' => '/',
         'domain' => '',
-        'secure' => env('SESSION_SECURE_COOKIE', 'true') !== 'false',
+        'secure' => SESSION_SECURE_COOKIE,
         'httponly' => true,
         'samesite' => 'Lax',
     ]);
@@ -90,59 +90,35 @@ function csrf_require(): void
 }
 
 /**
- * Per-key rate limiter backed by a single JSON file under storage/
- * (see includes/config.php's STORAGE_PATH) rather than a database —
- * this app has no database to back it with. Deliberately NOT
- * session-based: a session-backed limiter can be bypassed entirely by
- * an attacker who just doesn't send the session cookie back, which
- * defeats the point for exactly the enquiry-form abuse this exists to
- * stop. $key should already include the caller's IP.
- *
- * flock()'d read-modify-write on one shared file is fine at this
- * site's traffic volume (a handful of form submissions, not a
- * high-concurrency API) and needs nothing beyond a writable directory
- * — no cron, no separate service, no DB.
+ * Per-key rate limiter backed by the `rate_limits` table — deliberately
+ * NOT session-based. A session-backed limiter can be bypassed entirely
+ * by an attacker who just doesn't send the session cookie back (a
+ * fresh session means a fresh, empty counter), which defeats the point
+ * for exactly the login/enquiry-form abuse this exists to stop. $key
+ * should already include the caller's IP.
  */
 function rate_limit_check(string $key, int $maxAttempts, int $windowSeconds): bool
 {
-    $file = STORAGE_PATH . '/rate-limits.json';
-    $handle = fopen($file, 'c+');
-    if ($handle === false) {
-        // Can't persist state — fail open rather than blocking every
-        // submission because a directory permission is wrong.
-        return true;
-    }
+    $pdo = db();
 
-    flock($handle, LOCK_EX);
-    $raw = stream_get_contents($handle);
-    $data = $raw !== false && $raw !== '' ? json_decode($raw, true) : [];
-    if (!is_array($data)) {
-        $data = [];
-    }
+    // The whole expiry comparison happens in MySQL's own clock domain
+    // (NOW() vs. the stored window_started_at) rather than in PHP —
+    // comparing a MySQL-generated timestamp string via PHP's
+    // strtotime() against PHP's time() silently breaks the moment the
+    // DB server and PHP process disagree on default timezone. Doing it
+    // in SQL sidesteps that entirely.
+    $stmt = $pdo->prepare(
+        'INSERT INTO rate_limits (rate_key, attempt_count, window_started_at)
+         VALUES (:key, 1, NOW())
+         ON DUPLICATE KEY UPDATE
+             attempt_count = IF(window_started_at + INTERVAL :window1 SECOND < NOW(), 1, attempt_count + 1),
+             window_started_at = IF(window_started_at + INTERVAL :window2 SECOND < NOW(), NOW(), window_started_at)'
+    );
+    $stmt->execute(['key' => $key, 'window1' => $windowSeconds, 'window2' => $windowSeconds]);
 
-    $now = time();
-    $entry = $data[$key] ?? ['count' => 0, 'started_at' => $now];
-    if ($now - $entry['started_at'] > $windowSeconds) {
-        $entry = ['count' => 1, 'started_at' => $now];
-    } else {
-        $entry['count']++;
-    }
-    $data[$key] = $entry;
+    $select = $pdo->prepare('SELECT attempt_count FROM rate_limits WHERE rate_key = :key');
+    $select->execute(['key' => $key]);
+    $attemptCount = (int) $select->fetchColumn();
 
-    // Prune expired keys so the file doesn't grow forever.
-    foreach ($data as $k => $v) {
-        if ($now - $v['started_at'] > $windowSeconds) {
-            unset($data[$k]);
-        }
-    }
-    $data[$key] = $entry;
-
-    ftruncate($handle, 0);
-    rewind($handle);
-    fwrite($handle, json_encode($data));
-    fflush($handle);
-    flock($handle, LOCK_UN);
-    fclose($handle);
-
-    return $entry['count'] <= $maxAttempts;
+    return $attemptCount <= $maxAttempts;
 }

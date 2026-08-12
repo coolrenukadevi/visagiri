@@ -1,0 +1,82 @@
+/* Admin panel chrome — reuses design tokens/components.css for buttons,
+   alerts, badges, form fields; this file is layout only. */
+
+.admin-body { background: var(--surface); }
+
+.admin-shell { display: flex; min-height: 100vh; }
+
+.admin-sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    background: var(--visa-blue);
+    color: var(--white);
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-5) 0;
+}
+.admin-sidebar__brand {
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-lg);
+    padding: 0 var(--space-5) var(--space-5);
+    letter-spacing: 0.02em;
+}
+.admin-sidebar__brand span { color: var(--visa-gold); }
+.admin-sidebar__brand small { display: block; font-weight: var(--font-weight-normal); font-size: var(--font-size-xs); opacity: 0.7; letter-spacing: 0.08em; text-transform: uppercase; }
+.admin-sidebar__nav { display: flex; flex-direction: column; flex: 1; }
+.admin-sidebar__nav a {
+    padding: var(--space-3) var(--space-5);
+    color: rgba(255,255,255,0.75);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    border-left: 3px solid transparent;
+}
+.admin-sidebar__nav a:hover { color: var(--white); background: rgba(255,255,255,0.06); }
+.admin-sidebar__nav a.is-active { color: var(--white); border-left-color: var(--visa-gold); background: rgba(255,255,255,0.08); }
+.admin-sidebar__footer { padding: var(--space-5); }
+.admin-sidebar__footer a { color: rgba(255,255,255,0.6); font-size: var(--font-size-sm); }
+
+.admin-main { flex: 1; min-width: 0; }
+.admin-topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: var(--space-4) var(--space-6);
+    background: var(--white);
+    border-bottom: 1px solid var(--border-color);
+}
+.admin-topbar h1 { font-size: var(--font-size-xl); margin: 0; }
+.admin-topbar__account { display: flex; align-items: center; gap: var(--space-3); font-size: var(--font-size-sm); color: var(--text-muted); }
+
+.admin-content { padding: var(--space-6); max-width: 1200px; }
+
+.admin-table { width: 100%; border-collapse: collapse; background: var(--white); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm); }
+.admin-table th, .admin-table td { text-align: left; padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--border-color); font-size: var(--font-size-sm); }
+.admin-table th { background: var(--surface); font-weight: var(--font-weight-semibold); color: var(--text-muted); text-transform: uppercase; font-size: var(--font-size-xs); letter-spacing: 0.04em; }
+.admin-table tr:last-child td { border-bottom: none; }
+.admin-table td.actions { white-space: nowrap; text-align: right; }
+.admin-table td.actions a, .admin-table td.actions button { margin-left: var(--space-2); }
+
+.admin-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-5); gap: var(--space-4); flex-wrap: wrap; }
+
+.admin-stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-6); }
+.admin-stat-card { background: var(--white); border-radius: var(--radius-md); padding: var(--space-5); box-shadow: var(--shadow-sm); }
+.admin-stat-card__value { font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--visa-blue); }
+.admin-stat-card__label { color: var(--text-muted); font-size: var(--font-size-sm); }
+
+.admin-form-card { background: var(--white); border-radius: var(--radius-md); padding: var(--space-6); box-shadow: var(--shadow-sm); max-width: 720px; }
+.admin-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+.admin-form-grid--single { grid-template-columns: 1fr; }
+.admin-checkbox-row { display: flex; align-items: center; gap: var(--space-2); margin-top: var(--space-2); }
+
+.admin-login-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--visa-blue); }
+.admin-login-card { background: var(--white); border-radius: var(--radius-md); padding: var(--space-8); width: 100%; max-width: 380px; box-shadow: var(--shadow-md); }
+.admin-login-card h1 { font-size: var(--font-size-xl); margin-bottom: var(--space-1); }
+.admin-login-card p { color: var(--text-muted); margin-bottom: var(--space-6); }
+
+@media (max-width: 768px) {
+    .admin-shell { flex-direction: column; }
+    .admin-sidebar { width: 100%; flex-direction: row; overflow-x: auto; padding: var(--space-3); }
+    .admin-sidebar__brand, .admin-sidebar__footer { display: none; }
+    .admin-sidebar__nav { flex-direction: row; }
+    .admin-sidebar__nav a { border-left: none; border-bottom: 3px solid transparent; white-space: nowrap; }
+    .admin-sidebar__nav a.is-active { border-bottom-color: var(--visa-gold); }
+    .admin-form-grid { grid-template-columns: 1fr; }
+}

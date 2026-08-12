@@ -5,18 +5,17 @@ declare(strict_types=1);
  * Sends a submitted enquiry to the Google Apps Script Web App bridge
  * (see docs/google-sheets-setup.md + google-apps-script/Code.gs),
  * which appends a row to a Google Sheet and saves a copy to Google
- * Drive. This app has no database of its own to log enquiries in —
- * Sheets/Drive are the actual system of record, not a nice-to-have.
+ * Drive. Now that MySQL is back, the database is the canonical,
+ * admin-manageable record (enquiries/contact_messages tables) — this
+ * is a secondary channel for whoever prefers checking a spreadsheet.
  *
  * Returns true only if the script actually confirmed it wrote the
  * row — a network error, a wrong URL, a script exception, or Google
- * returning its login/permission-error HTML all count as failure so
- * the caller knows to fall back to email rather than silently
- * reporting success.
+ * returning its login/permission-error HTML all count as failure.
  */
 function submit_enquiry_to_google(array $data): bool
 {
-    $url = GOOGLE_APPS_SCRIPT_URL;
+    $url = setting('google_apps_script_url');
     if ($url === '') {
         return false;
     }
@@ -70,19 +69,19 @@ function submit_enquiry_to_google(array $data): bool
 }
 
 /**
- * Full enquiry submission: tries the Google Sheets/Drive bridge first
- * (the actual record-keeping system), then always also emails the
- * team as a live notification — and, if the Google bridge failed or
- * hasn't been set up yet, as the only surviving copy of the enquiry.
- * Returns true if at least one channel succeeded, so the caller shows
- * an honest error only when the enquiry was genuinely lost.
+ * Best-effort side channels for a submission already safely stored in
+ * MySQL: an optional copy to Google Sheets/Drive, and an email ping to
+ * the team. Neither failing is treated as the submission failing —
+ * the database row (and its reference number, for enquiries) is
+ * already the durable record; these are just convenience notifications.
  */
-function submit_enquiry(array $data): bool
+function notify_enquiry_channels(array $data): void
 {
-    $sentToGoogle = submit_enquiry_to_google($data);
+    submit_enquiry_to_google($data);
 
     $subject = 'New enquiry from ' . ($data['name'] !== '' ? $data['name'] : 'website visitor');
     $lines = [
+        'Reference: ' . ($data['reference_number'] ?? 'N/A'),
         'Name: ' . $data['name'],
         'Email: ' . $data['email'],
         'Phone: ' . ($data['phone'] !== '' ? $data['phone'] : 'Not provided'),
@@ -92,15 +91,14 @@ function submit_enquiry(array $data): bool
         'Message:',
         $data['message'],
     ];
-    if (!$sentToGoogle) {
-        array_unshift($lines, '(Google Sheets/Drive delivery failed or is not yet configured — this email is the only record of this enquiry.)', '');
-    }
     $body = implode("\n", $lines);
 
-    $headers = 'From: ' . MAIL_FROM_NAME . ' <' . MAIL_FROM_ADDRESS . '>' . "\r\n"
+    $fromName = setting('mail_from_name', 'Visagiri Website');
+    $fromAddress = setting('mail_from_address', 'info@visagiri.com');
+    $recipients = setting('mail_enquiry_recipients', 'info@visagiri.com');
+
+    $headers = 'From: ' . $fromName . ' <' . $fromAddress . '>' . "\r\n"
         . 'Reply-To: ' . $data['email'] . "\r\n";
 
-    $sentByEmail = @mail(MAIL_ENQUIRY_RECIPIENTS, $subject, $body, $headers);
-
-    return $sentToGoogle || $sentByEmail;
+    @mail($recipients, $subject, $body, $headers);
 }

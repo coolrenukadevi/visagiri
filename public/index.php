@@ -31,9 +31,12 @@ if (PHP_SAPI === 'cli-server') {
 $root = dirname(__DIR__);
 
 require_once "$root/includes/config.php";
+require_once "$root/includes/database.php";
+require_once "$root/includes/settings.php";
 require_once "$root/includes/functions.php";
 require_once "$root/includes/data.php";
 require_once "$root/includes/security.php";
+require_once "$root/includes/auth.php";
 
 start_secure_session();
 send_security_headers();
@@ -133,6 +136,12 @@ switch ($segments[0] ?? '') {
 
     case 'blog':
         $dispatch("$root/blog/index.php");
+
+    case 'enquire':
+        $dispatch("$root/pages/enquire.php");
+
+    case 'admin':
+        $dispatch("$root/admin/index.php");
 
     default:
         $dispatch("$root/pages/404.php");

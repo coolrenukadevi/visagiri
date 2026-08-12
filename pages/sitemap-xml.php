@@ -32,6 +32,7 @@ $staticUrls = [
     ['loc' => '/visa-process/', 'priority' => '0.6', 'changefreq' => 'monthly'],
     ['loc' => '/faq/', 'priority' => '0.5', 'changefreq' => 'monthly'],
     ['loc' => '/contact/', 'priority' => '0.5', 'changefreq' => 'yearly'],
+    ['loc' => '/enquire/', 'priority' => '0.5', 'changefreq' => 'yearly'],
     ['loc' => '/attestation/', 'priority' => '0.7', 'changefreq' => 'monthly'],
 ];
 foreach (array_keys(attestation_services()) as $attestationSlug) {

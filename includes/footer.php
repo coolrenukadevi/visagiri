@@ -98,6 +98,7 @@ declare(strict_types=1);
         <div class="site-footer__col">
             <h3>Resources</h3>
             <ul>
+                <li><a href="/enquire/">Submit a Visa Enquiry</a></li>
                 <li><a href="/visa-process/">Visa Information</a></li>
                 <li><a href="/faq/">Visa FAQs</a></li>
                 <li><a href="/blog/">Travel Guides</a></li>

@@ -4,21 +4,21 @@
 # document root can't be pointed at public/ (typical basic shared
 # cPanel) — everything ends up as siblings ready to upload straight
 # into public_html/, instead of needing public/'s contents in one
-# place and includes/ etc. in another. No database is involved: this
-# build has none (see AUDIT.md, "Single-folder no-database rebuild").
+# place and includes/ etc. in another.
 #
 # What this does NOT do: change how the app is developed or how it's
 # deployed on hosts that DO support a custom document root — this
 # script only ever reads the working tree and writes to a separate
 # build directory; nothing here is required for local development.
 #
-# Security note: with this layout, includes/ physically sits inside
-# the web-servable folder (as does storage/, local rate-limiter
-# state). Both are blocked from direct web access by rules already in
-# public/.htaccess (carried into the package as the root .htaccess) —
-# see that file for the reasoning. That's a real, if smaller, security
-# trade-off versus keeping includes/ truly outside the web root; see
-# AUDIT.md.
+# Security note: with this layout, includes/ and config/ (which holds
+# the real database password — see config/database.php) physically
+# sit inside the web-servable folder, as does storage/ (local rate-
+# limiter fallback state). All three are blocked from direct web
+# access by rules already in public/.htaccess (carried into the
+# package as the root .htaccess) — see that file for the reasoning.
+# That's a real, if smaller, security trade-off versus keeping those
+# folders truly outside the web root; see AUDIT.md.
 #
 # Usage: bin/package-cpanel.sh [output-zip-path]
 # Defaults to ./visagiri-cpanel-YYYYMMDD.zip in the project root.
@@ -37,7 +37,6 @@ echo "==> Building flattened cPanel package in $BUILD_DIR"
 rsync -a \
   --exclude '.git' \
   --exclude '.gitignore' \
-  --exclude '.env' \
   --exclude 'legacy-site' \
   --exclude 'docs' \
   --exclude 'bin' \
@@ -81,10 +80,13 @@ echo ""
 echo "Next steps on cPanel:"
 echo "  1. Upload and extract this zip's CONTENTS directly into public_html/"
 echo "     (not into a subfolder — the files should sit right in public_html/)."
-echo "  2. Copy .env.example to .env and set https://yourdomain.com as APP_URL."
-echo "     No database setup needed — this build has none."
-echo "  3. (Optional) Set up Google Sheets/Drive for enquiries: see docs/google-sheets-setup.md,"
-echo "     then add the resulting URL to .env as GOOGLE_APPS_SCRIPT_URL."
-echo "     Until then, enquiries are still emailed to MAIL_ENQUIRY_RECIPIENTS."
-echo "  4. cPanel > MultiPHP Manager: set PHP 8.1+ for the domain."
-echo "  5. cPanel > SSL/TLS Status: run AutoSSL (the app force-redirects to HTTPS)."
+echo "  2. cPanel > MySQL Databases: create a database + user, import database/schema.sql via phpMyAdmin,"
+echo "     then run database/seed.sql (or re-run the equivalent data import) to load real catalog data."
+echo "  3. Edit config/database.php on the server with the real DB host/name/user/password."
+echo "  4. Edit config/site.php on the server: app_env=production, app_debug=false,"
+echo "     app_url=https://yourdomain.com, session_secure_cookie=true."
+echo "  5. Log into /admin/ with the credentials from the initial admin user (see AUDIT.md/setup notes)"
+echo "     and set contact details + (optionally) the Google Apps Script URL under Settings —"
+echo "     see docs/google-sheets-setup.md for that integration."
+echo "  6. cPanel > MultiPHP Manager: set PHP 8.2+ for the domain."
+echo "  7. cPanel > SSL/TLS Status: run AutoSSL (the app force-redirects to HTTPS)."

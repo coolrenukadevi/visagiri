@@ -6,13 +6,12 @@ declare(strict_types=1);
  * (detail). $segments is provided by public/index.php's dispatch
  * closure ($segments[0] === 'visa').
  *
- * No per-country/per-type requirement data (eligibility, documents,
- * fees) has ever been sourced for this site — the visa_requirements
- * table this used to query was never populated, so country+type
- * combinations always rendered the honest "not yet verified" state.
- * With the database gone entirely, that's now simply the only state
- * this page has, rather than one branch of a query result — see
- * AUDIT.md, "Single-folder no-database rebuild".
+ * Requirement data (eligibility, documents, fees) is admin-managed
+ * via /admin/countries/ + the visa_requirements table — see
+ * includes/data.php's fetch_visa_requirement(). Any country+type
+ * combination with no row yet renders the honest "not yet verified"
+ * state; this page's job is query logic and template, never to
+ * fabricate what it can't find.
  */
 
 $countrySlug = $segments[1] ?? null;
@@ -40,9 +39,10 @@ if ($typeSlug !== null) {
         render_not_found("We couldn't find that visa type for {$country['name']}.");
     }
 
-    $contactPoints = fetch_country_contact_points();
+    $requirement = fetch_visa_requirement((int) $country['id'], (int) $visaType['id']);
+    $contactPoints = fetch_country_contact_points((int) $country['id']);
     $countryName = $country['name'];
-    $faqs = faqs_general();
+    $faqs = fetch_relevant_faqs((int) $country['id'], (int) $visaType['id']);
 
     $pageTitle = "{$visaType['name']} for {$country['name']} - Visagiri";
     $pageDescription = "{$visaType['name']} eligibility, required documents, fees, and processing time for {$country['name']} — enquire with Visagiri.";
@@ -84,7 +84,10 @@ if ($typeSlug !== null) {
                 <div>
                     <h1><?= e($visaType['name']) ?> &mdash; <?= e($country['name']) ?></h1>
                     <p><?= e($visaType['description'] ?? '') ?></p>
-                    <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to know more about {$visaType['name']} for {$country['name']}.")) ?>" class="btn btn-gold" target="_blank" rel="noopener noreferrer">Enquire Now</a>
+                    <div class="button-group">
+                        <a href="/enquire/?country=<?= e($country['slug']) ?>&amp;visa_type=<?= e($visaType['slug']) ?>" class="btn btn-gold">Submit Enquiry</a>
+                        <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to know more about {$visaType['name']} for {$country['name']}.")) ?>" class="btn btn-outline" target="_blank" rel="noopener noreferrer">WhatsApp Us</a>
+                    </div>
                 </div>
             </div>
 
@@ -96,6 +99,34 @@ if ($typeSlug !== null) {
             </div>
             <?php endif; ?>
 
+            <?php if ($requirement): ?>
+            <div class="visa-spec-grid">
+                <div class="card"><div class="card-title">Eligibility</div><p><?= nl2br(e($requirement['eligibility'] ?? 'Not specified')) ?></p></div>
+                <div class="card"><div class="card-title">Required Documents</div><p><?= nl2br(e($requirement['documents_required'] ?? 'Not specified')) ?></p></div>
+                <div class="card"><div class="card-title">Application Process</div><p><?= nl2br(e($requirement['application_process'] ?? 'Not specified')) ?></p></div>
+                <div class="card"><div class="card-title">Processing Time</div><p><?= e($requirement['processing_time'] ?? 'Not specified') ?></p></div>
+                <div class="card"><div class="card-title">Fees</div><p>
+                    <?php if ($requirement['government_fee']): ?>Government fee: <?= e(format_money((float) $requirement['government_fee'], $requirement['currency'])) ?><br><?php endif; ?>
+                    <?php if ($requirement['service_fee']): ?>Service fee: <?= e(format_money((float) $requirement['service_fee'], $requirement['currency'])) ?><?php endif; ?>
+                </p></div>
+                <div class="card"><div class="card-title">Validity &amp; Stay</div><p>
+                    Validity: <?= e($requirement['validity_period'] ?? 'Not specified') ?><br>
+                    Stay duration: <?= e($requirement['stay_duration'] ?? 'Not specified') ?><br>
+                    Entry type: <?= e($requirement['entry_type'] ?? 'Not specified') ?>
+                </p></div>
+                <div class="card"><div class="card-title">Biometrics &amp; Interview</div><p>
+                    Biometrics required: <span class="badge <?= $requirement['biometrics_required'] ? 'badge-warning' : 'badge-neutral' ?>"><?= $requirement['biometrics_required'] ? 'Yes' : 'No' ?></span><br>
+                    Interview required: <span class="badge <?= $requirement['interview_required'] ? 'badge-warning' : 'badge-neutral' ?>"><?= $requirement['interview_required'] ? 'Yes' : 'No' ?></span>
+                </p></div>
+                <?php if (!empty($requirement['notes'])): ?>
+                <div class="card"><div class="card-title">Important Notes</div><p><?= nl2br(e($requirement['notes'])) ?></p></div>
+                <?php endif; ?>
+            </div>
+            <p class="visa-detail__verified">
+                <?php if (!empty($requirement['last_verified_at'])): ?>Last verified: <?= e(date('d M Y', strtotime((string) $requirement['last_verified_at']))) ?><?php endif; ?>
+                <?php if (!empty($requirement['source_url'])): ?> &middot; <a href="<?= e($requirement['source_url']) ?>" rel="nofollow noopener" target="_blank">Official source</a><?php endif; ?>
+            </p>
+            <?php else: ?>
             <div class="alert alert-warning">
                 <div>
                     <strong>Requirements not yet verified.</strong>
@@ -107,6 +138,7 @@ if ($typeSlug !== null) {
                 <a href="/contact/" class="btn btn-primary">Contact Us</a>
                 <a href="/visa/<?= e($country['slug']) ?>/" class="btn btn-outline">See other visa types for <?= e($country['name']) ?></a>
             </div>
+            <?php endif; ?>
 
             <div style="margin-top:var(--space-10)">
                 <?php require __DIR__ . '/../includes/contact-points.php'; ?>
@@ -135,7 +167,7 @@ if ($typeSlug !== null) {
 // Country overview: no specific visa type requested — list the
 // catalog of visa types to explore for this country.
 $visaTypes = visa_types_all();
-$contactPoints = fetch_country_contact_points();
+$contactPoints = fetch_country_contact_points((int) $country['id']);
 $countryName = $country['name'];
 
 $pageTitle = "{$country['name']} Visa Requirements - Visagiri";

@@ -1,4 +1,4 @@
-.env
+config/database.php
 storage/*
 !storage/.gitkeep
 *.log

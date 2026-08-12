@@ -32,6 +32,7 @@ $sections = [
         '/visa-process/' => 'Visa Process',
         '/blog/' => 'Visa Updates',
         '/faq/' => 'FAQ',
+        '/enquire/' => 'Submit a Visa Enquiry',
     ],
     'Legal & Support' => [
         '/privacy/' => 'Privacy Policy',

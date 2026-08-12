@@ -58,6 +58,12 @@ function flash_get(string $key): ?string
     return $message;
 }
 
+/** Formats a decimal amount with its currency code, e.g. "INR 12,500.00". */
+function format_money(float $amount, string $currency = 'INR'): string
+{
+    return $currency . ' ' . number_format($amount, 2);
+}
+
 /** Renders a country's flag as a Unicode emoji from its ISO2 code (no image assets needed). */
 function flag_emoji(?string $iso2): string
 {
@@ -74,11 +80,10 @@ function flag_emoji(?string $iso2): string
  * site. Any "Get a Quote"-style CTA should link here with a relevant
  * pre-filled message rather than standing up a duplicate contact form.
  */
-const ENQUIRY_WHATSAPP_NUMBER = '917065819819';
-
 function whatsapp_enquiry_href(string $message): string
 {
-    return 'https://wa.me/' . ENQUIRY_WHATSAPP_NUMBER . '?text=' . rawurlencode($message);
+    $number = setting('whatsapp_number', '917065819819');
+    return 'https://wa.me/' . $number . '?text=' . rawurlencode($message);
 }
 
 /** A distinctive icon per visa type (slug), used on the /visa-type/ hub and detail pages. */
@@ -511,4 +516,14 @@ function render_not_found(string $message = "The page you're looking for doesn't
     <?php
     require __DIR__ . '/footer.php';
     exit;
+}
+
+/** Generates a unique enquiry reference number, e.g. VIS-2026-000001. */
+function generate_enquiry_reference(): string
+{
+    $year = date('Y');
+    $stmt = db()->prepare("SELECT COUNT(*) FROM enquiries WHERE reference_number LIKE :prefix");
+    $stmt->execute(['prefix' => "VIS-$year-%"]);
+    $count = (int) $stmt->fetchColumn() + 1;
+    return sprintf('VIS-%s-%06d', $year, $count);
 }
