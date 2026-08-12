@@ -500,3 +500,15 @@ Every one of these gaps is a deliberate, documented decision to not fabricate co
 `public/assets/css/base.css`: `p`, `li`, and `.accordion-body` (FAQ answers, which use a `<div>` rather than `<p>`) now render `text-align: justify` with `hyphens: auto` — the latter to avoid the large, ugly word-gaps justified text produces on narrower columns without hyphenation. Deliberately **not** applied to the whole `<body>` — headings, buttons, badges, and nav links are short/single-line text where justify has no visible effect anyway, but a two-word wrapped heading stretched full-width to justify looks visibly broken, so `h1`–`h6` and component text (buttons/badges/nav) are left on their default alignment.
 
 Verified via real browser rendering, not just reading the CSS: computed `text-align` confirmed as `justify` on a real `<p>` (`/about/`) and a real `.accordion-body` (`/faq/`, after opening the accordion), confirmed `h1` stays at its default (`start`), and confirmed visually via full-page screenshots of `/about/` and `/faq/` — every paragraph now has clean, even left and right edges, headings and the footer's nav columns are visually unaffected, zero console errors.
+
+---
+
+## Real favicon set — added between phases, per request
+
+Replaced the inline-SVG-data-URI placeholder (a single icon, no size variants, in place since Phase 3/4) with a proper favicon set: `favicon.svg` (scalable, modern browsers), `favicon-16x16.png`/`favicon-32x32.png` (legacy/small-size fallback), `apple-touch-icon.png` (180×180, iOS home-screen), and a real multi-resolution `favicon.ico` at the site root (16/32/48px, each frame genuine PNG-compressed image data — confirmed via `file`, not just a renamed PNG).
+
+No ImageMagick/`rsvg-convert` is available in this environment, so each PNG size was drawn directly with PHP's GD library at 8× supersampling then downsampled for clean anti-aliased edges — rather than generating one image and letting the browser scale it down blurrily — and the `.ico` was hand-assembled (ICO's modern PNG-frame container format, embedding those same PNGs, which is what every current browser/OS expects). Same brand colors used everywhere else on the site: navy `#123F91` background, gold `#F4B400` "V" — the same scheme the placeholder favicon already used, since the real logo file has still never been uploaded as an actual file attachment (unresolved since Phase 6).
+
+All five files wired into `includes/header.php` via the standard multi-`<link>` pattern (SVG first for browsers that support it, ICO/PNG fallbacks with explicit `sizes`, separate `apple-touch-icon` link) and routed through the same `asset_url()` cache-buster as every other static asset, so a future favicon update won't get stuck behind a stale year-long browser cache.
+
+**Verified**: all five files return 200 with correct `Content-Type` (`image/svg+xml`, `image/vnd.microsoft.icon`, `image/png` ×3); `file` confirms `favicon.ico` is a genuine 3-icon `MS Windows icon resource` with real embedded PNG data at each size, not a mislabeled single image; zero console errors or failed requests loading the homepage.

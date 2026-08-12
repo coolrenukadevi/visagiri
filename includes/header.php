@@ -74,7 +74,11 @@ $isActive = static fn(string $href): bool => $href !== '/' && str_starts_with($c
 <meta property="og:site_name" content="Visagiri">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="<?= e($ogImage) ?>">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23123F91'/><text x='16' y='22' font-size='16' font-family='Arial,sans-serif' font-weight='700' fill='%23F4B400' text-anchor='middle'>V</text></svg>">
+<link rel="icon" href="<?= e(asset_url('/assets/images/favicon.svg')) ?>" type="image/svg+xml">
+<link rel="icon" href="<?= e(asset_url('/favicon.ico')) ?>" sizes="any">
+<link rel="icon" href="<?= e(asset_url('/assets/images/favicon-32x32.png')) ?>" type="image/png" sizes="32x32">
+<link rel="icon" href="<?= e(asset_url('/assets/images/favicon-16x16.png')) ?>" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="<?= e(asset_url('/assets/images/apple-touch-icon.png')) ?>">
 <?php
 // Phase 3 originally loaded these through main.css's @import chain,
 // which is correct in a bundler but wrong served raw: the browser
