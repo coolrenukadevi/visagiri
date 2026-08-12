@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard/
+Disallow: /admin/
+Disallow: /consultant/
+Disallow: /apply/
+Disallow: /login/
+Disallow: /register/
+Disallow: /forgot-password/
+Disallow: /reset-password/
+Disallow: /logout/
+Disallow: /blog/
+
+Sitemap: https://visagiri.com/sitemap.xml

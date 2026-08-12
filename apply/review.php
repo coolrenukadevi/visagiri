@@ -78,6 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $pageTitle = 'Review & Submit - Application';
 $pageDescription = 'Review and submit your Visagiri visa application.';
 $canonicalUrl = APP_URL . '/apply/review/';
+$noindex = true;
 require __DIR__ . '/../includes/header.php';
 ?>
 <div class="auth-wrap">

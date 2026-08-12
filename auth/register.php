@@ -83,6 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $pageTitle = 'Create Account';
 $pageDescription = 'Create a Visagiri account to start and manage your visa application online.';
 $canonicalUrl = APP_URL . '/register/';
+$noindex = true;
 require __DIR__ . '/../includes/header.php';
 ?>
 <div class="auth-wrap">

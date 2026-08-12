@@ -21,6 +21,7 @@ function render_admin_start(string $activeKey, string $title): void
     $pageTitle = "$title - Admin";
     $pageDescription = 'Visagiri admin panel.';
     $canonicalUrl = APP_URL . (ADMIN_NAV[$activeKey]['href'] ?? '/admin/');
+    $noindex = true;
     require __DIR__ . '/header.php';
     $flashNotice = flash_get('notice');
     ?>

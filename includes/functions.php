@@ -85,6 +85,11 @@ function render_scaffold_page(
     $pageTitle = $title . ' - Visagiri';
     $pageDescription = $description;
     $canonicalUrl = APP_URL . $canonicalPath;
+    // Never indexable — this is a placeholder, not shipped content, and
+    // search engines shouldn't be handed dev-only debug text as a real
+    // page (see Phase 15 audit in AUDIT.md for the inventory of what's
+    // still a stub at any given time).
+    $noindex = true;
 
     require __DIR__ . '/header.php';
     $flashNotice = flash_get('notice');
@@ -94,11 +99,15 @@ function render_scaffold_page(
         <div class="alert alert-warning" role="status"><?= e($flashNotice) ?></div>
         <?php endif; ?>
         <div class="alert alert-info" role="status">
+            <?php if (APP_DEBUG): ?>
             <div>
                 <strong>Content pending.</strong>
                 Handler: <code><?= e($handlerPath) ?></code> &middot;
                 Scheduled for: <?= e($plannedInPhase) ?>
             </div>
+            <?php else: ?>
+            <div><strong>This page isn't ready yet.</strong> We're still building it — check back soon.</div>
+            <?php endif; ?>
         </div>
     </section>
     <?php

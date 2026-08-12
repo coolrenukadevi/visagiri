@@ -24,6 +24,7 @@ function render_consultant_start(string $activeKey, string $title): void
     $pageTitle = "$title - Consultant";
     $pageDescription = 'Visagiri consultant panel.';
     $canonicalUrl = APP_URL . (CONSULTANT_NAV[$activeKey]['href'] ?? '/consultant/');
+    $noindex = true;
     require __DIR__ . '/header.php';
     $flashNotice = flash_get('notice');
     ?>

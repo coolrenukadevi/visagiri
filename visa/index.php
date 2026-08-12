@@ -60,6 +60,27 @@ if ($typeSlug !== null) {
     $pageTitle = "{$visaType['name']} for {$country['name']} - Visagiri";
     $pageDescription = "{$visaType['name']} requirements, documents, fees, and processing time for {$country['name']}.";
     $canonicalUrl = APP_URL . "/visa/{$country['slug']}/{$visaType['slug']}/";
+    $structuredData = [[
+        '@context' => 'https://schema.org',
+        '@type' => 'BreadcrumbList',
+        'itemListElement' => [
+            ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => APP_URL . '/'],
+            ['@type' => 'ListItem', 'position' => 2, 'name' => 'Countries', 'item' => APP_URL . '/countries/'],
+            ['@type' => 'ListItem', 'position' => 3, 'name' => $country['name'], 'item' => APP_URL . "/visa/{$country['slug']}/"],
+            ['@type' => 'ListItem', 'position' => 4, 'name' => $visaType['name'], 'item' => $canonicalUrl],
+        ],
+    ]];
+    if ($faqs) {
+        $structuredData[] = [
+            '@context' => 'https://schema.org',
+            '@type' => 'FAQPage',
+            'mainEntity' => array_map(static fn($f) => [
+                '@type' => 'Question',
+                'name' => $f['question'],
+                'acceptedAnswer' => ['@type' => 'Answer', 'text' => $f['answer']],
+            ], $faqs),
+        ];
+    }
     require __DIR__ . '/../includes/header.php';
     ?>
     <section class="visa-detail">
@@ -162,6 +183,15 @@ $countryName = $country['name'];
 $pageTitle = "{$country['name']} Visa Requirements - Visagiri";
 $pageDescription = "Visa types, requirements, and application information for {$country['name']}.";
 $canonicalUrl = APP_URL . "/visa/{$country['slug']}/";
+$structuredData = [[
+    '@context' => 'https://schema.org',
+    '@type' => 'BreadcrumbList',
+    'itemListElement' => [
+        ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => APP_URL . '/'],
+        ['@type' => 'ListItem', 'position' => 2, 'name' => 'Countries', 'item' => APP_URL . '/countries/'],
+        ['@type' => 'ListItem', 'position' => 3, 'name' => $country['name'], 'item' => $canonicalUrl],
+    ],
+]];
 require __DIR__ . '/../includes/header.php';
 ?>
 <section class="visa-detail">

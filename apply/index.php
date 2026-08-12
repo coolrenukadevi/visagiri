@@ -66,6 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $pageTitle = 'Start Your Visa Application';
 $pageDescription = 'Start your visa application with Visagiri.';
 $canonicalUrl = APP_URL . '/apply/';
+$noindex = true;
 require __DIR__ . '/../includes/header.php';
 ?>
 <div class="auth-wrap">

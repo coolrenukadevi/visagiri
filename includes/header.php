@@ -11,6 +11,28 @@ declare(strict_types=1);
 $pageTitle ??= 'Visagiri - Visa Management';
 $pageDescription ??= 'Technology-enabled visa consultancy and application management from Visagiri, a unit of Tripgation Pvt Ltd.';
 $canonicalUrl ??= APP_URL . ($_SERVER['REQUEST_URI'] ?? '/');
+$noindex ??= false;
+$ogImage ??= APP_URL . '/assets/images/og-image.png';
+/** @var list<array<string,mixed>> $structuredData */
+$structuredData ??= [];
+
+// Sitewide Organization schema — confirmed facts only (see AUDIT.md
+// §1/§7): no invented address, ratings, employee counts, or awards.
+// Skipped on noindexed pages; there's no reason to describe the
+// organization on a login form or an empty placeholder.
+if (!$noindex) {
+    array_unshift($structuredData, [
+        '@context' => 'https://schema.org',
+        '@type' => 'Organization',
+        'name' => 'Visagiri',
+        'url' => APP_URL . '/',
+        'logo' => $ogImage,
+        'description' => 'Visagiri is a visa consultancy and document-attestation brand under Tripgation Pvt Ltd, serving visa and travel-related requirements since April 2015.',
+        'foundingDate' => '2015-04',
+        'email' => 'info@visagiri.com',
+        'parentOrganization' => ['@type' => 'Organization', 'name' => 'Tripgation Pvt Ltd'],
+    ]);
+}
 
 $currentPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
 $activeUser = current_user();
@@ -43,13 +65,20 @@ $isActive = static fn(string $href): bool => $href !== '/' && str_starts_with($c
 <title><?= e($pageTitle) ?></title>
 <meta name="description" content="<?= e($pageDescription) ?>">
 <link rel="canonical" href="<?= e($canonicalUrl) ?>">
+<meta name="robots" content="<?= $noindex ? 'noindex, nofollow' : 'index, follow' ?>">
 <meta property="og:type" content="website">
 <meta property="og:title" content="<?= e($pageTitle) ?>">
 <meta property="og:description" content="<?= e($pageDescription) ?>">
 <meta property="og:url" content="<?= e($canonicalUrl) ?>">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="<?= e($ogImage) ?>">
+<meta property="og:site_name" content="Visagiri">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="<?= e($ogImage) ?>">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23123F91'/><text x='16' y='22' font-size='16' font-family='Arial,sans-serif' font-weight='700' fill='%23F4B400' text-anchor='middle'>V</text></svg>">
 <link rel="stylesheet" href="/assets/css/main.css">
+<?php foreach ($structuredData as $block): ?>
+<script type="application/ld+json"><?= json_encode($block, JSON_UNESCAPED_SLASHES) ?></script>
+<?php endforeach; ?>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>

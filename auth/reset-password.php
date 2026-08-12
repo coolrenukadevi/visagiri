@@ -11,6 +11,7 @@ if (!$user) {
     $pageTitle = 'Reset Password';
     $pageDescription = 'Reset the password for your Visagiri account.';
     $canonicalUrl = APP_URL . '/reset-password/';
+$noindex = true;
     require __DIR__ . '/../includes/header.php';
     ?>
     <div class="auth-wrap">
@@ -44,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $pageTitle = 'Reset Password';
 $pageDescription = 'Set a new password for your Visagiri account.';
 $canonicalUrl = APP_URL . '/reset-password/';
+$noindex = true;
 require __DIR__ . '/../includes/header.php';
 ?>
 <div class="auth-wrap">

@@ -55,6 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $pageTitle = 'Login';
 $pageDescription = 'Log in to your Visagiri account to manage your visa applications.';
 $canonicalUrl = APP_URL . '/login/';
+$noindex = true;
 require __DIR__ . '/../includes/header.php';
 ?>
 <div class="auth-wrap">

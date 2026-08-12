@@ -27,6 +27,7 @@ function render_dashboard_start(string $activeKey, string $title): void
     $pageTitle = "$title - Dashboard";
     $pageDescription = 'Manage your Visagiri visa applications, documents, and payments.';
     $canonicalUrl = APP_URL . (DASHBOARD_NAV[$activeKey]['href'] ?? '/dashboard/');
+    $noindex = true;
     require __DIR__ . '/header.php';
     $flashNotice = flash_get('notice');
     ?>

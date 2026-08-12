@@ -45,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $pageTitle = 'Forgot Password';
 $pageDescription = 'Reset the password for your Visagiri account.';
 $canonicalUrl = APP_URL . '/forgot-password/';
+$noindex = true;
 require __DIR__ . '/../includes/header.php';
 ?>
 <div class="auth-wrap">

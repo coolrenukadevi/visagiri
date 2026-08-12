@@ -75,6 +75,9 @@ switch ($segments[0] ?? '') {
     case 'sitemap':
         $dispatch("$root/pages/sitemap.php");
 
+    case 'sitemap.xml':
+        $dispatch("$root/pages/sitemap-xml.php");
+
     case 'track-request':
         $dispatch("$root/pages/track-request.php");
 

@@ -1,9 +1,119 @@
 <?php
 declare(strict_types=1);
-render_scaffold_page(
-    title: 'Visa Services',
-    description: 'Tourist, business, student, work, family, transit, medical, and conference visa assistance.',
-    canonicalPath: $_SERVER['REQUEST_URI'] ?? '/visa-type/',
-    handlerPath: 'visa-type/index.php',
-    plannedInPhase: 'Phase 8 — Country pages (cross-country visa-type explainers)'
-);
+
+/**
+ * Visa-type hub (/visa-type/) and per-type explainer (/visa-type/{slug}/)
+ * — Phase 15. All content here comes straight from the real visa_types
+ * table (seeded in Phase 2/5), never invented. There's no populated
+ * country_visa_types mapping (that table exists in the schema but was
+ * superseded early on by /visa/{country}/{type}/ treating every visa
+ * type as explorable for every country — see visa/index.php), so this
+ * page doesn't claim per-country availability; it links to popular
+ * destinations (the real is_popular_destination flag) and to the full
+ * country directory instead.
+ */
+
+$pdo = db();
+$typeSlug = $segments[1] ?? null;
+
+if ($typeSlug !== null) {
+    $stmt = $pdo->prepare('SELECT * FROM visa_types WHERE slug = :slug AND is_active = 1');
+    $stmt->execute(['slug' => $typeSlug]);
+    $visaType = $stmt->fetch();
+
+    if (!$visaType) {
+        render_not_found("We couldn't find that visa type.");
+    }
+
+    $popularCountries = $pdo->query(
+        'SELECT name, slug, iso2 FROM countries WHERE is_popular_destination = 1 AND is_active = 1 ORDER BY name'
+    )->fetchAll();
+
+    $faqs = fetch_relevant_faqs($pdo, null, (int) $visaType['id']);
+
+    $pageTitle = "{$visaType['name']} - Visagiri";
+    $pageDescription = $visaType['description'];
+    $canonicalUrl = APP_URL . "/visa-type/{$visaType['slug']}/";
+    $structuredData = [[
+        '@context' => 'https://schema.org',
+        '@type' => 'BreadcrumbList',
+        'itemListElement' => [
+            ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => APP_URL . '/'],
+            ['@type' => 'ListItem', 'position' => 2, 'name' => 'Visa Services', 'item' => APP_URL . '/visa-type/'],
+            ['@type' => 'ListItem', 'position' => 3, 'name' => $visaType['name'], 'item' => $canonicalUrl],
+        ],
+    ]];
+    require __DIR__ . '/../includes/header.php';
+    ?>
+    <section class="visa-detail">
+        <div class="container">
+            <ul class="breadcrumb">
+                <li><a href="/">Home</a></li>
+                <li><a href="/visa-type/">Visa Services</a></li>
+                <li><?= e($visaType['name']) ?></li>
+            </ul>
+            <div class="visa-detail__header">
+                <div>
+                    <h1><?= e($visaType['name']) ?></h1>
+                    <p><?= e($visaType['description']) ?></p>
+                    <a href="/apply/?type=<?= e($visaType['slug']) ?>" class="btn btn-gold">Start Application</a>
+                </div>
+            </div>
+
+            <h2 class="country-directory__subheading">Popular Destinations</h2>
+            <div class="card-grid">
+                <?php foreach ($popularCountries as $c): ?>
+                <a href="/visa/<?= e($c['slug']) ?>/<?= e($visaType['slug']) ?>/" class="card service-card">
+                    <div class="service-card__icon"><?= flag_emoji($c['iso2']) ?></div>
+                    <div class="card-title"><?= e($c['name']) ?></div>
+                </a>
+                <?php endforeach; ?>
+            </div>
+            <p style="margin-top:var(--space-5)"><a href="/countries/">Explore <?= e($visaType['name']) ?> for all 200+ destinations &rarr;</a></p>
+
+            <?php if ($faqs): ?>
+            <div style="margin-top:var(--space-10);max-width:760px">
+                <h2 class="country-directory__subheading">Frequently Asked Questions</h2>
+                <?php foreach ($faqs as $faq): ?>
+                <div class="accordion-item">
+                    <details>
+                        <summary><?= e($faq['question']) ?></summary>
+                        <div class="accordion-body"><?= e($faq['answer']) ?></div>
+                    </details>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <?php endif; ?>
+        </div>
+    </section>
+    <?php
+    require __DIR__ . '/../includes/footer.php';
+    exit;
+}
+
+// Hub: list every real visa type from the DB.
+$visaTypes = $pdo->query('SELECT * FROM visa_types WHERE is_active = 1 ORDER BY sort_order')->fetchAll();
+
+$pageTitle = 'Visa Services - Visagiri';
+$pageDescription = 'Tourist, business, student, work, family, transit, medical, and conference visa assistance.';
+$canonicalUrl = APP_URL . '/visa-type/';
+require __DIR__ . '/../includes/header.php';
+?>
+<section class="section" style="padding-top:var(--space-8)">
+    <div class="container">
+        <div class="section-heading" style="text-align:left;margin-left:0;max-width:none">
+            <span class="section-eyebrow">Visa Services</span>
+            <h1>Visa Types We Assist With</h1>
+        </div>
+        <div class="card-grid">
+            <?php foreach ($visaTypes as $t): ?>
+            <a href="/visa-type/<?= e($t['slug']) ?>/" class="card service-card">
+                <div class="service-card__icon">&#128196;</div>
+                <div class="card-title"><?= e($t['name']) ?></div>
+                <p><?= e($t['description']) ?></p>
+            </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
+<?php require __DIR__ . '/../includes/footer.php'; ?>
