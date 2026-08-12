@@ -37,16 +37,25 @@
     }
   });
 
-  // Attestation Services mega-menu. Desktop already opens on hover/
-  // focus-within via CSS (same pattern as the existing Visa Services
-  // dropdown), which covers mouse and keyboard tabbing for free. This
-  // layers click-to-toggle on top for touch/tablet devices that don't
-  // fire :hover, plus outside-click and Escape to close — mirroring
-  // the enquiry-widget toggle pattern below.
-  var megaMenuTrigger = document.getElementById('attestation-mega-trigger');
-  var megaMenu = document.getElementById('attestation-mega-menu');
-  if (megaMenuTrigger && megaMenu) {
+  // Mega-menus (Attestation Services, Company). Desktop already opens
+  // on hover/focus-within via CSS (same pattern as the existing Visa
+  // Services dropdown), which covers mouse and keyboard tabbing for
+  // free. This layers click-to-toggle on top for touch/tablet devices
+  // that don't fire :hover, plus outside-click and Escape to close —
+  // mirroring the enquiry-widget toggle pattern below. Shared as one
+  // function (rather than copy-pasted per menu) so a fix like the
+  // Escape/:focus-within interaction below only ever needs to happen
+  // in one place.
+  var initMegaMenu = function (triggerId, menuId) {
+    var megaMenuTrigger = document.getElementById(triggerId);
+    var megaMenu = document.getElementById(menuId);
+    if (!megaMenuTrigger || !megaMenu) {
+      return;
+    }
     var megaMenuItem = megaMenuTrigger.closest('.has-mega-menu');
+    if (!megaMenuItem) {
+      return;
+    }
     var setMegaMenuOpen = function (open) {
       megaMenu.classList.toggle('is-open', open);
       megaMenuTrigger.setAttribute('aria-expanded', open ? 'true' : 'false');
@@ -60,12 +69,12 @@
       }
     });
     document.addEventListener('click', function (event) {
-      if (megaMenu.classList.contains('is-open') && megaMenuItem && !megaMenuItem.contains(event.target)) {
+      if (megaMenu.classList.contains('is-open') && !megaMenuItem.contains(event.target)) {
         setMegaMenuOpen(false);
       }
     });
     document.addEventListener('keydown', function (event) {
-      if (event.key !== 'Escape' || !megaMenuItem) {
+      if (event.key !== 'Escape') {
         return;
       }
       var isOpen = megaMenu.classList.contains('is-open') || megaMenuItem.contains(document.activeElement) || megaMenuItem.matches(':hover');
@@ -90,7 +99,9 @@
         megaMenu.classList.remove('is-force-closed');
       }
     });
-  }
+  };
+  initMegaMenu('attestation-mega-trigger', 'attestation-mega-menu');
+  initMegaMenu('company-mega-trigger', 'company-mega-menu');
 
   // Mobile Attestation accordion — closes any other open <details> in
   // the mobile nav when one is opened, so only one panel is expanded

@@ -370,6 +370,58 @@ function attestation_category_icon(string $category): string
 }
 
 /**
+ * Small line-icon set for the Company mega-menu — deliberately not
+ * the emoji icons used elsewhere on the site (visa types, attestation
+ * services): this menu was asked to read as premium/corporate rather
+ * than the site's more playful marketing tone, so it gets its own
+ * minimal stroke-SVG treatment instead.
+ */
+function company_nav_icon(string $key): string
+{
+    $attrs = 'width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
+    return match ($key) {
+        'about' => "<svg $attrs><circle cx=\"10\" cy=\"10\" r=\"7.5\"/><line x1=\"10\" y1=\"9\" x2=\"10\" y2=\"14\"/><circle cx=\"10\" cy=\"6.3\" r=\"0.9\" fill=\"currentColor\" stroke=\"none\"/></svg>",
+        'shield' => "<svg $attrs><path d=\"M10 2.5 16.5 5 16.5 9.5C16.5 13.5 13.7 16.5 10 17.5 6.3 16.5 3.5 13.5 3.5 9.5L3.5 5Z\"/><path d=\"M7 10 9 12 13.5 7.2\"/></svg>",
+        'compass' => "<svg $attrs><circle cx=\"10\" cy=\"10\" r=\"7.5\"/><path d=\"M13.2 6.8 10.8 10.8 6.8 13.2 9.2 9.2Z\"/></svg>",
+        'star' => "<svg $attrs><path d=\"M10 2.8 12.1 7.4 17 8.1 13.5 11.5 14.4 16.3 10 14 5.6 16.3 6.5 11.5 3 8.1 7.9 7.4Z\"/></svg>",
+        'users' => "<svg $attrs><circle cx=\"7.2\" cy=\"7\" r=\"2.4\"/><path d=\"M2.5 16C2.5 12.7 4.6 11 7.2 11 9.8 11 11.9 12.7 11.9 16\"/><circle cx=\"14\" cy=\"7.8\" r=\"2\"/><path d=\"M12.7 11.2C15 11.2 16.9 12.7 17 15.6\"/></svg>",
+        'briefcase' => "<svg $attrs><rect x=\"3\" y=\"7.5\" width=\"14\" height=\"9\" rx=\"1.3\"/><path d=\"M7 7.5V5.8C7 5 7.6 4.4 8.4 4.4H11.6C12.4 4.4 13 5 13 5.8V7.5\"/><line x1=\"3\" y1=\"11.5\" x2=\"17\" y2=\"11.5\"/></svg>",
+        'link' => "<svg $attrs><path d=\"M8.3 11.7 11.7 8.3\"/><path d=\"M9.2 6 11 4.2C12.4 2.8 14.6 2.8 16 4.2 17.4 5.6 17.4 7.8 16 9.2L14.2 11\"/><path d=\"M10.8 14 9 15.8C7.6 17.2 5.4 17.2 4 15.8 2.6 14.4 2.6 12.2 4 10.8L5.8 9\"/></svg>",
+        'award' => "<svg $attrs><circle cx=\"10\" cy=\"7.5\" r=\"4.5\"/><path d=\"M7.2 11.3 6 17.5 10 15.3 14 17.5 12.8 11.3\"/></svg>",
+        'mail' => "<svg $attrs><rect x=\"2.5\" y=\"5\" width=\"15\" height=\"10.5\" rx=\"1.5\"/><path d=\"M3.2 6 10 11 16.8 6\"/></svg>",
+        default => '',
+    };
+}
+
+/** Small chevron used next to mega-menu nav triggers, rotated via CSS on open. */
+function nav_chevron_icon(): string
+{
+    return '<svg class="mega-menu__trigger-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8 9.5 4.5"/></svg>';
+}
+
+/**
+ * Subtle abstract globe/passport illustration for the Company
+ * mega-menu's featured card — same "original inline SVG, not stock
+ * photography" approach already used for the homepage hero (Phase 5).
+ */
+function company_featured_illustration(): string
+{
+    return <<<SVG
+    <svg width="108" height="86" viewBox="0 0 108 86" fill="none" aria-hidden="true">
+        <circle cx="46" cy="40" r="30" stroke="#F4B400" stroke-width="1.6" opacity="0.85"/>
+        <ellipse cx="46" cy="40" rx="30" ry="12" stroke="#F4B400" stroke-width="1" opacity="0.5"/>
+        <ellipse cx="46" cy="40" rx="12" ry="30" stroke="#F4B400" stroke-width="1" opacity="0.5"/>
+        <line x1="16" y1="40" x2="76" y2="40" stroke="#F4B400" stroke-width="1" opacity="0.5"/>
+        <rect x="60" y="30" width="34" height="46" rx="4" fill="#082A67" stroke="#FFFFFF" stroke-width="1.6"/>
+        <circle cx="77" cy="47" r="7" stroke="#F4B400" stroke-width="1.4"/>
+        <path d="M74 47 76 49 80.5 44" stroke="#F4B400" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="66" y1="62" x2="88" y2="62" stroke="#FFFFFF" stroke-width="1.2" opacity="0.6"/>
+        <line x1="66" y1="67" x2="82" y2="67" stroke="#FFFFFF" stroke-width="1.2" opacity="0.6"/>
+    </svg>
+    SVG;
+}
+
+/**
  * Phase 4+ scaffolding: same purpose as render_scaffold_stub(), but
  * rendered inside the real header/footer chrome instead of as plain
  * text, so header/footer can be verified against every route while

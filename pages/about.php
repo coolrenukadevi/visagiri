@@ -35,6 +35,26 @@ require __DIR__ . '/../includes/header.php';
     </div>
 </section>
 
+<section class="section" id="our-story">
+    <div class="container" style="max-width:840px">
+        <div class="section-heading" style="text-align:left;margin-left:0;max-width:none">
+            <span class="section-eyebrow">Our Story</span>
+            <h2>Our Journey</h2>
+        </div>
+        <p>
+            Visagiri was founded in April 2015 as a visa consultancy and document-attestation brand under
+            <strong>Tripgation Pvt Ltd</strong>, built to give travellers, students, professionals, and businesses
+            a more organized, technology-enabled way to manage the visa and attestation process — from checking
+            requirements through to tracking an application's status online, rather than relying on paperwork and
+            phone calls alone.
+        </p>
+        <p>
+            That approach — real digital tools paired with hands-on consultant support — remains the foundation
+            Visagiri continues to build on today.
+        </p>
+    </div>
+</section>
+
 <section class="section" id="why-visagiri" style="background:var(--surface)">
     <div class="container">
         <div class="section-heading">

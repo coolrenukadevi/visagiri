@@ -114,6 +114,15 @@ switch ($segments[0] ?? '') {
     case 'careers':
         $dispatch("$root/pages/careers.php");
 
+    case 'leadership':
+        $dispatch("$root/pages/leadership.php");
+
+    case 'our-team':
+        $dispatch("$root/pages/our-team.php");
+
+    case 'affiliations':
+        $dispatch("$root/pages/affiliations.php");
+
     case 'partners':
         $dispatch("$root/pages/partners.php");
 

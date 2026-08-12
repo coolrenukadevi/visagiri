@@ -67,12 +67,11 @@ declare(strict_types=1);
         <div class="site-footer__col">
             <h3>Company</h3>
             <ul>
-                <li><a href="/about/">About Visagiri</a></li>
-                <li><a href="/about/#why-visagiri">Why Visagiri</a></li>
-                <li><a href="/contact/">Contact Us</a></li>
-                <li><a href="/careers/">Careers</a></li>
-                <li><a href="/partners/">Partners</a></li>
-                <li><a href="/corporate-services/">Corporate Services</a></li>
+                <?php foreach ($companyMenu as $footerCompanyGroup): ?>
+                <?php foreach ($footerCompanyGroup as $footerCompanyItem): ?>
+                <li><a href="<?= e($footerCompanyItem['href']) ?>"><?= e($footerCompanyItem['label']) ?></a></li>
+                <?php endforeach; ?>
+                <?php endforeach; ?>
             </ul>
         </div>
 

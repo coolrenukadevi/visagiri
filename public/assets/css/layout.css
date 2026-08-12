@@ -257,6 +257,181 @@
   }
 }
 
+/* ---------- Company mega-menu (premium/corporate variant) ---------- */
+
+.mega-menu__trigger-arrow {
+  vertical-align: middle;
+  margin-left: 2px;
+  transition: transform var(--transition-fast);
+}
+
+.has-mega-menu--company:hover .mega-menu__trigger-arrow,
+.has-mega-menu--company:focus-within .mega-menu__trigger-arrow,
+.has-mega-menu--company > a[aria-expanded="true"] .mega-menu__trigger-arrow {
+  transform: rotate(180deg);
+}
+
+.mega-menu--company {
+  width: min(940px, calc(100vw - var(--space-8)));
+  padding: var(--space-5);
+}
+
+.mega-menu__columns--company {
+  grid-template-columns: repeat(3, 1fr) 240px;
+  align-items: stretch;
+}
+
+/* Grid/flex items don't shrink below their content's intrinsic width
+   by default — without this, a long label like "Affiliations &
+   Accreditations" forces its column (and the whole grid) wider than
+   the panel, pushing the featured card off the visible edge instead
+   of wrapping. */
+.mega-menu__columns--company > .mega-menu__col,
+.mega-menu__columns--company > .mega-menu__featured,
+.mega-menu__company-text {
+  min-width: 0;
+}
+
+.mega-menu__columns--company .mega-menu__col-heading {
+  text-transform: uppercase;
+}
+
+.mega-menu__company-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  transition: background var(--transition-base);
+}
+
+.mega-menu__company-link:hover,
+.mega-menu__company-link:focus-visible {
+  background: var(--visa-blue-light);
+}
+
+.mega-menu__company-icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-full);
+  background: var(--visa-blue-light);
+  color: var(--visa-blue);
+}
+
+.mega-menu__company-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.mega-menu__company-label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-dark);
+}
+
+.mega-menu__company-label,
+.mega-menu__company-desc {
+  /* .site-header__nav > ul sets white-space: nowrap for the flat nav
+     links; without resetting it here, these descriptions inherit it
+     and overflow their column instead of wrapping. */
+  white-space: normal;
+}
+
+.mega-menu__company-desc {
+  display: block;
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  margin-top: 2px;
+  line-height: var(--line-height-normal);
+}
+
+.mega-menu__company-arrow {
+  flex-shrink: 0;
+  color: var(--visa-blue);
+  font-weight: var(--font-weight-semibold);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity var(--transition-base), transform var(--transition-base);
+}
+
+.mega-menu__company-link:hover .mega-menu__company-arrow,
+.mega-menu__company-link:focus-visible .mega-menu__company-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.mega-menu__featured {
+  display: flex;
+  flex-direction: column;
+  background: var(--visa-blue-dark);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  color: var(--white);
+}
+
+.mega-menu__featured-visual {
+  margin-bottom: var(--space-3);
+}
+
+.mega-menu__featured-title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: var(--line-height-tight);
+  color: var(--white);
+  white-space: normal;
+}
+
+.mega-menu__featured-copy {
+  font-size: var(--font-size-sm);
+  color: var(--visa-blue-light);
+  opacity: 0.85;
+  margin: var(--space-2) 0 0;
+  text-align: left;
+  white-space: normal;
+}
+
+.mega-menu__featured-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: auto;
+  padding-top: var(--space-4);
+  color: var(--visa-gold);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+  transition: transform var(--transition-fast);
+}
+
+.mega-menu__featured-link:hover {
+  transform: translateX(3px);
+  color: var(--visa-gold);
+}
+
+@media (max-width: 1279px) {
+  .mega-menu__columns--company {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .mega-menu__featured {
+    grid-column: span 2;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-5);
+  }
+  .mega-menu__featured-visual {
+    margin-bottom: 0;
+  }
+  .mega-menu__featured-link {
+    padding-top: var(--space-2);
+  }
+}
+
 /* ---------- Mobile Attestation accordion ---------- */
 
 .site-header__mobile-accordion > details > summary {

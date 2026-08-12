@@ -39,11 +39,6 @@ $sections = [
         '/register/' => 'Create Account',
         '/dashboard/' => 'Dashboard',
     ],
-    'Company' => [
-        '/about/' => 'About',
-        '/contact/' => 'Contact',
-        '/support/' => 'Contact Support',
-    ],
     'Legal & Support' => [
         '/privacy/' => 'Privacy Policy',
         '/terms/' => 'Terms & Conditions',
@@ -62,6 +57,17 @@ $pageTitle = 'Website Sitemap - Browse All Visagiri Pages';
 $pageDescription = 'Browse a full directory of Visagiri pages — visa services, attestation, country guides, account tools, and legal and support resources, all in one place.';
 $canonicalUrl = APP_URL . '/sitemap/';
 require __DIR__ . '/../includes/header.php';
+
+// $companyMenu is defined inside header.php (shared with the Company
+// mega-menu and footer), so this section is only buildable after the
+// require above — everything else in $sections is built up front.
+$companyItems = ['/support/' => 'Contact Support'];
+foreach ($companyMenu as $companyGroup) {
+    foreach ($companyGroup as $companyItem) {
+        $companyItems[$companyItem['href']] = $companyItem['label'];
+    }
+}
+$sections['Company'] = $companyItems;
 ?>
 <section class="section">
     <div class="container" style="max-width:900px">

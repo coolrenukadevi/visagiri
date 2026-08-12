@@ -42,8 +42,43 @@ $navLinks = [
     ['label' => 'Countries', 'href' => '/countries/'],
     ['label' => 'Visa Process', 'href' => '/visa-process/'],
     ['label' => 'Visa Updates', 'href' => '/blog/'],
-    ['label' => 'About', 'href' => '/about/'],
 ];
+
+// Company mega-menu. Reused/linked pages only where real content
+// already exists (About, its Why-Us/Our-Story sections, and the
+// existing Contact/Careers/Partners stub routes) — Leadership, Our
+// Team, and Affiliations & Accreditations are new but stay honest
+// "content pending" stubs (pages/leadership.php etc.) since real
+// names, bios, and accrediting bodies aren't available to author
+// generically; see AUDIT.md for the flagged follow-up.
+$companyMenu = [
+    'Discover' => [
+        ['label' => 'About Us', 'desc' => 'Who we are, our mission, vision and values', 'href' => '/about/', 'icon' => 'about'],
+        ['label' => 'Why Us', 'desc' => 'Our expertise, technology, transparency and service advantage', 'href' => '/about/#why-visagiri', 'icon' => 'shield'],
+        ['label' => 'Our Story', 'desc' => 'Our journey and evolution', 'href' => '/about/#our-story', 'icon' => 'compass'],
+    ],
+    'People' => [
+        ['label' => 'Leadership', 'desc' => 'Leadership and management', 'href' => '/leadership/', 'icon' => 'star'],
+        ['label' => 'Our Team', 'desc' => 'Meet our visa and travel professionals', 'href' => '/our-team/', 'icon' => 'users'],
+        ['label' => 'Careers', 'desc' => 'Opportunities to join our team', 'href' => '/careers/', 'icon' => 'briefcase'],
+    ],
+    'Trust & Connect' => [
+        ['label' => 'Partners', 'desc' => 'Our business and strategic partners', 'href' => '/partners/', 'icon' => 'link'],
+        ['label' => 'Affiliations & Accreditations', 'desc' => 'Industry relationships and credentials', 'href' => '/affiliations/', 'icon' => 'award'],
+        ['label' => 'Contact Us', 'desc' => 'Speak with our experts', 'href' => '/contact/', 'icon' => 'mail'],
+    ],
+];
+$companyIsActive = static function () use ($companyMenu, $currentPath): bool {
+    foreach ($companyMenu as $group) {
+        foreach ($group as $item) {
+            $path = strtok($item['href'], '#');
+            if ($path !== '/' && str_starts_with($currentPath, $path)) {
+                return true;
+            }
+        }
+    }
+    return false;
+};
 
 // Pulled from the real visa_types table rather than hardcoded — the
 // hardcoded 6-item version this replaced had silently fallen out of
@@ -151,6 +186,38 @@ foreach ([
                 <?php foreach ($navLinks as $link): ?>
                 <li><a href="<?= e($link['href']) ?>"<?= $isActive($link['href']) ? ' class="is-active"' : '' ?>><?= e($link['label']) ?></a></li>
                 <?php endforeach; ?>
+                <li class="has-dropdown has-mega-menu has-mega-menu--company">
+                    <a href="/about/" id="company-mega-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="company-mega-menu"<?= $companyIsActive() ? ' class="is-active"' : '' ?>>Company <?= nav_chevron_icon() ?></a>
+                    <div class="mega-menu mega-menu--company" id="company-mega-menu" aria-labelledby="company-mega-trigger">
+                        <div class="mega-menu__columns mega-menu__columns--company">
+                            <?php foreach ($companyMenu as $groupName => $groupItems): ?>
+                            <div class="mega-menu__col">
+                                <div class="mega-menu__col-heading"><?= e($groupName) ?></div>
+                                <ul>
+                                    <?php foreach ($groupItems as $item): ?>
+                                    <li>
+                                        <a href="<?= e($item['href']) ?>" class="mega-menu__company-link">
+                                            <span class="mega-menu__company-icon" aria-hidden="true"><?= company_nav_icon($item['icon']) ?></span>
+                                            <span class="mega-menu__company-text">
+                                                <span class="mega-menu__company-label"><?= e($item['label']) ?></span>
+                                                <span class="mega-menu__company-desc"><?= e($item['desc']) ?></span>
+                                            </span>
+                                            <span class="mega-menu__company-arrow" aria-hidden="true">&rarr;</span>
+                                        </a>
+                                    </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                            <?php endforeach; ?>
+                            <div class="mega-menu__featured">
+                                <div class="mega-menu__featured-visual"><?= company_featured_illustration() ?></div>
+                                <div class="mega-menu__featured-title">Visa Management, Reimagined.</div>
+                                <p class="mega-menu__featured-copy">Technology-driven visa solutions backed by experienced professionals.</p>
+                                <a href="/about/#why-visagiri" class="mega-menu__featured-link">Explore Our Approach &rarr;</a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
             </ul>
         </nav>
 
@@ -198,6 +265,20 @@ foreach ([
                 <?php foreach ($navLinks as $link): ?>
                 <li><a href="<?= e($link['href']) ?>"><?= e($link['label']) ?></a></li>
                 <?php endforeach; ?>
+                <li class="site-header__mobile-accordion">
+                    <details>
+                        <summary>Company</summary>
+                        <div class="site-header__mobile-accordion-body">
+                            <ul class="site-header__mobile-flat">
+                                <?php foreach ($companyMenu as $groupItems): ?>
+                                <?php foreach ($groupItems as $item): ?>
+                                <li><a href="<?= e($item['href']) ?>">&rarr; <?= e($item['label']) ?></a></li>
+                                <?php endforeach; ?>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    </details>
+                </li>
             </ul>
         </nav>
         <div class="site-header__mobile-actions">
