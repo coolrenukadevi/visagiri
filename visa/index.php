@@ -58,7 +58,7 @@ if ($typeSlug !== null) {
     $faqs = fetch_relevant_faqs($pdo, (int) $country['id'], (int) $visaType['id']);
 
     $pageTitle = "{$visaType['name']} for {$country['name']} - Visagiri";
-    $pageDescription = "{$visaType['name']} requirements, documents, fees, and processing time for {$country['name']}.";
+    $pageDescription = "{$visaType['name']} eligibility, required documents, fees, and processing time for {$country['name']} — apply and track your application online with Visagiri.";
     $canonicalUrl = APP_URL . "/visa/{$country['slug']}/{$visaType['slug']}/";
     $structuredData = [[
         '@context' => 'https://schema.org',
@@ -181,7 +181,7 @@ $contactPoints = fetch_country_contact_points($pdo, (int) $country['id']);
 $countryName = $country['name'];
 
 $pageTitle = "{$country['name']} Visa Requirements - Visagiri";
-$pageDescription = "Visa types, requirements, and application information for {$country['name']}.";
+$pageDescription = "Visa types, eligibility, and application information for {$country['name']}. Explore requirements by visa type and start your application online with Visagiri.";
 $canonicalUrl = APP_URL . "/visa/{$country['slug']}/";
 $structuredData = [[
     '@context' => 'https://schema.org',

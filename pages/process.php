@@ -11,7 +11,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../includes/dashboard-layout.php';
 
 $pageTitle = 'How Visagiri Works - Visa Process';
-$pageDescription = 'How the Visagiri visa application process works, step by step.';
+$pageDescription = 'See how the Visagiri visa application process works, step by step — from choosing your destination to uploading documents and tracking your status online.';
 $canonicalUrl = APP_URL . '/visa-process/';
 require __DIR__ . '/../includes/header.php';
 ?>

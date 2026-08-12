@@ -13,7 +13,7 @@ $faqs = $pdo->query(
 )->fetchAll();
 
 $pageTitle = 'Frequently Asked Questions - Visagiri';
-$pageDescription = 'Answers to common questions about visa applications, documents, and processing with Visagiri.';
+$pageDescription = 'Answers to common questions about visa applications, required documents, processing, and tracking — everything you need to know before applying with Visagiri.';
 $canonicalUrl = APP_URL . '/faq/';
 $structuredData = $faqs ? [[
     '@context' => 'https://schema.org',

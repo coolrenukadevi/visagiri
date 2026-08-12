@@ -59,8 +59,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$pageTitle = 'Track Your Visa Application';
-$pageDescription = 'Track the status of your Visagiri visa application using your application number and email.';
+$pageTitle = 'Track Your Visa Application Status Online | Visagiri';
+$pageDescription = 'Check your visa application status anytime using your application number and registered email — no login required. Fast, secure tracking with Visagiri.';
 $canonicalUrl = APP_URL . '/track-visa/';
 require __DIR__ . '/../includes/header.php';
 ?>

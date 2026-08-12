@@ -31,8 +31,8 @@ if ($typeSlug !== null) {
 
     $faqs = fetch_relevant_faqs($pdo, null, (int) $visaType['id']);
 
-    $pageTitle = "{$visaType['name']} - Requirements, Eligibility & How to Apply | Visagiri";
-    $pageDescription = mb_substr($visaType['description'], 0, 130) . ' Apply online with Visagiri.';
+    $pageTitle = "{$visaType['name']} Requirements & How to Apply | Visagiri";
+    $pageDescription = mb_substr($visaType['description'], 0, 110) . ' See popular destinations and apply online with Visagiri.';
     $canonicalUrl = APP_URL . "/visa-type/{$visaType['slug']}/";
     $structuredData = [[
         '@context' => 'https://schema.org',
@@ -95,8 +95,8 @@ if ($typeSlug !== null) {
 // Hub: list every real visa type from the DB.
 $visaTypes = $pdo->query('SELECT * FROM visa_types WHERE is_active = 1 ORDER BY sort_order')->fetchAll();
 
-$pageTitle = 'Visa Types & Categories: Tourist, Business, Student, Work, Sports & More | Visagiri';
-$pageDescription = 'Compare 9 visa categories — tourist, business, student, work, family visit, transit, medical, conference, and sports visas — and find the right visa type for your trip abroad.';
+$pageTitle = 'Visa Types & Categories Explained | Visagiri';
+$pageDescription = 'Compare 9 visa categories — tourist, business, student, work, family visit, transit, medical, conference, and sports — and find the right one for your trip.';
 $canonicalUrl = APP_URL . '/visa-type/';
 require __DIR__ . '/../includes/header.php';
 ?>

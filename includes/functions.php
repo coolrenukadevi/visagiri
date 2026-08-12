@@ -214,6 +214,11 @@ function render_not_found(string $message = "The page you're looking for doesn't
     $pageTitle = 'Page Not Found - Visagiri';
     $pageDescription = $message;
     $canonicalUrl = APP_URL . ($_SERVER['REQUEST_URI'] ?? '/');
+    // The static 404 stub (pages/404.php) already noindexes via
+    // render_scaffold_page(); this dynamic one (used for real 404s
+    // like an unknown country/visa-type slug) needs the same explicit
+    // signal rather than relying solely on the 404 status code.
+    $noindex = true;
     require __DIR__ . '/header.php';
     ?>
     <section class="container" style="padding-top: var(--space-10); padding-bottom: var(--space-10); text-align:center;">

@@ -15,18 +15,22 @@ $services = [
     'apostille' => [
         'name' => 'Apostille',
         'description' => 'Apostille certification for documents to be used in countries that are part of the Hague Apostille Convention.',
+        'meta_description' => 'Apostille certification for documents used in Hague Convention countries. Fast, reliable apostille attestation services from Visagiri.',
     ],
     'mea-attestation' => [
         'name' => 'MEA Attestation',
         'description' => "Ministry of External Affairs (MEA) attestation for Indian documents used abroad, for countries outside the Hague Convention.",
+        'meta_description' => 'MEA attestation for Indian documents used abroad, for countries outside the Hague Convention. Trusted document attestation from Visagiri.',
     ],
     'embassy-attestation' => [
         'name' => 'Embassy Attestation',
         'description' => "Attestation of documents by the destination country's embassy or consulate.",
+        'meta_description' => "Embassy attestation of your documents by the destination country's embassy or consulate — a required step for many visas and overseas processes.",
     ],
     'commercial-attestation' => [
         'name' => 'Commercial Attestation',
         'description' => 'Attestation of commercial documents such as invoices, certificates of origin, and business agreements.',
+        'meta_description' => 'Commercial document attestation for invoices, certificates of origin, and business agreements used internationally. Apply with Visagiri.',
     ],
 ];
 
@@ -37,8 +41,8 @@ if ($slug !== null) {
         render_not_found("We couldn't find that attestation service.");
     }
     $service = $services[$slug];
-    $pageTitle = "{$service['name']} - Visagiri";
-    $pageDescription = $service['description'];
+    $pageTitle = "{$service['name']} Services | Visagiri";
+    $pageDescription = $service['meta_description'];
     $canonicalUrl = APP_URL . "/attestation/{$slug}/";
     require __DIR__ . '/../includes/header.php';
     ?>
@@ -62,8 +66,8 @@ if ($slug !== null) {
     exit;
 }
 
-$pageTitle = 'Attestation Services - Visagiri';
-$pageDescription = 'Apostille, MEA attestation, embassy attestation, and commercial document attestation services.';
+$pageTitle = 'Document Attestation Services | Visagiri';
+$pageDescription = 'Apostille, MEA attestation, embassy attestation, and commercial document attestation services for documents used abroad — apply online with Visagiri.';
 $canonicalUrl = APP_URL . '/attestation/';
 require __DIR__ . '/../includes/header.php';
 ?>

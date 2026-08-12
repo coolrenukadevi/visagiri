@@ -49,7 +49,7 @@ $processSteps = [
 $whyFeatures = why_visagiri_features();
 
 $pageTitle = 'Your Visa Journey, Simplified - Visagiri';
-$pageDescription = 'Expert visa guidance with secure digital application management from Visagiri, a unit of Tripgation Pvt Ltd.';
+$pageDescription = 'Expert visa guidance and secure digital application management for 200+ destinations. Apply online, upload documents, and track your visa status with Visagiri.';
 $canonicalUrl = APP_URL . '/';
 
 require __DIR__ . '/../includes/header.php';

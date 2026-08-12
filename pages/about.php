@@ -8,7 +8,7 @@ declare(strict_types=1);
  * why_visagiri_features() so the two never drift out of sync.
  */
 
-$pageTitle = 'About Visagiri';
+$pageTitle = 'About Visagiri - Visa Consultancy Since April 2015';
 $pageDescription = 'Visagiri is a visa consultancy brand under Tripgation Pvt Ltd, serving visa and travel-related requirements since April 2015.';
 $canonicalUrl = APP_URL . '/about/';
 require __DIR__ . '/../includes/header.php';

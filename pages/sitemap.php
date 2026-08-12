@@ -50,8 +50,8 @@ $sections = [
     ],
 ];
 
-$pageTitle = 'Sitemap - Visagiri';
-$pageDescription = 'A full list of pages on the Visagiri website.';
+$pageTitle = 'Website Sitemap - Browse All Visagiri Pages';
+$pageDescription = 'Browse a full directory of Visagiri pages — visa services, attestation, country guides, account tools, and legal and support resources, all in one place.';
 $canonicalUrl = APP_URL . '/sitemap/';
 require __DIR__ . '/../includes/header.php';
 ?>
