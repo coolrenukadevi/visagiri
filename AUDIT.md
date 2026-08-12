@@ -492,3 +492,11 @@ Eighteen phases, one continuous build on real infrastructure (a real MySQL/Maria
 - **`.env` in this dev environment has `APP_DEBUG=true`/`APP_ENV=local`** — correct for development; `.env.example` already defaults to the safe production values, but a real deploy needs its own `.env` created from that template, not copied from this one.
 
 Every one of these gaps is a deliberate, documented decision to not fabricate content or overstate what's built — not an oversight discovered late. The platform as it stands is a real, working, security-reviewed, performance-reviewed, end-to-end-tested visa management system; what's listed above is what's left to make it a complete, launch-ready business site.
+
+---
+
+## Sitewide justified text alignment — added between phases, per request
+
+`public/assets/css/base.css`: `p`, `li`, and `.accordion-body` (FAQ answers, which use a `<div>` rather than `<p>`) now render `text-align: justify` with `hyphens: auto` — the latter to avoid the large, ugly word-gaps justified text produces on narrower columns without hyphenation. Deliberately **not** applied to the whole `<body>` — headings, buttons, badges, and nav links are short/single-line text where justify has no visible effect anyway, but a two-word wrapped heading stretched full-width to justify looks visibly broken, so `h1`–`h6` and component text (buttons/badges/nav) are left on their default alignment.
+
+Verified via real browser rendering, not just reading the CSS: computed `text-align` confirmed as `justify` on a real `<p>` (`/about/`) and a real `.accordion-body` (`/faq/`, after opening the accordion), confirmed `h1` stays at its default (`start`), and confirmed visually via full-page screenshots of `/about/` and `/faq/` — every paragraph now has clean, even left and right edges, headings and the footer's nav columns are visually unaffected, zero console errors.

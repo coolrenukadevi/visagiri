@@ -46,6 +46,22 @@ p {
   color: var(--text-muted);
 }
 
+/*
+ * Justified body copy sitewide, per request. Scoped to prose text
+ * (paragraphs, list items, FAQ answers) rather than the whole <body>
+ * — headings, buttons, badges, and nav links are usually short/
+ * single-line, where justify has no visible effect anyway, but a
+ * two-word wrapped heading justified full-width looks broken (huge
+ * gaps), so headings are deliberately left out. `hyphens: auto` keeps
+ * justified text from getting large, ugly gaps on narrower columns.
+ */
+p,
+li,
+.accordion-body {
+  text-align: justify;
+  hyphens: auto;
+}
+
 a {
   color: var(--visa-blue-secondary);
   text-decoration: none;
