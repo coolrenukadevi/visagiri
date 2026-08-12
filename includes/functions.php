@@ -7,6 +7,20 @@ function e(?string $value): string
     return htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8');
 }
 
+/**
+ * Appends a `?v=<mtime>` cache-buster to a static asset path. Pairs
+ * with the year-long `immutable` Cache-Control set in
+ * public/.htaccess (Phase 17) — without this, editing a CSS/JS file
+ * after launch would leave returning visitors on a stale cached copy
+ * for up to a year, since nothing else in the URL would change.
+ */
+function asset_url(string $path): string
+{
+    $diskPath = __DIR__ . '/../public' . $path;
+    $version = is_file($diskPath) ? filemtime($diskPath) : time();
+    return $path . '?v=' . $version;
+}
+
 function redirect(string $path): never
 {
     header('Location: ' . $path, true, 302);
@@ -47,11 +61,6 @@ function flash_get(string $key): ?string
 function format_money(float $amount, string $currency = 'INR'): string
 {
     return $currency . ' ' . number_format($amount, 2);
-}
-
-function asset_url(string $path): string
-{
-    return '/assets/' . ltrim($path, '/');
 }
 
 /** Renders a country's flag as a Unicode emoji from its ISO2 code (no image assets needed). */

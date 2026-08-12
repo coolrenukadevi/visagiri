@@ -75,7 +75,22 @@ $isActive = static fn(string $href): bool => $href !== '/' && str_starts_with($c
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="<?= e($ogImage) ?>">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23123F91'/><text x='16' y='22' font-size='16' font-family='Arial,sans-serif' font-weight='700' fill='%23F4B400' text-anchor='middle'>V</text></svg>">
-<link rel="stylesheet" href="/assets/css/main.css">
+<?php
+// Phase 3 originally loaded these through main.css's @import chain,
+// which is correct in a bundler but wrong served raw: the browser
+// has to fetch main.css, parse it, discover each @import, and only
+// then start fetching those — serially, one round trip at a time.
+// Individual <link> tags are all discoverable from the HTML itself,
+// so the browser's preloader fires every request in parallel the
+// moment it sees <head>. main.css itself is left in place for
+// docs/design-system-preview.html, which still wants one bundled
+// file; the live site no longer goes through it.
+foreach ([
+    'tokens', 'base', 'components', 'layout', 'home',
+    'visa', 'countries', 'auth', 'dashboard', 'apply',
+] as $cssFile): ?>
+<link rel="stylesheet" href="<?= e(asset_url("/assets/css/$cssFile.css")) ?>">
+<?php endforeach; ?>
 <?php foreach ($structuredData as $block): ?>
 <script type="application/ld+json"><?= json_encode($block, JSON_UNESCAPED_SLASHES) ?></script>
 <?php endforeach; ?>

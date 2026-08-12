@@ -114,6 +114,6 @@ declare(strict_types=1);
 
 <?php require __DIR__ . '/enquiry-widget.php'; ?>
 
-<script src="/assets/js/site.js"></script>
+<script src="<?= e(asset_url('/assets/js/site.js')) ?>"></script>
 </body>
 </html>

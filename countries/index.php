@@ -81,6 +81,6 @@ $flashNotice = flash_get('notice');
     </div>
 </section>
 
-<script src="/assets/js/countries.js"></script>
+<script src="<?= e(asset_url('/assets/js/countries.js')) ?>"></script>
 
 <?php require __DIR__ . '/../includes/footer.php'; ?>

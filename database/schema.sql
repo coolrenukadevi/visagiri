@@ -35,7 +35,8 @@ CREATE TABLE users (
     deleted_at          TIMESTAMP NULL,
     CONSTRAINT fk_users_role FOREIGN KEY (role_id) REFERENCES roles(id),
     INDEX idx_users_role (role_id),
-    INDEX idx_users_status (status)
+    INDEX idx_users_status (status),
+    INDEX idx_users_mobile (mobile)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ---------------------------------------------------------------

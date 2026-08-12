@@ -93,7 +93,7 @@ function render_dashboard_end(): void
         </div>
     </div>
     </main>
-    <script src="/assets/js/site.js"></script>
+    <script src="<?= e(asset_url('/assets/js/site.js')) ?>"></script>
     </body>
     </html>
     <?php
