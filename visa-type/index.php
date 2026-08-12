@@ -31,8 +31,8 @@ if ($typeSlug !== null) {
 
     $faqs = fetch_relevant_faqs($pdo, null, (int) $visaType['id']);
 
-    $pageTitle = "{$visaType['name']} - Visagiri";
-    $pageDescription = $visaType['description'];
+    $pageTitle = "{$visaType['name']} - Requirements, Eligibility & How to Apply | Visagiri";
+    $pageDescription = mb_substr($visaType['description'], 0, 130) . ' Apply online with Visagiri.';
     $canonicalUrl = APP_URL . "/visa-type/{$visaType['slug']}/";
     $structuredData = [[
         '@context' => 'https://schema.org',
@@ -53,6 +53,7 @@ if ($typeSlug !== null) {
                 <li><?= e($visaType['name']) ?></li>
             </ul>
             <div class="visa-detail__header">
+                <span class="destination-card__flag"><?= visa_type_icon($visaType['slug']) ?></span>
                 <div>
                     <h1><?= e($visaType['name']) ?></h1>
                     <p><?= e($visaType['description']) ?></p>
@@ -94,8 +95,8 @@ if ($typeSlug !== null) {
 // Hub: list every real visa type from the DB.
 $visaTypes = $pdo->query('SELECT * FROM visa_types WHERE is_active = 1 ORDER BY sort_order')->fetchAll();
 
-$pageTitle = 'Visa Services - Visagiri';
-$pageDescription = 'Tourist, business, student, work, family, transit, medical, and conference visa assistance.';
+$pageTitle = 'Visa Types & Categories: Tourist, Business, Student, Work, Sports & More | Visagiri';
+$pageDescription = 'Compare 9 visa categories — tourist, business, student, work, family visit, transit, medical, conference, and sports visas — and find the right visa type for your trip abroad.';
 $canonicalUrl = APP_URL . '/visa-type/';
 require __DIR__ . '/../includes/header.php';
 ?>
@@ -108,7 +109,7 @@ require __DIR__ . '/../includes/header.php';
         <div class="card-grid">
             <?php foreach ($visaTypes as $t): ?>
             <a href="/visa-type/<?= e($t['slug']) ?>/" class="card service-card">
-                <div class="service-card__icon">&#128196;</div>
+                <div class="service-card__icon"><?= visa_type_icon($t['slug']) ?></div>
                 <div class="card-title"><?= e($t['name']) ?></div>
                 <p><?= e($t['description']) ?></p>
             </a>

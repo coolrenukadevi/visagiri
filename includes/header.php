@@ -46,14 +46,14 @@ $navLinks = [
     ['label' => 'About', 'href' => '/about/'],
 ];
 
-$visaServiceLinks = [
-    ['label' => 'Tourist Visa', 'href' => '/visa-type/tourist/'],
-    ['label' => 'Business Visa', 'href' => '/visa-type/business/'],
-    ['label' => 'Student Visa', 'href' => '/visa-type/student/'],
-    ['label' => 'Work Visa', 'href' => '/visa-type/work/'],
-    ['label' => 'Family Visit Visa', 'href' => '/visa-type/family/'],
-    ['label' => 'Transit Visa', 'href' => '/visa-type/transit/'],
-];
+// Pulled from the real visa_types table rather than hardcoded — the
+// hardcoded 6-item version this replaced had silently fallen out of
+// sync with the DB (missing Medical and Conference Visa, added in
+// earlier phases) and would have missed Sports Visa the same way.
+$visaServiceLinks = array_map(
+    static fn(array $t) => ['label' => $t['name'], 'href' => "/visa-type/{$t['slug']}/"],
+    db()->query('SELECT name, slug FROM visa_types WHERE is_active = 1 ORDER BY sort_order')->fetchAll()
+);
 
 $isActive = static fn(string $href): bool => $href !== '/' && str_starts_with($currentPath, $href);
 ?>

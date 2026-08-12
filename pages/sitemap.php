@@ -9,16 +9,16 @@ declare(strict_types=1);
  * once that exists (Phase 15 — SEO).
  */
 
+// Pulled from the real visa_types table rather than hardcoded — a
+// hardcoded copy of this list had already fallen out of sync with the
+// DB once before (missing Medical/Conference/Sports Visa).
+$visaServiceSection = ['/visa-type/' => 'All Visa Services'];
+foreach (db()->query('SELECT name, slug FROM visa_types WHERE is_active = 1 ORDER BY sort_order')->fetchAll() as $t) {
+    $visaServiceSection["/visa-type/{$t['slug']}/"] = $t['name'];
+}
+
 $sections = [
-    'Visa Services' => [
-        '/visa-type/' => 'All Visa Services',
-        '/visa-type/tourist/' => 'Tourist Visa',
-        '/visa-type/business/' => 'Business Visa',
-        '/visa-type/student/' => 'Student Visa',
-        '/visa-type/work/' => 'Work Visa',
-        '/visa-type/family/' => 'Family Visit Visa',
-        '/visa-type/transit/' => 'Transit Visa',
-    ],
+    'Visa Services' => $visaServiceSection,
     'Explore' => [
         '/countries/' => 'Countries',
         '/visa-process/' => 'Visa Process',

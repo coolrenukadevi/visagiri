@@ -446,7 +446,8 @@ INSERT INTO visa_types (name, slug, description, sort_order) VALUES
     ('Family Visit Visa', 'family', 'For visiting family members residing in another country.', 5),
     ('Transit Visa', 'transit', 'For passing through a country en route to a final destination.', 6),
     ('Medical Visa', 'medical', 'For travelling abroad to receive medical treatment.', 7),
-    ('Conference Visa', 'conference', 'For attending conferences, seminars, or official events abroad.', 8);
+    ('Conference Visa', 'conference', 'For attending conferences, seminars, or official events abroad.', 8),
+    ('Sports Visa', 'sports', 'For athletes, coaches, and officials travelling abroad to compete in or officiate a sporting event.', 9);
 
 INSERT INTO documents (name, slug, is_required_default) VALUES
     ('Passport', 'passport', 1),

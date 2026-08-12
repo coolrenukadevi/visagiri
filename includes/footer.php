@@ -23,12 +23,9 @@ declare(strict_types=1);
         <div class="site-footer__col">
             <h3>Visa Services</h3>
             <ul>
-                <li><a href="/visa-type/tourist/">Tourist Visa</a></li>
-                <li><a href="/visa-type/business/">Business Visa</a></li>
-                <li><a href="/visa-type/student/">Student Visa</a></li>
-                <li><a href="/visa-type/work/">Work Visa</a></li>
-                <li><a href="/visa-type/family/">Family Visit Visa</a></li>
-                <li><a href="/visa-type/transit/">Transit Visa</a></li>
+                <?php foreach ($visaServiceLinks as $link): ?>
+                <li><a href="<?= e($link['href']) ?>"><?= e($link['label']) ?></a></li>
+                <?php endforeach; ?>
             </ul>
         </div>
 

@@ -73,6 +73,23 @@ function flag_emoji(?string $iso2): string
     return mb_convert_encoding('&#' . $codePoints[0] . ';&#' . $codePoints[1] . ';', 'UTF-8', 'HTML-ENTITIES');
 }
 
+/** A distinctive icon per visa type (slug), used on the /visa-type/ hub and detail pages. */
+function visa_type_icon(string $slug): string
+{
+    return match ($slug) {
+        'tourist' => '🧳',
+        'business' => '💼',
+        'student' => '🎓',
+        'work' => '🏢',
+        'family' => '👨‍👩‍👧‍👦',
+        'transit' => '✈️',
+        'medical' => '🏥',
+        'conference' => '🎤',
+        'sports' => '🏅',
+        default => '📄',
+    };
+}
+
 /**
  * Phase 4+ scaffolding: same purpose as render_scaffold_stub(), but
  * rendered inside the real header/footer chrome instead of as plain

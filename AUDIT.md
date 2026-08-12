@@ -512,3 +512,15 @@ No ImageMagick/`rsvg-convert` is available in this environment, so each PNG size
 All five files wired into `includes/header.php` via the standard multi-`<link>` pattern (SVG first for browsers that support it, ICO/PNG fallbacks with explicit `sizes`, separate `apple-touch-icon` link) and routed through the same `asset_url()` cache-buster as every other static asset, so a future favicon update won't get stuck behind a stale year-long browser cache.
 
 **Verified**: all five files return 200 with correct `Content-Type` (`image/svg+xml`, `image/vnd.microsoft.icon`, `image/png` ×3); `file` confirms `favicon.ico` is a genuine 3-icon `MS Windows icon resource` with real embedded PNG data at each size, not a mislabeled single image; zero console errors or failed requests loading the homepage.
+
+---
+
+## Sports Visa category added — per request
+
+A 9th real `visa_types` row: **Sports Visa** — "For athletes, coaches, and officials travelling abroad to compete in or officiate a sporting event." A genuinely recognized visa category (several countries, including India, issue dedicated sports visas), described generically like the other 8 — no invented fees, processing times, or country-specific claims.
+
+Adding it surfaced a real, pre-existing bug: the header dropdown and footer's "Visa Services" column were both **hardcoded 6-item arrays** that had already silently fallen out of sync with the database — missing Medical Visa and Conference Visa, added in earlier phases, and about to miss Sports Visa the same way. Both are now built dynamically from `SELECT ... FROM visa_types WHERE is_active = 1 ORDER BY sort_order` instead (the human-readable `/sitemap/` page's Visa Services section got the same fix), so a future visa type only needs adding to the database — nav, footer, sitemap, the `/visa-type/` hub, the homepage's Visa Services section, and the `/apply/` wizard's dropdown all already pulled from the DB and needed no changes at all.
+
+**Creative design**: every visa type now gets a distinctive icon (`visa_type_icon()` in `includes/functions.php`) instead of the uniform document-emoji every card used before — 🧳 tourist, 💼 business, 🎓 student, 🏢 work, 👨‍👩‍👧‍👦 family, ✈️ transit, 🏥 medical, 🎤 conference, 🏅 sports — applied on the `/visa-type/` hub cards, the homepage's Visa Services section, and the visa-type detail page header (reusing the same `.destination-card__flag` treatment the country pages already use, for visual consistency). The Sports Visa detail page's title/description were also strengthened for SEO (`"Sports Visa - Requirements, Eligibility & How to Apply | Visagiri"`), which became the template for a broader title/description improvement across the visa-type pages.
+
+**Verified**: all 9 visa types confirmed present and correctly linked in the header dropdown, footer column, and hub grid via Playwright; the Sports Visa detail page renders with its icon, real popular-destination links, and the honest general-FAQ fallback (no sports-specific FAQs tagged yet); zero console errors; all changed files pass `php -l`.

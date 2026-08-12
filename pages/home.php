@@ -164,7 +164,7 @@ require __DIR__ . '/../includes/header.php';
         <div class="card-grid">
             <?php foreach ($visaTypes as $t): ?>
             <a href="/visa-type/<?= e($t['slug']) ?>/" class="card service-card">
-                <div class="service-card__icon">&#128196;</div>
+                <div class="service-card__icon"><?= visa_type_icon($t['slug']) ?></div>
                 <div class="card-title"><?= e($t['name']) ?></div>
                 <p><?= e($t['description']) ?></p>
             </a>
