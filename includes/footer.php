@@ -112,6 +112,8 @@ declare(strict_types=1);
     </div>
 </footer>
 
+<?php require __DIR__ . '/enquiry-widget.php'; ?>
+
 <script src="/assets/js/site.js"></script>
 </body>
 </html>

@@ -36,4 +36,28 @@
       event.preventDefault();
     }
   });
+
+  // Floating enquiry widget (WhatsApp/Call/Email).
+  var enquiryWidget = document.getElementById('enquiry-widget');
+  var enquiryToggle = document.getElementById('enquiry-widget-toggle');
+  if (enquiryWidget && enquiryToggle) {
+    var setOpen = function (open) {
+      enquiryWidget.classList.toggle('is-open', open);
+      enquiryToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
+    enquiryToggle.addEventListener('click', function () {
+      setOpen(!enquiryWidget.classList.contains('is-open'));
+    });
+    document.addEventListener('click', function (event) {
+      if (enquiryWidget.classList.contains('is-open') && !enquiryWidget.contains(event.target)) {
+        setOpen(false);
+      }
+    });
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && enquiryWidget.classList.contains('is-open')) {
+        setOpen(false);
+        enquiryToggle.focus();
+      }
+    });
+  }
 })();

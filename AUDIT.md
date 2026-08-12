@@ -428,3 +428,13 @@ One hardening improvement made even though the current runtime already prevents 
 - Local `.env` currently has `APP_DEBUG=true`/`APP_ENV=local`, correct for this dev environment; `.env.example` already defaults to `false`/`production` so a real deploy starts from the safe default.
 
 **Verified**: HSTS header present via curl; a GET to `/logout/` no longer destroys the session (confirmed via cookie-jar test); a real browser login → click the new logout button → confirmed the session actually ended (`/dashboard/` redirected to `/login/` afterward) with zero console errors and no visual difference from the old link-based button; all changed files pass `php -l`.
+
+---
+
+## Floating enquiry widget (WhatsApp / Call / Email) — added between phases, per request
+
+A single expandable floating action button, bottom-right on every public page (`includes/enquiry-widget.php`, included from `includes/footer.php`) — click to reveal three actions: WhatsApp (`wa.me` link with a pre-filled generic message), Call (`tel:`), and Email (`mailto:`). Toggle, outside-click-to-close, and Escape-to-close are handled in `site.js` (not inline `onclick`, consistent with the CSP `script-src 'self'` policy already in place).
+
+**Phone number is real, not invented**: `+91 7065 819 819` appears consistently across 8+ pages of the preserved legacy site (`grievance.html`, `career.html`, `partner.html`, `testimonial.html`, `support.html` ×4, `country-details.html`) alongside the already-reused `info@visagiri.com` address. Confirmed with the client before use rather than assumed silently. The same number is used for both Call and WhatsApp (a reasonable inference for an Indian mobile-format number, not a landline — flagged to the client as an inference, not fabricated as fact).
+
+Naturally scoped to public pages only — it's wired into `footer.php`, which the dashboard/admin/consultant app shells never call (they close via their own `render_*_end()` functions instead), so it doesn't appear inside the authenticated panels. Verified via screenshot at desktop and mobile widths, confirmed all three link targets (`wa.me`/`tel:`/`mailto:`) resolve to the correct number/address, confirmed outside-click closes it, and confirmed it's present on public pages and absent from `/dashboard/` — zero console errors.
