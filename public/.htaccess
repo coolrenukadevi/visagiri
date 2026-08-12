@@ -5,9 +5,28 @@ RewriteCond %{HTTPS} off
 RewriteCond %{HTTP:X-Forwarded-SSL} !on
 RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-# Serve real files (CSS/JS/images) and directories as-is.
-RewriteCond %{REQUEST_FILENAME} -f [OR]
-RewriteCond %{REQUEST_FILENAME} -d
+# includes/ and database/ must never be reached by a direct web request —
+# the front controller only ever `require`s them from PHP, never via a
+# URL. In the standard two-folder layout (this file lives in public/,
+# those two are siblings one level up, so a browser can never reach
+# them regardless), this rule is a harmless no-op; in the flattened
+# single-folder cPanel package (bin/package-cpanel.sh), it's the only
+# thing standing between a stray request and includes/config.php or
+# database/schema.sql — so it's kept here rather than only in the
+# packaged copy.
+RewriteRule ^(includes|database)(/.*)?$ - [F,L]
+
+# Serve real static files (CSS/JS/images) as-is. Deliberately excludes
+# .php: a request that happens to resolve to a real .php file (e.g.
+# attestation/index.php, only reachable at all in the flattened
+# layout) must still fall through to the front controller below rather
+# than being executed directly by Apache with none of index.php's
+# routing/session/security setup having run. Also deliberately does
+# NOT bypass on `-d` (a real directory) for the same reason — the
+# flattened layout has real PHP-holding directories (attestation/,
+# visa/, dashboard/, ...) sitting right next to this file.
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteCond %{REQUEST_FILENAME} !\.php$
 RewriteRule ^ - [L]
 
 # Everything else goes through the front controller.

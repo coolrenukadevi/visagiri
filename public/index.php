@@ -21,11 +21,20 @@ if (PHP_SAPI === 'cli-server') {
     }
 }
 
-require_once __DIR__ . '/../includes/config.php';
-require_once __DIR__ . '/../includes/database.php';
-require_once __DIR__ . '/../includes/functions.php';
-require_once __DIR__ . '/../includes/security.php';
-require_once __DIR__ . '/../includes/auth.php';
+// The one layout-dependent line in this file: two-folder dev/deploy
+// (this file lives in public/, everything else is a sibling one level
+// up) uses dirname(__DIR__); the flattened single-folder cPanel
+// package (bin/package-cpanel.sh, which patches exactly this line)
+// uses __DIR__, since index.php IS the root there. Every other path
+// in this file is built from $root, so this is the only place that
+// needs to differ between the two layouts.
+$root = dirname(__DIR__);
+
+require_once "$root/includes/config.php";
+require_once "$root/includes/database.php";
+require_once "$root/includes/functions.php";
+require_once "$root/includes/security.php";
+require_once "$root/includes/auth.php";
 
 start_secure_session();
 send_security_headers();
@@ -33,8 +42,6 @@ send_security_headers();
 $requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
 $requestPath = rawurldecode($requestPath);
 $segments = array_values(array_filter(explode('/', trim($requestPath, '/'))));
-
-$root = dirname(__DIR__);
 
 /** Includes a handler script with $segments in scope, then stops routing. */
 $dispatch = static function (string $absolutePath) use ($segments): void {

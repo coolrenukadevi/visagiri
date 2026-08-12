@@ -9,16 +9,27 @@ function e(?string $value): string
 
 /**
  * Appends a `?v=<mtime>` cache-buster to a static asset path. Pairs
- * with the year-long `immutable` Cache-Control set in
- * public/.htaccess (Phase 17) — without this, editing a CSS/JS file
- * after launch would leave returning visitors on a stale cached copy
- * for up to a year, since nothing else in the URL would change.
+ * with the year-long `immutable` Cache-Control set in .htaccess
+ * (Phase 17) — without this, editing a CSS/JS file after launch would
+ * leave returning visitors on a stale cached copy for up to a year,
+ * since nothing else in the URL would change.
+ *
+ * Checks both the local-dev layout (assets/ under a sibling `public/`
+ * folder) and the flattened single-folder cPanel deployment (assets/
+ * directly beside includes/) — see bin/package-cpanel.sh — so this
+ * one function works correctly under either layout with no further
+ * changes needed.
  */
 function asset_url(string $path): string
 {
-    $diskPath = __DIR__ . '/../public' . $path;
-    $version = is_file($diskPath) ? filemtime($diskPath) : time();
-    return $path . '?v=' . $version;
+    $version = null;
+    foreach ([__DIR__ . '/../public' . $path, __DIR__ . '/..' . $path] as $candidate) {
+        if (is_file($candidate)) {
+            $version = filemtime($candidate);
+            break;
+        }
+    }
+    return $path . '?v=' . ($version ?? time());
 }
 
 function redirect(string $path, int $status = 302): never
