@@ -129,6 +129,14 @@ function attestation_services(): array
             'icon' => '📜',
             'description' => 'Apostille certification via the Ministry of External Affairs for documents used in Hague Apostille Convention member countries.',
             'meta_description' => 'MEA apostille certification for Indian documents used in Hague Apostille Convention countries. Reliable apostille assistance from Visagiri.',
+            'overview' => "An apostille is a certification recognized by every member country of the 1961 Hague Apostille Convention, confirming a document is genuine so it can be used abroad without further legalization by that country's embassy. In India, the Ministry of External Affairs (MEA) is the sole authority for issuing apostilles.",
+            'when_needed' => 'Required when an Indian document will be used in a Hague Convention member country — commonly for study visas, work visas, business registration, or property matters abroad.',
+            'process_steps' => [
+                'Document verified by the issuing authority or notarized, as applicable',
+                'State/HRD attestation for educational and personal documents, where required',
+                'MEA apostille stamp affixed to the document',
+            ],
+            'typical_documents' => ['Educational certificates', 'Birth/marriage certificates', 'Power of attorney', 'Commercial documents'],
         ],
         'e-apostille' => [
             'menu_label' => 'E-Apostille',
@@ -137,6 +145,14 @@ function attestation_services(): array
             'icon' => '💻',
             'description' => 'Digital apostille issued electronically by the Ministry of External Affairs for eligible document categories.',
             'meta_description' => 'E-Apostille services for eligible documents — digital apostille issued electronically by the Ministry of External Affairs. Apply with Visagiri.',
+            'overview' => "E-Apostille is the Ministry of External Affairs' electronic apostille service — a digitally signed, independently verifiable certificate issued for select document categories, rather than a physical stamp.",
+            'when_needed' => 'Useful when the receiving country or institution accepts a digitally verifiable apostille and your document category is eligible for electronic processing.',
+            'process_steps' => [
+                'Document prepared and submitted for e-apostille processing',
+                'Eligibility of the document category confirmed',
+                'Digital apostille certificate issued with a verifiable reference number',
+            ],
+            'typical_documents' => ['Educational certificates (select categories)', 'Commercial documents (select categories)'],
         ],
         'mea-attestation' => [
             'menu_label' => 'MEA Attestation',
@@ -145,6 +161,14 @@ function attestation_services(): array
             'icon' => '🏛️',
             'description' => 'Ministry of External Affairs attestation for Indian documents used abroad, for countries outside the Hague Convention.',
             'meta_description' => 'MEA attestation for Indian documents used abroad in non-Hague Convention countries. Trusted document attestation assistance from Visagiri.',
+            'overview' => "MEA attestation is the Ministry of External Affairs' certification for documents headed to countries that are not part of the Hague Apostille Convention. It confirms the document is genuine and is typically the prerequisite step before embassy attestation.",
+            'when_needed' => 'Required for documents headed to non-Hague countries — most commonly Gulf and Middle East destinations — before the destination country\'s embassy will attest the document.',
+            'process_steps' => [
+                'State/HRD attestation for educational and personal documents, where required',
+                'MEA attestation stamp affixed to the document',
+                'Document proceeds to embassy attestation, if required by the destination',
+            ],
+            'typical_documents' => ['Educational certificates', 'Personal documents', 'Commercial documents'],
         ],
         'embassy-attestation' => [
             'menu_label' => 'Embassy Attestation',
@@ -153,6 +177,14 @@ function attestation_services(): array
             'icon' => '🏢',
             'description' => "Attestation of documents by the destination country's embassy or consulate in India.",
             'meta_description' => "Embassy attestation of your documents by the destination country's embassy or consulate, a required step for many visas. Assistance from Visagiri.",
+            'overview' => "Embassy attestation is certification carried out by the destination country's own embassy or consulate in India, confirming the document is accepted for use in that country. It generally follows MEA attestation in the standard attestation chain.",
+            'when_needed' => 'Required by many non-Hague destination countries — commonly for employment visas, family/dependent visas, and business setup abroad — after MEA attestation is complete.',
+            'process_steps' => [
+                'MEA attestation completed on the document',
+                'Document submitted to the relevant embassy or consulate',
+                'Embassy attestation stamp affixed, completing the chain',
+            ],
+            'typical_documents' => ['Educational certificates', 'Employment documents', 'Personal documents'],
         ],
         'consulate-attestation' => [
             'menu_label' => 'Consulate Attestation',
@@ -161,6 +193,14 @@ function attestation_services(): array
             'icon' => '🛂',
             'description' => 'Attestation of documents through the relevant consulate for destinations without direct embassy processing.',
             'meta_description' => 'Consulate attestation assistance for documents requiring consular authentication before use abroad. Apply online with Visagiri.',
+            'overview' => "Consulate attestation follows the same principle as embassy attestation, but is carried out through a country's consulate rather than its embassy — used where a consulate is the authority that handles document authentication for a given jurisdiction.",
+            'when_needed' => "Used when the relevant destination-country authority for document authentication in India is a consulate rather than the embassy.",
+            'process_steps' => [
+                'MEA attestation completed on the document',
+                'Document submitted to the relevant consulate',
+                'Consulate attestation stamp affixed, completing the chain',
+            ],
+            'typical_documents' => ['Educational certificates', 'Personal documents', 'Commercial documents'],
         ],
         'educational-document-attestation' => [
             'menu_label' => 'Educational',
@@ -169,6 +209,15 @@ function attestation_services(): array
             'icon' => '🎓',
             'description' => 'Attestation of degree certificates, mark sheets, and other educational documents for study or work abroad.',
             'meta_description' => 'Educational document attestation for degree certificates and mark sheets, required for study or work visas abroad. Apply with Visagiri.',
+            'overview' => "Educational document attestation authenticates degree certificates, mark sheets, diplomas, and other academic records, confirming they were genuinely issued by the named institution — usually the first stage in the wider attestation chain for study or work documentation.",
+            'when_needed' => 'Required for student visas, work visas, and employment or licensing applications abroad that depend on verifying your educational qualifications.',
+            'process_steps' => [
+                'Verification by the issuing university/board, where required',
+                'State/HRD attestation',
+                'MEA apostille or attestation',
+                'Embassy attestation, if required by the destination country',
+            ],
+            'typical_documents' => ['Degree certificates', 'Mark sheets', 'Diplomas', 'Transfer certificates'],
         ],
         'commercial-document-attestation' => [
             'menu_label' => 'Commercial',
@@ -177,6 +226,14 @@ function attestation_services(): array
             'icon' => '🧾',
             'description' => 'Attestation of commercial documents such as invoices, certificates of origin, and business agreements.',
             'meta_description' => 'Commercial document attestation for invoices, certificates of origin, and business agreements used internationally. Apply with Visagiri.',
+            'overview' => 'Commercial document attestation authenticates business paperwork — invoices, certificates of origin, board resolutions, and trade agreements — for use in international trade, business registration, or contract enforcement abroad.',
+            'when_needed' => 'Required when doing business abroad — setting up a company, opening a bank account, or fulfilling a trade contract that requires authenticated Indian business documents.',
+            'process_steps' => [
+                'Chamber of Commerce attestation, for trade-related documents',
+                'MEA apostille or attestation',
+                'Embassy attestation, if required by the destination country',
+            ],
+            'typical_documents' => ['Invoices', 'Certificates of origin', 'Board resolutions', 'Trade agreements'],
         ],
         'personal-document-attestation' => [
             'menu_label' => 'Personal',
@@ -185,6 +242,15 @@ function attestation_services(): array
             'icon' => '🪪',
             'description' => 'Attestation of personal documents such as identity, address, and other individual records for use abroad.',
             'meta_description' => 'Personal document attestation for identity, address, and other individual records required for use abroad. Assistance from Visagiri.',
+            'overview' => 'Personal document attestation covers individual records — identity documents, address proof, affidavits, and similar personal paperwork — authenticated for use in matters like residency, banking, or legal proceedings abroad.',
+            'when_needed' => 'Required for residency applications, banking/financial matters, and legal or administrative processes abroad that ask for authenticated Indian personal documents.',
+            'process_steps' => [
+                'Notarization, where required',
+                'State attestation, if applicable',
+                'MEA apostille or attestation',
+                'Embassy attestation, if required by the destination country',
+            ],
+            'typical_documents' => ['Identity documents', 'Address proof', 'Affidavits', 'Single-status certificates'],
         ],
         'birth-certificate-attestation' => [
             'menu_label' => 'Birth Certificate',
@@ -193,6 +259,14 @@ function attestation_services(): array
             'icon' => '👶',
             'description' => 'Attestation of birth certificates for visa, immigration, and family visa applications abroad.',
             'meta_description' => 'Birth certificate attestation for visa, immigration, and family sponsorship applications abroad. Apply online with Visagiri.',
+            'overview' => "Birth certificate attestation authenticates the document for use abroad — most often as supporting evidence in family-related visa categories, where the receiving country needs to verify parentage or date of birth from an Indian-issued record.",
+            'when_needed' => "Commonly required for dependent/family visas, a minor's passport applications abroad, school admissions, and inheritance or citizenship matters.",
+            'process_steps' => [
+                'State/municipal attestation of the birth certificate, where required',
+                'MEA apostille or attestation',
+                'Embassy attestation, if required by the destination country',
+            ],
+            'typical_documents' => ['Birth certificate (municipal or hospital-issued, as applicable)'],
         ],
         'marriage-certificate-attestation' => [
             'menu_label' => 'Marriage Certificate',
@@ -201,6 +275,14 @@ function attestation_services(): array
             'icon' => '💍',
             'description' => 'Attestation of marriage certificates for spouse visa, family visa, and residency applications abroad.',
             'meta_description' => 'Marriage certificate attestation for spouse visa, family visa, and residency applications abroad. Apply online with Visagiri.',
+            'overview' => 'Marriage certificate attestation authenticates the document for use abroad, most commonly to support a spouse or dependent visa application, or for name-change and residency formalities that require proof of marital status.',
+            'when_needed' => 'Commonly required for spouse visas, family sponsorship, name-change formalities, and residency or citizenship applications abroad.',
+            'process_steps' => [
+                'State/registrar attestation of the marriage certificate, where required',
+                'MEA apostille or attestation',
+                'Embassy attestation, if required by the destination country',
+            ],
+            'typical_documents' => ['Marriage certificate (registrar-issued)'],
         ],
         'document-legalization' => [
             'menu_label' => 'Document Legalization',
@@ -209,6 +291,15 @@ function attestation_services(): array
             'icon' => '⚖️',
             'description' => 'End-to-end legalization of documents through notarization, government, and embassy stages for use abroad.',
             'meta_description' => 'Document legalization services covering notarization, government, and embassy stages for documents used abroad. Assistance from Visagiri.',
+            'overview' => "Document legalization is the umbrella term for the full authentication chain a document goes through — notarization, state or HRD attestation, MEA apostille/attestation, and embassy attestation — so it's legally recognized in the destination country. Not every document needs every stage; which stages apply depends on the document type and destination.",
+            'when_needed' => 'Needed whenever an Indian-issued document must be legally recognized abroad and more than one stage of authentication applies.',
+            'process_steps' => [
+                'Notarization, where required',
+                'State/HRD attestation, where required',
+                'MEA apostille or attestation',
+                'Embassy attestation, if required by the destination country',
+            ],
+            'typical_documents' => ['Educational, personal, and commercial documents requiring multi-stage authentication'],
         ],
         'chamber-of-commerce-attestation' => [
             'menu_label' => 'Chamber of Commerce',
@@ -217,6 +308,14 @@ function attestation_services(): array
             'icon' => '🤝',
             'description' => 'Attestation of commercial invoices and certificates of origin by the Chamber of Commerce.',
             'meta_description' => 'Chamber of Commerce attestation for commercial invoices and certificates of origin used in international trade. Apply with Visagiri.',
+            'overview' => 'Chamber of Commerce attestation authenticates commercial documents — invoices, certificates of origin, and similar trade paperwork — confirming they were issued by a genuine Indian business. It is commonly required before MEA and embassy attestation for trade documents.',
+            'when_needed' => 'Required for international trade documentation, particularly certificates of origin and invoices used in cross-border commerce.',
+            'process_steps' => [
+                'Document reviewed and stamped by the relevant Chamber of Commerce',
+                'MEA apostille or attestation',
+                'Embassy attestation, if required by the destination country',
+            ],
+            'typical_documents' => ['Invoices', 'Certificates of origin', 'Trade-related declarations'],
         ],
         'hrd-state-attestation' => [
             'menu_label' => 'HRD / State Attestation',
@@ -225,6 +324,14 @@ function attestation_services(): array
             'icon' => '📋',
             'description' => 'State Human Resources Department attestation of educational certificates, a prerequisite step before MEA attestation in many states.',
             'meta_description' => 'HRD and State attestation of educational certificates, a required step before MEA attestation in many Indian states. Apply with Visagiri.',
+            'overview' => 'HRD (Human Resources Department) or State attestation authenticates educational certificates at the state government level, confirming they were issued by a recognized institution within that state. It is typically required before the MEA will apostille or attest an educational document.',
+            'when_needed' => 'Required as a precursor step for most educational document attestation, since the MEA generally requires state-level HRD attestation first.',
+            'process_steps' => [
+                'Document submitted to the HRD/state education department of the issuing state',
+                'Verification against institution records',
+                'HRD attestation stamp affixed, before the document proceeds to MEA',
+            ],
+            'typical_documents' => ['Degree certificates', 'Diplomas', 'Mark sheets'],
         ],
     ];
 

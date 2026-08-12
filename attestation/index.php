@@ -57,10 +57,48 @@ if ($slug !== null) {
                     <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to get a quote for {$service['name']}.")) ?>" class="btn btn-gold" target="_blank" rel="noopener noreferrer">Get Attestation Quote</a>
                 </div>
             </div>
-            <div class="alert alert-info">
-                Detailed requirements and process information for this service are being finalized.
-                <a href="/contact/">Contact us</a> for current guidance.
+            <div class="visa-spec-grid">
+                <div class="card"><div class="card-title">Overview</div><p><?= e($service['overview']) ?></p></div>
+                <div class="card"><div class="card-title">When You Need This</div><p><?= e($service['when_needed']) ?></p></div>
+                <div class="card">
+                    <div class="card-title">Typical Process</div>
+                    <ol style="padding-left:var(--space-5);margin:0">
+                        <?php foreach ($service['process_steps'] as $step): ?>
+                        <li style="margin-bottom:var(--space-2)"><?= e($step) ?></li>
+                        <?php endforeach; ?>
+                    </ol>
+                </div>
+                <div class="card">
+                    <div class="card-title">Documents This Typically Covers</div>
+                    <p><?= e(implode(', ', $service['typical_documents'])) ?></p>
+                </div>
             </div>
+
+            <div class="alert alert-info" style="margin-top:var(--space-6)">
+                Exact fees, processing time, and the exact combination of stages needed depend on your document type and destination country — our team confirms these with you directly.
+                <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to get a quote for {$service['name']}.")) ?>" target="_blank" rel="noopener noreferrer">Chat with us on WhatsApp</a> for current guidance.
+            </div>
+
+            <?php
+            $relatedServices = array_filter(
+                attestation_categories()[$service['category']],
+                static fn(array $s) => $s['slug'] !== $slug
+            );
+            ?>
+            <?php if ($relatedServices): ?>
+            <div style="margin-top:var(--space-10)">
+                <h2 class="country-directory__subheading">Other <?= e($service['category']) ?> Services</h2>
+                <div class="card-grid">
+                    <?php foreach ($relatedServices as $related): ?>
+                    <a href="/attestation/<?= e($related['slug']) ?>/" class="card service-card">
+                        <div class="service-card__icon"><?= $related['icon'] ?></div>
+                        <div class="card-title"><?= e($related['name']) ?></div>
+                        <p><?= e($related['description']) ?></p>
+                    </a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php endif; ?>
         </div>
     </section>
     <?php
