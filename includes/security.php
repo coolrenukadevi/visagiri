@@ -2,6 +2,39 @@
 declare(strict_types=1);
 
 /**
+ * Starts a session with hardened cookie params. Must run before any
+ * output. Safe to call multiple times. Still needed without an
+ * account system: CSRF tokens, flash messages, and the enquiry-form
+ * rate limiter's per-request state all ride on the session.
+ */
+function start_secure_session(): void
+{
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        return;
+    }
+
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path' => '/',
+        'domain' => '',
+        'secure' => env('SESSION_SECURE_COOKIE', 'true') !== 'false',
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+
+    session_name('visagiri_session');
+    session_start();
+
+    // Rotate the session ID periodically to limit fixation/hijack windows.
+    if (empty($_SESSION['_started_at'])) {
+        $_SESSION['_started_at'] = time();
+    } elseif (time() - $_SESSION['_started_at'] > 900) {
+        session_regenerate_id(true);
+        $_SESSION['_started_at'] = time();
+    }
+}
+
+/**
  * Sends the baseline security headers on every response. Called once
  * from the front controller before any output.
  */
@@ -57,39 +90,59 @@ function csrf_require(): void
 }
 
 /**
- * Per-key rate limiter backed by the `rate_limits` DB table —
- * deliberately NOT session-based. A session-backed limiter can be
- * bypassed entirely by an attacker who just doesn't send the session
- * cookie back (a fresh session means a fresh, empty counter), which
- * defeats the point for exactly the login/registration abuse this
- * exists to stop. $key should already include the caller's IP.
+ * Per-key rate limiter backed by a single JSON file under storage/
+ * (see includes/config.php's STORAGE_PATH) rather than a database —
+ * this app has no database to back it with. Deliberately NOT
+ * session-based: a session-backed limiter can be bypassed entirely by
+ * an attacker who just doesn't send the session cookie back, which
+ * defeats the point for exactly the enquiry-form abuse this exists to
+ * stop. $key should already include the caller's IP.
+ *
+ * flock()'d read-modify-write on one shared file is fine at this
+ * site's traffic volume (a handful of form submissions, not a
+ * high-concurrency API) and needs nothing beyond a writable directory
+ * — no cron, no separate service, no DB.
  */
 function rate_limit_check(string $key, int $maxAttempts, int $windowSeconds): bool
 {
-    $pdo = db();
+    $file = STORAGE_PATH . '/rate-limits.json';
+    $handle = fopen($file, 'c+');
+    if ($handle === false) {
+        // Can't persist state — fail open rather than blocking every
+        // submission because a directory permission is wrong.
+        return true;
+    }
 
-    // The whole expiry comparison happens in MySQL's own clock domain
-    // (NOW() vs. the stored window_started_at) rather than in PHP —
-    // comparing a MySQL-generated timestamp string via PHP's
-    // strtotime() against PHP's time() silently breaks the moment the
-    // DB server and PHP process disagree on default timezone (e.g.
-    // DB SYSTEM tz = UTC, PHP default tz = Asia/Kolkata from
-    // config.php): strtotime() parses the naive string in PHP's zone,
-    // producing a timestamp hours off from the DB's intended instant,
-    // so the window looks expired on almost every call and attempts
-    // never accumulate. Doing it in SQL sidesteps that entirely.
-    $stmt = $pdo->prepare(
-        'INSERT INTO rate_limits (rate_key, attempt_count, window_started_at)
-         VALUES (:key, 1, NOW())
-         ON DUPLICATE KEY UPDATE
-             attempt_count = IF(window_started_at + INTERVAL :window1 SECOND < NOW(), 1, attempt_count + 1),
-             window_started_at = IF(window_started_at + INTERVAL :window2 SECOND < NOW(), NOW(), window_started_at)'
-    );
-    $stmt->execute(['key' => $key, 'window1' => $windowSeconds, 'window2' => $windowSeconds]);
+    flock($handle, LOCK_EX);
+    $raw = stream_get_contents($handle);
+    $data = $raw !== false && $raw !== '' ? json_decode($raw, true) : [];
+    if (!is_array($data)) {
+        $data = [];
+    }
 
-    $select = $pdo->prepare('SELECT attempt_count FROM rate_limits WHERE rate_key = :key');
-    $select->execute(['key' => $key]);
-    $attemptCount = (int) $select->fetchColumn();
+    $now = time();
+    $entry = $data[$key] ?? ['count' => 0, 'started_at' => $now];
+    if ($now - $entry['started_at'] > $windowSeconds) {
+        $entry = ['count' => 1, 'started_at' => $now];
+    } else {
+        $entry['count']++;
+    }
+    $data[$key] = $entry;
 
-    return $attemptCount <= $maxAttempts;
+    // Prune expired keys so the file doesn't grow forever.
+    foreach ($data as $k => $v) {
+        if ($now - $v['started_at'] > $windowSeconds) {
+            unset($data[$k]);
+        }
+    }
+    $data[$key] = $entry;
+
+    ftruncate($handle, 0);
+    rewind($handle);
+    fwrite($handle, json_encode($data));
+    fflush($handle);
+    flock($handle, LOCK_UN);
+    fclose($handle);
+
+    return $entry['count'] <= $maxAttempts;
 }

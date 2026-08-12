@@ -35,19 +35,17 @@ if (!$noindex) {
 }
 
 $currentPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
-$activeUser = current_user();
-$accountHomeHref = $activeUser ? account_home_href($activeUser['role_name']) : '/dashboard/';
 
 $navLinks = [
     ['label' => 'Visa Process', 'href' => '/visa-process/'],
     ['label' => 'Visa Updates', 'href' => '/blog/'],
 ];
 
-// Country mega-menu — see includes/functions.php's country_mega_menu_data().
+// Country mega-menu — see includes/data.php's country_mega_menu_data().
 $countryMenuData = country_mega_menu_data();
-// "Find Visa By Purpose" reuses the same query $visaServiceLinks was
+// "Find Visa By Purpose" reuses the same source $visaServiceLinks was
 // built from, just kept as the raw rows too so icons are available.
-$visaTypesRaw = db()->query('SELECT name, slug FROM visa_types WHERE is_active = 1 ORDER BY sort_order')->fetchAll();
+$visaTypesRaw = visa_types_all();
 
 // Per-region shortlist for the mega-menu columns (popular destinations
 // first, then alphabetical — PHP's usort is stable since 8.0, so the
@@ -110,13 +108,13 @@ $companyIsActive = static function () use ($companyMenu, $currentPath): bool {
     return false;
 };
 
-// Pulled from the real visa_types table rather than hardcoded — the
-// hardcoded 6-item version this replaced had silently fallen out of
-// sync with the DB (missing Medical and Conference Visa, added in
-// earlier phases) and would have missed Sports Visa the same way.
+// Pulled from the real visa type catalog rather than hardcoded — a
+// hardcoded copy of this list had previously fallen out of sync
+// (missing Medical and Conference Visa, then Sports Visa) more than
+// once, so every consumer reads from the same source now.
 $visaServiceLinks = array_map(
     static fn(array $t) => ['label' => $t['name'], 'href' => "/visa-type/{$t['slug']}/"],
-    db()->query('SELECT name, slug FROM visa_types WHERE is_active = 1 ORDER BY sort_order')->fetchAll()
+    visa_types_all()
 );
 
 // Attestation mega-menu — reads from the same attestation_categories()
@@ -161,7 +159,7 @@ $isActive = static fn(string $href): bool => $href !== '/' && str_starts_with($c
 // file; the live site no longer goes through it.
 foreach ([
     'tokens', 'base', 'components', 'layout', 'home',
-    'visa', 'countries', 'auth', 'dashboard', 'apply',
+    'visa', 'countries',
 ] as $cssFile): ?>
 <link rel="stylesheet" href="<?= e(asset_url("/assets/css/$cssFile.css")) ?>">
 <?php endforeach; ?>
@@ -397,14 +395,7 @@ foreach ([
             <a href="/countries/" class="site-header__icon-btn" aria-label="Search visas">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="6.5" stroke="currentColor" stroke-width="1.6"/><path d="M17 17L13.6 13.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
             </a>
-            <?php if ($activeUser): ?>
-                <a href="<?= e($accountHomeHref) ?>" class="btn btn-ghost btn-sm"><?= e(strtok($activeUser['full_name'], ' ')) ?></a>
-                <form method="post" action="/logout/" style="display:contents"><?= csrf_field() ?><button type="submit" class="btn btn-outline btn-sm">Logout</button></form>
-            <?php else: ?>
-                <a href="/login/" class="site-header__text-link">Login</a>
-                <a href="/register/" class="site-header__text-link">Sign Up</a>
-            <?php endif; ?>
-            <a href="/apply/" class="btn btn-gold btn-sm site-header__cta">Start Application</a>
+            <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to know more about your visa services.")) ?>" class="btn btn-gold btn-sm site-header__cta" target="_blank" rel="noopener noreferrer">Enquire Now</a>
         </div>
 
         <button type="button" class="site-header__burger" id="site-header-burger" aria-expanded="false" aria-controls="site-header-mobile" aria-label="Open menu">
@@ -536,14 +527,7 @@ foreach ([
             </ul>
         </nav>
         <div class="site-header__mobile-actions">
-            <?php if ($activeUser): ?>
-                <a href="<?= e($accountHomeHref) ?>" class="btn btn-outline"><?= match ($accountHomeHref) { '/admin/' => 'Admin Panel', '/consultant/' => 'Consultant Panel', default => 'My Dashboard' } ?></a>
-                <form method="post" action="/logout/" style="display:contents"><?= csrf_field() ?><button type="submit" class="btn btn-ghost">Logout</button></form>
-            <?php else: ?>
-                <a href="/login/" class="btn btn-outline">Login</a>
-                <a href="/register/" class="btn btn-ghost">Sign Up</a>
-            <?php endif; ?>
-            <a href="/apply/" class="btn btn-gold">Start Application</a>
+            <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to know more about your visa services.")) ?>" class="btn btn-gold" target="_blank" rel="noopener noreferrer">Enquire Now</a>
         </div>
     </div>
 </header>

@@ -13,7 +13,7 @@ declare(strict_types=1);
 // hardcoded copy of this list had already fallen out of sync with the
 // DB once before (missing Medical/Conference/Sports Visa).
 $visaServiceSection = ['/visa-type/' => 'All Visa Services'];
-foreach (db()->query('SELECT name, slug FROM visa_types WHERE is_active = 1 ORDER BY sort_order')->fetchAll() as $t) {
+foreach (visa_types_all() as $t) {
     $visaServiceSection["/visa-type/{$t['slug']}/"] = $t['name'];
 }
 
@@ -32,12 +32,6 @@ $sections = [
         '/visa-process/' => 'Visa Process',
         '/blog/' => 'Visa Updates',
         '/faq/' => 'FAQ',
-        '/track-visa/' => 'Track Application',
-    ],
-    'Account' => [
-        '/login/' => 'Login',
-        '/register/' => 'Create Account',
-        '/dashboard/' => 'Dashboard',
     ],
     'Legal & Support' => [
         '/privacy/' => 'Privacy Policy',
@@ -48,8 +42,6 @@ $sections = [
         '/cookie-policy/' => 'Cookie Policy',
         '/grievance/' => 'Grievance Redressal',
         '/disclaimer/' => 'Disclaimer',
-        '/track-request/' => 'Track Support Request',
-        '/payment-link/' => 'Payment Link',
     ],
 ];
 
@@ -61,7 +53,7 @@ require __DIR__ . '/../includes/header.php';
 // $companyMenu is defined inside header.php (shared with the Company
 // mega-menu and footer), so this section is only buildable after the
 // require above — everything else in $sections is built up front.
-$companyItems = ['/support/' => 'Contact Support'];
+$companyItems = [];
 foreach ($companyMenu as $companyGroup) {
     foreach ($companyGroup as $companyItem) {
         $companyItems[$companyItem['href']] = $companyItem['label'];

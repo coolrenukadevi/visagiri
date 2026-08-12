@@ -2,54 +2,33 @@
 declare(strict_types=1);
 
 /**
- * Homepage — Phase 5. Catalog data (countries, visa types, FAQs)
- * comes from the DB seeded in database/schema.sql; nothing here is
- * fabricated. The "Latest Visa Updates" section queries blog_posts
- * and renders an honest empty state until real posts are published —
- * no placeholder articles.
+ * Homepage — Phase 5, re-platformed to static data (see AUDIT.md,
+ * "Single-folder no-database rebuild"). Catalog data (countries, visa
+ * types, FAQs) is a real, one-time export of what was seeded into the
+ * database across earlier phases — nothing here is fabricated. There
+ * is no blog content management anymore; "Latest Visa Updates" always
+ * renders its honest empty state.
  */
 
-$popularCountries = [];
-$visaTypes = [];
-$faqs = [];
+$popularCountries = array_values(array_filter(countries_all(), static fn(array $c): bool => $c['is_popular_destination']));
+usort($popularCountries, static fn(array $a, array $b): int => $a['name'] <=> $b['name']);
+$visaTypes = visa_types_all();
+$faqs = faqs_general();
 $updates = [];
 
-try {
-    $pdo = db();
-    $popularCountries = $pdo->query(
-        "SELECT name, slug, iso2 FROM countries WHERE is_popular_destination = 1 AND is_active = 1 ORDER BY name"
-    )->fetchAll();
-    $visaTypes = $pdo->query(
-        "SELECT name, slug, description FROM visa_types WHERE is_active = 1 ORDER BY sort_order"
-    )->fetchAll();
-    $faqs = $pdo->query(
-        "SELECT question, answer FROM faqs WHERE is_active = 1 ORDER BY sort_order"
-    )->fetchAll();
-    $updates = $pdo->query(
-        "SELECT title, slug, published_at, updated_at FROM blog_posts WHERE status = 'published' ORDER BY published_at DESC LIMIT 3"
-    )->fetchAll();
-} catch (Throwable $e) {
-    // Catalog sections degrade to an empty state rather than taking
-    // the whole homepage down; hero and static sections still render.
-    if (APP_DEBUG) {
-        error_log('[home.php] catalog query failed: ' . $e->getMessage());
-    }
-}
-
 $processSteps = [
-    ['title' => 'Choose Your Destination', 'desc' => 'Select the country you plan to travel to.'],
-    ['title' => 'Check Requirements', 'desc' => 'Review eligibility, documents, and fees for your visa type.'],
-    ['title' => 'Create Your Account', 'desc' => 'Sign up to start and manage your application online.'],
-    ['title' => 'Upload Documents', 'desc' => 'Securely upload the documents your application requires.'],
-    ['title' => 'Expert Review', 'desc' => 'Our team reviews your application and documents.'],
-    ['title' => 'Track Application', 'desc' => 'Follow your application status in real time from your dashboard.'],
-    ['title' => 'Receive Decision', 'desc' => 'Get notified as soon as a decision is available.'],
+    ['title' => 'Get in Touch', 'desc' => 'Tell us your destination and purpose of travel via WhatsApp, call, or the enquiry form.'],
+    ['title' => 'Check Requirements', 'desc' => 'We confirm eligibility, documents, and fees for your visa type.'],
+    ['title' => 'Prepare Documents', 'desc' => 'We guide you through the exact documents your application needs.'],
+    ['title' => 'Expert Review', 'desc' => 'Our team reviews your documents and application before submission.'],
+    ['title' => 'Application Submitted', 'desc' => 'Your application is submitted to the relevant embassy, consulate, or authority.'],
+    ['title' => 'Receive Decision', 'desc' => 'We keep you updated as soon as a decision is available.'],
 ];
 
 $whyFeatures = why_visagiri_features();
 
 $pageTitle = 'Your Visa Journey, Simplified - Visagiri';
-$pageDescription = 'Expert visa guidance and secure digital application management for 200+ destinations. Apply online, upload documents, and track your visa status with Visagiri.';
+$pageDescription = 'Expert visa guidance and document attestation assistance for 200+ destinations. Check visa requirements and enquire with Visagiri.';
 $canonicalUrl = APP_URL . '/';
 
 require __DIR__ . '/../includes/header.php';
@@ -61,11 +40,10 @@ require __DIR__ . '/../includes/header.php';
         <div>
             <span class="hero__label">Smart Visa Management</span>
             <h1>Your Visa Journey,<br>Simplified.</h1>
-            <p class="hero__subtitle">Expert visa guidance with secure digital application management.</p>
+            <p class="hero__subtitle">Expert visa guidance and document attestation assistance.</p>
             <div class="hero__actions">
                 <a href="#visa-search" class="btn btn-gold">Check Visa Requirements</a>
-                <a href="/apply/" class="btn btn-primary" style="background:var(--white);color:var(--visa-blue)">Start Your Application</a>
-                <a href="/track-visa/" class="btn btn-outline">Track Application</a>
+                <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to know more about your visa services.")) ?>" class="btn btn-primary" style="background:var(--white);color:var(--visa-blue)" target="_blank" rel="noopener noreferrer">Enquire Now</a>
             </div>
         </div>
         <div class="hero__visual" aria-hidden="true">
@@ -216,70 +194,6 @@ require __DIR__ . '/../includes/header.php';
     </div>
 </section>
 
-<!-- Section 7: Application tracking -->
-<section class="section">
-    <div class="container">
-        <div class="tracking-band">
-            <div>
-                <h3 style="margin-bottom:var(--space-1)">Already applied?</h3>
-                <p style="margin:0">Track your visa application status anytime.</p>
-            </div>
-            <form action="/track-visa/" method="get">
-                <input class="form-input" type="text" name="application_number" placeholder="e.g. VIS-2026-000001">
-                <button type="submit" class="btn btn-primary">Track Application</button>
-            </form>
-        </div>
-    </div>
-</section>
-
-<!-- Section 8: Customer portal -->
-<section class="section" style="background:var(--surface)">
-    <div class="container">
-        <div class="portal-preview">
-            <div>
-                <span class="section-eyebrow">Customer Portal</span>
-                <h2>Manage Your Visa Application Online</h2>
-                <p>Track applications, upload documents, manage payments, and message your consultant — all from one dashboard.</p>
-                <div class="hero__actions">
-                    <a href="/login/" class="btn btn-outline">Login</a>
-                    <a href="/register/" class="btn btn-primary">Create Account</a>
-                </div>
-            </div>
-            <div class="portal-preview__mock">
-                <div class="portal-preview__mock-header">My Dashboard</div>
-                <div class="portal-preview__mock-body">
-                    <ul class="sidebar-nav">
-                        <li><a href="#" class="is-active">Applications</a></li>
-                        <li><a href="#">Documents</a></li>
-                        <li><a href="#">Appointments</a></li>
-                        <li><a href="#">Payments</a></li>
-                        <li><a href="#">Messages</a></li>
-                        <li><a href="#">Notifications</a></li>
-                    </ul>
-                    <div class="portal-preview__mock-content">
-                        <div class="portal-preview__stat">
-                            <div class="portal-preview__stat-label">Active Applications</div>
-                            <div class="portal-preview__stat-value">—</div>
-                        </div>
-                        <div class="portal-preview__stat">
-                            <div class="portal-preview__stat-label">Pending Documents</div>
-                            <div class="portal-preview__stat-value">—</div>
-                        </div>
-                        <div class="portal-preview__stat">
-                            <div class="portal-preview__stat-label">Appointments</div>
-                            <div class="portal-preview__stat-value">—</div>
-                        </div>
-                        <div class="portal-preview__stat">
-                            <div class="portal-preview__stat-label">Payments Due</div>
-                            <div class="portal-preview__stat-value">—</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
 <!-- Section 9: Latest visa updates -->
 <section class="section">
     <div class="container">
@@ -333,7 +247,7 @@ require __DIR__ . '/../includes/header.php';
     <div class="container">
         <div class="final-cta">
             <h2>Ready to start your visa journey?</h2>
-            <a href="/apply/" class="btn btn-gold btn-lg">Start Your Application</a>
+            <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to start my visa journey.")) ?>" class="btn btn-gold btn-lg" target="_blank" rel="noopener noreferrer">Enquire Now</a>
         </div>
     </div>
 </section>

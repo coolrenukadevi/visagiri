@@ -13,26 +13,25 @@ declare(strict_types=1);
  * country directory instead.
  */
 
-$pdo = db();
 $typeSlug = $segments[1] ?? null;
 
 if ($typeSlug !== null) {
-    $stmt = $pdo->prepare('SELECT * FROM visa_types WHERE slug = :slug AND is_active = 1');
-    $stmt->execute(['slug' => $typeSlug]);
-    $visaType = $stmt->fetch();
+    $visaType = visa_type_by_slug($typeSlug);
 
     if (!$visaType) {
         render_not_found("We couldn't find that visa type.");
     }
 
-    $popularCountries = $pdo->query(
-        'SELECT name, slug, iso2 FROM countries WHERE is_popular_destination = 1 AND is_active = 1 ORDER BY name'
-    )->fetchAll();
+    $popularCountries = array_values(array_filter(
+        countries_all(),
+        static fn(array $c): bool => $c['is_popular_destination']
+    ));
+    usort($popularCountries, static fn(array $a, array $b): int => $a['name'] <=> $b['name']);
 
-    $faqs = fetch_relevant_faqs($pdo, null, (int) $visaType['id']);
+    $faqs = faqs_general();
 
     $pageTitle = "{$visaType['name']} Requirements & How to Apply | Visagiri";
-    $pageDescription = mb_substr($visaType['description'], 0, 110) . ' See popular destinations and apply online with Visagiri.';
+    $pageDescription = mb_substr($visaType['description'], 0, 110) . ' See popular destinations and enquire with Visagiri.';
     $canonicalUrl = APP_URL . "/visa-type/{$visaType['slug']}/";
     $structuredData = [[
         '@context' => 'https://schema.org',
@@ -57,7 +56,7 @@ if ($typeSlug !== null) {
                 <div>
                     <h1><?= e($visaType['name']) ?></h1>
                     <p><?= e($visaType['description']) ?></p>
-                    <a href="/apply/?type=<?= e($visaType['slug']) ?>" class="btn btn-gold">Start Application</a>
+                    <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to know more about {$visaType['name']}.")) ?>" class="btn btn-gold" target="_blank" rel="noopener noreferrer">Enquire Now</a>
                 </div>
             </div>
 
@@ -92,8 +91,8 @@ if ($typeSlug !== null) {
     exit;
 }
 
-// Hub: list every real visa type from the DB.
-$visaTypes = $pdo->query('SELECT * FROM visa_types WHERE is_active = 1 ORDER BY sort_order')->fetchAll();
+// Hub: list every real visa type.
+$visaTypes = visa_types_all();
 
 $pageTitle = 'Visa Types & Categories Explained | Visagiri';
 $pageDescription = 'Compare 9 visa categories — tourist, business, student, work, family visit, transit, medical, conference, and sports — and find the right one for your trip.';

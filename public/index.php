@@ -31,10 +31,9 @@ if (PHP_SAPI === 'cli-server') {
 $root = dirname(__DIR__);
 
 require_once "$root/includes/config.php";
-require_once "$root/includes/database.php";
 require_once "$root/includes/functions.php";
+require_once "$root/includes/data.php";
 require_once "$root/includes/security.php";
-require_once "$root/includes/auth.php";
 
 start_secure_session();
 send_security_headers();
@@ -85,17 +84,11 @@ switch ($segments[0] ?? '') {
     case 'sitemap.xml':
         $dispatch("$root/pages/sitemap-xml.php");
 
-    case 'track-request':
-        $dispatch("$root/pages/track-request.php");
-
-    case 'payment-link':
-        $dispatch("$root/pages/payment-link.php");
-
     case 'support':
-        $dispatch("$root/pages/support.php");
-
-    case 'track-visa':
-        $dispatch("$root/pages/track.php");
+        // The old support-ticket system needed an account to sign into;
+        // there's no account system anymore, so this now goes straight
+        // to the one real enquiry channel.
+        redirect('/contact/', 301);
 
     case 'visa-process':
         $dispatch("$root/pages/process.php");
@@ -105,18 +98,6 @@ switch ($segments[0] ?? '') {
 
     case 'attestation':
         $dispatch("$root/attestation/index.php");
-
-    case 'apply':
-        switch ($segments[1] ?? null) {
-            case null:
-                $dispatch("$root/apply/index.php");
-            case 'details':
-                $dispatch("$root/apply/details.php");
-            case 'review':
-                $dispatch("$root/apply/review.php");
-            default:
-                $dispatch("$root/pages/404.php");
-        }
 
     case 'careers':
         $dispatch("$root/pages/careers.php");
@@ -152,30 +133,6 @@ switch ($segments[0] ?? '') {
 
     case 'blog':
         $dispatch("$root/blog/index.php");
-
-    case 'login':
-        $dispatch("$root/auth/login.php");
-
-    case 'register':
-        $dispatch("$root/auth/register.php");
-
-    case 'logout':
-        $dispatch("$root/auth/logout.php");
-
-    case 'forgot-password':
-        $dispatch("$root/auth/forgot-password.php");
-
-    case 'reset-password':
-        $dispatch("$root/auth/reset-password.php");
-
-    case 'dashboard':
-        $dispatch("$root/dashboard/index.php");
-
-    case 'admin':
-        $dispatch("$root/admin/index.php");
-
-    case 'consultant':
-        $dispatch("$root/consultant/index.php");
 
     default:
         $dispatch("$root/pages/404.php");

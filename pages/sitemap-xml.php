@@ -19,9 +19,8 @@ declare(strict_types=1);
 
 header('Content-Type: application/xml; charset=utf-8');
 
-$pdo = db();
-$countries = $pdo->query('SELECT slug, updated_at FROM countries WHERE is_active = 1 ORDER BY name')->fetchAll();
-$visaTypes = $pdo->query('SELECT slug, updated_at FROM visa_types WHERE is_active = 1 ORDER BY sort_order')->fetchAll();
+$countries = countries_all();
+$visaTypes = visa_types_all();
 
 $staticUrls = [
     ['loc' => '/', 'priority' => '1.0', 'changefreq' => 'weekly'],
@@ -32,7 +31,7 @@ $staticUrls = [
     ['loc' => '/visa-type/', 'priority' => '0.8', 'changefreq' => 'monthly'],
     ['loc' => '/visa-process/', 'priority' => '0.6', 'changefreq' => 'monthly'],
     ['loc' => '/faq/', 'priority' => '0.5', 'changefreq' => 'monthly'],
-    ['loc' => '/track-visa/', 'priority' => '0.4', 'changefreq' => 'yearly'],
+    ['loc' => '/contact/', 'priority' => '0.5', 'changefreq' => 'yearly'],
     ['loc' => '/attestation/', 'priority' => '0.7', 'changefreq' => 'monthly'],
 ];
 foreach (array_keys(attestation_services()) as $attestationSlug) {
@@ -52,7 +51,6 @@ echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 <?php foreach ($visaTypes as $t): ?>
     <url>
         <loc><?= e(APP_URL . '/visa-type/' . $t['slug'] . '/') ?></loc>
-        <lastmod><?= e(date('Y-m-d', strtotime((string) $t['updated_at']))) ?></lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
     </url>
@@ -60,7 +58,6 @@ echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 <?php foreach ($countries as $c): ?>
     <url>
         <loc><?= e(APP_URL . '/visa/' . $c['slug'] . '/') ?></loc>
-        <lastmod><?= e(date('Y-m-d', strtotime((string) $c['updated_at']))) ?></lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
     </url>

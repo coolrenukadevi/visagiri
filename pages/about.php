@@ -77,7 +77,7 @@ require __DIR__ . '/../includes/header.php';
     <div class="container">
         <div class="final-cta">
             <h2>Ready to start your visa journey?</h2>
-            <a href="/apply/" class="btn btn-gold btn-lg">Start Your Application</a>
+            <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to start my visa journey.")) ?>" class="btn btn-gold btn-lg" target="_blank" rel="noopener noreferrer">Enquire Now</a>
         </div>
     </div>
 </section>

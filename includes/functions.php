@@ -38,16 +38,6 @@ function redirect(string $path, int $status = 302): never
     exit;
 }
 
-/** Where a logged-in user's "My Account"-type link should point, based on role. */
-function account_home_href(string $roleName): string
-{
-    return match ($roleName) {
-        'super_admin', 'admin' => '/admin/',
-        'consultant' => '/consultant/',
-        default => '/dashboard/',
-    };
-}
-
 function slugify(string $text): string
 {
     $text = trim($text);
@@ -66,12 +56,6 @@ function flash_get(string $key): ?string
     $message = $_SESSION['flash'][$key] ?? null;
     unset($_SESSION['flash'][$key]);
     return $message;
-}
-
-/** Formats a decimal amount with its currency code, e.g. "INR 12,500.00". */
-function format_money(float $amount, string $currency = 'INR'): string
-{
-    return $currency . ' ' . number_format($amount, 2);
 }
 
 /** Renders a country's flag as a Unicode emoji from its ISO2 code (no image assets needed). */
@@ -368,49 +352,6 @@ function attestation_categories(): array
     return $grouped;
 }
 
-/**
- * Single source of truth for the Country mega-menu — one query over
- * the real countries table (208 rows), grouped by region plus the
- * popular-destination and Schengen-membership flags. Reused by
- * includes/header.php only (desktop mega-menu + mobile accordion);
- * countries/index.php has its own equivalent query since the two
- * pages were built independently, but neither one hardcodes a country
- * list that could fall out of sync with the DB.
- */
-function country_mega_menu_data(): array
-{
-    static $data = null;
-    if ($data !== null) {
-        return $data;
-    }
-
-    $rows = db()->query(
-        'SELECT name, slug, iso2, region, is_popular_destination, is_schengen
-         FROM countries WHERE is_active = 1 ORDER BY region, name'
-    )->fetchAll();
-
-    $byRegion = [];
-    $popular = [];
-    $schengen = [];
-    foreach ($rows as $row) {
-        $byRegion[$row['region']][] = $row;
-        if ((int) $row['is_popular_destination'] === 1) {
-            $popular[] = $row;
-        }
-        if ((int) $row['is_schengen'] === 1) {
-            $schengen[] = $row;
-        }
-    }
-
-    $data = [
-        'by_region' => $byRegion,
-        'popular' => $popular,
-        'schengen' => $schengen,
-        'total' => count($rows),
-    ];
-    return $data;
-}
-
 /** A distinctive icon per attestation category, used as the mega-menu column heading icon. */
 function attestation_category_icon(string $category): string
 {
@@ -530,55 +471,11 @@ function why_visagiri_features(): array
 {
     return [
         ['title' => 'Expert Visa Guidance', 'desc' => 'Guidance from a team familiar with country-specific visa requirements.'],
-        ['title' => 'Digital Application Management', 'desc' => 'Manage your entire application online, from documents to payment.'],
-        ['title' => 'Secure Document Handling', 'desc' => 'Documents are stored privately and access is controlled and audited.'],
-        ['title' => 'Transparent Process', 'desc' => 'Clear status updates at every stage of your application.'],
-        ['title' => 'Application Tracking', 'desc' => 'Check your application status anytime with your reference number.'],
-        ['title' => 'Human Support', 'desc' => 'Reach a consultant when you have questions about your application.'],
+        ['title' => 'Document Attestation', 'desc' => 'Apostille, MEA, and embassy attestation for documents used abroad.'],
+        ['title' => 'Transparent Process', 'desc' => 'Clear guidance on eligibility, documents, and fees before you commit.'],
+        ['title' => 'Quick Response', 'desc' => 'Reach our team directly by WhatsApp, call, or enquiry form.'],
+        ['title' => 'Human Support', 'desc' => 'Speak with a consultant about your specific visa or attestation needs.'],
     ];
-}
-
-/**
- * Fetches embassy/consulate/VAC rows for a country. Phase 8 — used by
- * both the country overview and visa detail pages so the query lives
- * in one place. Returns empty arrays if none are published yet;
- * callers must render an honest empty state, never invent an address.
- */
-function fetch_country_contact_points(PDO $pdo, int $countryId): array
-{
-    $embassies = $pdo->prepare('SELECT * FROM embassies WHERE country_id = :id ORDER BY name');
-    $embassies->execute(['id' => $countryId]);
-
-    $consulates = $pdo->prepare('SELECT * FROM consulates WHERE country_id = :id ORDER BY name');
-    $consulates->execute(['id' => $countryId]);
-
-    $vacs = $pdo->prepare('SELECT * FROM vac_centers WHERE country_id = :id ORDER BY name');
-    $vacs->execute(['id' => $countryId]);
-
-    return [
-        'embassies' => $embassies->fetchAll(),
-        'consulates' => $consulates->fetchAll(),
-        'vac_centers' => $vacs->fetchAll(),
-    ];
-}
-
-/**
- * Fetches FAQs relevant to a page: general (no country/visa-type tag)
- * plus any tagged specifically for this country or visa type.
- */
-function fetch_relevant_faqs(PDO $pdo, ?int $countryId = null, ?int $visaTypeId = null): array
-{
-    $stmt = $pdo->prepare(
-        'SELECT question, answer FROM faqs
-         WHERE is_active = 1 AND (
-             (country_id IS NULL AND visa_type_id IS NULL)
-             OR country_id = :country_id
-             OR visa_type_id = :visa_type_id
-         )
-         ORDER BY sort_order'
-    );
-    $stmt->execute(['country_id' => $countryId, 'visa_type_id' => $visaTypeId]);
-    return $stmt->fetchAll();
 }
 
 function is_valid_email(string $value): bool
@@ -614,16 +511,4 @@ function render_not_found(string $message = "The page you're looking for doesn't
     <?php
     require __DIR__ . '/footer.php';
     exit;
-}
-
-/** Generates a Visagiri application reference number, e.g. VIS-2026-000001. */
-function generate_application_number(PDO $pdo): string
-{
-    $year = date('Y');
-    $stmt = $pdo->prepare(
-        "SELECT COUNT(*) FROM applications WHERE application_number LIKE :prefix"
-    );
-    $stmt->execute(['prefix' => "VIS-$year-%"]);
-    $count = (int) $stmt->fetchColumn() + 1;
-    return sprintf('VIS-%s-%06d', $year, $count);
 }

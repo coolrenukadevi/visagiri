@@ -2,16 +2,14 @@
 declare(strict_types=1);
 
 /**
- * "How it works" — Phase 15. Describes the actual application system
- * built in Phases 11/12 (the real 3-step /apply/ wizard and the real
- * 9-stage status sequence from application_status_stages()), not
- * invented marketing steps.
+ * "How it works" — describes the real, current process: a
+ * consultant-led enquiry-to-application flow (WhatsApp/call/contact
+ * form, document guidance, submission by our team), not a self-serve
+ * online wizard. See AUDIT.md, "Single-folder no-database rebuild".
  */
 
-require_once __DIR__ . '/../includes/dashboard-layout.php';
-
 $pageTitle = 'How Visagiri Works - Visa Process';
-$pageDescription = 'See how the Visagiri visa application process works, step by step — from choosing your destination to uploading documents and tracking your status online.';
+$pageDescription = 'See how the Visagiri visa process works, step by step — from your enquiry to document preparation and application submission.';
 $canonicalUrl = APP_URL . '/visa-process/';
 require __DIR__ . '/../includes/header.php';
 ?>
@@ -22,35 +20,29 @@ require __DIR__ . '/../includes/header.php';
             <h1>How Visagiri Works</h1>
         </div>
         <p style="font-size:var(--font-size-lg);color:var(--text-dark)">
-            Start your application online, upload documents securely, and track every stage from your dashboard.
+            Reach out with your destination and purpose of travel, and our team guides you through eligibility, documents, and submission.
         </p>
 
-        <h2 class="country-directory__subheading" style="margin-top:var(--space-8)">Starting an Application</h2>
+        <h2 class="country-directory__subheading" style="margin-top:var(--space-8)">Getting Started</h2>
         <div class="card-grid">
             <div class="card feature-card">
                 <div class="feature-card__icon">1</div>
-                <div class="card-title">Choose Destination &amp; Visa Type</div>
-                <p>Select the country you're travelling to and the visa type that matches your purpose of travel.</p>
+                <div class="card-title">Tell Us Your Destination &amp; Visa Type</div>
+                <p>Reach out via WhatsApp, call, or the enquiry form with the country you're travelling to and your purpose of travel.</p>
             </div>
             <div class="card feature-card">
                 <div class="feature-card__icon">2</div>
-                <div class="card-title">Enter Applicant Details</div>
-                <p>Provide your passport number, date of birth, and nationality.</p>
+                <div class="card-title">Share Your Details</div>
+                <p>We confirm eligibility and the exact documents your application needs based on your passport, nationality, and travel plans.</p>
             </div>
             <div class="card feature-card">
                 <div class="feature-card__icon">3</div>
-                <div class="card-title">Review &amp; Submit</div>
-                <p>Review your details and the document checklist, then submit your application online.</p>
+                <div class="card-title">We Prepare &amp; Submit</div>
+                <p>Our team reviews your documents and application before submitting it to the relevant embassy, consulate, or authority.</p>
             </div>
         </div>
 
-        <h2 class="country-directory__subheading" style="margin-top:var(--space-10)">After You Apply</h2>
-        <p>Once submitted, your application moves through the following stages, visible anytime from your dashboard or via <a href="/track-visa/">application tracking</a>:</p>
-        <ol style="padding-left:var(--space-5);line-height:2">
-            <?php foreach (application_status_stages() as $label): ?>
-            <li><?= e($label) ?></li>
-            <?php endforeach; ?>
-        </ol>
+        <h2 class="country-directory__subheading" style="margin-top:var(--space-10)">After You Enquire</h2>
         <p>
             Service fees, government fees, and any appointment or biometrics scheduling are confirmed by your
             assigned consultant based on your specific requirements — nothing is charged automatically.
@@ -58,7 +50,7 @@ require __DIR__ . '/../includes/header.php';
 
         <div class="final-cta" style="margin-top:var(--space-10)">
             <h2>Ready to start your visa journey?</h2>
-            <a href="/apply/" class="btn btn-gold btn-lg">Start Your Application</a>
+            <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to start my visa journey.")) ?>" class="btn btn-gold btn-lg" target="_blank" rel="noopener noreferrer">Enquire Now</a>
         </div>
     </div>
 </section>

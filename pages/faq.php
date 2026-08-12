@@ -7,10 +7,7 @@ declare(strict_types=1);
  * is invented copy.
  */
 
-$pdo = db();
-$faqs = $pdo->query(
-    'SELECT question, answer FROM faqs WHERE is_active = 1 AND country_id IS NULL AND visa_type_id IS NULL ORDER BY sort_order'
-)->fetchAll();
+$faqs = faqs_general();
 
 $pageTitle = 'Frequently Asked Questions - Visagiri';
 $pageDescription = 'Answers to common questions about visa applications, required documents, processing, and tracking — everything you need to know before applying with Visagiri.';

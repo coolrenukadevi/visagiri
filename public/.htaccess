@@ -5,16 +5,17 @@ RewriteCond %{HTTPS} off
 RewriteCond %{HTTP:X-Forwarded-SSL} !on
 RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-# includes/ and database/ must never be reached by a direct web request —
-# the front controller only ever `require`s them from PHP, never via a
-# URL. In the standard two-folder layout (this file lives in public/,
-# those two are siblings one level up, so a browser can never reach
-# them regardless), this rule is a harmless no-op; in the flattened
-# single-folder cPanel package (bin/package-cpanel.sh), it's the only
-# thing standing between a stray request and includes/config.php or
-# database/schema.sql — so it's kept here rather than only in the
-# packaged copy.
-RewriteRule ^(includes|database)(/.*)?$ - [F,L]
+# includes/ and storage/ must never be reached by a direct web request —
+# the front controller only ever `require`s includes/ from PHP (never
+# via a URL), and storage/ is just local rate-limiter state, not
+# something a browser has any reason to fetch. In the standard
+# two-folder layout (this file lives in public/, those two are
+# siblings one level up, so a browser can never reach them regardless),
+# this rule is a harmless no-op; in the flattened single-folder cPanel
+# package (bin/package-cpanel.sh), it's the only thing standing between
+# a stray request and includes/config.php or storage/rate-limits.json
+# — so it's kept here rather than only in the packaged copy.
+RewriteRule ^(includes|storage)(/.*)?$ - [F,L]
 
 # Serve real static files (CSS/JS/images) as-is. Deliberately excludes
 # .php: a request that happens to resolve to a real .php file (e.g.

@@ -24,14 +24,7 @@ if ($countrySlug === '') {
     redirect('/countries/');
 }
 
-try {
-    $pdo = db();
-    $stmt = $pdo->prepare('SELECT slug FROM countries WHERE slug = :slug AND is_active = 1');
-    $stmt->execute(['slug' => $countrySlug]);
-    $country = $stmt->fetch();
-} catch (Throwable $e) {
-    $country = null;
-}
+$country = country_by_slug($countrySlug);
 
 if (!$country) {
     flash_set('notice', "We couldn't find that destination. Browse the full list below.");
@@ -39,13 +32,7 @@ if (!$country) {
 }
 
 if ($visaTypeSlug !== '') {
-    try {
-        $stmt = $pdo->prepare('SELECT slug FROM visa_types WHERE slug = :slug AND is_active = 1');
-        $stmt->execute(['slug' => $visaTypeSlug]);
-        $visaType = $stmt->fetch();
-    } catch (Throwable $e) {
-        $visaType = null;
-    }
+    $visaType = visa_type_by_slug($visaTypeSlug);
 
     if ($visaType) {
         redirect("/visa/{$country['slug']}/{$visaType['slug']}/" . $queryString);

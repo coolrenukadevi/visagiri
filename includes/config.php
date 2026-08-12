@@ -43,18 +43,22 @@ define('APP_ENV', env('APP_ENV', 'production'));
 define('APP_DEBUG', env('APP_DEBUG', 'false') === 'true');
 define('APP_URL', rtrim((string) env('APP_URL', 'https://visagiri.com'), '/'));
 
-define('DB_HOST', env('DB_HOST', '127.0.0.1'));
-define('DB_PORT', env('DB_PORT', '3306'));
-define('DB_NAME', env('DB_NAME', 'visagiri'));
-define('DB_USER', env('DB_USER', 'visagiri_app'));
-define('DB_PASS', env('DB_PASS', ''));
-define('DB_CHARSET', env('DB_CHARSET', 'utf8mb4'));
-
 define('MAIL_FROM_NAME', env('MAIL_FROM_NAME', 'Visagiri Website'));
 define('MAIL_FROM_ADDRESS', env('MAIL_FROM_ADDRESS', 'info@visagiri.com'));
 define('MAIL_ENQUIRY_RECIPIENTS', env('MAIL_ENQUIRY_RECIPIENTS', 'info@visagiri.com,accounts@visagiri.com'));
 
-define('UPLOADS_PATH', realpath(__DIR__ . '/../uploads') ?: __DIR__ . '/../uploads');
+// Google Apps Script Web App URL that appends enquiries to a Sheet and
+// saves a copy to Drive — see docs/google-sheets-setup.md. Left empty
+// until deployed; submit_enquiry() falls back to email-only in that case.
+define('GOOGLE_APPS_SCRIPT_URL', env('GOOGLE_APPS_SCRIPT_URL', ''));
+
+// Writable directory for small local state (currently just the rate
+// limiter — see includes/security.php). Not web-reachable: blocked by
+// public/.htaccess in both the two-folder and flattened layouts.
+define('STORAGE_PATH', __DIR__ . '/../storage');
+if (!is_dir(STORAGE_PATH)) {
+    mkdir(STORAGE_PATH, 0755, true);
+}
 
 if (APP_DEBUG) {
     ini_set('display_errors', '1');

@@ -7,10 +7,7 @@ declare(strict_types=1);
  * endpoint needed for a simple substring match over ~200 rows).
  */
 
-$pdo = db();
-$countries = $pdo->query(
-    'SELECT name, slug, iso2, region, is_popular_destination FROM countries WHERE is_active = 1 ORDER BY region, name'
-)->fetchAll();
+$countries = countries_all();
 
 $byRegion = [];
 foreach ($countries as $c) {

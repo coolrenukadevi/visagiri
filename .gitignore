@@ -1,7 +1,6 @@
 .env
-uploads/*
-!uploads/.gitkeep
-!uploads/.htaccess
+storage/*
+!storage/.gitkeep
 *.log
 .DS_Store
 *.zip
