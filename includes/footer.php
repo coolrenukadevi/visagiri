@@ -23,7 +23,17 @@ declare(strict_types=1);
         <div class="site-footer__col">
             <h3>Visa Services</h3>
             <ul>
-                <?php foreach ($visaServiceLinks as $link): ?>
+                <?php
+                // Work Visa and Conference Visa kept out of the footer
+                // by request — still real, active visa types, still
+                // reachable via the header's Visa Services dropdown
+                // and the /visa-type/ hub, just not repeated here.
+                $footerVisaServiceLinks = array_filter(
+                    $visaServiceLinks,
+                    static fn(array $l): bool => !in_array($l['label'], ['Work Visa', 'Conference Visa'], true)
+                );
+                ?>
+                <?php foreach ($footerVisaServiceLinks as $link): ?>
                 <li><a href="<?= e($link['href']) ?>"><?= e($link['label']) ?></a></li>
                 <?php endforeach; ?>
             </ul>
@@ -67,11 +77,21 @@ declare(strict_types=1);
         <div class="site-footer__col">
             <h3>Company</h3>
             <ul>
-                <?php foreach ($companyMenu as $footerCompanyGroup): ?>
-                <?php foreach ($footerCompanyGroup as $footerCompanyItem): ?>
+                <?php
+                // Careers and Affiliations & Accreditations kept out of
+                // the footer by request — still reachable via the
+                // header's Company mega-menu.
+                foreach ($companyMenu as $footerCompanyGroup):
+                    foreach ($footerCompanyGroup as $footerCompanyItem):
+                        if (in_array($footerCompanyItem['label'], ['Careers', 'Affiliations & Accreditations'], true)) {
+                            continue;
+                        }
+                ?>
                 <li><a href="<?= e($footerCompanyItem['href']) ?>"><?= e($footerCompanyItem['label']) ?></a></li>
-                <?php endforeach; ?>
-                <?php endforeach; ?>
+                <?php
+                    endforeach;
+                endforeach;
+                ?>
             </ul>
         </div>
 
@@ -82,7 +102,6 @@ declare(strict_types=1);
                 <li><a href="/faq/">Visa FAQs</a></li>
                 <li><a href="/blog/">Travel Guides</a></li>
                 <li><a href="/blog/">Visa Updates</a></li>
-                <li><a href="/document-checklists/">Document Checklists</a></li>
                 <li><a href="/blog/">Blog</a></li>
             </ul>
         </div>
