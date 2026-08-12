@@ -4,3 +4,4 @@ uploads/*
 !uploads/.htaccess
 *.log
 .DS_Store
+*.zip
