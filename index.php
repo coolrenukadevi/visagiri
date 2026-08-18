@@ -390,178 +390,51 @@ include __DIR__ . '/includes/header-home.php';
            </div>
            <div class="swiper visa-slider">
             <div class="swiper-wrapper">
+                <?php
+                $visa_slider_slugs = ['japan', 'canada', 'france', 'uk', 'germany', 'australia'];
+                $visa_slider_countries = array_filter($VISA_AGENCY_COUNTRIES, function ($c) use ($visa_slider_slugs) {
+                    return in_array($c['slug'], $visa_slider_slugs, true);
+                });
+                $vsi = 0;
+                foreach ($visa_slider_countries as $c):
+                    $vsi++;
+                    $icon_num = str_pad((string) ((($vsi - 1) % 3) + 1), 2, '0', STR_PAD_LEFT);
+                    $type_pairs = array_chunk($c['types'], ceil(count($c['types']) / 2) ?: 1);
+                ?>
                 <div class="swiper-slide">
                     <div class="visa-provide-box">
                         <div class="visa-top-item">
                             <div class="visa-left">
                                 <div class="icon">
-                                    <img src="assets/img/home-2/visa/01.png" alt="img">
+                                    <img src="assets/img/home-2/visa/<?php echo $icon_num; ?>.png" alt="img">
                                 </div>
                                 <div class="content">
                                     <p>Visa Service</p>
                                     <h3>
-                                        <a href="country-details">Japan</a>
+                                        <a href="country-<?php echo $c['slug']; ?>"><?php echo $c['flag']; ?> <?php echo $c['name']; ?></a>
                                     </h3>
                                 </div>
                             </div>
-                            <a href="country-details" class="theme-btn">
+                            <a href="country-<?php echo $c['slug']; ?>" class="theme-btn">
                                 Read More
                                 <i class="fa-solid fa-arrow-right"></i>
                             </a>
                         </div>
                         <div class="visa-list-item">
+                            <?php foreach ($type_pairs as $pair): ?>
                             <ul class="list">
+                                <?php foreach ($pair as $t): ?>
                                 <li>
                                     <i class="fa-regular fa-arrow-right"></i>
-                                    Family Visit Visa Assistance
+                                    <?php echo $t; ?> Visa Assistance
                                 </li>
-                                <li>
-                                    <i class="fa-regular fa-arrow-right"></i>
-                                    Work Visa – H1B
-                                </li>
+                                <?php endforeach; ?>
                             </ul>
-                            <ul class="list">
-                                <li>
-                                    <i class="fa-regular fa-arrow-right"></i>
-                                    Work permit for Canada
-                                </li>
-                                <li>
-                                    <i class="fa-regular fa-arrow-right"></i>
-                                    Work Visa for Canada
-                                </li>
-                            </ul>
+                            <?php endforeach; ?>
                         </div>
                 </div>
                 </div>
-                <div class="swiper-slide">
-                    <div class="visa-provide-box">
-                        <div class="visa-top-item">
-                            <div class="visa-left">
-                                <div class="icon">
-                                    <img src="assets/img/home-2/visa/01.png" alt="img">
-                                </div>
-                                <div class="content">
-                                    <p>Visa Service</p>
-                                    <h3>
-                                        <a href="country-details">Japan</a>
-                                    </h3>
-                                </div>
-                            </div>
-                            <a href="country-details" class="theme-btn">
-                                Read More
-                                <i class="fa-solid fa-arrow-right"></i>
-                            </a>
-                        </div>
-                        <div class="visa-list-item">
-                            <ul class="list">
-                                <li>
-                                    <i class="fa-regular fa-arrow-right"></i>
-                                    Family Visit Visa Assistance
-                                </li>
-                                <li>
-                                    <i class="fa-regular fa-arrow-right"></i>
-                                    Work Visa – H1B
-                                </li>
-                            </ul>
-                            <ul class="list">
-                                <li>
-                                    <i class="fa-regular fa-arrow-right"></i>
-                                    Work permit for Canada
-                                </li>
-                                <li>
-                                    <i class="fa-regular fa-arrow-right"></i>
-                                    Work Visa for Canada
-                                </li>
-                            </ul>
-                        </div>
-                </div>
-                </div>
-                <div class="swiper-slide">
-                    <div class="visa-provide-box">
-                        <div class="visa-top-item">
-                            <div class="visa-left">
-                                <div class="icon">
-                                    <img src="assets/img/home-2/visa/02.png" alt="img">
-                                </div>
-                                <div class="content">
-                                    <p>Visa Service</p>
-                                    <h3>
-                                        <a href="country-details">Canada</a>
-                                    </h3>
-                                </div>
-                            </div>
-                            <a href="country-details" class="theme-btn">
-                                Read More
-                                <i class="fa-solid fa-arrow-right"></i>
-                            </a>
-                        </div>
-                        <div class="visa-list-item">
-                            <ul class="list">
-                                <li>
-                                    <i class="fa-regular fa-arrow-right"></i>
-                                    Family Visit Visa Assistance
-                                </li>
-                                <li>
-                                    <i class="fa-regular fa-arrow-right"></i>
-                                    Work Visa – H1B
-                                </li>
-                            </ul>
-                            <ul class="list">
-                                <li>
-                                    <i class="fa-regular fa-arrow-right"></i>
-                                    Work permit for Canada
-                                </li>
-                                <li>
-                                    <i class="fa-regular fa-arrow-right"></i>
-                                    Work Visa for Canada
-                                </li>
-                            </ul>
-                        </div>
-                   </div>
-                </div>
-                <div class="swiper-slide">
-                   <div class="visa-provide-box">
-                        <div class="visa-top-item">
-                            <div class="visa-left">
-                                <div class="icon">
-                                    <img src="assets/img/home-2/visa/03.png" alt="img">
-                                </div>
-                                <div class="content">
-                                    <p>Visa Service</p>
-                                    <h3>
-                                        <a href="country-details">France</a>
-                                    </h3>
-                                </div>
-                            </div>
-                            <a href="country-details" class="theme-btn">
-                                Read More
-                                <i class="fa-solid fa-arrow-right"></i>
-                            </a>
-                        </div>
-                        <div class="visa-list-item">
-                            <ul class="list">
-                                <li>
-                                    <i class="fa-regular fa-arrow-right"></i>
-                                    Family Visit Visa Assistance
-                                </li>
-                                <li>
-                                    <i class="fa-regular fa-arrow-right"></i>
-                                    Work Visa – H1B
-                                </li>
-                            </ul>
-                            <ul class="list">
-                                <li>
-                                    <i class="fa-regular fa-arrow-right"></i>
-                                    Work permit for Canada
-                                </li>
-                                <li>
-                                    <i class="fa-regular fa-arrow-right"></i>
-                                    Work Visa for Canada
-                                </li>
-                            </ul>
-                        </div>
-                   </div>
-                </div>
+                <?php endforeach; ?>
             </div>
            </div>
            <div class="visa-bottom">
@@ -677,7 +550,7 @@ include __DIR__ . '/includes/header-home.php';
                 </div>
                 <div class="country-explorer-grid country-nav-grid">
                     <?php foreach ($VISA_AGENCY_COUNTRIES as $c): ?>
-                    <a href="country-list" class="country-chip" data-name="<?php echo strtolower($c['name']); ?>" data-region="<?php echo $c['region']; ?>">
+                    <a href="country-<?php echo $c['slug']; ?>" class="country-chip" data-name="<?php echo strtolower($c['name']); ?>" data-region="<?php echo $c['region']; ?>">
                         <span class="flag"><?php echo $c['flag']; ?></span>
                         <span><?php echo $c['name']; ?></span>
                     </a>

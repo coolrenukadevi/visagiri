@@ -162,7 +162,7 @@ include __DIR__ . '/includes/header.php';
                                     <img src="assets/img/home-3/choose-us/icon-1.png" alt="img">
                                 </div>
                                 <h5>
-                                    <a href="country-details">Canada</a>
+                                    <a href="country-canada">Canada</a>
                                 </h5>
                             </div>
                             <p>
@@ -180,7 +180,7 @@ include __DIR__ . '/includes/header.php';
                                     <img src="assets/img/home-3/choose-us/icon-2.png" alt="img">
                                 </div>
                                 <h5>
-                                    <a href="country-details">South Korea</a>
+                                    <a href="country-south-korea">South Korea</a>
                                 </h5>
                             </div>
                             <p>
@@ -198,7 +198,7 @@ include __DIR__ . '/includes/header.php';
                                     <img src="assets/img/home-3/choose-us/icon-3.png" alt="img">
                                 </div>
                                 <h5>
-                                    <a href="country-details">France</a>
+                                    <a href="country-france">France</a>
                                 </h5>
                             </div>
                             <p>
@@ -216,7 +216,7 @@ include __DIR__ . '/includes/header.php';
                                     <img src="assets/img/home-3/choose-us/icon-2.png" alt="img">
                                 </div>
                                 <h5>
-                                    <a href="country-details">UK</a>
+                                    <a href="country-uk">UK</a>
                                 </h5>
                             </div>
                             <p>
@@ -234,7 +234,7 @@ include __DIR__ . '/includes/header.php';
                                     <img src="assets/img/home-3/choose-us/icon-3.png" alt="img">
                                 </div>
                                 <h5>
-                                    <a href="country-details">Germany</a>
+                                    <a href="country-germany">Germany</a>
                                 </h5>
                             </div>
                             <p>
