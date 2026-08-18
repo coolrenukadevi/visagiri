@@ -4,33 +4,32 @@ $page_description = "Visa Agency is a Ministry of Tourism recognised visa consul
 include __DIR__ . '/includes/header-home.php';
 ?>
         <!--Hero Section Start -->
-        <section class="hero-section hero-2 fix bg-cover" style="background-image: url(assets/img/home-2/hero/hero-bg.jpg);">
-            <div class="shape">
-                <img src="assets/img/home-2/hero/shape.png" alt="img">
-            </div>
+        <section class="hero-section hero-2 va-hero fix">
+            <div class="va-hero-glow"></div>
             <div class="container-fluid">
                 <div class="row g-4 align-items-center">
                     <div class="col-lg-6 order-2 order-lg-1">
-                        <div class="hero-image">
-                            <img src="assets/img/home-2/hero/hero.png" alt="img">
+                        <div class="hero-image va-hero-image">
+                            <img src="assets/img/home-2/hero/hero-illustration.svg" alt="Passport, boarding pass and visa approval illustration">
                         </div>
                     </div>
                     <div class="col-lg-6 order-1 order-lg-2">
                         <div class="hero-content">
-                            <h6 class="wow fadeInUp" data-wow-delay=".3s">Global Travel Simplified</h6>
+                            <h6 class="wow fadeInUp" data-wow-delay=".3s">Smart Visa Assistance. Human Expertise.</h6>
                             <h1 class="split-text-right split-text-in-right">
-                                Fast, Reliable & Hassle-Free Travel Visa Solutions
+                                Your Visa Journey, Simplified.
                             </h1>
                             <p>
-                                We simplify the entire travel visa process with expert guidance, quick processing, and personalized support. From application to approval, we ensure your journey is smooth and stress-free.
+                                Smart visa assistance powered by technology and backed by experienced consultants —
+                                from application to approval, across 20+ destinations.
                             </p>
                             <div class="hero-button wow fadeInUp" data-wow-delay=".5s">
-                                <a href="country-details" class="theme-btn">
-                                Get Your Visa
+                                <a href="#visa-search" class="theme-btn">
+                                Check Visa Requirements
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </a>
                                 <a href="contact" class="theme-btn style-2">
-                                    Free Consultation
+                                    Talk to a Consultant
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </a>
                             </div>

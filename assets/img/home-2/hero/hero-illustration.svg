@@ -1,0 +1,94 @@
+<svg width="700" height="620" viewBox="0 0 700 620" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Passport, boarding pass and visa approval illustration">
+<defs>
+<linearGradient id="passportGrad" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#E4222A"/>
+<stop offset="1" stop-color="#B81A21"/>
+</linearGradient>
+<linearGradient id="cardGrad" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#1B3F93"/>
+<stop offset="1" stop-color="#0F2557"/>
+</linearGradient>
+<linearGradient id="blobGrad" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#EAF0FF"/>
+<stop offset="1" stop-color="#F7E6E4"/>
+</linearGradient>
+</defs>
+
+<!-- backdrop blob -->
+<ellipse cx="350" cy="330" rx="300" ry="270" fill="url(#blobGrad)"/>
+
+<!-- dashed flight path -->
+<path d="M70 480 C 220 380, 260 220, 470 120" stroke="#B9C6E8" stroke-width="3" stroke-dasharray="2 12" stroke-linecap="round" fill="none"/>
+
+<!-- paper airplane -->
+<g transform="translate(430,90) rotate(28)">
+<path d="M0 30 L70 0 L18 14 L10 44 L0 30Z" fill="#163C99"/>
+<path d="M18 14 L70 0 L18 32 Z" fill="#2C57B8"/>
+</g>
+
+<!-- small cloud shapes -->
+<g fill="#FFFFFF" opacity="0.8">
+<ellipse cx="120" cy="140" rx="34" ry="14"/>
+<ellipse cx="145" cy="132" rx="22" ry="11"/>
+<ellipse cx="560" cy="200" rx="28" ry="12"/>
+<ellipse cx="580" cy="192" rx="18" ry="9"/>
+</g>
+
+<!-- boarding pass card (behind passport) -->
+<g transform="translate(300,210) rotate(10)">
+<rect x="0" y="0" width="270" height="150" rx="16" fill="url(#cardGrad)"/>
+<rect x="0" y="0" width="270" height="150" rx="16" fill="black" opacity="0.08"/>
+<circle cx="235" cy="75" r="18" fill="none" stroke="#FFFFFF" stroke-opacity="0.5" stroke-width="2" stroke-dasharray="4 5"/>
+<text x="24" y="34" font-family="Arial, sans-serif" font-size="11" letter-spacing="2" fill="#9FB8F0">BOARDING PASS</text>
+<text x="24" y="66" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#FFFFFF">DEL &#8594; JFK</text>
+<rect x="24" y="86" width="150" height="8" rx="4" fill="#FFFFFF" opacity="0.35"/>
+<rect x="24" y="102" width="110" height="8" rx="4" fill="#FFFFFF" opacity="0.22"/>
+<rect x="0" y="150" width="270" height="0" />
+</g>
+
+<!-- passport book -->
+<g transform="translate(150,240) rotate(-8)">
+<rect x="0" y="0" width="230" height="300" rx="14" fill="url(#passportGrad)"/>
+<rect x="0" y="0" width="230" height="300" rx="14" fill="black" opacity="0.05"/>
+<rect x="14" y="14" width="202" height="272" rx="8" fill="none" stroke="#F2C46B" stroke-width="1.4" opacity="0.7"/>
+<circle cx="115" cy="110" r="42" fill="none" stroke="#F2C46B" stroke-width="3"/>
+<circle cx="115" cy="110" r="26" fill="#F2C46B" opacity="0.18"/>
+<path d="M100 112 L111 123 L133 98" stroke="#F2C46B" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+<text x="115" y="180" text-anchor="middle" font-family="'Space Grotesk', Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="3" fill="#F7E6E4">PASSPORT</text>
+<rect x="45" y="200" width="140" height="6" rx="3" fill="#FFFFFF" opacity="0.35"/>
+<rect x="65" y="216" width="100" height="6" rx="3" fill="#FFFFFF" opacity="0.25"/>
+</g>
+
+<!-- visa approved chip -->
+<g transform="translate(60,420)">
+<rect x="0" y="0" width="176" height="62" rx="31" fill="#FFFFFF"/>
+<rect x="0" y="0" width="176" height="62" rx="31" fill="none" stroke="#E3E8F5" stroke-width="1.5"/>
+<circle cx="31" cy="31" r="19" fill="#16A34A"/>
+<path d="M22 31 L28 37 L41 24" stroke="#FFFFFF" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+<text x="58" y="27" font-family="Arial, sans-serif" font-size="12.5" font-weight="700" fill="#101828">Visa Approved</text>
+<text x="58" y="44" font-family="Arial, sans-serif" font-size="10.5" fill="#6B7280">Application #VA-2026</text>
+</g>
+
+<!-- document checklist chip -->
+<g transform="translate(430,400)">
+<rect x="0" y="0" width="190" height="96" rx="18" fill="#FFFFFF"/>
+<rect x="0" y="0" width="190" height="96" rx="18" fill="none" stroke="#E3E8F5" stroke-width="1.5"/>
+<text x="18" y="26" font-family="Arial, sans-serif" font-size="11.5" font-weight="700" fill="#101828">Document Checklist</text>
+<g font-family="Arial, sans-serif" font-size="10.5" fill="#374151">
+<circle cx="22" cy="44" r="6" fill="#E4222A"/>
+<path d="M19 44 L21.3 46.3 L26 41" stroke="#FFFFFF" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="34" y="48">Passport</text>
+<circle cx="22" cy="64" r="6" fill="#E4222A"/>
+<path d="M19 64 L21.3 66.3 L26 61" stroke="#FFFFFF" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="34" y="68">Photographs</text>
+<circle cx="22" cy="84" r="6" fill="none" stroke="#CBD5E1" stroke-width="1.6"/>
+<text x="34" y="88">Travel itinerary</text>
+</g>
+</g>
+
+<!-- small globe accent -->
+<g transform="translate(560,340)">
+<circle cx="0" cy="0" r="26" fill="#163C99"/>
+<path d="M-26 0 H26 M0 -26 V26 M-18 -18 C -8 -8, 8 -8, 18 -18 M-18 18 C -8 8, 8 8, 18 18" stroke="#FFFFFF" stroke-opacity="0.55" stroke-width="1.4" fill="none"/>
+</g>
+</svg>

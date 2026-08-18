@@ -2,6 +2,38 @@
    Visa Agency — custom additions on top of the template's main.css
    ============================================================ */
 
+/* ---- Redesigned homepage hero (no stock photography) ---- */
+.va-hero {
+    background: linear-gradient(135deg, #0F2557 0%, #163C99 55%, #1B3F93 100%);
+    overflow: hidden;
+}
+.va-hero::before {
+    background: none !important;
+}
+.va-hero-glow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(560px circle at 82% 15%, rgba(228, 34, 42, 0.28), transparent 60%),
+        radial-gradient(700px circle at 15% 85%, rgba(255, 255, 255, 0.08), transparent 60%);
+}
+.va-hero-image {
+    position: relative;
+    z-index: 2;
+}
+.va-hero-image img {
+    filter: drop-shadow(0 30px 60px rgba(6, 12, 30, 0.45));
+    max-width: 92%;
+    display: block;
+    margin: 0 auto;
+}
+@media (max-width: 991px) {
+    .va-hero-image img {
+        max-width: 78%;
+    }
+}
+
 /* ---- Nav spacing: fit 7 top-level items comfortably ---- */
 .header-main .main-menu ul li {
     margin-inline-end: 26px !important;
