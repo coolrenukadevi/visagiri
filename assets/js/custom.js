@@ -105,4 +105,36 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    /* ---- Footer accordions: always expanded on desktop, native
+       collapsible <details> accordions on mobile ---- */
+    var footerAccordions = document.querySelectorAll('.footer-accordion');
+    if (footerAccordions.length) {
+        var lastFooterAccordionIsDesktop = null;
+        var applyFooterAccordionState = function () {
+            var isDesktop = window.innerWidth >= 768;
+            if (isDesktop === lastFooterAccordionIsDesktop) return;
+            lastFooterAccordionIsDesktop = isDesktop;
+            footerAccordions.forEach(function (d) {
+                if (isDesktop) {
+                    d.setAttribute('open', '');
+                } else {
+                    d.removeAttribute('open');
+                }
+            });
+        };
+        applyFooterAccordionState();
+        window.addEventListener('resize', applyFooterAccordionState);
+    }
+
+    /* ---- Back to top ---- */
+    var backToTop = document.getElementById('backToTop');
+    if (backToTop) {
+        window.addEventListener('scroll', function () {
+            backToTop.classList.toggle('is-visible', window.scrollY > 500);
+        }, { passive: true });
+        backToTop.addEventListener('click', function () {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+
 });
