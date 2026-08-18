@@ -1323,4 +1323,4 @@ include __DIR__ . '/includes/header-home.php';
         </section>
 
         <!--Footer Section Start -->
-<?php include __DIR__ . '/includes/footer-home.php'; ?>
+<?php include __DIR__ . '/includes/footer.php'; ?>
