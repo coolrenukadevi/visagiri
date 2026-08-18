@@ -1129,3 +1129,33 @@ summary:focus-visible {
     outline: 2px solid var(--theme-2);
     outline-offset: 2px;
 }
+
+/* ---- Mega-menu heading icons + simple dropdown polish (nav redesign) ---- */
+.mega-col h5 i {
+    margin-right: 8px;
+    color: var(--theme);
+    font-size: 13px;
+}
+.submenu.simple-dropdown {
+    min-width: 260px;
+}
+.submenu.simple-dropdown li a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.submenu.simple-dropdown li a i {
+    color: var(--theme);
+    width: 16px;
+    text-align: center;
+    font-size: 13px;
+}
+.mega-panel-2col .mega-panel-inner {
+    grid-template-columns: 1fr 1fr;
+}
+.mega-cta-hint {
+    display: block;
+    font-size: 12.5px;
+    color: var(--text);
+    margin-top: 14px;
+}

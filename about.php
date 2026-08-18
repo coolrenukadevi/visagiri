@@ -103,8 +103,8 @@ include __DIR__ . '/includes/header.php';
                                         <p>Expanding Opportunities Worldwide</p>
                                     </div>
                                     <div class="content">
-                                        <span><img src="assets/img/home-1/icon/01.svg" alt=""> Global Reach-</span>
-                                        <p>Expanding Opportunities Worldwide</p>
+                                        <span><img src="assets/img/home-1/icon/01.svg" alt=""> Personal Support-</span>
+                                        <p>A Consultant With You at Every Step</p>
                                     </div>
                                 </div>
                                 <ul class="list wow fadeInUp" data-wow-delay=".3s">
@@ -129,7 +129,7 @@ include __DIR__ . '/includes/header.php';
         </section>
 
         <!-- Choose-us-section-2 Start -->
-       <section class="choose-us-section-2 section-padding fix bg-cover" style="background-image: url(assets/img/home-2/feature/bg-shape.png);">
+       <section class="choose-us-section-2 section-padding fix bg-cover" id="why-choose-us" style="background-image: url(assets/img/home-2/feature/bg-shape.png);">
             <div class="container">
                 <div class="choose-us-wrapper-2">
                     <div class="row g-4">
@@ -141,9 +141,9 @@ include __DIR__ . '/includes/header.php';
                         <div class="col-lg-6">
                             <div class="feature-content">
                                  <div class="section-title mb-0">
-                                    <span class="sub-title-2 wow fadeInUp">Your Travel Made Easy</span>
+                                    <span class="sub-title-2 wow fadeInUp">Why Choose Us</span>
                                     <h2 class="split-text-right split-text-in-right">
-                                        Smooth Visa Journey Guaranteed
+                                        A Smoother Visa Journey, Guided By Experts
                                     </h2>
                                 </div>
                                 <p class="text">

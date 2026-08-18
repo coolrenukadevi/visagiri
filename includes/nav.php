@@ -2,48 +2,59 @@
 <nav id="mobile-menu">
     <ul>
         <li class="has-dropdown">
-            <a href="visa-consultancy-services">Visa</a>
+            <a href="about">Company</a>
+            <ul class="submenu simple-dropdown">
+                <li><a href="about"><i class="fa-solid fa-building"></i> About Us</a></li>
+                <li><a href="about#why-choose-us"><i class="fa-solid fa-circle-check"></i> Why Choose Us</a></li>
+                <li><a href="careers"><i class="fa-solid fa-briefcase"></i> Careers</a></li>
+                <li><a href="news"><i class="fa-solid fa-newspaper"></i> News &amp; Updates</a></li>
+                <li><a href="contact"><i class="fa-solid fa-envelope"></i> Contact Us</a></li>
+            </ul>
+        </li>
+
+        <li class="has-dropdown">
+            <a href="visa-consultancy-services">Services</a>
             <ul class="submenu has-homemenu mega-panel">
                 <li>
                     <div class="mega-panel-inner">
                         <div class="mega-col">
-                            <h5>Visa Services</h5>
+                            <h5><i class="fa-solid fa-passport"></i>Visa Services</h5>
                             <ul class="mega-links">
                                 <li><a href="service-details">Tourist Visa</a></li>
                                 <li><a href="service-details">Business Visa</a></li>
-                                <li><a href="service-details">Visitor Visa</a></li>
-                                <li><a href="service-details">Family Visit Visa</a></li>
-                                <li><a href="service-details">Transit Visa</a></li>
                                 <li><a href="service-details">Work Visa</a></li>
-                                <li><a href="service-details">Employment Visa</a></li>
-                                <li><a href="service-details">Immigration / PR Assistance</a></li>
-                                <li><a href="service-details">E-Visa</a></li>
+                                <li><a href="service">Family Visa</a></li>
+                                <li><a href="service-details">Transit Visa</a></li>
+                                <li><a href="visa-consultancy-services">Immigration / PR Assistance</a></li>
                             </ul>
                         </div>
                         <div class="mega-col">
-                            <h5>Visa Assistance</h5>
+                            <h5><i class="fa-solid fa-file-lines"></i>Documentation Services</h5>
                             <ul class="mega-links">
-                                <li><a href="appointment">Visa Eligibility Check</a></li>
-                                <li><a href="/#checklist">Document Checklist</a></li>
+                                <li><a href="/#checklist">Visa Documentation</a></li>
+                                <li><a href="appointment">Document Verification</a></li>
+                                <li><a href="contact">Invitation Letter Assistance</a></li>
+                                <li><a href="other-services">Travel Insurance</a></li>
+                                <li><a href="other-services">Hotel &amp; Flight Reservation</a></li>
                                 <li><a href="appointment">Appointment Assistance</a></li>
-                                <li><a href="service-details">Interview Preparation</a></li>
-                                <li><a href="service-details">Visa Application Tracking</a></li>
-                                <li><a href="service-details">Visa Documentation Assistance</a></li>
                             </ul>
                         </div>
                         <div class="mega-col">
-                            <h5>Popular Destinations</h5>
-                            <ul class="mega-links mega-links-flags">
-                                <?php foreach (array_slice($VISA_AGENCY_COUNTRIES, 0, 6) as $c): ?>
-                                <li><a href="country-list"><span><?php echo $c['flag']; ?></span> <?php echo $c['name']; ?></a></li>
-                                <?php endforeach; ?>
+                            <h5><i class="fa-solid fa-stamp"></i>Specialized Services</h5>
+                            <ul class="mega-links">
+                                <li><a href="apostille">Apostille &amp; Attestation</a></li>
+                                <li><a href="apostille">Embassy Legalization</a></li>
+                                <li><a href="apostille">Translation Services</a></li>
+                                <li><a href="other-services">Corporate Visa Services</a></li>
                             </ul>
-                            <a href="visa-consultancy-services" class="mega-cta">Explore All Visa Services <i class="fa-solid fa-arrow-right"></i></a>
+                            <span class="mega-cta-hint">Need help choosing?</span>
+                            <a href="contact" class="mega-cta">Talk to a Visa Expert <i class="fa-solid fa-arrow-right"></i></a>
                         </div>
                     </div>
                 </li>
             </ul>
         </li>
+
         <li class="has-dropdown">
             <a href="country-list">Countries</a>
             <ul class="submenu has-homemenu mega-panel mega-panel-countries">
@@ -58,6 +69,8 @@
                             <button type="button" data-region="Asia">Asia</button>
                             <button type="button" data-region="Europe">Europe</button>
                             <button type="button" data-region="North America">North America</button>
+                            <button type="button" data-region="South America">South America</button>
+                            <button type="button" data-region="Africa">Africa</button>
                             <button type="button" data-region="Middle East">Middle East</button>
                             <button type="button" data-region="Oceania">Oceania</button>
                         </div>
@@ -69,51 +82,114 @@
                             </a>
                             <?php endforeach; ?>
                         </div>
-                        <a href="country-list" class="mega-cta">View All Countries <i class="fa-solid fa-arrow-right"></i></a>
+                        <a href="country-list" class="mega-cta">View All <?php echo count($VISA_AGENCY_COUNTRIES); ?>+ Countries <i class="fa-solid fa-arrow-right"></i></a>
                     </div>
                 </li>
             </ul>
         </li>
+
+        <li class="has-dropdown">
+            <a href="visa-consultancy-services">Visa</a>
+            <ul class="submenu has-homemenu mega-panel mega-panel-2col">
+                <li>
+                    <div class="mega-panel-inner">
+                        <div class="mega-col">
+                            <h5><i class="fa-solid fa-passport"></i>Visa Categories</h5>
+                            <ul class="mega-links">
+                                <li><a href="service-details">Tourist Visa</a></li>
+                                <li><a href="service-details">Business Visa</a></li>
+                                <li><a href="service-details">Work Visa</a></li>
+                                <li><a href="service">Family Visa</a></li>
+                                <li><a href="service-details">Transit Visa</a></li>
+                                <li><a href="visa-consultancy-services">Medical Visa</a></li>
+                                <li><a href="visa-consultancy-services">E-Visa</a></li>
+                                <li><a href="visa-consultancy-services">Immigration / PR</a></li>
+                            </ul>
+                        </div>
+                        <div class="mega-col">
+                            <h5><i class="fa-solid fa-toolbox"></i>Visa Tools</h5>
+                            <ul class="mega-links">
+                                <li><a href="visa-consultancy-services">Visa Requirements</a></li>
+                                <li><a href="/#checklist">Document Checklist</a></li>
+                                <li><a href="appointment">Visa Appointment</a></li>
+                                <li><a href="visa-refusal">Visa Refusal Guidance</a></li>
+                                <li><a href="/#faq">Visa FAQs</a></li>
+                            </ul>
+                            <a href="/#visa-search" class="mega-cta">Find Your Visa Requirements <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </li>
+
         <li class="has-dropdown">
             <a href="apostille">Apostille</a>
-            <ul class="submenu">
-                <li><a href="apostille">Overview</a></li>
-                <li><a href="apostille">MEA Apostille</a></li>
-                <li><a href="apostille">Embassy Attestation</a></li>
-                <li><a href="apostille">Certificate Attestation</a></li>
-                <li><a href="apostille">Document Legalisation</a></li>
-                <li><a href="apostille">Translation Services</a></li>
+            <ul class="submenu has-homemenu mega-panel mega-panel-2col">
+                <li>
+                    <div class="mega-panel-inner">
+                        <div class="mega-col">
+                            <h5><i class="fa-solid fa-stamp"></i>Apostille Services</h5>
+                            <ul class="mega-links">
+                                <li><a href="apostille">MEA Apostille</a></li>
+                                <li><a href="apostille">Educational Certificate Apostille</a></li>
+                                <li><a href="apostille">Birth &amp; Marriage Certificate Apostille</a></li>
+                                <li><a href="apostille">Commercial Document Apostille</a></li>
+                                <li><a href="apostille">Power of Attorney Attestation</a></li>
+                            </ul>
+                        </div>
+                        <div class="mega-col">
+                            <h5><i class="fa-solid fa-building-columns"></i>Related Services</h5>
+                            <ul class="mega-links">
+                                <li><a href="apostille">Embassy Attestation</a></li>
+                                <li><a href="apostille">Certificate Attestation</a></li>
+                                <li><a href="apostille">Document Legalisation</a></li>
+                                <li><a href="apostille">Translation &amp; Notary Assistance</a></li>
+                            </ul>
+                            <a href="contact" class="mega-cta">Get Document Assistance <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </li>
             </ul>
         </li>
-        <li class="has-dropdown">
-            <a href="other-services">Services</a>
-            <ul class="submenu">
-                <li><a href="other-services">Travel Insurance</a></li>
-                <li><a href="other-services">Forex Assistance</a></li>
-                <li><a href="other-services">Flight &amp; Hotel Reservation</a></li>
-                <li><a href="other-services">Airport Meet &amp; Assist</a></li>
-                <li><a href="other-services">Corporate Visa Assistance</a></li>
-            </ul>
-        </li>
-        <li class="has-dropdown">
-            <a href="about">Company</a>
-            <ul class="submenu">
-                <li><a href="about">About Us</a></li>
-                <li><a href="careers">Careers</a></li>
-                <li><a href="news">News &amp; Blog</a></li>
-                <li><a href="contact">Contact Us</a></li>
-            </ul>
-        </li>
+
         <li class="has-dropdown">
             <a href="news">Resources</a>
-            <ul class="submenu">
-                <li><a href="news">Blog</a></li>
-                <li><a href="news-grid">Visa Guides</a></li>
-                <li><a href="/#checklist">Document Checklist</a></li>
-                <li><a href="visa-refusal">Visa Refusal Guidance</a></li>
-                <li><a href="/#faq">FAQs</a></li>
+            <ul class="submenu has-homemenu mega-panel">
+                <li>
+                    <div class="mega-panel-inner">
+                        <div class="mega-col">
+                            <h5><i class="fa-solid fa-book-open"></i>Visa Resources</h5>
+                            <ul class="mega-links">
+                                <li><a href="news-grid">Visa Guides</a></li>
+                                <li><a href="country-list">Country Guides</a></li>
+                                <li><a href="/#checklist">Visa Checklists</a></li>
+                                <li><a href="/#faq">Visa FAQs</a></li>
+                                <li><a href="news">Visa News</a></li>
+                            </ul>
+                        </div>
+                        <div class="mega-col">
+                            <h5><i class="fa-solid fa-toolbox"></i>Useful Tools</h5>
+                            <ul class="mega-links">
+                                <li><a href="/#visa-search">Visa Finder</a></li>
+                                <li><a href="/#checklist">Document Checklist</a></li>
+                                <li><a href="country-list">Country Search</a></li>
+                                <li><a href="appointment">Appointment Assistance</a></li>
+                            </ul>
+                        </div>
+                        <div class="mega-col">
+                            <h5><i class="fa-solid fa-newspaper"></i>Content</h5>
+                            <ul class="mega-links">
+                                <li><a href="news">Blog</a></li>
+                                <li><a href="news-grid">Travel Tips</a></li>
+                                <li><a href="visa-refusal">Visa Refusal Guidance</a></li>
+                            </ul>
+                            <a href="news" class="mega-cta">Visit Resources <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </li>
             </ul>
         </li>
+
         <li>
             <a href="contact">Contact</a>
         </li>
