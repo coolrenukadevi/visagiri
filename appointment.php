@@ -26,7 +26,7 @@ include __DIR__ . '/includes/header.php';
                     <h1 class="breadcrumb-title">Make Appointment</h1>
                     <ul class="breadcrumb-list">
                         <li>
-                            <a href="index.php">Home</a>
+                            <a href="/">Home</a>
                         </li>
                         <li>
                             <i class="fa-solid fa-chevron-right"></i>
@@ -162,7 +162,7 @@ include __DIR__ . '/includes/header.php';
                                      <div class="form-check">
                                         <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault5">
                                         <label class="form-check-label" for="flexCheckDefault5">
-                                            Student Visa
+                                            Family Visa
                                         </label>
                                     </div>
                                     <div class="form-check">

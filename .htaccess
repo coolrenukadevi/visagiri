@@ -1,0 +1,35 @@
+# Visa Agency — clean URLs (no .php in public URLs)
+Options -MultiViews
+RewriteEngine On
+RewriteBase /
+
+# Redirect direct *.php requests to their clean equivalent (except mail-handler.php,
+# which is a form-submission endpoint, not a browsable page).
+RewriteCond %{THE_REQUEST} \s/+([a-zA-Z0-9_-]+)\.php[\s?] [NC]
+RewriteCond %1 !^mail-handler$ [NC]
+RewriteCond %1 !^index$ [NC]
+RewriteRule ^ /%1 [R=301,L]
+
+# Redirect /index to /
+RewriteCond %{THE_REQUEST} \s/+index(?:\.php)?[\s?] [NC]
+RewriteRule ^ / [R=301,L]
+
+# Serve index.php for the homepage
+RewriteRule ^$ index.php [L]
+
+# Map a clean URL to its .php file when the file exists and no real
+# file/directory already matches the request.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{DOCUMENT_ROOT}/$1.php -f
+RewriteRule ^([a-zA-Z0-9_-]+)/?$ $1.php [L]
+
+# 404 fallback
+ErrorDocument 404 /404.php
+
+# Never allow mail-handler.php to be listed/browsed directly via GET from the address bar
+<Files "mail-handler.php">
+    <If "%{REQUEST_METHOD} = 'GET'">
+        Require all denied
+    </If>
+</Files>

@@ -26,7 +26,7 @@ include __DIR__ . '/includes/header.php';
                     <h1 class="breadcrumb-title">Blog Stardard</h1>
                     <ul class="breadcrumb-list">
                         <li>
-                            <a href="index.php">Home</a>
+                            <a href="/">Home</a>
                         </li>
                         <li>
                             <i class="fa-solid fa-chevron-right"></i>
@@ -65,14 +65,14 @@ include __DIR__ . '/includes/header.php';
                                         </li>
                                     </ul>
                                     <h3>
-                                        <a href="news-details.php">
+                                        <a href="news-details">
                                             How to Avoid Common Mistakes in Visa Applications
                                         </a>
                                     </h3>
                                     <p>
                                         A business consultant provides expert guidance, strategic planning, and problem-solving support—helping startups avoid mistakes, grow faster, and operate more efficiently from day one.
                                     </p>
-                                    <a href="news-details.php" class="theme-btn">
+                                    <a href="news-details" class="theme-btn">
                                         VIEW MORE
                                         <i class="fa-solid fa-arrow-right"></i>
                                     </a>
@@ -98,14 +98,14 @@ include __DIR__ . '/includes/header.php';
                                         </li>
                                     </ul>
                                     <h3>
-                                        <a href="news-details.php">
+                                        <a href="news-details">
                                             The Role of Immigration Consultants in Your Journey
                                         </a>
                                     </h3>
                                     <p>
                                         Immigration consultants play a vital role in guiding applicants, simplifying complex processes, offering expert advice, and ensuring successful outcomes for study, work, or permanent residency abroad.
                                     </p>
-                                    <a href="news-details.php" class="theme-btn">
+                                    <a href="news-details" class="theme-btn">
                                         VIEW MORE
                                         <i class="fa-solid fa-arrow-right"></i>
                                     </a>
@@ -131,14 +131,14 @@ include __DIR__ . '/includes/header.php';
                                         </li>
                                     </ul>
                                     <h3>
-                                        <a href="news-details.php">
+                                        <a href="news-details">
                                            Latest Immigration Policy Updates You Should Know
                                         </a>
                                     </h3>
                                     <p>
                                        Stay informed with the latest immigration policy updates, ensuring you understand new rules, visa requirements, and opportunities that impact your study, work, or migration journey abroad.
                                     </p>
-                                    <a href="news-details.php" class="theme-btn">
+                                    <a href="news-details" class="theme-btn">
                                         VIEW MORE
                                         <i class="fa-solid fa-arrow-right"></i>
                                     </a>
@@ -161,11 +161,11 @@ include __DIR__ . '/includes/header.php';
                                     </div>
                                     <div class="news-widget-categories">
                                         <ul>
-                                            <li><a href="news-details.php"><i class="fa-solid fa-chevrons-right"></i> Permanent Residency (PR)</a><span>(04)</span></li>
-                                            <li><a href="news-details.php"><i class="fa-solid fa-chevrons-right"></i> Immigration Policy Updates</a><span>(09)</span></li>
-                                            <li><a href="news-details.php"><i class="fa-solid fa-chevrons-right"></i> Scholarships & Grants</a><span>(00)</span></li>
-                                            <li><a href="news-details.php"><i class="fa-solid fa-chevrons-right"></i> Citizenship & Naturalization</a><span>(04)</span></li>
-                                             <li><a href="news-details.php"><i class="fa-solid fa-chevrons-right"></i> Visa Interview Preparation</a><span>(01)</span></li>
+                                            <li><a href="news-details"><i class="fa-solid fa-chevrons-right"></i> Permanent Residency (PR)</a><span>(04)</span></li>
+                                            <li><a href="news-details"><i class="fa-solid fa-chevrons-right"></i> Immigration Policy Updates</a><span>(09)</span></li>
+                                            <li><a href="news-details"><i class="fa-solid fa-chevrons-right"></i> Visa Fees & Costs</a><span>(00)</span></li>
+                                            <li><a href="news-details"><i class="fa-solid fa-chevrons-right"></i> Citizenship & Naturalization</a><span>(04)</span></li>
+                                             <li><a href="news-details"><i class="fa-solid fa-chevrons-right"></i> Visa Interview Preparation</a><span>(01)</span></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -180,8 +180,8 @@ include __DIR__ . '/includes/header.php';
                                             </div>
                                             <div class="recent-content">
                                                 <h6>
-                                                    <a href="news-details.php">
-                                                       Top Countries for Higher Education in 2025
+                                                    <a href="news-details">
+                                                       Top Visa-Friendly Countries in 2025
                                                     </a>
                                                 </h6>
                                                 <ul>
@@ -197,7 +197,7 @@ include __DIR__ . '/includes/header.php';
                                             </div>
                                             <div class="recent-content">
                                                 <h6>
-                                                    <a href="news-details.php">
+                                                    <a href="news-details">
                                                         The Benefits of Hiring a Visa Consultant
                                                     </a>
                                                 </h6>
@@ -214,7 +214,7 @@ include __DIR__ . '/includes/header.php';
                                             </div>
                                             <div class="recent-content">
                                                 <h6>
-                                                    <a href="news-details.php">
+                                                    <a href="news-details">
                                                        How to Prepare for Your Immigration Interview
                                                     </a>
                                                 </h6>
@@ -233,12 +233,12 @@ include __DIR__ . '/includes/header.php';
                                     </div>
                                     <div class="news-widget-categories">
                                         <div class="tagcloud">
-                                            <a href="news-details.php">WorkVisa</a>
-                                            <a href="news-details.php">FamilyVisa</a>
-                                            <a href="news-details.php">StudentVisa</a>
-                                            <a href="news-details.php">VisaUpdates</a>
-                                            <a href="news-details.php">TravelVisa</a>     
-                                            <a href="news-details.php">StudyAbroad</a>
+                                            <a href="news-details">WorkVisa</a>
+                                            <a href="news-details">FamilyVisa</a>
+                                            <a href="news-details">VisaTips</a>
+                                            <a href="news-details">VisaUpdates</a>
+                                            <a href="news-details">TravelVisa</a>     
+                                            <a href="news-details">TouristVisa</a>
                                         </div>
                                     </div>
                                 </div>

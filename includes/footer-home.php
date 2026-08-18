@@ -20,108 +20,81 @@
                     </form>
                 </div>
                 <div class="footer-widget-wrapper-2">
-                    <div class="row">
-                        <div class="col-xl-5 col-md-6 col-lg-3">
-                            <div class="single-footer-widget">
-                                <div class="widget-title">
-                                    <a href="index.php"><img src="assets/img/logo/white-logo.svg" alt="img"></a>
-                                </div>
-                                 <div class="footer-content">
-                                    <p>
-                                        “Our trusted brand represents reliability, professionalism, and expert guidance in visa consultancy, helping travelers achieve smooth, hassle-free.
-                                    </p>
-                                    <div class="social-icon">
-                                        <span>Follow Us :</span>
-                                        <a href="#"><i class="fa-brands fa-twitter"></i></a>
-                                        <a href="#"><i class="fa-brands fa-whatsapp"></i></a>
-                                        <a href="#"><i class="fa-brands fa-instagram"></i></a>
-                                        <a href="#"><i class="fas fa-paper-plane"></i></a>
-                                    </div>
-                                </div>
+                    <div class="va-footer-columns">
+                        <div>
+                            <a href="/"><img src="assets/img/logo/white-logo.svg" alt="Visa Agency logo"></a>
+                            <p class="mt-3">Visa Agency is a technology-enabled visa consultancy and a unit of Tripgation Private Limited.</p>
+                            <div class="social-icon mt-3">
+                                <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+                                <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                                <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                                <a href="https://wa.me/917844819819" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i></a>
                             </div>
                         </div>
-                        <div class="col-xl-2 col-md-6 col-lg-3">
-                            <div class="single-footer-widget">
-                                <div class="widget-title">
-                                    <h3>Service</h3>
-                                </div>
-                                 <ul class="list">
-                                    <li>
-                                        <a href="service-details.php">Tourist Visa Assistance</a>
-                                    </li>
-                                    <li>
-                                        <a href="service-details.php">Student Visa Support</a>
-                                    </li>
-                                    <li>
-                                        <a href="service-details.php">Business Visa Services</a>
-                                    </li>
-                                    <li>
-                                        <a href="service-details.php">Work Visa Consulting</a>
-                                    </li>
-                                 </ul>
-                            </div>
+                        <div>
+                            <h4>Visa Services</h4>
+                            <ul>
+                                <li><a href="service-details">Tourist Visa</a></li>
+                                <li><a href="service-details">Business Visa</a></li>
+                                <li><a href="service-details">Work Visa</a></li>
+                                <li><a href="service-details">Medical Visa</a></li>
+                                <li><a href="service">Family Visa</a></li>
+                            </ul>
                         </div>
-                         <div class="col-xl-2 ps-xl-5 col-md-6 col-lg-2">
-                            <div class="single-footer-widget">
-                                <div class="widget-title">
-                                    <h3>Service</h3>
-                                </div>
-                                 <ul class="list">
-                                    <li>
-                                        <a href="about.php">About Us</a>
-                                    </li>
-                                    <li>
-                                        <a href="service-details.php">Services</a>
-                                    </li>
-                                    <li>
-                                        <a href="pricing.php">Pricing</a>
-                                    </li>
-                                    <li>
-                                        <a href="news-details.php">Articles & Blog</a>
-                                    </li>
-                                 </ul>
-                            </div>
+                        <div>
+                            <h4>Popular Countries</h4>
+                            <ul>
+                                <li><a href="country-list">USA</a></li>
+                                <li><a href="country-list">UK</a></li>
+                                <li><a href="country-list">Canada</a></li>
+                                <li><a href="country-list">Australia</a></li>
+                                <li><a href="country-list">View All Countries</a></li>
+                            </ul>
                         </div>
-                        <div class="col-xl-3 col-md-6 col-lg-4">
-                            <div class="single-footer-widget">
-                                <div class="widget-title">
-                                    <h3>Contact Us</h3>
-                                </div>
-                                 <ul class="contact-item">
-                                    <li>
-                                        <i class="fa-solid fa-location-dot"></i>
-                                        #302, Sharda Mansion Apartment, Kailash Puri, Hanuman Nagar, Patna, Bihar 800020
-                                    </li>
-                                    <li class="style-2">
-                                        <i class="fa-solid fa-phone-volume"></i>
-                                        <a href="tel:+917844819819">+91 78448 19819</a>
-                                    </li>
-                                    <li class="style-2">
-                                        <i class="fa-solid fa-circle-chevron-up"></i>
-                                        <a href="mailto:info@visaagency.in">info@visaagency.in</a>
-                                    </li>
-                                 </ul>
-                            </div>
+                        <div>
+                            <h4>Apostille</h4>
+                            <ul>
+                                <li><a href="apostille">Apostille Services</a></li>
+                                <li><a href="apostille">MEA Apostille</a></li>
+                                <li><a href="apostille">Embassy Attestation</a></li>
+                                <li><a href="apostille">Translation Services</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4>Company</h4>
+                            <ul>
+                                <li><a href="about">About Us</a></li>
+                                <li><a href="technology">Technology</a></li>
+                                <li><a href="news">News &amp; Blog</a></li>
+                                <li><a href="careers">Careers</a></li>
+                                <li><a href="contact">Contact Us</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4>Customer</h4>
+                            <ul>
+                                <li><a href="customer-login">Customer Login</a></li>
+                                <li><a href="/#checklist">Document Checklist</a></li>
+                                <li><a href="contact">Enquire Now</a></li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="fotter-bootom-2">
                 <div class="container">
-                    <div class="footer-wrapper">
+                    <div class="footer-wrapper" style="flex-direction:column;gap:10px;">
                         <p>
-                            Copyright© <span>VISA AGENCY</span> All Rights Reserved.
+                            © <?php echo date('Y'); ?> <span>VISA AGENCY</span>. All Rights Reserved. &mdash; A unit of Tripgation Private Limited
                         </p>
-                        <ul class="bottom-list">
-                            <li>
-                                <a href="contact.php">Terms & Conditions</a>
-                            </li>
-                            <li>
-                                <a href="contact.php">Privacy Policy</a>
-                            </li>
-                            <li>
-                                <a href="contact.php">Contact Us</a>
-                            </li>
+                        <ul class="bottom-list va-footer-bottom-links">
+                            <li><a href="contact">Privacy Policy</a></li>
+                            <li><a href="contact">Terms &amp; Conditions</a></li>
+                            <li><a href="contact">Cookie Policy</a></li>
+                            <li><a href="contact">Disclaimer</a></li>
+                            <li><a href="contact">Refund Policy</a></li>
+                            <li><a href="contact">Data Security</a></li>
                         </ul>
                     </div>
                 </div>
@@ -159,5 +132,6 @@
          <script src="assets/js/SplitText.min.js"></script>
         <!--<< Main.js >>-->
         <script src="assets/js/main.js"></script>
+        <script src="assets/js/custom.js"></script>
     </body>
 </html>

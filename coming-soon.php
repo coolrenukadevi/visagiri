@@ -22,7 +22,7 @@ include __DIR__ . '/includes/header.php';
                 <div class="row justify-content-center">
                     <div class="col-lg-8">
                         <div class="cooming-soon-content">
-                            <a href="index.php"><img src="assets/img/logo/black-logo.svg" alt="img"></a>
+                            <a href="/"><img src="assets/img/logo/black-logo.svg" alt="img"></a>
                             <h2>WE ARE COMING SOON</h2>
                             <p>
                                 Exciting things are on the way! Our team is working hard to bring you something amazing. Stay tuned and be the first to experience it.

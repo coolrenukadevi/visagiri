@@ -26,7 +26,7 @@ include __DIR__ . '/includes/header.php';
                     <h1 class="breadcrumb-title">Blog Details</h1>
                     <ul class="breadcrumb-list">
                         <li>
-                            <a href="index.php">Home</a>
+                            <a href="/">Home</a>
                         </li>
                         <li>
                             <i class="fa-solid fa-chevron-right"></i>
@@ -65,20 +65,20 @@ include __DIR__ . '/includes/header.php';
                                         </li>
                                     </ul>
                                     <h2>
-                                        Work Visa vs. Student Visa Which is Right for You?
+                                        Business Visa vs. Tourist Visa Which is Right for You?
                                     </h2>
                                     <p>
-                                        Choosing between a work visa and a student visa depends on your career and academic goals. A student visa allows you to pursue higher education abroad, gain international exposure, and sometimes work part-time while studying. On the other hand, a work visa is for professionals seeking employment opportunities and long-term career growth in another country. 
+                                        Choosing between a business visa and a tourist visa depends on the purpose of your trip. A tourist visa is meant for leisure travel, sightseeing and visiting family or friends, while a business visa is for attending meetings, conferences, trade fairs or exploring commercial opportunities abroad.
                                     </p>
                                     <p class="mt-4 mb-3">
-                                        Both options have unique benefits, eligibility requirements, and future pathways. Understanding your personal ambitions, financial plans, and long-term vision will help you decide which visa option best suits your journey.
+                                        Both options have unique benefits, eligibility requirements and documentation needs. Understanding the purpose of your travel will help you decide which visa category is the right fit and avoid delays at the embassy.
                                     </p>
                                     <h3>
-                                        Work Visa vs. Student Visa: Which is Right for You?
+                                        Business Visa vs. Tourist Visa: Which is Right for You?
                                     </h3>
                                     <p class="mt-2 mb-3">
-                                        Choosing between a student visa and a work visa is a major decision that shapes your future abroad. Both visa types open unique opportunities, but the right choice depends on your goals, priorities, and resources.
-                                        A student visa is designed for individuals who wish to pursue higher education in a foreign country. 
+                                        Choosing between a business visa and a tourist visa is an important first step that shapes the rest of your application. Both visa types open different opportunities, but the right choice depends on your purpose of travel, itinerary and supporting documents.
+                                        A tourist visa is designed for individuals who wish to travel for leisure, sightseeing or visiting family.
                                     </p>
                                     <div class="row g-4">
                                         <div class="col-lg-6">
@@ -94,24 +94,22 @@ include __DIR__ . '/includes/header.php';
                                     </div>
                                     <div class="sideber">
                                         <h5>
-                                            This blog really helped me understand the difference between student and work visas. The explanations were clear and practical.
+                                            This blog really helped me understand the difference between business and tourist visas. The explanations were clear and practical.
                                         </h5>
                                     </div>
                                     <p class="mb-3">
-                                        It provides access to world-class universities, cultural exposure, and global networking opportunities. With a student visa, you may also get part-time work rights, which can help support your expenses and give you valuable international work experience. However, the primary focus remains on academics and personal growth.
-                                        On the other hand, a work visa is perfect for those who want to establish themselves in a career overseas. 
+                                        A tourist visa gives access to sightseeing, cultural exploration and time with family or friends abroad, usually with simpler documentation. A business visa, on the other hand, is intended for those attending meetings, negotiations or industry events overseas.
                                     </p>
                                     <p>
-                                        It provides immediate access to job markets, stable income, and often a pathway to permanent residency. Work visas are suitable for skilled professionals who are ready to contribute to the global workforce and achieve long-term career goals.
-                                        Ultimately, the choice comes down to your personal aspirations. If education and exploration are your priorities, a student visa is ideal. If career advancement and stability are your goals, a work visa is the right fit.
+                                        A business visa typically requires an invitation letter from the host company and proof of your own business, while a tourist visa asks for a travel itinerary and proof of funds. Ultimately, the choice comes down to the purpose of your trip: if leisure and sightseeing are your priority, a tourist visa is ideal; if you are travelling for work-related meetings, a business visa is the right fit.
                                     </p>
                                     <div class="row tag-share-wrap mt-4 mb-5">
                                         <div class="col-lg-8 col-12">
-                                            <div class="tagcloud"> 
-                                                <span>Tags:</span>                                  
-                                                <a href="news-details.php">WorkVisa</a>
-                                                <a href="news-details.php">FamilyVisa</a>
-                                                <a href="news-details.php">StudentVisa</a>
+                                            <div class="tagcloud">
+                                                <span>Tags:</span>
+                                                <a href="news-details">BusinessVisa</a>
+                                                <a href="news-details">TouristVisa</a>
+                                                <a href="news-details">FamilyVisa</a>
                                             </div>
                                         </div>
                                         <div class="col-lg-4 col-12 mt-3 mt-lg-0 text-lg-end">
@@ -137,7 +135,7 @@ include __DIR__ . '/includes/header.php';
                                                         <span>February 10, 2024</span>
                                                         <h4>Frank Flores</h4>
                                                     </div>
-                                                    <a href="news-details.php" class="reply">Reply</a>
+                                                    <a href="news-details" class="reply">Reply</a>
                                                 </div>
                                                 <p class="mt-30 mb-4">
                                                     Neque porro est qui dolorem ipsum quia quaed inventor veritatis et quasi architecto var sed efficitur turpis gilla sed sit amet finibus eros. Lorem Ipsum is simply dummy
@@ -154,7 +152,7 @@ include __DIR__ . '/includes/header.php';
                                                         <h4>Charlie Tushar</h4>
                                                         <span>February 10, 2024</span>
                                                     </div>
-                                                    <a href="news-details.php" class="reply">Reply</a>
+                                                    <a href="news-details" class="reply">Reply</a>
                                                 </div>
                                                 <p class="mt-30 mb-4">
                                                     Neque porro est qui dolorem ipsum quia quaed inventor veritatis et quasi architecto var sed efficitur turpis gilla sed sit amet finibus eros. Lorem Ipsum is simply dummy
@@ -171,7 +169,7 @@ include __DIR__ . '/includes/header.php';
                                                         <span>February 10, 2024 </span>
                                                         <h4>Fatma Sariqul</h4>
                                                     </div>
-                                                    <a href="news-details.php" class="reply">Reply</a>
+                                                    <a href="news-details" class="reply">Reply</a>
                                                 </div>
                                                 <p class="mt-30 mb-4">
                                                     Neque porro est qui dolorem ipsum quia quaed inventor veritatis et quasi architecto var sed efficitur turpis gilla sed sit amet finibus eros. Lorem Ipsum is simply dummy
@@ -244,11 +242,11 @@ include __DIR__ . '/includes/header.php';
                                     </div>
                                     <div class="news-widget-categories">
                                         <ul>
-                                            <li><a href="news-details.php"><i class="fa-solid fa-chevrons-right"></i> Permanent Residency (PR)</a><span>(04)</span></li>
-                                            <li><a href="news-details.php"><i class="fa-solid fa-chevrons-right"></i> Immigration Policy Updates</a><span>(09)</span></li>
-                                            <li><a href="news-details.php"><i class="fa-solid fa-chevrons-right"></i> Scholarships & Grants</a><span>(00)</span></li>
-                                            <li><a href="news-details.php"><i class="fa-solid fa-chevrons-right"></i> Citizenship & Naturalization</a><span>(04)</span></li>
-                                             <li><a href="news-details.php"><i class="fa-solid fa-chevrons-right"></i> Visa Interview Preparation</a><span>(01)</span></li>
+                                            <li><a href="news-details"><i class="fa-solid fa-chevrons-right"></i> Permanent Residency (PR)</a><span>(04)</span></li>
+                                            <li><a href="news-details"><i class="fa-solid fa-chevrons-right"></i> Immigration Policy Updates</a><span>(09)</span></li>
+                                            <li><a href="news-details"><i class="fa-solid fa-chevrons-right"></i> Visa Fees & Costs</a><span>(00)</span></li>
+                                            <li><a href="news-details"><i class="fa-solid fa-chevrons-right"></i> Citizenship & Naturalization</a><span>(04)</span></li>
+                                             <li><a href="news-details"><i class="fa-solid fa-chevrons-right"></i> Visa Interview Preparation</a><span>(01)</span></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -263,8 +261,8 @@ include __DIR__ . '/includes/header.php';
                                             </div>
                                             <div class="recent-content">
                                                 <h6>
-                                                    <a href="news-details.php">
-                                                       Top Countries for Higher Education in 2025
+                                                    <a href="news-details">
+                                                       Top Visa-Friendly Countries in 2025
                                                     </a>
                                                 </h6>
                                                 <ul>
@@ -280,7 +278,7 @@ include __DIR__ . '/includes/header.php';
                                             </div>
                                             <div class="recent-content">
                                                 <h6>
-                                                    <a href="news-details.php">
+                                                    <a href="news-details">
                                                         The Benefits of Hiring a Visa Consultant
                                                     </a>
                                                 </h6>
@@ -297,7 +295,7 @@ include __DIR__ . '/includes/header.php';
                                             </div>
                                             <div class="recent-content">
                                                 <h6>
-                                                    <a href="news-details.php">
+                                                    <a href="news-details">
                                                        How to Prepare for Your Immigration Interview
                                                     </a>
                                                 </h6>
@@ -316,12 +314,12 @@ include __DIR__ . '/includes/header.php';
                                     </div>
                                     <div class="news-widget-categories">
                                         <div class="tagcloud">
-                                            <a href="news-details.php">WorkVisa</a>
-                                            <a href="news-details.php">FamilyVisa</a>
-                                            <a href="news-details.php">StudentVisa</a>
-                                            <a href="news-details.php">VisaUpdates</a>
-                                            <a href="news-details.php">TravelVisa</a>     
-                                            <a href="news-details.php">StudyAbroad</a>
+                                            <a href="news-details">WorkVisa</a>
+                                            <a href="news-details">FamilyVisa</a>
+                                            <a href="news-details">BusinessVisa</a>
+                                            <a href="news-details">VisaUpdates</a>
+                                            <a href="news-details">TravelVisa</a>
+                                            <a href="news-details">TouristVisa</a>
                                         </div>
                                     </div>
                                 </div>

@@ -1,6 +1,6 @@
 <?php
 $page_title = "Our Services &ndash; Visa Agency";
-$page_description = "Tourist, student, business and work visa services offered by Visa Agency.";
+$page_description = "Tourist, business, work and family visa services offered by Visa Agency.";
 include __DIR__ . '/includes/header.php';
 ?>
         <!-- Search Area Start -->
@@ -26,7 +26,7 @@ include __DIR__ . '/includes/header.php';
                     <h1 class="breadcrumb-title">Services</h1>
                     <ul class="breadcrumb-list">
                         <li>
-                            <a href="index.php">Home</a>
+                            <a href="/">Home</a>
                         </li>
                         <li>
                             <i class="fa-solid fa-chevron-right"></i>
@@ -57,7 +57,7 @@ include __DIR__ . '/includes/header.php';
                                 </div>
                                 <div class="content">
                                     <h3>
-                                        <a href="service-details.php">Immigration Appeal & Legal Support</a>
+                                        <a href="service-details">Immigration Appeal & Legal Support</a>
                                     </h3>
                                     <p>
                                         Our experts provide professional guidance for immigration appeals and legal matters, helping clients overcome visa rejections with personalized strategies and strong case representation.”
@@ -65,7 +65,7 @@ include __DIR__ . '/includes/header.php';
                                 </div>
                             </div>
                             <div class="service-button">
-                                <a href="service-details.php" class="theme-btn">
+                                <a href="service-details" class="theme-btn">
                                     read more
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </a>
@@ -73,7 +73,7 @@ include __DIR__ . '/includes/header.php';
                         </div>
                         <div class="service-main-item-3 style-2 fade-up-anim">
                             <div class="service-button">
-                                <a href="service-details.php" class="theme-btn">
+                                <a href="service-details" class="theme-btn">
                                     read more
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </a>
@@ -81,10 +81,10 @@ include __DIR__ . '/includes/header.php';
                             <div class="service-left">
                                 <div class="content">
                                     <h3>
-                                        <a href="service-details.php">Scholarship & Study Grant Guidance</a>
+                                        <a href="service-details">Work Visa Consultancy</a>
                                     </h3>
                                     <p>
-                                        We help students identify suitable scholarships and study grants, assist with applications, and provide expert guidance to maximize chances of securing financial support abroad.
+                                        We help applicants identify the right visa category, assist with documentation, and provide expert guidance to maximize the chances of a smooth application.
                                     </p>
                                 </div>
                                 <div class="service-image">
@@ -99,7 +99,7 @@ include __DIR__ . '/includes/header.php';
                                 </div>
                                 <div class="content">
                                     <h3>
-                                        <a href="service-details.php">Permanent Residency (PR) Services</a>
+                                        <a href="service-details">Permanent Residency (PR) Services</a>
                                     </h3>
                                     <p>
                                         Our PR services guide clients through every step of the residency process, including documentation, eligibility assessment, and application support, ensuring a smooth and successful approval.
@@ -107,7 +107,7 @@ include __DIR__ . '/includes/header.php';
                                 </div>
                             </div>
                             <div class="service-button">
-                                <a href="service-details.php" class="theme-btn">
+                                <a href="service-details" class="theme-btn">
                                     read more
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </a>
@@ -115,7 +115,7 @@ include __DIR__ . '/includes/header.php';
                         </div>
                         <div class="service-main-item-3 style-2 fade-up-anim">
                             <div class="service-button">
-                                <a href="service-details.php" class="theme-btn">
+                                <a href="service-details" class="theme-btn">
                                     read more
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </a>
@@ -123,7 +123,7 @@ include __DIR__ . '/includes/header.php';
                             <div class="service-left">
                                 <div class="content">
                                     <h3>
-                                        <a href="service-details.php">Citizenship & Naturalization Guidance</a>
+                                        <a href="service-details">Citizenship & Naturalization Guidance</a>
                                     </h3>
                                     <p>
                                         We provide expert guidance for citizenship and naturalization processes, assisting clients with documentation, eligibility, and legal procedures to achieve a smooth and successful application.
@@ -162,7 +162,7 @@ include __DIR__ . '/includes/header.php';
                                     <img src="assets/img/home-3/choose-us/icon-1.png" alt="img">
                                 </div>
                                 <h5>
-                                    <a href="country-details.php">Canada</a>
+                                    <a href="country-details">Canada</a>
                                 </h5>
                             </div>
                             <p>
@@ -180,7 +180,7 @@ include __DIR__ . '/includes/header.php';
                                     <img src="assets/img/home-3/choose-us/icon-2.png" alt="img">
                                 </div>
                                 <h5>
-                                    <a href="country-details.php">South Korea</a>
+                                    <a href="country-details">South Korea</a>
                                 </h5>
                             </div>
                             <p>
@@ -198,7 +198,7 @@ include __DIR__ . '/includes/header.php';
                                     <img src="assets/img/home-3/choose-us/icon-3.png" alt="img">
                                 </div>
                                 <h5>
-                                    <a href="country-details.php">France</a>
+                                    <a href="country-details">France</a>
                                 </h5>
                             </div>
                             <p>
@@ -216,7 +216,7 @@ include __DIR__ . '/includes/header.php';
                                     <img src="assets/img/home-3/choose-us/icon-2.png" alt="img">
                                 </div>
                                 <h5>
-                                    <a href="country-details.php">UK</a>
+                                    <a href="country-details">UK</a>
                                 </h5>
                             </div>
                             <p>
@@ -234,7 +234,7 @@ include __DIR__ . '/includes/header.php';
                                     <img src="assets/img/home-3/choose-us/icon-3.png" alt="img">
                                 </div>
                                 <h5>
-                                    <a href="country-details.php">Germany</a>
+                                    <a href="country-details">Germany</a>
                                 </h5>
                             </div>
                             <p>
@@ -254,37 +254,37 @@ include __DIR__ . '/includes/header.php';
                         <div class="top-item">
                             <h4 class="number">01</h4>
                             <h3>
-                                <a href="service-details.php">Family Visa</a>
+                                <a href="service-details">Family Visa</a>
                             </h3>
                         </div>
                         <p>
                             “Our Family Visa services help reunite loved ones by providing expert.
                         </p>
-                        <a href="service-details.php" class="service-button">service _ 02</a>
+                        <a href="service-details" class="service-button">service _ 02</a>
                     </div>
                     <div class="service-visa-items style-2">
                         <div class="top-item">
                             <h4 class="number">02</h4>
                             <h3>
-                                <a href="service-details.php">Student Visa</a>
+                                <a href="service-details">Work Visa</a>
                             </h3>
                         </div>
                         <p>
-                            We provide expert guidance for student visa applications, helping
+                            We provide expert guidance for work visa applications, helping
                         </p>
-                        <a href="service-details.php" class="service-button">service _ 02</a>
+                        <a href="service-details" class="service-button">service _ 02</a>
                     </div>
                      <div class="service-visa-items style-2">
                         <div class="top-item">
                             <h4 class="number">03</h4>
                             <h3>
-                                <a href="service-details.php">Student Visa</a>
+                                <a href="service-details">Business Visa</a>
                             </h3>
                         </div>
                         <p>
                            Collaboratively disintermediate one to one functionalities and long term.
                         </p>
-                        <a href="service-details.php" class="service-button">service _ 02</a>
+                        <a href="service-details" class="service-button">service _ 02</a>
                     </div>
                 </div>
             </div>
@@ -300,7 +300,7 @@ include __DIR__ . '/includes/header.php';
                             Immigration Success Stories
                         </h2>
                     </div>
-                    <a href="contact.php" class="theme-btn">
+                    <a href="contact" class="theme-btn">
                         View All Review
                         <i class="fa-solid fa-arrow-right"></i>
                     </a>

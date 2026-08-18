@@ -26,7 +26,7 @@ include __DIR__ . '/includes/header.php';
                     <h1 class="breadcrumb-title">About Us</h1>
                     <ul class="breadcrumb-list">
                         <li>
-                            <a href="index.php">Home</a>
+                            <a href="/">Home</a>
                         </li>
                         <li>
                             <i class="fa-solid fa-chevron-right"></i>
@@ -91,11 +91,11 @@ include __DIR__ . '/includes/header.php';
                                 <div class="section-title mb-0">
                                     <span class="sub-title wow fadeInUp">About Our Consultancy</span>
                                     <h2 class="split-text-right split-text-in-right">
-                                        Turning Study Abroad <span>Dreams</span> Into Reality
+                                        Turning Travel <span>Dreams</span> Into Reality
                                     </h2>
                                 </div>
                                 <p class="text wow fadeInUp" data-wow-delay=".3s">
-                                    We guide students with expert visa consulting, ensuring a smooth process from application to approval, turning study abroad aspirations into life-changing opportunities for a brighter future.
+                                    We guide travellers with expert visa consulting, ensuring a smooth process from application to approval, turning travel aspirations into life-changing opportunities for a brighter future.
                                 </p>
                                 <div class="about-item wow fadeInUp" data-wow-delay=".5s">
                                     <div class="content">
@@ -117,7 +117,7 @@ include __DIR__ . '/includes/header.php';
                                         Partnership with International Educational Institutions
                                     </li>
                                 </ul>
-                                <a href="about.php" class="theme-btn wow fadeInUp" data-wow-delay=".5s">
+                                <a href="about" class="theme-btn wow fadeInUp" data-wow-delay=".5s">
                                     Get Started
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </a>
@@ -182,7 +182,7 @@ include __DIR__ . '/includes/header.php';
                                         </p>
                                     </div>
                                 </div>
-                                 <a href="contact.php" class="theme-btn">
+                                 <a href="contact" class="theme-btn">
                                     Get Started Today
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </a>
@@ -203,7 +203,7 @@ include __DIR__ . '/includes/header.php';
                            Latest Insights & Updates
                         </h2>
                     </div>
-                    <a href="news.php" class="theme-btn">
+                    <a href="news" class="theme-btn">
                         view all articies
                         <i class="fa-solid fa-arrow-right"></i>
                     </a>
@@ -213,7 +213,7 @@ include __DIR__ . '/includes/header.php';
                         <div class="news-card-item">
                             <div class="news-image">
                                 <img src="assets/img/home-1/news/news-1.jpg" alt="img">
-                                <span>Student Visa</span>
+                                <span>Business Visa</span>
                                 <div class="news-layer-wrapper">
                                     <div class="news-layer-image" style="background-image: url('assets/img/home-1/news/news-1.jpg');"></div>
                                     <div class="news-layer-image" style="background-image: url('assets/img/home-1/news/news-1.jpg');"></div>
@@ -227,8 +227,8 @@ include __DIR__ . '/includes/header.php';
                                     <span>_ 20 August ,2025</span>
                                 </div>
                                 <h3>
-                                    <a href="news-details.php">
-                                        Step-by-Step Guide to Applying for a Student Visa
+                                    <a href="news-details">
+                                        Step-by-Step Guide to Applying for a Business Visa
                                     </a>
                                 </h3>
                                 <div class="news-bottom">
@@ -236,7 +236,7 @@ include __DIR__ . '/includes/header.php';
                                         <img src="assets/img/home-1/news/client.png" alt="img">
                                         <span>By Sohel</span>
                                     </div>
-                                    <a href="news-details.php" class="link-btn">View Articles<i class="fa-solid fa-arrow-right"></i></a>
+                                    <a href="news-details" class="link-btn">View Articles<i class="fa-solid fa-arrow-right"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -259,7 +259,7 @@ include __DIR__ . '/includes/header.php';
                                     <span>_ 20 August ,2025</span>
                                 </div>
                                 <h3>
-                                    <a href="news-details.php">
+                                    <a href="news-details">
                                         Tips to Prepare Financial Documents for Visa Approval
                                     </a>
                                 </h3>
@@ -268,7 +268,7 @@ include __DIR__ . '/includes/header.php';
                                         <img src="assets/img/home-1/news/client.png" alt="img">
                                         <span>By Sohel</span>
                                     </div>
-                                    <a href="news-details.php" class="link-btn">View Articles<i class="fa-solid fa-arrow-right"></i></a>
+                                    <a href="news-details" class="link-btn">View Articles<i class="fa-solid fa-arrow-right"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -291,8 +291,8 @@ include __DIR__ . '/includes/header.php';
                                     <span>_ 20 August ,2025</span>
                                 </div>
                                 <h3>
-                                    <a href="news-details.php">
-                                        Post-Arrival Guide What Every Student Should Know
+                                    <a href="news-details">
+                                        Post-Arrival Guide What Every Traveller Should Know
                                     </a>
                                 </h3>
                                 <div class="news-bottom">
@@ -300,7 +300,7 @@ include __DIR__ . '/includes/header.php';
                                         <img src="assets/img/home-1/news/client.png" alt="img">
                                         <span>By Sohel</span>
                                     </div>
-                                    <a href="news-details.php" class="link-btn">View Articles<i class="fa-solid fa-arrow-right"></i></a>
+                                    <a href="news-details" class="link-btn">View Articles<i class="fa-solid fa-arrow-right"></i></a>
                                 </div>
                             </div>
                         </div>

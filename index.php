@@ -17,7 +17,7 @@ include __DIR__ . '/includes/header-home.php';
                     </div>
                     <div class="col-lg-6 order-1 order-lg-2">
                         <div class="hero-content">
-                            <h6 class="wow fadeInUp" data-wow-delay=".3s">Global Education Simplified</h6>
+                            <h6 class="wow fadeInUp" data-wow-delay=".3s">Global Travel Simplified</h6>
                             <h1 class="split-text-right split-text-in-right">
                                 Fast, Reliable & Hassle-Free Travel Visa Solutions
                             </h1>
@@ -25,11 +25,11 @@ include __DIR__ . '/includes/header-home.php';
                                 We simplify the entire travel visa process with expert guidance, quick processing, and personalized support. From application to approval, we ensure your journey is smooth and stress-free.
                             </p>
                             <div class="hero-button wow fadeInUp" data-wow-delay=".5s">
-                                <a href="country-details.php" class="theme-btn">
+                                <a href="country-details" class="theme-btn">
                                 Get Your Visa
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </a>
-                                <a href="contact.php" class="theme-btn style-2">
+                                <a href="contact" class="theme-btn style-2">
                                     Free Consultation
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </a>
@@ -39,7 +39,66 @@ include __DIR__ . '/includes/header-home.php';
                 </div>
             </div>
         </section>
-    
+
+        <!-- Visa Search Widget Start -->
+        <section id="visa-search" class="visa-search-section">
+            <div class="container">
+                <div class="visa-search-widget">
+                    <div class="vsw-title">Find Your Visa Requirements</div>
+                    <div class="vsw-sub">Tell us where you're travelling and we'll guide you through the visa process.</div>
+                    <form id="visa-search-form" class="vsw-grid">
+                        <div class="vsw-field">
+                            <label for="vsw-country">Where are you travelling?</label>
+                            <select id="vsw-country" required>
+                                <option value="">Search country</option>
+                                <?php require_once __DIR__ . '/includes/countries-data.php'; ?>
+                                <?php foreach ($VISA_AGENCY_COUNTRIES as $c): ?>
+                                <option value="<?php echo htmlspecialchars($c['name']); ?>"><?php echo $c['flag'] . ' ' . htmlspecialchars($c['name']); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="vsw-field">
+                            <label for="vsw-purpose">Purpose of Travel</label>
+                            <select id="vsw-purpose">
+                                <option>Tourism</option>
+                                <option>Business</option>
+                                <option>Visit Family/Friends</option>
+                                <option>Medical</option>
+                                <option>Work</option>
+                                <option>Transit</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div class="vsw-field">
+                            <label for="vsw-passport">Passport Country</label>
+                            <select id="vsw-passport">
+                                <option>India 🇮🇳</option>
+                            </select>
+                        </div>
+                        <div class="vsw-field">
+                            <label for="vsw-name">Your Mobile Number</label>
+                            <input type="tel" id="vsw-name" placeholder="10-digit mobile number" pattern="[6-9][0-9]{9}" maxlength="10">
+                        </div>
+                        <button type="submit" class="vsw-submit">Check Visa Requirements</button>
+                    </form>
+                    <div id="vsw-result" class="vsw-result"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trust Strip Start -->
+        <section class="trust-strip">
+            <div class="container">
+                <div class="trust-strip-inner">
+                    <div class="trust-item"><i class="fa-solid fa-user-tie"></i> Professional Assistance</div>
+                    <div class="trust-item"><i class="fa-solid fa-earth-asia"></i> 20+ Countries Covered</div>
+                    <div class="trust-item"><i class="fa-solid fa-file-shield"></i> Digital Document Guidance</div>
+                    <div class="trust-item"><i class="fa-solid fa-headset"></i> Customer Support</div>
+                    <div class="trust-item"><i class="fa-solid fa-microchip"></i> Technology Enabled</div>
+                </div>
+            </div>
+        </section>
+
        <!-- Service Section Start -->
        <section class="service-section-2 section-padding fix">
             <div class="container">
@@ -59,7 +118,7 @@ include __DIR__ . '/includes/header-home.php';
                                     </div>
                                     <h2>01</h2>
                                     <h3>
-                                        <a href="service-details.php">Tourist Visa <br> Assistance</a>
+                                        <a href="service-details">Tourist Visa <br> Assistance</a>
                                     </h3>
                                 </div>
                             </div>
@@ -70,7 +129,7 @@ include __DIR__ . '/includes/header-home.php';
                                     </div>
                                     <h2>02</h2>
                                     <h3>
-                                        <a href="service-details.php">Student Visa <br> Support</a>
+                                        <a href="service-details">Family Visit <br> Visa</a>
                                     </h3>
                                 </div>
                             </div>
@@ -81,7 +140,7 @@ include __DIR__ . '/includes/header-home.php';
                                     </div>
                                     <h2>03</h2>
                                     <h3>
-                                        <a href="service-details.php">Business Visa <br> Services</a>
+                                        <a href="service-details">Business Visa <br> Services</a>
                                     </h3>
                                 </div>
                             </div>
@@ -92,7 +151,7 @@ include __DIR__ . '/includes/header-home.php';
                                     </div>
                                     <h2>04</h2>
                                     <h3>
-                                        <a href="service-details.php">Work Visa  <br> Consulting</a>
+                                        <a href="service-details">Work Visa  <br> Consulting</a>
                                     </h3>
                                 </div>
                             </div>
@@ -158,7 +217,7 @@ include __DIR__ . '/includes/header-home.php';
                                         </li>
                                     </ul>
                                 </div>
-                                <a href="contact.php" class="theme-btn">
+                                <a href="contact" class="theme-btn">
                                     Get Your Visa
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </a>
@@ -218,7 +277,7 @@ include __DIR__ . '/includes/header-home.php';
                                         </p>
                                     </div>
                                 </div>
-                                 <a href="contact.php" class="theme-btn">
+                                 <a href="contact" class="theme-btn">
                                     Get Started Today
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </a>
@@ -233,6 +292,92 @@ include __DIR__ . '/includes/header-home.php';
                 </div>
             </div>
        </section>
+
+        <!-- How It Works Start -->
+        <section class="section-padding fix">
+            <div class="container">
+                <div class="section-title text-center">
+                    <span class="sub-title wow fadeInUp">The Process</span>
+                    <h2 class="split-text-right split-text-in-right">How It Works</h2>
+                </div>
+                <div class="how-it-works-steps">
+                    <div class="how-it-works-step">
+                        <div class="step-num">1</div>
+                        <h4>Choose Destination</h4>
+                        <p>Tell us where you're travelling and why.</p>
+                    </div>
+                    <div class="how-it-works-step">
+                        <div class="step-num">2</div>
+                        <h4>Check Requirements</h4>
+                        <p>See the visa category and a sample document checklist.</p>
+                    </div>
+                    <div class="how-it-works-step">
+                        <div class="step-num">3</div>
+                        <h4>Submit Documents</h4>
+                        <p>Share your documents with our consultants for review.</p>
+                    </div>
+                    <div class="how-it-works-step">
+                        <div class="step-num">4</div>
+                        <h4>Expert Review</h4>
+                        <p>Our consultants verify your application for accuracy.</p>
+                    </div>
+                    <div class="how-it-works-step">
+                        <div class="step-num">5</div>
+                        <h4>Application Support</h4>
+                        <p>We guide you through appointment and submission steps.</p>
+                    </div>
+                    <div class="how-it-works-step">
+                        <div class="step-num">6</div>
+                        <h4>Track Progress</h4>
+                        <p>Stay updated at every stage of your application.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Document Checklist Widget Start -->
+        <section id="checklist" class="section-padding fix section-bg-1">
+            <div class="container">
+                <div class="section-title text-center">
+                    <span class="sub-title-2 wow fadeInUp">Get Prepared</span>
+                    <h2 class="split-text-right split-text-in-right">Visa Document Checklist</h2>
+                </div>
+                <div class="checklist-widget">
+                    <form id="checklist-form" class="checklist-controls">
+                        <select id="cl-country" required>
+                            <option value="">Select Country</option>
+                            <?php foreach ($VISA_AGENCY_COUNTRIES as $c): ?>
+                            <option value="<?php echo htmlspecialchars($c['name']); ?>"><?php echo $c['flag'] . ' ' . htmlspecialchars($c['name']); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <select id="cl-visa-type">
+                            <option value="tourist">Tourist Visa</option>
+                            <option value="business">Business Visa</option>
+                            <option value="work">Work Visa</option>
+                            <option value="family">Family Visa</option>
+                            <option value="transit">Transit Visa</option>
+                            <option value="medical">Medical Visa</option>
+                        </select>
+                        <select id="cl-profile">
+                            <option>Indian Passport</option>
+                            <option>NRI / Foreign Resident</option>
+                            <option>First-time Applicant</option>
+                            <option>Previous Visa Holder</option>
+                        </select>
+                        <button type="submit">Create My Checklist</button>
+                    </form>
+                    <div id="checklist-output" class="checklist-output">
+                        <h4 id="checklist-heading">Your Checklist</h4>
+                        <ul id="checklist-items" class="checklist-items"></ul>
+                        <div class="checklist-actions">
+                            <a href="contact"><i class="fa-solid fa-paper-plane"></i> Start Enquiry</a>
+                            <a href="https://wa.me/917844819819" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> Send on WhatsApp</a>
+                            <button type="button" onclick="window.print()"><i class="fa-solid fa-download"></i> Download / Print</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
        <!-- Visa-provide-section-2 Start -->
        <section class="visa-provide-section section-padding fix header-bg">
@@ -256,11 +401,11 @@ include __DIR__ . '/includes/header-home.php';
                                 <div class="content">
                                     <p>Visa Service</p>
                                     <h3>
-                                        <a href="country-details.php">Japan</a>
+                                        <a href="country-details">Japan</a>
                                     </h3>
                                 </div>
                             </div>
-                            <a href="country-details.php" class="theme-btn">
+                            <a href="country-details" class="theme-btn">
                                 Read More
                                 <i class="fa-solid fa-arrow-right"></i>
                             </a>
@@ -269,7 +414,7 @@ include __DIR__ . '/includes/header-home.php';
                             <ul class="list">
                                 <li>
                                     <i class="fa-regular fa-arrow-right"></i>
-                                    Student Visa & Admission
+                                    Family Visit Visa Assistance
                                 </li>
                                 <li>
                                     <i class="fa-regular fa-arrow-right"></i>
@@ -283,7 +428,7 @@ include __DIR__ . '/includes/header-home.php';
                                 </li>
                                 <li>
                                     <i class="fa-regular fa-arrow-right"></i>
-                                    Student Visa for Canada
+                                    Work Visa for Canada
                                 </li>
                             </ul>
                         </div>
@@ -299,11 +444,11 @@ include __DIR__ . '/includes/header-home.php';
                                 <div class="content">
                                     <p>Visa Service</p>
                                     <h3>
-                                        <a href="country-details.php">Japan</a>
+                                        <a href="country-details">Japan</a>
                                     </h3>
                                 </div>
                             </div>
-                            <a href="country-details.php" class="theme-btn">
+                            <a href="country-details" class="theme-btn">
                                 Read More
                                 <i class="fa-solid fa-arrow-right"></i>
                             </a>
@@ -312,7 +457,7 @@ include __DIR__ . '/includes/header-home.php';
                             <ul class="list">
                                 <li>
                                     <i class="fa-regular fa-arrow-right"></i>
-                                    Student Visa & Admission
+                                    Family Visit Visa Assistance
                                 </li>
                                 <li>
                                     <i class="fa-regular fa-arrow-right"></i>
@@ -326,7 +471,7 @@ include __DIR__ . '/includes/header-home.php';
                                 </li>
                                 <li>
                                     <i class="fa-regular fa-arrow-right"></i>
-                                    Student Visa for Canada
+                                    Work Visa for Canada
                                 </li>
                             </ul>
                         </div>
@@ -342,11 +487,11 @@ include __DIR__ . '/includes/header-home.php';
                                 <div class="content">
                                     <p>Visa Service</p>
                                     <h3>
-                                        <a href="country-details.php">Canada</a>
+                                        <a href="country-details">Canada</a>
                                     </h3>
                                 </div>
                             </div>
-                            <a href="country-details.php" class="theme-btn">
+                            <a href="country-details" class="theme-btn">
                                 Read More
                                 <i class="fa-solid fa-arrow-right"></i>
                             </a>
@@ -355,7 +500,7 @@ include __DIR__ . '/includes/header-home.php';
                             <ul class="list">
                                 <li>
                                     <i class="fa-regular fa-arrow-right"></i>
-                                    Student Visa & Admission
+                                    Family Visit Visa Assistance
                                 </li>
                                 <li>
                                     <i class="fa-regular fa-arrow-right"></i>
@@ -369,7 +514,7 @@ include __DIR__ . '/includes/header-home.php';
                                 </li>
                                 <li>
                                     <i class="fa-regular fa-arrow-right"></i>
-                                    Student Visa for Canada
+                                    Work Visa for Canada
                                 </li>
                             </ul>
                         </div>
@@ -385,11 +530,11 @@ include __DIR__ . '/includes/header-home.php';
                                 <div class="content">
                                     <p>Visa Service</p>
                                     <h3>
-                                        <a href="country-details.php">France</a>
+                                        <a href="country-details">France</a>
                                     </h3>
                                 </div>
                             </div>
-                            <a href="country-details.php" class="theme-btn">
+                            <a href="country-details" class="theme-btn">
                                 Read More
                                 <i class="fa-solid fa-arrow-right"></i>
                             </a>
@@ -398,7 +543,7 @@ include __DIR__ . '/includes/header-home.php';
                             <ul class="list">
                                 <li>
                                     <i class="fa-regular fa-arrow-right"></i>
-                                    Student Visa & Admission
+                                    Family Visit Visa Assistance
                                 </li>
                                 <li>
                                     <i class="fa-regular fa-arrow-right"></i>
@@ -412,7 +557,7 @@ include __DIR__ . '/includes/header-home.php';
                                 </li>
                                 <li>
                                     <i class="fa-regular fa-arrow-right"></i>
-                                    Student Visa for Canada
+                                    Work Visa for Canada
                                 </li>
                             </ul>
                         </div>
@@ -478,6 +623,73 @@ include __DIR__ . '/includes/header-home.php';
            </div>
        </section>
 
+        <!-- Apostille Services Start -->
+        <section class="section-padding fix section-bg-1">
+            <div class="container">
+                <div class="row align-items-center g-4">
+                    <div class="col-lg-6">
+                        <div class="section-title mb-3">
+                            <span class="sub-title-2 wow fadeInUp">Document Legalisation</span>
+                            <h2 class="split-text-right split-text-in-right">Apostille &amp; Attestation Services</h2>
+                        </div>
+                        <p class="text">
+                            Beyond visas, we help you get your documents ready for use abroad — apostille, embassy
+                            attestation, certificate attestation and translation, handled with the same
+                            technology-enabled, transparent process.
+                        </p>
+                        <div class="how-it-works-steps" style="grid-template-columns:repeat(2,1fr);gap:16px;margin-top:20px;">
+                            <div class="trust-item"><i class="fa-solid fa-stamp"></i> MEA Apostille</div>
+                            <div class="trust-item"><i class="fa-solid fa-building-columns"></i> Embassy Attestation</div>
+                            <div class="trust-item"><i class="fa-solid fa-certificate"></i> Certificate Attestation</div>
+                            <div class="trust-item"><i class="fa-solid fa-language"></i> Translation Services</div>
+                        </div>
+                        <a href="apostille" class="theme-btn mt-4">
+                            Explore Apostille Services
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="thumb">
+                            <img src="assets/img/inner-page/service-details/details-1.jpg" alt="img" style="border-radius:20px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Country Explorer Start -->
+        <section class="section-padding fix country-explorer-section">
+            <div class="container">
+                <div class="section-title text-center">
+                    <span class="sub-title wow fadeInUp">200+ Country Ready</span>
+                    <h2 class="split-text-right split-text-in-right">Explore Visa Destinations</h2>
+                </div>
+                <div class="country-explorer-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" class="country-nav-search" placeholder="Search country or visa destination...">
+                </div>
+                <div class="country-explorer-filters country-nav-filters">
+                    <button type="button" class="active" data-region="all">All</button>
+                    <button type="button" data-region="Asia">Asia</button>
+                    <button type="button" data-region="Europe">Europe</button>
+                    <button type="button" data-region="North America">North America</button>
+                    <button type="button" data-region="Middle East">Middle East</button>
+                    <button type="button" data-region="Oceania">Oceania</button>
+                </div>
+                <div class="country-explorer-grid country-nav-grid">
+                    <?php foreach ($VISA_AGENCY_COUNTRIES as $c): ?>
+                    <a href="country-list" class="country-chip" data-name="<?php echo strtolower($c['name']); ?>" data-region="<?php echo $c['region']; ?>">
+                        <span class="flag"><?php echo $c['flag']; ?></span>
+                        <span><?php echo $c['name']; ?></span>
+                    </a>
+                    <?php endforeach; ?>
+                </div>
+                <div class="text-center mt-4">
+                    <a href="country-list" class="theme-btn style-2">View All Countries</a>
+                </div>
+            </div>
+        </section>
+
         <!-- Pricing Section Start -->
         <section class="pricing-section-2 section-padding fix section-bg-1">
             <div class="container">
@@ -520,7 +732,7 @@ include __DIR__ . '/includes/header-home.php';
                                                     </h2>
                                                     <span class="sub-texts">Basic Plan</span>
                                                 </div>
-                                                <a href="pricing.php" class="theme-btn">
+                                                <a href="pricing" class="theme-btn">
                                                     Get Started Today
                                                     <i class="fa-solid fa-arrow-right"></i>
                                                 </a>
@@ -543,7 +755,7 @@ include __DIR__ . '/includes/header-home.php';
                                                     </h2>
                                                     <span class="sub-texts">Premium Plan</span>
                                                 </div>
-                                                <a href="pricing.php" class="theme-btn style-2">
+                                                <a href="pricing" class="theme-btn style-2">
                                                     Get Started Today
                                                     <i class="fa-solid fa-arrow-right"></i>
                                                 </a>
@@ -570,7 +782,7 @@ include __DIR__ . '/includes/header-home.php';
                                                     </h2>
                                                     <span class="sub-texts">Basic Plan</span>
                                                 </div>
-                                                <a href="pricing.php" class="theme-btn">
+                                                <a href="pricing" class="theme-btn">
                                                     Get Started Today
                                                     <i class="fa-solid fa-arrow-right"></i>
                                                 </a>
@@ -593,7 +805,7 @@ include __DIR__ . '/includes/header-home.php';
                                                     </h2>
                                                     <span class="sub-texts">Premium Plan</span>
                                                 </div>
-                                                <a href="pricing.php" class="theme-btn style-2">
+                                                <a href="pricing" class="theme-btn style-2">
                                                     Get Started Today
                                                     <i class="fa-solid fa-arrow-right"></i>
                                                 </a>
@@ -642,7 +854,7 @@ include __DIR__ . '/includes/header-home.php';
                                     <select class="single-select w-100">
                                         <option>Select Service</option>
                                         <option> Tourist Visa</option>
-                                        <option> Student Visa</option>
+                                        <option> Family Visa</option>
                                         <option> Work Visa</option>
                                     </select>
                                 </div>
@@ -876,7 +1088,7 @@ include __DIR__ . '/includes/header-home.php';
                                             <p>
                                                 We provide expert visa guidance, personalized support, and trusted solutions to ensure a smooth, stress-free, and successful travel journey.
                                             </p>
-                                            <a href="contact.php" class="theme-btn">
+                                            <a href="contact" class="theme-btn">
                                                 Get Services
                                                 <i class="fa-solid fa-arrow-right"></i>
                                             </a>
@@ -893,7 +1105,7 @@ include __DIR__ . '/includes/header-home.php';
                                             <p>
                                                 We provide expert visa guidance, personalized support, and trusted solutions to ensure a smooth, stress-free, and successful travel journey.
                                             </p>
-                                            <a href="contact.php" class="theme-btn">
+                                            <a href="contact" class="theme-btn">
                                                 Get Services
                                                 <i class="fa-solid fa-arrow-right"></i>
                                             </a>
@@ -910,7 +1122,7 @@ include __DIR__ . '/includes/header-home.php';
                                             <p>
                                                 We provide expert visa guidance, personalized support, and trusted solutions to ensure a smooth, stress-free, and successful travel journey.
                                             </p>
-                                            <a href="contact.php" class="theme-btn">
+                                            <a href="contact" class="theme-btn">
                                                 Get Services
                                                 <i class="fa-solid fa-arrow-right"></i>
                                             </a>
@@ -927,7 +1139,7 @@ include __DIR__ . '/includes/header-home.php';
                                             <p>
                                                 We provide expert visa guidance, personalized support, and trusted solutions to ensure a smooth, stress-free, and successful travel journey.
                                             </p>
-                                            <a href="contact.php" class="theme-btn">
+                                            <a href="contact" class="theme-btn">
                                                 Get Services
                                                 <i class="fa-solid fa-arrow-right"></i>
                                             </a>
@@ -952,7 +1164,7 @@ include __DIR__ . '/includes/header-home.php';
                            Latest Travel & Visa Insights
                         </h2>
                     </div>
-                <a href="news.php" class="theme-btn">
+                <a href="news" class="theme-btn">
                     View Article
                     <i class="fa-solid fa-arrow-right"></i>
                 </a>
@@ -963,13 +1175,13 @@ include __DIR__ . '/includes/header-home.php';
                         <div class="news-left-content">
                             <h2><sup>25</sup> <span>August,2025</span></h2>
                             <h3>
-                                <a href="news-details.php">
-                                    Student Visa vs. Work Visa Which One is <br> Right for You?
+                                <a href="news-details">
+                                    Business Visa vs. Tourist Visa Which One is <br> Right for You?
                                 </a>
                             </h3>
                             <div class="news-post">
                                 <span>by admin</span>
-                                <span>StudentVisa</span>
+                                <span>Business Visa</span>
                             </div>
                         </div>
                         <div class="news-right-content">
@@ -978,9 +1190,9 @@ include __DIR__ . '/includes/header-home.php';
                             </div>
                             <div class="content">
                                 <p>
-                                    Choosing between a student visa and a work visa depends on your goals. Understand the benefits, requirements, and opportunities to select the path that suits your future.”
+                                    Choosing between a business visa and a tourist visa depends on your purpose of travel. Understand the differences, requirements, and opportunities to select the right category for your trip.”
                                 </p>
-                                <a href="contact.php" class="theme-btn">
+                                <a href="contact" class="theme-btn">
                                     View Article
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </a>
@@ -991,13 +1203,13 @@ include __DIR__ . '/includes/header-home.php';
                         <div class="news-left-content">
                             <h2><sup>25</sup> <span>August,2025</span></h2>
                             <h3>
-                                <a href="news-details.php">
+                                <a href="news-details">
                                    Common Mistakes Applicants Make <br> During Visa Processing
                                 </a>
                             </h3>
                             <div class="news-post">
                                 <span>by admin</span>
-                                <span>StudentVisa</span>
+                                <span>VisaTips</span>
                             </div>
                         </div>
                         <div class="news-right-content">
@@ -1008,7 +1220,7 @@ include __DIR__ . '/includes/header-home.php';
                                 <p>
                                     Many applicants face delays due to incomplete documents, missed deadlines, or incorrect details. Avoiding these common mistakes ensures a smoother, faster
                                 </p>
-                                <a href="contact.php" class="theme-btn">
+                                <a href="contact" class="theme-btn">
                                     View Article
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </a>
@@ -1019,13 +1231,13 @@ include __DIR__ . '/includes/header-home.php';
                         <div class="news-left-content">
                             <h2><sup>25</sup> <span>August,2025</span></h2>
                             <h3>
-                                <a href="news-details.php">
+                                <a href="news-details">
                                    Latest Visa Policy Updates Every <br> Traveler Should Know
                                 </a>
                             </h3>
                             <div class="news-post">
                                 <span>by admin</span>
-                                <span>StudentVisa</span>
+                                <span>VisaUpdates</span>
                             </div>
                         </div>
                         <div class="news-right-content">
@@ -1036,7 +1248,7 @@ include __DIR__ . '/includes/header-home.php';
                                 <p>
                                     Stay informed with the latest visa policy updates, including travel restrictions, document requirements, and processing changes, to ensure a smooth, hassle-free journey abroad.
                                 </p>
-                                <a href="contact.php" class="theme-btn">
+                                <a href="contact" class="theme-btn">
                                     View Article
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </a>
@@ -1047,6 +1259,67 @@ include __DIR__ . '/includes/header-home.php';
             </div>
         </div>
        </section>
+
+        <!-- FAQ Start -->
+        <section id="faq" class="section-padding fix section-bg-1">
+            <div class="container">
+                <div class="row g-5 align-items-start">
+                    <div class="col-lg-4">
+                        <div class="section-title mb-0">
+                            <span class="sub-title-2 wow fadeInUp">Got Questions?</span>
+                            <h2 class="split-text-right split-text-in-right">Frequently Asked Questions</h2>
+                        </div>
+                        <p class="text mt-3">
+                            Answers to common questions about visa assistance from Visa Agency. Still have a
+                            question? <a href="contact">Talk to a consultant</a>.
+                        </p>
+                    </div>
+                    <div class="col-lg-8">
+                        <div class="faq-accordion">
+                            <div class="faq-item active">
+                                <div class="faq-question">Do you guarantee visa approval? <i class="fa-solid fa-plus"></i></div>
+                                <div class="faq-answer"><p>No. Visa Agency provides professional guidance, documentation support and application assistance — the final decision always rests with the relevant embassy, consulate or immigration authority.</p></div>
+                            </div>
+                            <div class="faq-item">
+                                <div class="faq-question">Which countries do you cover? <i class="fa-solid fa-plus"></i></div>
+                                <div class="faq-answer"><p>We currently provide guidance for 20+ popular visa destinations across Asia, Europe, North America, the Middle East and Oceania, with plans to expand our coverage further.</p></div>
+                            </div>
+                            <div class="faq-item">
+                                <div class="faq-question">Do you offer apostille and attestation services? <i class="fa-solid fa-plus"></i></div>
+                                <div class="faq-answer"><p>Yes. Alongside visa assistance, we help with MEA apostille, embassy attestation, certificate attestation and translation services.</p></div>
+                            </div>
+                            <div class="faq-item">
+                                <div class="faq-question">How do I start my application? <i class="fa-solid fa-plus"></i></div>
+                                <div class="faq-answer"><p>Use the visa search widget above or the "Enquire Now" button to share your travel details — a consultant will get in touch to guide you through the next steps.</p></div>
+                            </div>
+                            <div class="faq-item">
+                                <div class="faq-question">Is Visa Agency a technology-enabled consultancy? <i class="fa-solid fa-plus"></i></div>
+                                <div class="faq-answer"><p>Yes. Visa Agency combines experienced visa consultants with a centralised visa search, digital document checklists and online enquiry management to make the process simpler.</p></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final CTA Start -->
+        <section class="section-padding fix">
+            <div class="container">
+                <div class="final-cta">
+                    <h2>Ready to Start Your Visa Journey?</h2>
+                    <p>Smart visa assistance, backed by human expertise — talk to a consultant today.</p>
+                    <div class="cta-buttons">
+                        <a href="#visa-search" class="theme-btn">Check Visa Requirements <i class="fa-solid fa-arrow-right"></i></a>
+                        <a href="contact" class="theme-btn style-2">Talk to a Visa Consultant</a>
+                    </div>
+                </div>
+                <p class="compliance-note mt-4">
+                    Visa Agency provides visa consultancy and application assistance. Visa approval is solely at the
+                    discretion of the relevant embassy, consulate or immigration authority. Visa Agency is a
+                    technology-enabled visa consultancy and a unit of Tripgation Private Limited.
+                </p>
+            </div>
+        </section>
 
         <!--Footer Section Start -->
 <?php include __DIR__ . '/includes/footer-home.php'; ?>

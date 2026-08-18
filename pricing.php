@@ -26,7 +26,7 @@ include __DIR__ . '/includes/header.php';
                     <h1 class="breadcrumb-title">pricing plan</h1>
                     <ul class="breadcrumb-list">
                         <li>
-                            <a href="index.php">Home</a>
+                            <a href="/">Home</a>
                         </li>
                         <li>
                             <i class="fa-solid fa-chevron-right"></i>
@@ -81,7 +81,7 @@ include __DIR__ . '/includes/header.php';
                                                     </h2>
                                                     <span class="sub-texts">Basic Plan</span>
                                                 </div>
-                                                <a href="pricing.php" class="theme-btn">
+                                                <a href="pricing" class="theme-btn">
                                                     Get Started Today
                                                     <i class="fa-solid fa-arrow-right"></i>
                                                 </a>
@@ -104,7 +104,7 @@ include __DIR__ . '/includes/header.php';
                                                     </h2>
                                                     <span class="sub-texts">Premium Plan</span>
                                                 </div>
-                                                <a href="pricing.php" class="theme-btn style-2">
+                                                <a href="pricing" class="theme-btn style-2">
                                                     Get Started Today
                                                     <i class="fa-solid fa-arrow-right"></i>
                                                 </a>
@@ -131,7 +131,7 @@ include __DIR__ . '/includes/header.php';
                                                     </h2>
                                                     <span class="sub-texts">Basic Plan</span>
                                                 </div>
-                                                <a href="pricing.php" class="theme-btn">
+                                                <a href="pricing" class="theme-btn">
                                                     Get Started Today
                                                     <i class="fa-solid fa-arrow-right"></i>
                                                 </a>
@@ -154,7 +154,7 @@ include __DIR__ . '/includes/header.php';
                                                     </h2>
                                                     <span class="sub-texts">Premium Plan</span>
                                                 </div>
-                                                <a href="pricing.php" class="theme-btn style-2">
+                                                <a href="pricing" class="theme-btn style-2">
                                                     Get Started Today
                                                     <i class="fa-solid fa-arrow-right"></i>
                                                 </a>
@@ -188,7 +188,7 @@ include __DIR__ . '/includes/header.php';
                             Immigration Success Stories
                         </h2>
                     </div>
-                    <a href="contact.php" class="theme-btn">
+                    <a href="contact" class="theme-btn">
                         View All Review
                         <i class="fa-solid fa-arrow-right"></i>
                     </a>

@@ -1,6 +1,6 @@
 <?php
 $page_title = "Contact Us &ndash; Visa Agency";
-$page_description = "Get in touch with Visa Agency for tourist, student, business and work visa assistance.";
+$page_description = "Get in touch with Visa Agency for tourist, business, work and family visa assistance.";
 include __DIR__ . '/includes/header.php';
 ?>
         <!-- Search Area Start -->
@@ -23,10 +23,10 @@ include __DIR__ . '/includes/header.php';
             </div>
             <div class="container">
                 <div class="page-heading">
-                    <h1 class="breadcrumb-title">CONTACT uS</h1>
+                    <h1 class="breadcrumb-title">Contact Us</h1>
                     <ul class="breadcrumb-list">
                         <li>
-                            <a href="index.php">Home</a>
+                            <a href="/">Home</a>
                         </li>
                         <li>
                             <i class="fa-solid fa-chevron-right"></i>
@@ -105,25 +105,25 @@ include __DIR__ . '/includes/header.php';
                                     <div class="col-lg-4">
                                         <div class="form-clt">
                                             <span>Your Email</span>
-                                            <input type="text" name="name" id="email11" placeholder="Your email">
+                                            <input type="email" name="email" id="email11" placeholder="Your email" required>
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="form-clt">
                                             <span>Your Phone</span>
-                                            <input type="text" name="name" id="name22" placeholder="Phone Number">
+                                            <input type="text" name="phone" id="name22" placeholder="Phone Number">
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="form-clt">
                                             <span>Your Address</span>
-                                            <input type="text" name="name" id="name24" placeholder="Address Now">
+                                            <input type="text" name="address" id="name24" placeholder="Address Now">
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="form-clt">
                                             <span>Your Date</span>
-                                            <input type="text" name="name" id="name25" placeholder="Date">
+                                            <input type="text" name="preferred_date" id="name25" placeholder="Date">
                                         </div>
                                     </div>
                                     <div class="col-lg-12">

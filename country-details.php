@@ -26,7 +26,7 @@ include __DIR__ . '/includes/header.php';
                     <h1 class="breadcrumb-title">CUNTRY USA</h1>
                     <ul class="breadcrumb-list">
                         <li>
-                            <a href="index.php">Home</a>
+                            <a href="/">Home</a>
                         </li>
                         <li>
                             <i class="fa-solid fa-chevron-right"></i>
@@ -52,10 +52,10 @@ include __DIR__ . '/includes/header.php';
                                 <div class="country-details-content">
                                     <h2>United States of America</h2>
                                     <p>
-                                        The United States is one of the most popular destinations for international students and immigrants, offering world-class universities, diverse cultural experiences, and countless career opportunities. With top-ranked education systems, advanced research facilities, and a welcoming environment for skilled professionals, the USA is ideal for those seeking growth and global exposure. 
+                                        The United States is one of the most popular destinations for travelers and immigrants, offering world-class cities, diverse cultural experiences, and countless career opportunities. With a strong economy, advanced infrastructure, and a welcoming environment for skilled professionals, the USA is ideal for those seeking growth and global exposure.
                                     </p>
                                     <p class="mt-3">
-                                        Our consultancy provides complete guidance for study visas, work permits, and permanent residency pathways tailored to your goals.
+                                        Our consultancy provides complete guidance for tourist visas, work permits, and permanent residency pathways tailored to your goals.
                                     </p>
                                     <h5>
                                         Over the last 35 Years we made an impact that is strong & we have long way to go.
@@ -77,7 +77,7 @@ include __DIR__ . '/includes/header.php';
                                         </div>
                                         <div class="tourist-box">
                                             <div class="tourist-content">
-                                            <h5>Student</h5>
+                                            <h5>Family Visa</h5>
                                             <p>
                                                 Broad term that can refer to various aspects of interconnectedness 
                                             </p>
@@ -130,7 +130,7 @@ include __DIR__ . '/includes/header.php';
                                     <ul class="visa-list-2">
                                         <li>
                                             <i class="fa-solid fa-chevrons-right"></i>
-                                            Student Visa (F1, M1, J1)
+                                            Family Visa (Immediate Relative)
                                         </li>
                                         <li>
                                             <i class="fa-solid fa-chevrons-right"></i>

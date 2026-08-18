@@ -34,6 +34,7 @@ if (!isset($page_description)) { $page_description = "Visa Agency &ndash; Truste
         <link rel="stylesheet" href="assets/css/nice-select.css">
         <!--<< Main.css >>-->
         <link rel="stylesheet" href="assets/css/main.css">
+        <link rel="stylesheet" href="assets/css/custom.css">
                             
     </head>
     <body class="smooth-scroll-yes">
@@ -94,41 +95,24 @@ if (!isset($page_description)) { $page_description = "Visa Agency &ndash; Truste
                     <div class="header-left">
                         <ul class="list">
                             <li class="style-2">
-                                <span>Help Line</span>
                                 <i class="fa-solid fa-phone"></i>
-                                <a href="tel:+917844819819">+91 78448 19819</a>
+                                <a href="tel:+917844819819">Call Us: +91 78448 19819</a>
+                            </li>
+                            <li>
+                                <i class="fa-brands fa-whatsapp"></i>
+                                <a href="https://wa.me/917844819819" target="_blank" rel="noopener">WhatsApp Us</a>
                             </li>
                             <li>
                                 <i class="fa-solid fa-location-dot"></i>
-                                #302, Sharda Mansion Apartment, Kailash Puri, Hanuman Nagar, Patna, Bihar 800020
-                            </li>
-                             <li>
-                                <i class="fa-solid fa-envelope"></i>
-                                <a href="mailto:info@visaagency.in">info@visaagency.in</a>
+                                Patna, Bihar
                             </li>
                         </ul>
                     </div>
                     <div class="header-right">
-                        <div class="flag-wrap">
-                            <div class="flag">
-                               <i class="fa-solid fa-globe"></i>
-                            </div>
-                            <div class="nice-select" tabindex="0">
-                                <span class="current">
-                                    English
-                                </span>
-                                <ul class="list">
-                                    <li data-value="1" class="option selected focus">
-                                        English
-                                    </li>
-                                    <li data-value="1" class="option">
-                                        Bangla
-                                    </li>
-                                    <li data-value="1" class="option">
-                                        Hindi
-                                    </li>
-                                </ul>
-                            </div>
+                        <div class="topbar-auth-links">
+                            <a href="customer-login">Customer Login</a>
+                            <span class="divider">|</span>
+                            <a href="employee-login">Employee Login</a>
                         </div>
                         <div class="social-item">
                             <a href="#"><i class="fa-brands fa-linkedin"></i></a>
@@ -148,7 +132,7 @@ if (!isset($page_description)) { $page_description = "Visa Agency &ndash; Truste
                     <div class="offcanvas__content">
                         <div class="offcanvas__top mb-5 d-flex justify-content-between align-items-center">
                             <div class="offcanvas__logo">
-                                <a href="index.php">
+                                <a href="/">
                                     <img src="assets/img/logo/black-logo.svg" alt="logo-img">
                                 </a>
                             </div>
@@ -218,79 +202,20 @@ if (!isset($page_description)) { $page_description = "Visa Agency &ndash; Truste
                     <div class="header-main">
                         <div class="header-left">
                             <div class="logo">
-                                <a href="index.php" class="header-logo-2">
+                                <a href="/" class="header-logo-2">
                                     <img src="assets/img/logo/black-logo.svg" alt="logo-img">
                                 </a>
                             </div>
                             <div class="mean__menu-wrapper">
                                 <div class="main-menu">
-                                    <nav id="mobile-menu">
-                                        <ul>
-                                            <li>
-                                                <a href="about.php">About Us</a>
-                                            </li>
-                                            <li class="has-dropdown">
-                                                <a href="news-details.php">
-                                                    Pages
-                                                </a>
-                                                <ul class="submenu">
-                                                    <li class="has-dropdown">
-                                                        <a href="service-details.php">
-                                                            Service
-                                                            <i class="fas fa-angle-right"></i>
-                                                        </a>
-                                                        <ul class="submenu">
-                                                            <li><a href="service.php">Service</a></li>
-                                                            <li><a href="service-details.php">Service Details</a></li>
-                                                        </ul>
-                                                    </li>
-                                                    <li class="has-dropdown">
-                                                        <a href="country-list.php">
-                                                            Country List
-                                                            <i class="fas fa-angle-right"></i>
-                                                        </a>
-                                                        <ul class="submenu">
-                                                            <li><a href="country-list.php">Country List</a></li>
-                                                            <li><a href="country-details.php">Country Details</a></li>
-                                                        </ul>
-                                                    </li>
-                                                    <li><a href="pricing.php">Our Pricing</a></li>
-                                                    <li><a href="appointment.php">Appointment</a></li>
-                                                    <li><a href="404.php">404 Page</a></li>
-                                                    <li><a href="coming-soon.php">Coming Soon</a></li>
-                                                </ul>
-                                            </li>
-                                            <li>
-                                                <a href="country-details.php">
-                                                    VISA
-                                                </a>
-                                                <ul class="submenu">
-                                                    <li><a href="country-list.php">Visa List</a></li>
-                                                    <li><a href="country-details.php">Visa Details</a></li>
-                                                </ul>
-                                            </li>
-                                           <li>
-                                                <a href="news-details.php">
-                                                    Blog
-                                                </a>
-                                                <ul class="submenu">
-                                                    <li><a href="news-grid.php">Blog Grid</a></li>
-                                                    <li><a href="news.php">Blog Standard</a></li>
-                                                    <li><a href="news-details.php">Blog Details</a></li>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                    </nav>
+                                    <?php include __DIR__ . '/nav.php'; ?>
                                 </div>
-                            </div> 
+                            </div>
                         </div>
                         <div class="header-right d-flex align-items-center mt-0">
                             <div class="header-call-item">
-                                <a href="#" class="main-header__search search-toggler">
-                                <i class="fa-regular fa-magnifying-glass"></i>
-                            </a>
-                                <a href="contact.php" class="theme-btn">
-                                    Apply now
+                                <a href="contact" class="theme-btn">
+                                    Enquire Now
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </a>
                                 <div class="header__hamburger my-auto">

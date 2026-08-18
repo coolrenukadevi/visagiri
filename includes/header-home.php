@@ -30,6 +30,7 @@
         <link rel="stylesheet" href="assets/css/nice-select.css">
         <!--<< Main.css >>-->
         <link rel="stylesheet" href="assets/css/main.css">
+        <link rel="stylesheet" href="assets/css/custom.css">
                             
     </head>
     <body class="smooth-scroll-yes">
@@ -90,7 +91,7 @@
                     <div class="offcanvas__content">
                         <div class="offcanvas__top mb-5 d-flex justify-content-between align-items-center">
                             <div class="offcanvas__logo">
-                                <a href="index.php">
+                                <a href="/">
                                     <img src="assets/img/logo/black-logo.svg" alt="logo-img">
                                 </a>
                             </div>
@@ -158,17 +159,30 @@
                 <div class="header-top-wrapper-2">
                     <div class="header-left">
                         <span>
-                            Opening Hour: Mon - Fri 8am - 8pm
+                            <i class="fa-solid fa-phone"></i>
+                            <a href="tel:+917844819819">Call Us: +91 78448 19819</a>
                         </span>
                         <span>
-                            <a href="mailto:info@visaagency.in">Send Us mail: info@visaagency.in</a>
+                            <i class="fa-brands fa-whatsapp"></i>
+                            <a href="https://wa.me/917844819819" target="_blank" rel="noopener">WhatsApp Us</a>
+                        </span>
+                        <span>
+                            <i class="fa-solid fa-location-dot"></i>
+                            Patna, Bihar
                         </span>
                     </div>
-                    <div class="social-item">
-                        <a href="#"><i class="fa-brands fa-linkedin"></i></a>
-                        <a href="#"><i class="fa-brands fa-twitter"></i></a>
-                        <a href="#"><i class="fa-brands fa-instagram"></i></a>
-                        <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                    <div class="header-right d-flex align-items-center gap-3">
+                        <div class="topbar-auth-links">
+                            <a href="customer-login">Customer Login</a>
+                            <span class="divider">|</span>
+                            <a href="employee-login">Employee Login</a>
+                        </div>
+                        <div class="social-item">
+                            <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+                            <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                            <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -181,79 +195,23 @@
                     <div class="header-main">
                         <div class="header-left">
                             <div class="logo">
-                                <a href="index.php" class="header-logo-2">
+                                <a href="/" class="header-logo-2">
                                     <img src="assets/img/logo/white-logo.svg" alt="logo-img">
                                 </a>
-                                <a href="index.php" class="header-logo">
+                                <a href="/" class="header-logo">
                                     <img src="assets/img/logo/black-logo.svg" alt="logo-img">
                                 </a>
                             </div>
                             <div class="mean__menu-wrapper">
                                 <div class="main-menu">
-                                    <nav id="mobile-menu">
-                                        <ul>
-                                            <li>
-                                                <a href="about.php">About Us</a>
-                                            </li>
-                                            <li class="has-dropdown">
-                                                <a href="news-details.php">
-                                                    Pages
-                                                </a>
-                                                <ul class="submenu">
-                                                    <li class="has-dropdown">
-                                                        <a href="service-details.php">
-                                                            Service
-                                                            <i class="fas fa-angle-right"></i>
-                                                        </a>
-                                                        <ul class="submenu">
-                                                            <li><a href="service.php">Service</a></li>
-                                                            <li><a href="service-details.php">Service Details</a></li>
-                                                        </ul>
-                                                    </li>
-                                                    <li class="has-dropdown">
-                                                        <a href="country-list.php">
-                                                            Country List
-                                                            <i class="fas fa-angle-right"></i>
-                                                        </a>
-                                                        <ul class="submenu">
-                                                            <li><a href="country-list.php">Country List</a></li>
-                                                            <li><a href="country-details.php">Country Details</a></li>
-                                                        </ul>
-                                                    </li>
-                                                    <li><a href="pricing.php">Our Pricing</a></li>
-                                                    <li><a href="appointment.php">Appointment</a></li>
-                                                    <li><a href="404.php">404 Page</a></li>
-                                                    <li><a href="coming-soon.php">Coming Soon</a></li>
-                                                </ul>
-                                            </li>
-                                            <li>
-                                                <a href="country-details.php">
-                                                    VISA
-                                                </a>
-                                                <ul class="submenu">
-                                                    <li><a href="country-list.php">Visa List</a></li>
-                                                    <li><a href="country-details.php">Visa Details</a></li>
-                                                </ul>
-                                            </li>
-                                           <li>
-                                                <a href="news-details.php">
-                                                    Blog
-                                                </a>
-                                                <ul class="submenu">
-                                                    <li><a href="news-grid.php">Blog Grid</a></li>
-                                                    <li><a href="news.php">Blog Standard</a></li>
-                                                    <li><a href="news-details.php">Blog Details</a></li>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                    </nav>
+                                    <?php include __DIR__ . '/nav.php'; ?>
                                 </div>
-                            </div> 
+                            </div>
                         </div>
                         <div class="header-right d-flex align-items-center mt-0">
                             <div class="header-call-item">
-                                <a href="country-details.php" class="theme-btn">
-                                Get Your Visa
+                                <a href="contact" class="theme-btn">
+                                    Enquire Now
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </a>
                                 <div class="header__hamburger my-auto">

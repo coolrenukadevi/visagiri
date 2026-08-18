@@ -26,7 +26,7 @@ include __DIR__ . '/includes/header.php';
                     <h1 class="breadcrumb-title">Our BLOG</h1>
                     <ul class="breadcrumb-list">
                         <li>
-                            <a href="index.php">Home</a>
+                            <a href="/">Home</a>
                         </li>
                         <li>
                             <i class="fa-solid fa-chevron-right"></i>
@@ -47,7 +47,7 @@ include __DIR__ . '/includes/header.php';
                         <div class="news-card-item">
                             <div class="news-image">
                                 <img src="assets/img/home-1/news/news-4.jpg" alt="img">
-                                <span>Student Visa</span>
+                                <span>Immigration</span>
                                 <div class="news-layer-wrapper">
                                     <div class="news-layer-image" style="background-image: url('assets/img/home-1/news/news-4.jpg');"></div>
                                     <div class="news-layer-image" style="background-image: url('assets/img/home-1/news/news-4.jpg');"></div>
@@ -61,7 +61,7 @@ include __DIR__ . '/includes/header.php';
                                     <span>_ 20 August ,2025</span>
                                 </div>
                                 <h3>
-                                    <a href="news-details.php">
+                                    <a href="news-details">
                                         How Immigration Policies Impact Global Travelers
                                     </a>
                                 </h3>
@@ -70,7 +70,7 @@ include __DIR__ . '/includes/header.php';
                                         <img src="assets/img/home-1/news/client.png" alt="img">
                                         <span>By Sohel</span>
                                     </div>
-                                    <a href="news-details.php" class="link-btn">View Articles<i class="fa-solid fa-arrow-right"></i></a>
+                                    <a href="news-details" class="link-btn">View Articles<i class="fa-solid fa-arrow-right"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -93,7 +93,7 @@ include __DIR__ . '/includes/header.php';
                                     <span>_ 20 August ,2025</span>
                                 </div>
                                 <h3>
-                                    <a href="news-details.php">
+                                    <a href="news-details">
                                         Travel Visa Made Easy A Step-by-Step Guide
                                     </a>
                                 </h3>
@@ -102,7 +102,7 @@ include __DIR__ . '/includes/header.php';
                                         <img src="assets/img/home-1/news/client.png" alt="img">
                                         <span>By Sohel</span>
                                     </div>
-                                    <a href="news-details.php" class="link-btn">View Articles<i class="fa-solid fa-arrow-right"></i></a>
+                                    <a href="news-details" class="link-btn">View Articles<i class="fa-solid fa-arrow-right"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -111,7 +111,7 @@ include __DIR__ . '/includes/header.php';
                         <div class="news-card-item">
                             <div class="news-image">
                                 <img src="assets/img/home-1/news/news-6.jpg" alt="img">
-                                <span>Study Abroad</span>
+                                <span>TouristVisa</span>
                                 <div class="news-layer-wrapper">
                                     <div class="news-layer-image" style="background-image: url('assets/img/home-1/news/news-6.jpg');"></div>
                                     <div class="news-layer-image" style="background-image: url('assets/img/home-1/news/news-6.jpg');"></div>
@@ -125,7 +125,7 @@ include __DIR__ . '/includes/header.php';
                                     <span>_ 20 August ,2025</span>
                                 </div>
                                 <h3>
-                                    <a href="news-details.php">
+                                    <a href="news-details">
                                        The Importance of Legal Support in Immigration Cases
                                     </a>
                                 </h3>
@@ -134,7 +134,7 @@ include __DIR__ . '/includes/header.php';
                                         <img src="assets/img/home-1/news/client.png" alt="img">
                                         <span>By Sohel</span>
                                     </div>
-                                    <a href="news-details.php" class="link-btn">View Articles<i class="fa-solid fa-arrow-right"></i></a>
+                                    <a href="news-details" class="link-btn">View Articles<i class="fa-solid fa-arrow-right"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -143,7 +143,7 @@ include __DIR__ . '/includes/header.php';
                         <div class="news-card-item">
                             <div class="news-image">
                                 <img src="assets/img/home-1/news/news-7.jpg" alt="img">
-                                <span>Student Visa</span>
+                                <span>Business Visa</span>
                                 <div class="news-layer-wrapper">
                                     <div class="news-layer-image" style="background-image: url('assets/img/home-1/news/news-7.jpg');"></div>
                                     <div class="news-layer-image" style="background-image: url('assets/img/home-1/news/news-7.jpg');"></div>
@@ -157,8 +157,8 @@ include __DIR__ . '/includes/header.php';
                                     <span>_ 20 August ,2025</span>
                                 </div>
                                 <h3>
-                                    <a href="news-details.php">
-                                       Work Visa vs. Student Visa Which is Right for You?
+                                    <a href="news-details">
+                                       Business Visa vs. Tourist Visa Which is Right for You?
                                     </a>
                                 </h3>
                                 <div class="news-bottom">
@@ -166,7 +166,7 @@ include __DIR__ . '/includes/header.php';
                                         <img src="assets/img/home-1/news/client.png" alt="img">
                                         <span>By Sohel</span>
                                     </div>
-                                    <a href="news-details.php" class="link-btn">View Articles<i class="fa-solid fa-arrow-right"></i></a>
+                                    <a href="news-details" class="link-btn">View Articles<i class="fa-solid fa-arrow-right"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -189,7 +189,7 @@ include __DIR__ . '/includes/header.php';
                                     <span>_ 20 August ,2025</span>
                                 </div>
                                 <h3>
-                                    <a href="news-details.php">
+                                    <a href="news-details">
                                         How to Choose the Right Immigration Consultancy
                                     </a>
                                 </h3>
@@ -198,7 +198,7 @@ include __DIR__ . '/includes/header.php';
                                         <img src="assets/img/home-1/news/client.png" alt="img">
                                         <span>By Sohel</span>
                                     </div>
-                                    <a href="news-details.php" class="link-btn">View Articles<i class="fa-solid fa-arrow-right"></i></a>
+                                    <a href="news-details" class="link-btn">View Articles<i class="fa-solid fa-arrow-right"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -207,7 +207,7 @@ include __DIR__ . '/includes/header.php';
                         <div class="news-card-item">
                             <div class="news-image">
                                 <img src="assets/img/home-1/news/news-9.jpg" alt="img">
-                                <span>Study Abroad</span>
+                                <span>TouristVisa</span>
                                 <div class="news-layer-wrapper">
                                     <div class="news-layer-image" style="background-image: url('assets/img/home-1/news/news-9.jpg');"></div>
                                     <div class="news-layer-image" style="background-image: url('assets/img/home-1/news/news-9.jpg');"></div>
@@ -221,7 +221,7 @@ include __DIR__ . '/includes/header.php';
                                     <span>_ 20 August ,2025</span>
                                 </div>
                                 <h3>
-                                    <a href="news-details.php">
+                                    <a href="news-details">
                                        Preparing Your Family for Immigration Abroad
                                     </a>
                                 </h3>
@@ -230,7 +230,7 @@ include __DIR__ . '/includes/header.php';
                                         <img src="assets/img/home-1/news/client.png" alt="img">
                                         <span>By Sohel</span>
                                     </div>
-                                    <a href="news-details.php" class="link-btn">View Articles<i class="fa-solid fa-arrow-right"></i></a>
+                                    <a href="news-details" class="link-btn">View Articles<i class="fa-solid fa-arrow-right"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -239,7 +239,7 @@ include __DIR__ . '/includes/header.php';
                         <div class="news-card-item">
                             <div class="news-image">
                                 <img src="assets/img/home-1/news/news-10.jpg" alt="img">
-                                <span>Student Visa</span>
+                                <span>Visa Tips</span>
                                 <div class="news-layer-wrapper">
                                     <div class="news-layer-image" style="background-image: url('assets/img/home-1/news/news-10.jpg');"></div>
                                     <div class="news-layer-image" style="background-image: url('assets/img/home-1/news/news-10.jpg');"></div>
@@ -253,7 +253,7 @@ include __DIR__ . '/includes/header.php';
                                     <span>_ 20 August ,2025</span>
                                 </div>
                                 <h3>
-                                    <a href="news-details.php">
+                                    <a href="news-details">
                                        Tips to Improve Your Chances of Visa Approval
                                     </a>
                                 </h3>
@@ -262,7 +262,7 @@ include __DIR__ . '/includes/header.php';
                                         <img src="assets/img/home-1/news/client.png" alt="img">
                                         <span>By Sohel</span>
                                     </div>
-                                    <a href="news-details.php" class="link-btn">View Articles<i class="fa-solid fa-arrow-right"></i></a>
+                                    <a href="news-details" class="link-btn">View Articles<i class="fa-solid fa-arrow-right"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -285,7 +285,7 @@ include __DIR__ . '/includes/header.php';
                                     <span>_ 20 August ,2025</span>
                                 </div>
                                 <h3>
-                                    <a href="news-details.php">
+                                    <a href="news-details">
                                        Future Trends in Global Immigration and Visa Services
                                     </a>
                                 </h3>
@@ -294,7 +294,7 @@ include __DIR__ . '/includes/header.php';
                                         <img src="assets/img/home-1/news/client.png" alt="img">
                                         <span>By Sohel</span>
                                     </div>
-                                    <a href="news-details.php" class="link-btn">View Articles<i class="fa-solid fa-arrow-right"></i></a>
+                                    <a href="news-details" class="link-btn">View Articles<i class="fa-solid fa-arrow-right"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -303,7 +303,7 @@ include __DIR__ . '/includes/header.php';
                         <div class="news-card-item">
                             <div class="news-image">
                                 <img src="assets/img/home-1/news/news-12.jpg" alt="img">
-                                <span>Study Abroad</span>
+                                <span>TouristVisa</span>
                                 <div class="news-layer-wrapper">
                                     <div class="news-layer-image" style="background-image: url('assets/img/home-1/news/news-12.jpg');"></div>
                                     <div class="news-layer-image" style="background-image: url('assets/img/home-1/news/news-12.jpg');"></div>
@@ -317,8 +317,8 @@ include __DIR__ . '/includes/header.php';
                                     <span>_ 20 August ,2025</span>
                                 </div>
                                 <h3>
-                                    <a href="news-details.php">
-                                       Scholarships and Grants for International Students
+                                    <a href="news-details">
+                                       Understanding Visa Fees and Processing Costs
                                     </a>
                                 </h3>
                                 <div class="news-bottom">
@@ -326,7 +326,7 @@ include __DIR__ . '/includes/header.php';
                                         <img src="assets/img/home-1/news/client.png" alt="img">
                                         <span>By Sohel</span>
                                     </div>
-                                    <a href="news-details.php" class="link-btn">View Articles<i class="fa-solid fa-arrow-right"></i></a>
+                                    <a href="news-details" class="link-btn">View Articles<i class="fa-solid fa-arrow-right"></i></a>
                                 </div>
                             </div>
                         </div>

@@ -1,0 +1,663 @@
+/* ============================================================
+   Visa Agency — custom additions on top of the template's main.css
+   ============================================================ */
+
+/* ---- Nav spacing: fit 7 top-level items comfortably ---- */
+.header-main .main-menu ul li {
+    margin-inline-end: 26px !important;
+}
+.header-main .main-menu ul li a {
+    font-size: 14.5px !important;
+}
+@media (max-width: 1500px) {
+    .header-main .main-menu ul li {
+        margin-inline-end: 18px !important;
+    }
+    .header-main .main-menu ul li a {
+        font-size: 13.5px !important;
+    }
+}
+
+/* ---- Topbar auth links ---- */
+.topbar-auth-links {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+.topbar-auth-links a {
+    color: rgba(255, 255, 255, 0.85);
+    transition: color 0.3s ease;
+}
+.header-top-wrapper .topbar-auth-links a {
+    color: var(--header);
+}
+.topbar-auth-links a:hover {
+    color: var(--theme);
+}
+.topbar-auth-links .divider {
+    color: rgba(255, 255, 255, 0.35);
+}
+.header-top-wrapper .topbar-auth-links .divider {
+    color: var(--border);
+}
+
+/* ---- Mega menu panels ---- */
+.mega-panel {
+    width: 760px !important;
+    left: -300px !important;
+    padding: 32px !important;
+}
+.mega-panel-inner {
+    display: grid;
+    grid-template-columns: 1.3fr 1.3fr 1fr;
+    gap: 32px;
+}
+.mega-col h5 {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--theme);
+    margin-bottom: 14px;
+}
+.mega-links {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.mega-links li a {
+    display: block;
+    padding: 6px 0 !important;
+    font-size: 14.5px;
+    line-height: 1.4 !important;
+    color: var(--header) !important;
+}
+.mega-links li a:hover {
+    color: var(--theme-2) !important;
+    padding-left: 4px !important;
+}
+.mega-links-flags li a span {
+    display: inline-block;
+    width: 20px;
+}
+.mega-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--theme) !important;
+}
+.mega-cta:hover {
+    color: var(--theme-2) !important;
+}
+
+/* ---- Countries mega panel ---- */
+.mega-panel-countries {
+    width: 640px !important;
+    left: -350px !important;
+    padding: 28px !important;
+}
+.country-explorer-search {
+    position: relative;
+    margin-bottom: 16px;
+}
+.country-explorer-search i {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text);
+    opacity: 0.6;
+}
+.country-explorer-search input {
+    width: 100%;
+    padding: 10px 14px 10px 38px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+}
+.country-explorer-search input:focus {
+    border-color: var(--theme);
+}
+.country-explorer-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+.country-explorer-filters button {
+    border: 1px solid var(--border);
+    background: var(--white);
+    color: var(--header);
+    border-radius: 30px;
+    padding: 5px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+.country-explorer-filters button:hover,
+.country-explorer-filters button.active {
+    background: var(--theme);
+    border-color: var(--theme);
+    color: var(--white);
+}
+.country-explorer-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    max-height: 260px;
+    overflow-y: auto;
+}
+.country-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    color: var(--header) !important;
+    transition: background 0.2s ease;
+}
+.country-chip:hover {
+    background: var(--bg);
+    color: var(--theme) !important;
+}
+.country-chip .flag {
+    font-size: 16px;
+}
+.country-chip.is-hidden {
+    display: none;
+}
+
+/* ---- Homepage: Visa Search Widget ---- */
+.visa-search-widget {
+    background: var(--white);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(16, 24, 40, 0.18);
+    padding: 28px;
+    margin-top: -30px;
+    position: relative;
+    z-index: 20;
+}
+@media (max-width: 991px) {
+    .visa-search-widget {
+        margin-top: 20px;
+    }
+}
+.visa-search-widget .vsw-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--header);
+    margin-bottom: 4px;
+}
+.visa-search-widget .vsw-sub {
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: 18px;
+}
+.vsw-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) auto;
+    gap: 14px;
+    align-items: end;
+}
+@media (max-width: 991px) {
+    .vsw-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+.vsw-field label {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+}
+.vsw-field select,
+.vsw-field input {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 12px;
+    font-size: 14px;
+    background: var(--white);
+    outline: none;
+}
+.vsw-field select:focus,
+.vsw-field input:focus {
+    border-color: var(--theme);
+}
+.vsw-submit {
+    border: none;
+    background: var(--theme);
+    color: var(--white);
+    border-radius: 10px;
+    padding: 12px 22px;
+    font-weight: 600;
+    font-size: 14px;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.25s ease;
+}
+.vsw-submit:hover {
+    background: var(--theme-2);
+}
+.vsw-result {
+    margin-top: 18px;
+    padding: 16px 18px;
+    border-radius: 12px;
+    background: var(--bg);
+    border-left: 4px solid var(--theme);
+    display: none;
+    font-size: 14.5px;
+    color: var(--header);
+    line-height: 1.7;
+}
+.vsw-result.show {
+    display: block;
+}
+.vsw-result strong {
+    color: var(--theme);
+}
+.vsw-result .vsw-result-actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.vsw-result .vsw-result-actions a {
+    font-weight: 600;
+    font-size: 13.5px;
+    color: var(--theme-2);
+}
+
+/* ---- Trust strip ---- */
+.trust-strip {
+    background: var(--white);
+    padding: 30px 0 10px;
+}
+.trust-strip-inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 30px;
+}
+.trust-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--header);
+    flex: 1 1 180px;
+}
+.trust-item i {
+    color: var(--theme);
+    font-size: 20px;
+}
+
+/* ---- How it works ---- */
+.how-it-works-steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+@media (max-width: 767px) {
+    .how-it-works-steps {
+        grid-template-columns: 1fr;
+    }
+}
+.how-it-works-step {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 26px 22px;
+    position: relative;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+.how-it-works-step:hover {
+    box-shadow: 0 16px 40px rgba(16, 24, 40, 0.1);
+    transform: translateY(-4px);
+}
+.how-it-works-step .step-num {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--theme);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+.how-it-works-step h4 {
+    font-size: 17px;
+    margin-bottom: 8px;
+    color: var(--header);
+}
+.how-it-works-step p {
+    font-size: 14px;
+    color: var(--text);
+    margin: 0;
+}
+
+/* ---- Document checklist widget ---- */
+.checklist-widget {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 10px 40px rgba(16, 24, 40, 0.06);
+}
+.checklist-controls {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr) auto;
+    gap: 14px;
+    margin-bottom: 24px;
+}
+@media (max-width: 767px) {
+    .checklist-controls {
+        grid-template-columns: 1fr;
+    }
+}
+.checklist-controls select {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 12px;
+    font-size: 14px;
+}
+.checklist-controls button {
+    border: none;
+    background: var(--theme);
+    color: var(--white);
+    border-radius: 10px;
+    padding: 12px 22px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.checklist-output {
+    display: none;
+    border-top: 1px dashed var(--border);
+    padding-top: 20px;
+}
+.checklist-output.show {
+    display: block;
+}
+.checklist-output h4 {
+    font-size: 17px;
+    color: var(--header);
+    margin-bottom: 14px;
+}
+.checklist-items {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 24px;
+    margin-bottom: 20px;
+    list-style: none;
+    padding: 0;
+}
+@media (max-width: 767px) {
+    .checklist-items {
+        grid-template-columns: 1fr;
+    }
+}
+.checklist-items li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14.5px;
+    color: var(--header);
+}
+.checklist-items li i {
+    color: var(--theme);
+}
+.checklist-actions {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+.checklist-actions a,
+.checklist-actions button {
+    border: 1px solid var(--border);
+    background: var(--white);
+    border-radius: 8px;
+    padding: 9px 16px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--header);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.checklist-actions a:hover,
+.checklist-actions button:hover {
+    border-color: var(--theme);
+    color: var(--theme);
+}
+
+/* ---- Country explorer section ---- */
+.country-explorer-section .country-explorer-grid {
+    grid-template-columns: repeat(5, 1fr);
+    max-height: none;
+}
+@media (max-width: 991px) {
+    .country-explorer-section .country-explorer-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+@media (max-width: 575px) {
+    .country-explorer-section .country-explorer-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+.country-explorer-section .country-chip {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+
+/* ---- FAQ ---- */
+.faq-accordion .faq-item {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    overflow: hidden;
+}
+.faq-question {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 22px;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--header);
+    font-size: 15.5px;
+}
+.faq-question i {
+    color: var(--theme);
+    transition: transform 0.3s ease;
+}
+.faq-item.active .faq-question i {
+    transform: rotate(45deg);
+}
+.faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    padding: 0 22px;
+}
+.faq-item.active .faq-answer {
+    max-height: 260px;
+    padding-bottom: 18px;
+}
+.faq-answer p {
+    color: var(--text);
+    font-size: 14.5px;
+    line-height: 1.7;
+    margin: 0;
+}
+
+/* ---- Final CTA ---- */
+.final-cta {
+    background: var(--header);
+    border-radius: 24px;
+    padding: 50px;
+    text-align: center;
+}
+.final-cta h2 {
+    color: var(--white);
+    margin-bottom: 10px;
+}
+.final-cta p {
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 26px;
+}
+.final-cta .cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+.final-cta .cta-buttons .theme-btn {
+    color: var(--white);
+    border-color: rgba(255, 255, 255, 0.35);
+}
+.final-cta .cta-buttons .theme-btn:hover {
+    color: var(--white);
+}
+
+/* ---- Trust & compliance note ---- */
+.compliance-note {
+    font-size: 13px;
+    color: var(--text);
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 14px 18px;
+    line-height: 1.6;
+}
+
+/* ---- Footer: 6-column layout ---- */
+.va-footer-top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 26px;
+    margin-bottom: 34px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+.va-footer-top .va-footer-logo img {
+    margin-bottom: 10px;
+}
+.va-footer-top .va-footer-tagline {
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 13.5px;
+    max-width: 320px;
+}
+.va-footer-contact-quick {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+}
+.va-footer-contact-quick a {
+    color: var(--white);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.va-footer-contact-quick a i {
+    color: var(--theme-2);
+}
+.va-footer-columns {
+    display: grid;
+    grid-template-columns: 1.4fr repeat(5, 1fr);
+    gap: 24px;
+}
+@media (max-width: 1199px) {
+    .va-footer-columns {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+@media (max-width: 767px) {
+    .va-footer-columns {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+.va-footer-columns h4 {
+    color: var(--white);
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+.va-footer-columns ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+.va-footer-columns ul li a {
+    color: rgba(255, 255, 255, 0.68);
+    font-size: 14px;
+}
+.va-footer-columns ul li a:hover {
+    color: var(--theme-2);
+}
+.va-footer-columns p {
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 14px;
+    line-height: 1.7;
+}
+.va-footer-bottom-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    justify-content: center;
+}
+.va-footer-legal {
+    font-size: 12.5px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* ---- Simple stub / portal pages ---- */
+.portal-stub {
+    max-width: 560px;
+    margin: 0 auto;
+    text-align: center;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 50px 40px;
+    box-shadow: 0 10px 40px rgba(16, 24, 40, 0.06);
+}
+.portal-stub .portal-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: var(--bg);
+    color: var(--theme);
+    font-size: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+}
+.portal-stub h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: var(--header);
+}
+.portal-stub p {
+    color: var(--text);
+    margin-bottom: 24px;
+}

@@ -26,7 +26,7 @@ include __DIR__ . '/includes/header.php';
                     <h1 class="breadcrumb-title">Error 404</h1>
                     <ul class="breadcrumb-list">
                         <li>
-                            <a href="index.php">Home</a>
+                            <a href="/">Home</a>
                         </li>
                         <li>
                             <i class="fa-solid fa-chevron-right"></i>
@@ -53,7 +53,7 @@ include __DIR__ . '/includes/header.php';
                                 <p>
                                     Sorry, the page you’re looking for cannot be found. But don’t worry—we’re here to guide you back to the right path. Explore our services today!
                                 </p>
-                                <a href="index.php" class="theme-btn">
+                                <a href="/" class="theme-btn">
                                    back to home
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </a>

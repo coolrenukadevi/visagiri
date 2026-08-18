@@ -26,7 +26,7 @@ include __DIR__ . '/includes/header.php';
                     <h1 class="breadcrumb-title">Country List</h1>
                     <ul class="breadcrumb-list">
                         <li>
-                            <a href="index.php">Home</a>
+                            <a href="/">Home</a>
                         </li>
                         <li>
                             <i class="fa-solid fa-chevron-right"></i>
@@ -53,11 +53,11 @@ include __DIR__ . '/includes/header.php';
                                     <div class="content">
                                         <p>Visa Service</p>
                                         <h3>
-                                            <a href="country-details.php">France</a>
+                                            <a href="country-details">France</a>
                                         </h3>
                                     </div>
                                 </div>
-                                <a href="country-details.php" class="theme-btn">
+                                <a href="country-details" class="theme-btn">
                                     Read More
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </a>
@@ -66,7 +66,7 @@ include __DIR__ . '/includes/header.php';
                                 <ul class="list">
                                     <li>
                                         <i class="fa-regular fa-arrow-right"></i>
-                                        Student Visa & Admission
+                                        Family Visit Visa Assistance
                                     </li>
                                     <li>
                                         <i class="fa-regular fa-arrow-right"></i>
@@ -80,7 +80,7 @@ include __DIR__ . '/includes/header.php';
                                     </li>
                                     <li>
                                         <i class="fa-regular fa-arrow-right"></i>
-                                        Student Visa for Canada
+                                        Work Visa for Canada
                                     </li>
                                 </ul>
                             </div>
@@ -96,11 +96,11 @@ include __DIR__ . '/includes/header.php';
                                     <div class="content">
                                         <p>Visa Service</p>
                                         <h3>
-                                            <a href="country-details.php">uk</a>
+                                            <a href="country-details">uk</a>
                                         </h3>
                                     </div>
                                 </div>
-                                <a href="country-details.php" class="theme-btn">
+                                <a href="country-details" class="theme-btn">
                                     Read More
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </a>
@@ -109,7 +109,7 @@ include __DIR__ . '/includes/header.php';
                                 <ul class="list">
                                     <li>
                                         <i class="fa-regular fa-arrow-right"></i>
-                                        Student Visa & Admission
+                                        Family Visit Visa Assistance
                                     </li>
                                     <li>
                                         <i class="fa-regular fa-arrow-right"></i>
@@ -123,7 +123,7 @@ include __DIR__ . '/includes/header.php';
                                     </li>
                                     <li>
                                         <i class="fa-regular fa-arrow-right"></i>
-                                        Student Visa for Canada
+                                        Work Visa for Canada
                                     </li>
                                 </ul>
                             </div>
@@ -139,11 +139,11 @@ include __DIR__ . '/includes/header.php';
                                     <div class="content">
                                         <p>Visa Service</p>
                                         <h3>
-                                            <a href="country-details.php">Canada</a>
+                                            <a href="country-details">Canada</a>
                                         </h3>
                                     </div>
                                 </div>
-                                <a href="country-details.php" class="theme-btn">
+                                <a href="country-details" class="theme-btn">
                                     Read More
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </a>
@@ -152,7 +152,7 @@ include __DIR__ . '/includes/header.php';
                                 <ul class="list">
                                     <li>
                                         <i class="fa-regular fa-arrow-right"></i>
-                                        Student Visa & Admission
+                                        Family Visit Visa Assistance
                                     </li>
                                     <li>
                                         <i class="fa-regular fa-arrow-right"></i>
@@ -166,7 +166,7 @@ include __DIR__ . '/includes/header.php';
                                     </li>
                                     <li>
                                         <i class="fa-regular fa-arrow-right"></i>
-                                        Student Visa for Canada
+                                        Work Visa for Canada
                                     </li>
                                 </ul>
                             </div>
@@ -182,11 +182,11 @@ include __DIR__ . '/includes/header.php';
                                     <div class="content">
                                         <p>Visa Service</p>
                                         <h3>
-                                            <a href="country-details.php">Germany</a>
+                                            <a href="country-details">Germany</a>
                                         </h3>
                                     </div>
                                 </div>
-                                <a href="country-details.php" class="theme-btn">
+                                <a href="country-details" class="theme-btn">
                                     Read More
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </a>
@@ -195,7 +195,7 @@ include __DIR__ . '/includes/header.php';
                                 <ul class="list">
                                     <li>
                                         <i class="fa-regular fa-arrow-right"></i>
-                                        Student Visa & Admission
+                                        Family Visit Visa Assistance
                                     </li>
                                     <li>
                                         <i class="fa-regular fa-arrow-right"></i>
@@ -209,7 +209,7 @@ include __DIR__ . '/includes/header.php';
                                     </li>
                                     <li>
                                         <i class="fa-regular fa-arrow-right"></i>
-                                        Student Visa for Canada
+                                        Work Visa for Canada
                                     </li>
                                 </ul>
                             </div>
@@ -225,11 +225,11 @@ include __DIR__ . '/includes/header.php';
                                     <div class="content">
                                         <p>Visa Service</p>
                                         <h3>
-                                            <a href="country-details.php">Spain</a>
+                                            <a href="country-details">Spain</a>
                                         </h3>
                                     </div>
                                 </div>
-                                <a href="country-details.php" class="theme-btn">
+                                <a href="country-details" class="theme-btn">
                                     Read More
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </a>
@@ -238,7 +238,7 @@ include __DIR__ . '/includes/header.php';
                                 <ul class="list">
                                     <li>
                                         <i class="fa-regular fa-arrow-right"></i>
-                                        Student Visa & Admission
+                                        Family Visit Visa Assistance
                                     </li>
                                     <li>
                                         <i class="fa-regular fa-arrow-right"></i>
@@ -252,7 +252,7 @@ include __DIR__ . '/includes/header.php';
                                     </li>
                                     <li>
                                         <i class="fa-regular fa-arrow-right"></i>
-                                        Student Visa for Canada
+                                        Work Visa for Canada
                                     </li>
                                 </ul>
                             </div>
@@ -268,11 +268,11 @@ include __DIR__ . '/includes/header.php';
                                     <div class="content">
                                         <p>Visa Service</p>
                                         <h3>
-                                            <a href="country-details.php">South Korea</a>
+                                            <a href="country-details">South Korea</a>
                                         </h3>
                                     </div>
                                 </div>
-                                <a href="country-details.php" class="theme-btn">
+                                <a href="country-details" class="theme-btn">
                                     Read More
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </a>
@@ -281,7 +281,7 @@ include __DIR__ . '/includes/header.php';
                                 <ul class="list">
                                     <li>
                                         <i class="fa-regular fa-arrow-right"></i>
-                                        Student Visa & Admission
+                                        Family Visit Visa Assistance
                                     </li>
                                     <li>
                                         <i class="fa-regular fa-arrow-right"></i>
@@ -295,7 +295,7 @@ include __DIR__ . '/includes/header.php';
                                     </li>
                                     <li>
                                         <i class="fa-regular fa-arrow-right"></i>
-                                        Student Visa for Canada
+                                        Work Visa for Canada
                                     </li>
                                 </ul>
                             </div>
@@ -311,11 +311,11 @@ include __DIR__ . '/includes/header.php';
                                     <div class="content">
                                         <p>Visa Service</p>
                                         <h3>
-                                            <a href="country-details.php">Japan</a>
+                                            <a href="country-details">Japan</a>
                                         </h3>
                                     </div>
                                 </div>
-                                <a href="country-details.php" class="theme-btn">
+                                <a href="country-details" class="theme-btn">
                                     Read More
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </a>
@@ -324,7 +324,7 @@ include __DIR__ . '/includes/header.php';
                                 <ul class="list">
                                     <li>
                                         <i class="fa-regular fa-arrow-right"></i>
-                                        Student Visa & Admission
+                                        Family Visit Visa Assistance
                                     </li>
                                     <li>
                                         <i class="fa-regular fa-arrow-right"></i>
@@ -338,7 +338,7 @@ include __DIR__ . '/includes/header.php';
                                     </li>
                                     <li>
                                         <i class="fa-regular fa-arrow-right"></i>
-                                        Student Visa for Canada
+                                        Work Visa for Canada
                                     </li>
                                 </ul>
                             </div>
@@ -354,11 +354,11 @@ include __DIR__ . '/includes/header.php';
                                     <div class="content">
                                         <p>Visa Service</p>
                                         <h3>
-                                            <a href="country-details.php">Croatia</a>
+                                            <a href="country-details">Croatia</a>
                                         </h3>
                                     </div>
                                 </div>
-                                <a href="country-details.php" class="theme-btn">
+                                <a href="country-details" class="theme-btn">
                                     Read More
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </a>
@@ -367,7 +367,7 @@ include __DIR__ . '/includes/header.php';
                                 <ul class="list">
                                     <li>
                                         <i class="fa-regular fa-arrow-right"></i>
-                                        Student Visa & Admission
+                                        Family Visit Visa Assistance
                                     </li>
                                     <li>
                                         <i class="fa-regular fa-arrow-right"></i>
@@ -381,7 +381,7 @@ include __DIR__ . '/includes/header.php';
                                     </li>
                                     <li>
                                         <i class="fa-regular fa-arrow-right"></i>
-                                        Student Visa for Canada
+                                        Work Visa for Canada
                                     </li>
                                 </ul>
                             </div>
@@ -397,11 +397,11 @@ include __DIR__ . '/includes/header.php';
                                     <div class="content">
                                         <p>Visa Service</p>
                                         <h3>
-                                            <a href="country-details.php">England</a>
+                                            <a href="country-details">England</a>
                                         </h3>
                                     </div>
                                 </div>
-                                <a href="country-details.php" class="theme-btn">
+                                <a href="country-details" class="theme-btn">
                                     Read More
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </a>
@@ -410,7 +410,7 @@ include __DIR__ . '/includes/header.php';
                                 <ul class="list">
                                     <li>
                                         <i class="fa-regular fa-arrow-right"></i>
-                                        Student Visa & Admission
+                                        Family Visit Visa Assistance
                                     </li>
                                     <li>
                                         <i class="fa-regular fa-arrow-right"></i>
@@ -424,7 +424,7 @@ include __DIR__ . '/includes/header.php';
                                     </li>
                                     <li>
                                         <i class="fa-regular fa-arrow-right"></i>
-                                        Student Visa for Canada
+                                        Work Visa for Canada
                                     </li>
                                 </ul>
                             </div>
@@ -440,11 +440,11 @@ include __DIR__ . '/includes/header.php';
                                     <div class="content">
                                         <p>Visa Service</p>
                                         <h3>
-                                            <a href="country-details.php">Indonesia</a>
+                                            <a href="country-details">Indonesia</a>
                                         </h3>
                                     </div>
                                 </div>
-                                <a href="country-details.php" class="theme-btn">
+                                <a href="country-details" class="theme-btn">
                                     Read More
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </a>
@@ -453,7 +453,7 @@ include __DIR__ . '/includes/header.php';
                                 <ul class="list">
                                     <li>
                                         <i class="fa-regular fa-arrow-right"></i>
-                                        Student Visa & Admission
+                                        Family Visit Visa Assistance
                                     </li>
                                     <li>
                                         <i class="fa-regular fa-arrow-right"></i>
@@ -467,7 +467,7 @@ include __DIR__ . '/includes/header.php';
                                     </li>
                                     <li>
                                         <i class="fa-regular fa-arrow-right"></i>
-                                        Student Visa for Canada
+                                        Work Visa for Canada
                                     </li>
                                 </ul>
                             </div>
