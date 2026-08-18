@@ -36,6 +36,7 @@ if (!isset($page_description)) { $page_description = "Visa Agency &ndash; Truste
         <link rel="stylesheet" href="assets/css/main.css">
         <link rel="stylesheet" href="assets/css/custom.css">
                             
+        <?php include __DIR__ . '/schema.php'; ?>
     </head>
     <body class="smooth-scroll-yes">
 

@@ -32,6 +32,7 @@
         <link rel="stylesheet" href="assets/css/main.css">
         <link rel="stylesheet" href="assets/css/custom.css">
                             
+        <?php include __DIR__ . '/schema.php'; ?>
     </head>
     <body class="smooth-scroll-yes">
 

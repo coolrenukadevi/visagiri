@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /includes/
+Disallow: /mail-handler.php
+Disallow: /router.php
+Allow: /
+
+Sitemap: https://visaagency.in/sitemap.xml

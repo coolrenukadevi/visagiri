@@ -99,7 +99,6 @@
             <a href="about">Company</a>
             <ul class="submenu">
                 <li><a href="about">About Us</a></li>
-                <li><a href="technology">Our Technology</a></li>
                 <li><a href="careers">Careers</a></li>
                 <li><a href="news">News &amp; Blog</a></li>
                 <li><a href="contact">Contact Us</a></li>
@@ -111,6 +110,7 @@
                 <li><a href="news">Blog</a></li>
                 <li><a href="news-grid">Visa Guides</a></li>
                 <li><a href="/#checklist">Document Checklist</a></li>
+                <li><a href="visa-refusal">Visa Refusal Guidance</a></li>
                 <li><a href="/#faq">FAQs</a></li>
             </ul>
         </li>

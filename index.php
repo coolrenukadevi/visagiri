@@ -1313,8 +1313,10 @@ include __DIR__ . '/includes/header-home.php';
                     </div>
                 </div>
                 <p class="compliance-note mt-4">
-                    Visa Agency provides visa consultancy and application assistance. Visa approval is solely at the
-                    discretion of the relevant embassy, consulate or immigration authority. Visa Agency is a
+                    Visa Agency provides visa consultancy and documentation assistance. Visa decisions are made
+                    solely by the relevant embassy, consulate, immigration authority or government department.
+                    Visa approval is not guaranteed. Requirements, fees and processing times may change without
+                    notice. Applicants should verify current requirements before submission. Visa Agency is a
                     technology-enabled visa consultancy and a unit of Tripgation Private Limited.
                 </p>
             </div>

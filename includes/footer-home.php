@@ -65,7 +65,6 @@
                             <h4>Company</h4>
                             <ul>
                                 <li><a href="about">About Us</a></li>
-                                <li><a href="technology">Technology</a></li>
                                 <li><a href="news">News &amp; Blog</a></li>
                                 <li><a href="careers">Careers</a></li>
                                 <li><a href="contact">Contact Us</a></li>
@@ -85,6 +84,9 @@
             <div class="fotter-bootom-2">
                 <div class="container">
                     <div class="footer-wrapper" style="flex-direction:column;gap:10px;">
+                <p class="footer-disclaimer">
+                        Visa Agency provides visa consultancy and documentation assistance. Visa decisions are made solely by the relevant embassy, consulate, immigration authority or government department. Visa approval is not guaranteed. Requirements, fees and processing times may change without notice. Applicants should verify current requirements before submission.
+                    </p>
                         <p>
                             © <?php echo date('Y'); ?> <span>VISA AGENCY</span>. All Rights Reserved. &mdash; A unit of Tripgation Private Limited
                         </p>
