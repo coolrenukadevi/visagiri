@@ -38,7 +38,7 @@ include __DIR__ . '/includes/header.php';
                         ['icon' => 'fa-building-columns', 'title' => 'Embassy Attestation', 'desc' => 'Attestation from the destination country\'s embassy or consulate where required.'],
                         ['icon' => 'fa-certificate', 'title' => 'Certificate Attestation', 'desc' => 'Educational, marriage, birth, commercial and personal document attestation.'],
                         ['icon' => 'fa-graduation-cap', 'title' => 'Educational Certificate Attestation', 'desc' => 'Degree, diploma and mark-sheet attestation for study or work abroad.'],
-                        ['icon' => 'fa-people-roof', 'title' => 'Marriage &amp; Birth Certificate Attestation', 'desc' => 'Attestation for family visa, dependent visa and residency applications.'],
+                        ['icon' => 'fa-house-user', 'title' => 'Marriage &amp; Birth Certificate Attestation', 'desc' => 'Attestation for family visa, dependent visa and residency applications.'],
                         ['icon' => 'fa-briefcase', 'title' => 'Commercial Document Attestation', 'desc' => 'Attestation of business and commercial documents for trade and corporate use.'],
                         ['icon' => 'fa-file-signature', 'title' => 'Power of Attorney Attestation', 'desc' => 'Attestation support for power of attorney documents.'],
                         ['icon' => 'fa-language', 'title' => 'Translation &amp; Notary Assistance', 'desc' => 'Certified translation and notary assistance for your documents.'],

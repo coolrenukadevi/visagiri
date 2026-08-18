@@ -38,7 +38,7 @@ include __DIR__ . '/includes/header.php';
                     $refusal_reasons = [
                         ['icon' => 'fa-sack-dollar', 'title' => 'Financial Concerns', 'desc' => 'Insufficient or unclear proof of funds to cover the trip.'],
                         ['icon' => 'fa-route', 'title' => 'Weak Travel Purpose', 'desc' => 'The purpose of travel wasn\'t clearly established or supported.'],
-                        ['icon' => 'fa-file-circle-exclamation', 'title' => 'Inconsistent Documentation', 'desc' => 'Details across documents didn\'t match or contradicted each other.'],
+                        ['icon' => 'fa-file-circle-info', 'title' => 'Inconsistent Documentation', 'desc' => 'Details across documents didn\'t match or contradicted each other.'],
                         ['icon' => 'fa-house-chimney', 'title' => 'Insufficient Ties', 'desc' => 'Limited evidence of ties (job, family, property) to the home country.'],
                         ['icon' => 'fa-calendar-days', 'title' => 'Unclear Itinerary', 'desc' => 'Travel dates, accommodation or onward plans weren\'t well defined.'],
                         ['icon' => 'fa-clock-rotate-left', 'title' => 'Previous Refusal', 'desc' => 'An earlier refusal not properly addressed in the new application.'],

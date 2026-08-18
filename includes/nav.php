@@ -2,7 +2,7 @@
 <nav id="mobile-menu">
     <ul>
         <li class="has-dropdown">
-            <a href="service">Visa</a>
+            <a href="visa-consultancy-services">Visa</a>
             <ul class="submenu has-homemenu mega-panel">
                 <li>
                     <div class="mega-panel-inner">
@@ -38,7 +38,7 @@
                                 <li><a href="country-list"><span><?php echo $c['flag']; ?></span> <?php echo $c['name']; ?></a></li>
                                 <?php endforeach; ?>
                             </ul>
-                            <a href="service" class="mega-cta">Explore All Visa Services <i class="fa-solid fa-arrow-right"></i></a>
+                            <a href="visa-consultancy-services" class="mega-cta">Explore All Visa Services <i class="fa-solid fa-arrow-right"></i></a>
                         </div>
                     </div>
                 </li>

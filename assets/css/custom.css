@@ -669,6 +669,148 @@
     text-align: center;
 }
 
+/* ---- Visa category cards ---- */
+.visa-category-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+@media (max-width: 991px) {
+    .visa-category-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 575px) {
+    .visa-category-grid { grid-template-columns: 1fr; }
+}
+.visa-category-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 26px 22px;
+    transition: box-shadow 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+}
+.visa-category-card:hover {
+    box-shadow: 0 16px 40px rgba(16, 24, 40, 0.1);
+    transform: translateY(-4px);
+    border-color: var(--theme);
+}
+.visa-category-card .vc-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background: var(--bg);
+    color: var(--theme);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 19px;
+    margin-bottom: 16px;
+}
+.visa-category-card h4 {
+    font-size: 16.5px;
+    margin-bottom: 8px;
+    color: var(--header);
+}
+.visa-category-card p {
+    font-size: 13.5px;
+    color: var(--text);
+    margin-bottom: 14px;
+    min-height: 40px;
+}
+.visa-category-card a.vc-link {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--theme-2);
+}
+.visa-category-card a.vc-link:hover {
+    color: var(--theme);
+}
+
+/* ---- Process timeline ---- */
+.process-timeline {
+    position: relative;
+    max-width: 720px;
+    margin: 0 auto;
+}
+.process-timeline::before {
+    content: "";
+    position: absolute;
+    left: 23px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: var(--border);
+}
+.process-step {
+    position: relative;
+    display: flex;
+    gap: 22px;
+    padding-bottom: 34px;
+}
+.process-step:last-child { padding-bottom: 0; }
+.process-step .ps-num {
+    flex: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--theme);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 15px;
+    position: relative;
+    z-index: 2;
+}
+.process-step.optional .ps-num {
+    background: var(--white);
+    color: var(--theme);
+    border: 2px solid var(--theme);
+}
+.process-step .ps-body h4 {
+    font-size: 16px;
+    margin: 6px 0 4px;
+    color: var(--header);
+}
+.process-step .ps-body p {
+    font-size: 13.5px;
+    color: var(--text);
+    margin: 0;
+}
+.process-step .ps-tag {
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--theme-2);
+    font-weight: 700;
+}
+
+/* ---- Data-pending notice (for sections needing verified admin data) ---- */
+.data-pending {
+    border: 1px dashed var(--border);
+    border-radius: 14px;
+    padding: 22px 24px;
+    background: var(--bg);
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+.data-pending i {
+    color: var(--theme-2);
+    font-size: 20px;
+    margin-top: 2px;
+}
+.data-pending h4 {
+    font-size: 15px;
+    margin: 0 0 6px;
+    color: var(--header);
+}
+.data-pending p {
+    font-size: 13.5px;
+    color: var(--text);
+    margin: 0;
+}
+
 /* ---- Simple stub / portal pages ---- */
 .portal-stub {
     max-width: 560px;

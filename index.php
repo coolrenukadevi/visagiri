@@ -91,7 +91,7 @@ include __DIR__ . '/includes/header-home.php';
                 <div class="trust-strip-inner">
                     <div class="trust-item"><i class="fa-solid fa-user-tie"></i> Professional Assistance</div>
                     <div class="trust-item"><i class="fa-solid fa-earth-asia"></i> 20+ Countries Covered</div>
-                    <div class="trust-item"><i class="fa-solid fa-file-shield"></i> Digital Document Guidance</div>
+                    <div class="trust-item"><i class="fa-solid fa-shield-alt"></i> Digital Document Guidance</div>
                     <div class="trust-item"><i class="fa-solid fa-headset"></i> Customer Support</div>
                     <div class="trust-item"><i class="fa-solid fa-microchip"></i> Technology Enabled</div>
                 </div>

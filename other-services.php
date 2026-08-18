@@ -29,8 +29,8 @@ include __DIR__ . '/includes/header.php';
                 <div class="row g-4">
                     <?php
                     $other_services = [
-                        ['icon' => 'fa-shield-halved', 'title' => 'Travel Insurance', 'desc' => 'Travel insurance assistance to meet embassy and personal safety requirements.'],
-                        ['icon' => 'fa-money-bill-transfer', 'title' => 'Forex Assistance', 'desc' => 'Guidance on foreign exchange for your trip.'],
+                        ['icon' => 'fa-shield-alt', 'title' => 'Travel Insurance', 'desc' => 'Travel insurance assistance to meet embassy and personal safety requirements.'],
+                        ['icon' => 'fa-money-bill-wave', 'title' => 'Forex Assistance', 'desc' => 'Guidance on foreign exchange for your trip.'],
                         ['icon' => 'fa-plane', 'title' => 'Flight &amp; Hotel Reservation', 'desc' => 'Confirmed itinerary and accommodation booking assistance for visa applications.'],
                         ['icon' => 'fa-envelope-open-text', 'title' => 'Invitation Letter Assistance', 'desc' => 'Support in preparing invitation letters where required.'],
                         ['icon' => 'fa-plane-arrival', 'title' => 'Airport Meet &amp; Assist', 'desc' => 'Airport meet, assist and transfer support.'],

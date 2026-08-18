@@ -40,6 +40,7 @@
                                 <li><a href="service-details">Work Visa</a></li>
                                 <li><a href="service-details">Medical Visa</a></li>
                                 <li><a href="service">Family Visa</a></li>
+                                <li><a href="visa-consultancy-services">All Visa Services</a></li>
                             </ul>
                         </div>
                         <div>
