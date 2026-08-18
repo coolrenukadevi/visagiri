@@ -1,0 +1,21 @@
+<svg width="180" height="48" viewBox="0 0 180 48" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Visa Agency logo">
+<defs>
+<linearGradient id="ringGradW" x1="6" y1="6" x2="42" y2="42" gradientUnits="userSpaceOnUse">
+<stop offset="0" stop-color="#4C7CE0"/>
+<stop offset="0.5" stop-color="#B860C4"/>
+<stop offset="1" stop-color="#FF5A60"/>
+</linearGradient>
+<clipPath id="badgeClipW">
+<circle cx="24" cy="24" r="19.5"/>
+</clipPath>
+</defs>
+<circle cx="24" cy="24" r="21.5" fill="#FFFFFF"/>
+<circle cx="24" cy="24" r="21.5" stroke="url(#ringGradW)" stroke-width="2.4"/>
+<g clip-path="url(#badgeClipW)">
+<rect x="2" y="4.5" width="44" height="19.5" fill="#E4222A"/>
+<rect x="2" y="24" width="44" height="19.5" fill="#163C99"/>
+</g>
+<text x="24" y="29" font-family="Arial, 'Helvetica Neue', sans-serif" font-size="16" font-weight="800" fill="#FFFFFF" text-anchor="middle">VA</text>
+<text x="52" y="21" font-family="'Space Grotesk', Arial, sans-serif" font-size="16.5" font-weight="700" letter-spacing="0.3"><tspan fill="#FF6B6F">VISA</tspan><tspan fill="#FFFFFF"> AGENCY</tspan></text>
+<text x="52" y="36" font-family="Arial, sans-serif" font-size="9" letter-spacing="2.3" fill="#9FB8F0">VISA CONSULTANCY</text>
+</svg>
