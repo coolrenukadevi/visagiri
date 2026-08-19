@@ -13,10 +13,10 @@
                     <nav class="va-footer-columns" aria-label="Footer navigation">
                         <div class="footer-col-brand">
                             <h4>VisaAgency.in</h4>
-                            <p>
-                                VisaAgency.in is a professional visa management and consultancy platform providing
-                                visa guidance, documentation assistance and application support for travellers,
-                                professionals, families and businesses.
+                            <p class="footer-brand-desc">
+                                VisaAgency.in is your trusted partner for international visa solutions&mdash;combining
+                                expert guidance, meticulous documentation and end-to-end application support to make
+                                global travel simpler, smoother and more confident.
                             </p>
                             <p class="footer-brand-tagline">Global Visa Assistance | Professional Guidance | Transparent Process</p>
                             <div class="social-icon mt-3" role="list" aria-label="Social media (profiles coming soon)">

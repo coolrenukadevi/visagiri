@@ -1186,3 +1186,9 @@ summary:focus-visible {
 @media (max-width: 767px) {
     .floating-whatsapp { display: none; }
 }
+
+/* ---- Footer brand description: justified ---- */
+.footer-brand-desc {
+    text-align: justify;
+    text-align-last: left;
+}
