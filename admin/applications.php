@@ -9,7 +9,7 @@ $scopeSql = admin_can_view_all() ? '' : ' AND assigned_to = :me';
 $scopeParams = admin_can_view_all() ? [] : ['me' => admin_name()];
 
 $sql = "SELECT * FROM enquiries WHERE archived_at IS NULL
-    AND (status IN ('Application Processing','Submitted','Visa Approved','Visa Rejected') OR application_number IS NOT NULL AND application_number != '')
+    AND (status IN ('Application Preparation','Application Submitted','Under Embassy Processing','Additional Documents Required','Decision Received','Visa Approved','Visa Refused','Passport Ready','Completed') OR application_number IS NOT NULL AND application_number != '')
     $scopeSql";
 $params = $scopeParams;
 if ($decisionFilter !== '') {

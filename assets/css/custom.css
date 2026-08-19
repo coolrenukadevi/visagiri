@@ -2997,37 +2997,84 @@ html.va-enquiry-modal-open {
 }
 
 .enquiry-success {
-    padding: 60px 40px;
+    padding: 48px 40px;
     text-align: center;
 }
 .enquiry-success-icon {
-    font-size: 56px;
+    font-size: 52px;
     color: #16A34A;
-    margin-bottom: 18px;
+    margin-bottom: 16px;
 }
 .enquiry-success h2 {
-    font-size: 24px;
+    font-size: 23px;
     color: var(--header);
     margin-bottom: 10px;
 }
 .enquiry-success p {
-    font-size: 14.5px;
+    font-size: 14px;
     color: var(--text);
-    max-width: 460px;
+    max-width: 480px;
     margin: 0 auto 18px;
     line-height: 1.7;
 }
-.enquiry-success-ref {
-    background: var(--bg);
-    border-radius: 10px;
-    padding: 12px 20px;
-    display: inline-block;
-    font-size: 14.5px;
-    color: var(--header);
-    margin-bottom: 24px;
+.enquiry-tracking-code {
+    background: linear-gradient(135deg, var(--theme-2) 0%, #0d2a70 100%);
+    border-radius: 12px;
+    padding: 16px 24px;
+    display: inline-flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 16px;
 }
-.enquiry-success-ref strong {
-    color: var(--theme-2);
+.enquiry-tracking-code .etc-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(255,255,255,0.75);
+}
+.enquiry-tracking-code .etc-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.03em;
+}
+.enquiry-success-warn {
+    background: #FBF0DE;
+    color: #A9720F;
+    font-size: 12.5px;
+    border-radius: 8px;
+    padding: 10px 16px;
+    max-width: 480px;
+    margin: 0 auto 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-align: left;
+}
+.enquiry-success-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 20px;
+    max-width: 480px;
+    margin: 0 auto 24px;
+    text-align: left;
+    background: var(--bg);
+    border-radius: 12px;
+    padding: 18px 20px;
+}
+.enquiry-success-grid label {
+    display: block;
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--text);
+    opacity: 0.75;
+    margin-bottom: 2px;
+}
+.enquiry-success-grid span {
+    font-size: 13.5px;
+    color: var(--header);
+    font-weight: 500;
 }
 .enquiry-success-warnings {
     font-size: 12.5px;
@@ -3035,10 +3082,15 @@ html.va-enquiry-modal-open {
     max-width: 460px;
     margin: -8px auto 18px;
 }
-.enquiry-success-auto {
-    font-size: 12px;
-    color: var(--text);
-    margin-top: 16px;
+.enquiry-success-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+.enquiry-success-actions .enquiry-btn-primary,
+.enquiry-success-actions .enquiry-btn-secondary {
+    text-decoration: none;
 }
 
 @media (max-width: 767px) {
@@ -3084,4 +3136,254 @@ html.va-enquiry-modal-open {
     .enquiry-upload-grid {
         grid-template-columns: 1fr;
     }
+}
+
+/* ============================================================
+   Applicant-facing visa tracking (track-application.php)
+   ============================================================ */
+.track-form-wrap {
+    display: flex;
+    justify-content: center;
+}
+.track-form-card {
+    width: 100%;
+    max-width: 500px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: 0 20px 50px rgba(11, 18, 32, 0.08);
+    padding: 40px 36px;
+    text-align: center;
+}
+.track-form-card h2 {
+    font-size: 24px;
+    color: var(--header);
+    margin-bottom: 10px;
+}
+.track-sub {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.7;
+    margin-bottom: 26px;
+}
+.track-alert {
+    background: #FCE8E6;
+    color: #C0392B;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    margin-bottom: 20px;
+    text-align: left;
+}
+.track-form {
+    text-align: left;
+}
+.track-field {
+    margin-bottom: 16px;
+}
+.track-field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--header);
+    margin-bottom: 7px;
+}
+.track-field input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 14px;
+    outline: none;
+}
+.track-field input:focus {
+    border-color: var(--theme-2);
+}
+.track-submit-btn {
+    width: 100%;
+    justify-content: center;
+    margin-top: 6px;
+}
+
+/* ---- Result dashboard ---- */
+.track-dashboard {
+    max-width: 780px;
+    margin: 0 auto;
+}
+.track-dash-header {
+    background: linear-gradient(135deg, var(--theme-2) 0%, #0d2a70 100%);
+    border-radius: 16px;
+    padding: 22px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 20px;
+}
+.track-dash-header .td-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(255,255,255,0.75);
+}
+.track-dash-header .td-code {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.02em;
+}
+.track-cancelled-banner {
+    background: #FCE8E6;
+    color: #C0392B;
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.track-overview-card, .track-timeline-card, .track-docs-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 26px 28px;
+    margin-bottom: 20px;
+}
+.track-overview-card h3, .track-timeline-card h3, .track-docs-card h3 {
+    font-size: 16px;
+    color: var(--header);
+    margin-bottom: 18px;
+}
+.track-overview-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 24px;
+}
+.track-overview-grid label {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--text);
+    opacity: 0.75;
+    margin-bottom: 3px;
+}
+.track-overview-grid span {
+    font-size: 14px;
+    color: var(--header);
+    font-weight: 500;
+}
+.track-status-badge {
+    display: inline-block;
+    background: var(--bg);
+    color: var(--theme-2) !important;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+}
+.track-latest-message {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+    font-size: 13.5px;
+    color: var(--text);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.6;
+}
+.track-latest-message i {
+    color: var(--theme-2);
+    margin-top: 2px;
+}
+
+.track-timeline {
+    display: flex;
+    flex-direction: column;
+}
+.track-tl-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    position: relative;
+    padding-bottom: 24px;
+}
+.track-tl-step::before {
+    content: "";
+    position: absolute;
+    left: 13px;
+    top: 28px;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+}
+.track-tl-step:last-child::before { display: none; }
+.tl-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+    border: 2px solid var(--border);
+}
+.track-tl-step.tl-done .tl-dot {
+    background: #16A34A;
+    border-color: #16A34A;
+    color: var(--white);
+}
+.track-tl-step.tl-current .tl-dot {
+    background: var(--theme);
+    border-color: var(--theme);
+    color: var(--white);
+}
+.track-tl-step.tl-na .tl-dot {
+    background: var(--bg);
+    border-color: var(--border);
+    color: var(--text);
+    opacity: 0.6;
+}
+.tl-info { padding-top: 3px; }
+.tl-label {
+    display: block;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--header);
+}
+.track-tl-step.tl-pending .tl-label,
+.track-tl-step.tl-na .tl-label {
+    color: var(--text);
+    font-weight: 500;
+}
+.tl-state {
+    display: block;
+    font-size: 12px;
+    color: var(--text);
+    margin-top: 2px;
+}
+.track-tl-step.tl-done .tl-state { color: #16A34A; }
+.track-tl-step.tl-current .tl-state { color: var(--theme); font-weight: 600; }
+
+.track-docs-card p {
+    font-size: 14px;
+    color: var(--text);
+    margin: 0;
+}
+.track-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+@media (max-width: 600px) {
+    .track-form-card { padding: 30px 22px; }
+    .track-overview-grid { grid-template-columns: 1fr; }
+    .track-dash-header, .track-overview-card, .track-timeline-card, .track-docs-card { padding: 20px; }
 }

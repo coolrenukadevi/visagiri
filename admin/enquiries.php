@@ -31,7 +31,7 @@ if ($assignedTo !== '') { $where[] = 'e.assigned_to = :assigned_to'; $params['as
 if ($priority !== '') { $where[] = 'e.priority = :priority'; $params['priority'] = $priority; }
 if ($source !== '') { $where[] = 'e.source = :source'; $params['source'] = $source; }
 if ($search !== '') {
-    $where[] = '(e.full_name LIKE :q OR e.email LIKE :q OR e.mobile LIKE :q OR e.enquiry_ref LIKE :q OR e.passport_number LIKE :q)';
+    $where[] = '(e.full_name LIKE :q OR e.email LIKE :q OR e.mobile LIKE :q OR e.enquiry_ref LIKE :q OR e.tracking_code LIKE :q OR e.passport_number LIKE :q)';
     $params['q'] = '%' . $search . '%';
 }
 
@@ -65,7 +65,7 @@ $pipelineCounts = [];
 $pipelineWhere = admin_can_view_all() && !$mine ? 'archived_at IS NULL' : 'archived_at IS NULL AND assigned_to = :me2';
 $pipelineParams = admin_can_view_all() && !$mine ? [] : ['me2' => admin_name()];
 foreach (CRM_STATUSES as $s) {
-    if ($s === 'Lost') continue; // shown separately, not part of the linear pipeline
+    if ($s === 'Cancelled') continue; // shown separately, not part of the linear pipeline
     $stmt2 = $pdo->prepare("SELECT COUNT(*) FROM enquiries WHERE $pipelineWhere AND status = :s2");
     $stmt2->execute(array_merge($pipelineParams, ['s2' => $s]));
     $pipelineCounts[$s] = (int) $stmt2->fetchColumn();

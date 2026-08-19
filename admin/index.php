@@ -15,11 +15,11 @@ function crm_count(PDO $pdo, string $where, array $params = []): int
 }
 
 $totalCount = crm_count($pdo, '1=1' . $scopeSql, $scopeParams);
-$newCount = crm_count($pdo, "AND status = 'New'" . $scopeSql, $scopeParams);
-$inProgressCount = crm_count($pdo, "AND status IN ('Contacted','Qualified','Documents Pending','Application Processing','Submitted')" . $scopeSql, $scopeParams);
-$docsPendingCount = crm_count($pdo, "AND status = 'Documents Pending'" . $scopeSql, $scopeParams);
-$convertedCount = crm_count($pdo, "AND status = 'Visa Approved'" . $scopeSql, $scopeParams);
-$lostCount = crm_count($pdo, "AND status = 'Lost'" . $scopeSql, $scopeParams);
+$newCount = crm_count($pdo, "AND status = 'New Enquiry'" . $scopeSql, $scopeParams);
+$inProgressCount = crm_count($pdo, "AND status IN ('Contacted','Documents Pending','Documents Under Review','Documents Approved','Payment Pending','Application Preparation','Application Submitted','Under Embassy Processing','Additional Documents Required','Decision Received')" . $scopeSql, $scopeParams);
+$docsPendingCount = crm_count($pdo, "AND status IN ('Documents Pending','Documents Under Review','Additional Documents Required')" . $scopeSql, $scopeParams);
+$convertedCount = crm_count($pdo, "AND status IN ('Visa Approved','Passport Ready','Completed')" . $scopeSql, $scopeParams);
+$lostCount = crm_count($pdo, "AND status = 'Cancelled'" . $scopeSql, $scopeParams);
 
 $today = gmdate('Y-m-d');
 $fuStmt = $pdo->prepare("SELECT COUNT(*) FROM follow_ups f JOIN enquiries e ON e.id = f.enquiry_id
@@ -45,12 +45,12 @@ $weekTrend = $lastWeek > 0 ? round((($thisWeek - $lastWeek) / $lastWeek) * 100) 
 
 $kpis = [
     ['label' => 'Total Enquiries', 'value' => $totalCount, 'icon' => 'inbox', 'trend' => $weekTrend, 'filter' => ''],
-    ['label' => 'New', 'value' => $newCount, 'icon' => 'sparkles', 'trend' => null, 'filter' => 'New'],
+    ['label' => 'New', 'value' => $newCount, 'icon' => 'sparkles', 'trend' => null, 'filter' => 'New Enquiry'],
     ['label' => 'In Progress', 'value' => $inProgressCount, 'icon' => 'spinner', 'trend' => null, 'filter' => ''],
     ['label' => 'Follow-up Due', 'value' => $followUpDueCount, 'icon' => 'phone-volume', 'trend' => null, 'filter' => ''],
     ['label' => 'Documents Pending', 'value' => $docsPendingCount, 'icon' => 'folder-open', 'trend' => null, 'filter' => 'Documents Pending'],
     ['label' => 'Converted', 'value' => $convertedCount, 'icon' => 'circle-check', 'trend' => null, 'filter' => 'Visa Approved'],
-    ['label' => 'Lost', 'value' => $lostCount, 'icon' => 'circle-xmark', 'trend' => null, 'filter' => 'Lost'],
+    ['label' => 'Lost', 'value' => $lostCount, 'icon' => 'circle-xmark', 'trend' => null, 'filter' => 'Cancelled'],
     ['label' => 'Revenue', 'value' => $revenueDisplay, 'icon' => 'sack-dollar', 'trend' => null, 'filter' => ''],
 ];
 

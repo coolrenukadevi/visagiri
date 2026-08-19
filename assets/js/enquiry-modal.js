@@ -6,11 +6,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var successPanel = document.getElementById('enquirySuccess');
     var submitBtn = document.getElementById('enquirySubmitBtn');
     var formError = document.getElementById('enquiryFormError');
-    var countdownEl = document.getElementById('enquiryCountdown');
     var MAX_FILE_BYTES = 5 * 1024 * 1024;
     var ALLOWED_EXT = ['pdf', 'jpg', 'jpeg', 'png'];
-    var autoCloseTimer = null;
-    var countdownInterval = null;
     var lastFocusedEl = null;
 
     // ---- Open / close ----
@@ -66,8 +63,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function closeModal() {
-        clearTimeout(autoCloseTimer);
-        clearInterval(countdownInterval);
         modal.classList.remove('is-visible');
         document.documentElement.classList.remove('va-enquiry-modal-open');
         setTimeout(function () {
@@ -208,6 +203,9 @@ document.addEventListener('DOMContentLoaded', function () {
         var mobile = form.mobile.value.trim();
         if (!/^[6-9]\d{9}$/.test(mobile)) { setFieldError('mobile', 'Enter a valid 10-digit Indian mobile number.'); ok = false; }
 
+        var passport = form.passport_number.value.trim();
+        if (!/^[A-Za-z0-9]{6,12}$/.test(passport)) { setFieldError('passport_number', 'Please enter a valid passport number.'); ok = false; }
+
         if (!form.service_required.value) { setFieldError('service_required', 'Please select a service.'); ok = false; }
         if (!form.destination_country.value) { setFieldError('destination_country', 'Please select your destination.'); ok = false; }
         if (!form.visa_type.value) { setFieldError('visa_type', 'Please select a visa type.'); ok = false; }
@@ -232,25 +230,31 @@ document.addEventListener('DOMContentLoaded', function () {
         submitBtn.querySelector('.enquiry-btn-spinner').hidden = !isSubmitting;
     }
 
-    function showSuccess(ref, warnings) {
+    function showSuccess(data) {
         form.hidden = true;
         successPanel.hidden = false;
-        document.getElementById('enquirySuccessRef').textContent = ref;
+        document.getElementById('enquirySuccessCode').textContent = data.tracking_code;
+        document.getElementById('esFullName').textContent = data.full_name;
+        document.getElementById('esPassport').textContent = data.passport_masked;
+        document.getElementById('esMobile').textContent = data.mobile_masked;
+        document.getElementById('esEmail').textContent = data.email_masked;
+        document.getElementById('esCountry').textContent = data.destination_country;
+        document.getElementById('esVisaType').textContent = data.visa_type;
+        var submitted = new Date(data.submitted_at);
+        document.getElementById('esSubmittedAt').textContent = isNaN(submitted.getTime())
+            ? data.submitted_at
+            : submitted.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
+
+        document.getElementById('esTrackBtn').href = 'track-application?code=' + encodeURIComponent(data.tracking_code);
+        document.getElementById('esDownloadBtn').href = 'confirmation?code=' + encodeURIComponent(data.tracking_code);
+
         var warnEl = document.getElementById('enquirySuccessWarnings');
-        if (warnings && warnings.length) {
+        if (data.warnings && data.warnings.length) {
             warnEl.hidden = false;
-            warnEl.textContent = 'Note: ' + warnings.join(' ');
+            warnEl.textContent = 'Note: ' + data.warnings.join(' ');
         } else {
             warnEl.hidden = true;
         }
-        var seconds = 6;
-        countdownEl.textContent = seconds;
-        countdownInterval = setInterval(function () {
-            seconds -= 1;
-            countdownEl.textContent = Math.max(seconds, 0);
-            if (seconds <= 0) { clearInterval(countdownInterval); }
-        }, 1000);
-        autoCloseTimer = setTimeout(closeModal, 6000);
     }
 
     form.addEventListener('submit', function (e) {
@@ -269,7 +273,7 @@ document.addEventListener('DOMContentLoaded', function () {
             var data = {};
             try { data = JSON.parse(xhr.responseText); } catch (err) { /* ignore */ }
             if (xhr.status >= 200 && xhr.status < 300 && data.success) {
-                showSuccess(data.enquiry_ref, data.warnings);
+                showSuccess(data);
             } else if (data.errors) {
                 Object.keys(data.errors).forEach(function (key) { setFieldError(key, data.errors[key]); });
                 formError.hidden = false;

@@ -28,10 +28,12 @@ if ($fullName === '' || !filter_var($email, FILTER_VALIDATE_EMAIL) || $mobile ==
 
 $pdo = enquiry_db();
 $enquiryRef = enquiry_generate_ref($pdo);
+$trackingCode = crm_generate_tracking_code($pdo);
 $now = gmdate('c');
 
 $fields = [
     'enquiry_ref' => $enquiryRef,
+    'tracking_code' => $trackingCode,
     'full_name' => $fullName,
     'email' => $email,
     'mobile' => $mobile,
@@ -72,7 +74,7 @@ $fields = [
     'estimated_value' => $_POST['estimated_value'] !== '' ? (float) $_POST['estimated_value'] : null,
     'conversion_probability' => $_POST['conversion_probability'] !== '' ? (int) $_POST['conversion_probability'] : null,
     'message' => trim($_POST['message'] ?? ''),
-    'status' => 'New',
+    'status' => 'New Enquiry',
     'ip_address' => $_SERVER['REMOTE_ADDR'] ?? '',
     'user_agent' => substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 300),
     'created_at' => $now,
@@ -86,6 +88,18 @@ $insert->execute($fields);
 $enquiryId = (int) $pdo->lastInsertId();
 
 crm_log_activity($pdo, $enquiryId, admin_name(), 'created this enquiry', 'Added manually via the CRM.');
+crm_log_status_change($pdo, $enquiryId, null, 'New Enquiry', admin_name(), 'Your enquiry has been received and registered with our visa management team.');
+if (filter_var($fullName !== '' ? $email : '', FILTER_VALIDATE_EMAIL)) {
+    crm_send_applicant_email(
+        $email,
+        "Your Visa Enquiry is Registered — $trackingCode",
+        "Dear $fullName,\n\nYour visa enquiry has been successfully registered with our visa management team.\n\n" .
+        "Tracking Code: $trackingCode\nVisa Country: $destinationCountry\nVisa Type: $visaType\n\n" .
+        "Please save this Tracking Code. Use your Tracking Code, Passport Number and registered Mobile Number or Email Address to track your application status at any time:\n" .
+        (($_SERVER['HTTPS'] ?? '') === 'on' ? 'https://' : 'http://') . ($_SERVER['HTTP_HOST'] ?? 'visaagency.in') . "/track-application\n\n" .
+        "Regards,\nVisaAgency.in"
+    );
+}
 if (!empty($fields['assigned_to'])) {
     crm_log_activity($pdo, $enquiryId, admin_name(), 'assigned to ' . $fields['assigned_to']);
     $assignee = $pdo->prepare('SELECT id FROM users WHERE name = ?');

@@ -6,10 +6,17 @@
  */
 
 const CRM_STATUSES = [
-    'New', 'Contacted', 'Qualified', 'Documents Pending', 'Application Processing',
-    'Submitted', 'Visa Approved', 'Visa Rejected', 'Closed', 'Lost',
+    'New Enquiry', 'Contacted', 'Documents Pending', 'Documents Under Review', 'Documents Approved',
+    'Payment Pending', 'Application Preparation', 'Application Submitted', 'Under Embassy Processing',
+    'Additional Documents Required', 'Decision Received', 'Visa Approved', 'Visa Refused',
+    'Passport Ready', 'Completed', 'Cancelled',
 ];
-const CRM_OPEN_STATUSES = ['New', 'Contacted', 'Qualified', 'Documents Pending', 'Application Processing', 'Submitted'];
+const CRM_OPEN_STATUSES = [
+    'New Enquiry', 'Contacted', 'Documents Pending', 'Documents Under Review', 'Documents Approved',
+    'Payment Pending', 'Application Preparation', 'Application Submitted', 'Under Embassy Processing',
+    'Additional Documents Required', 'Decision Received',
+];
+const CRM_CLOSED_STATUSES = ['Visa Approved', 'Visa Refused', 'Passport Ready', 'Completed', 'Cancelled'];
 const CRM_PRIORITIES = ['High', 'Medium', 'Low'];
 const CRM_SOURCES = ['Website', 'WhatsApp', 'Phone', 'Email', 'Walk-in', 'Referral', 'Social Media', 'Google', 'Partner'];
 const CRM_VISA_CATEGORIES = [
@@ -19,7 +26,7 @@ const CRM_VISA_CATEGORIES = [
 const CRM_ROLES = ['Super Admin', 'Admin', 'Sales Manager', 'Travel Consultant', 'Visa Consultant', 'Accounts'];
 const CRM_FOLLOWUP_TYPES = ['Call', 'WhatsApp', 'Email', 'Meeting'];
 const CRM_PAYMENT_METHODS = ['Cash', 'UPI', 'Bank Transfer', 'Credit Card', 'Debit Card', 'Cheque', 'Other'];
-const CRM_DECISIONS = ['Pending', 'Approved', 'Rejected'];
+const CRM_DECISIONS = ['Pending', 'Approved', 'Refused'];
 const CRM_DOC_CATEGORIES = [
     'Passport Scan Copy', 'Photograph', 'Flight Tickets', 'Hotel Reservation', 'Bank Statement',
     'ITR', 'Employment Certificate', 'Salary Slip', 'Cover Letter', 'Invitation Letter',
@@ -46,6 +53,8 @@ function enquiry_db(): PDO
     $pdo->exec("CREATE TABLE IF NOT EXISTS enquiries (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         enquiry_ref TEXT UNIQUE NOT NULL,
+        tracking_code TEXT UNIQUE,
+        expected_completion_date TEXT,
 
         -- Customer information
         full_name TEXT NOT NULL,
@@ -117,7 +126,7 @@ function enquiry_db(): PDO
         utm_term TEXT,
         utm_content TEXT,
 
-        status TEXT NOT NULL DEFAULT 'New',
+        status TEXT NOT NULL DEFAULT 'New Enquiry',
         follow_up_date TEXT,
         archived_at TEXT,
 
@@ -125,6 +134,23 @@ function enquiry_db(): PDO
         user_agent TEXT,
         created_at TEXT NOT NULL,
         updated_at TEXT
+    )");
+
+    $pdo->exec("CREATE TABLE IF NOT EXISTS status_updates (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        enquiry_id INTEGER NOT NULL REFERENCES enquiries(id) ON DELETE CASCADE,
+        previous_status TEXT,
+        new_status TEXT NOT NULL,
+        message TEXT,
+        updated_by TEXT,
+        notified INTEGER NOT NULL DEFAULT 0,
+        created_at TEXT NOT NULL
+    )");
+
+    $pdo->exec("CREATE TABLE IF NOT EXISTS tracking_attempts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        ip_address TEXT NOT NULL,
+        created_at TEXT NOT NULL
     )");
 
     $pdo->exec("CREATE TABLE IF NOT EXISTS payments (
@@ -269,4 +295,95 @@ function crm_followup_state(string $date, ?string $completedAt): string
         return 'Due Today';
     }
     return 'Upcoming';
+}
+
+/** Public-facing applicant tracking code — never the internal enquiry_ref or numeric id. */
+function crm_generate_tracking_code(PDO $pdo): string
+{
+    $chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    do {
+        $suffix = '';
+        for ($i = 0; $i < 6; $i++) {
+            $suffix .= $chars[random_int(0, strlen($chars) - 1)];
+        }
+        $code = 'VISA-' . gmdate('Y') . '-' . $suffix;
+        $stmt = $pdo->prepare('SELECT COUNT(*) FROM enquiries WHERE tracking_code = ?');
+        $stmt->execute([$code]);
+        $exists = (int) $stmt->fetchColumn() > 0;
+    } while ($exists);
+
+    return $code;
+}
+
+function crm_mask_passport(?string $passport): string
+{
+    $passport = trim((string) $passport);
+    if ($passport === '') return '—';
+    if (strlen($passport) <= 4) return str_repeat('X', strlen($passport));
+    return str_repeat('X', strlen($passport) - 4) . substr($passport, -4);
+}
+
+function crm_mask_mobile(?string $mobile): string
+{
+    $digits = preg_replace('/\D/', '', (string) $mobile);
+    if (strlen($digits) <= 4) return str_repeat('*', strlen($digits));
+    return str_repeat('*', strlen($digits) - 4) . substr($digits, -4);
+}
+
+function crm_mask_email(?string $email): string
+{
+    $email = trim((string) $email);
+    if (!str_contains($email, '@')) return '—';
+    [$local, $domain] = explode('@', $email, 2);
+    if ($local === '') return '@' . $domain;
+    return $local[0] . str_repeat('*', max(1, strlen($local) - 1)) . '@' . $domain;
+}
+
+/**
+ * Maps a CRM status to the 8-stage applicant timeline. Each entry is
+ * 'done' | 'current' | 'pending' | 'na'. Cancelled is handled separately
+ * by the caller since it isn't a point on the normal linear progression.
+ */
+function crm_timeline_stages(string $status): array
+{
+    $table = [
+        'New Enquiry'                   => ['done', 'pending', 'pending', 'pending', 'pending', 'pending', 'pending', 'pending'],
+        'Contacted'                     => ['done', 'pending', 'pending', 'pending', 'pending', 'pending', 'pending', 'pending'],
+        'Documents Pending'             => ['done', 'current', 'pending', 'pending', 'pending', 'pending', 'pending', 'pending'],
+        'Documents Under Review'        => ['done', 'current', 'pending', 'pending', 'pending', 'pending', 'pending', 'pending'],
+        'Additional Documents Required' => ['done', 'current', 'pending', 'pending', 'pending', 'pending', 'pending', 'pending'],
+        'Documents Approved'            => ['done', 'done', 'current', 'pending', 'pending', 'pending', 'pending', 'pending'],
+        'Payment Pending'               => ['done', 'done', 'done', 'current', 'pending', 'pending', 'pending', 'pending'],
+        'Application Preparation'       => ['done', 'done', 'done', 'current', 'pending', 'pending', 'pending', 'pending'],
+        'Application Submitted'         => ['done', 'done', 'done', 'done', 'current', 'pending', 'pending', 'pending'],
+        'Under Embassy Processing'      => ['done', 'done', 'done', 'done', 'done', 'current', 'pending', 'pending'],
+        'Decision Received'             => ['done', 'done', 'done', 'done', 'done', 'done', 'current', 'pending'],
+        'Visa Approved'                 => ['done', 'done', 'done', 'done', 'done', 'done', 'done', 'current'],
+        'Visa Refused'                  => ['done', 'done', 'done', 'done', 'done', 'done', 'done', 'na'],
+        'Passport Ready'                => ['done', 'done', 'done', 'done', 'done', 'done', 'done', 'done'],
+        'Completed'                     => ['done', 'done', 'done', 'done', 'done', 'done', 'done', 'done'],
+    ];
+    return $table[$status] ?? array_fill(0, 8, 'pending');
+}
+
+function crm_timeline_labels(): array
+{
+    return [
+        'Enquiry Submitted', 'Documents Under Review', 'Documentation Completed', 'Application Prepared',
+        'Application Submitted', 'Embassy/Consulate Processing', 'Decision Received', 'Passport / Visa Ready',
+    ];
+}
+
+function crm_log_status_change(PDO $pdo, int $enquiryId, ?string $previousStatus, string $newStatus, string $updatedBy, string $message = '', bool $notified = false): void
+{
+    $stmt = $pdo->prepare('INSERT INTO status_updates (enquiry_id, previous_status, new_status, message, updated_by, notified, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)');
+    $stmt->execute([$enquiryId, $previousStatus, $newStatus, $message, $updatedBy, $notified ? 1 : 0, gmdate('c')]);
+}
+
+/** Thin wrapper around mail() so every applicant-facing email looks consistent. */
+function crm_send_applicant_email(string $to, string $subject, string $bodyText): bool
+{
+    require_once __DIR__ . '/site-contact.php';
+    $headers = "From: VisaAgency.in <{$site_email}>\r\nContent-Type: text/plain; charset=UTF-8";
+    return @mail($to, $subject, $bodyText, $headers);
 }

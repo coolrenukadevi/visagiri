@@ -36,9 +36,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $newPriority = trim($_POST['priority'] ?? $enquiry['priority']);
         $newAssigned = trim($_POST['assigned_to'] ?? '');
         $newConsultant = trim($_POST['visa_consultant'] ?? '');
+        $applicantMessage = trim($_POST['applicant_message'] ?? '');
+        $notifyApplicant = isset($_POST['notify_applicant']);
 
         if ($newStatus !== $enquiry['status'] && in_array($newStatus, CRM_STATUSES, true)) {
             crm_log_activity($pdo, $enquiry['id'], admin_name(), "changed status from \"{$enquiry['status']}\" to \"$newStatus\"");
+            $visibleMessage = $applicantMessage !== '' ? $applicantMessage : "Your application status has been updated to \"$newStatus\".";
+            $emailSent = false;
+            if ($notifyApplicant && filter_var($enquiry['email'], FILTER_VALIDATE_EMAIL)) {
+                $emailSent = crm_send_applicant_email(
+                    $enquiry['email'],
+                    "Application Update — {$enquiry['tracking_code']}",
+                    "Dear {$enquiry['full_name']},\n\n$visibleMessage\n\nTracking Code: {$enquiry['tracking_code']}\nCurrent Status: $newStatus\n\n" .
+                    "Track your application anytime at:\n" .
+                    (($_SERVER['HTTPS'] ?? '') === 'on' ? 'https://' : 'http://') . ($_SERVER['HTTP_HOST'] ?? 'visaagency.in') . "/track-application\n\n" .
+                    "Regards,\nVisaAgency.in"
+                );
+            }
+            crm_log_status_change($pdo, $enquiry['id'], $enquiry['status'], $newStatus, admin_name(), $visibleMessage, $emailSent);
         }
         if ($newPriority !== $enquiry['priority']) {
             crm_log_activity($pdo, $enquiry['id'], admin_name(), "changed priority from \"{$enquiry['priority']}\" to \"$newPriority\"");
@@ -140,18 +155,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!in_array($decision, CRM_DECISIONS, true)) $decision = 'Pending';
         $newStatus = $enquiry['status'];
         if ($decision === 'Approved') $newStatus = 'Visa Approved';
-        elseif ($decision === 'Rejected') $newStatus = 'Visa Rejected';
+        elseif ($decision === 'Refused') $newStatus = 'Visa Refused';
 
-        $pdo->prepare('UPDATE enquiries SET application_number = ?, appointment_date = ?, submission_date = ?, decision_date = ?, decision = ?, status = ?, updated_at = ? WHERE id = ?')
+        $pdo->prepare('UPDATE enquiries SET application_number = ?, appointment_date = ?, submission_date = ?, decision_date = ?, decision = ?, status = ?, expected_completion_date = ?, updated_at = ? WHERE id = ?')
             ->execute([
                 trim($_POST['application_number'] ?? ''), trim($_POST['appointment_date'] ?? '') ?: null,
                 trim($_POST['submission_date'] ?? '') ?: null, trim($_POST['decision_date'] ?? '') ?: null,
-                $decision, $newStatus, gmdate('c'), $enquiry['id'],
+                $decision, $newStatus, trim($_POST['expected_completion_date'] ?? '') ?: null, gmdate('c'), $enquiry['id'],
             ]);
         crm_log_activity($pdo, $enquiry['id'], admin_name(), 'updated application tracking details');
         if ($decision !== ($enquiry['decision'] ?: 'Pending') && $decision !== 'Pending') {
             crm_log_activity($pdo, $enquiry['id'], admin_name(), "recorded visa decision: $decision");
             crm_notify($pdo, null, 'decision', "Visa decision for {$enquiry['enquiry_ref']}: $decision.", $enquiry['id']);
+            $visibleMessage = "A decision has been received on your visa application: $decision.";
+            crm_log_status_change($pdo, $enquiry['id'], $enquiry['status'], $newStatus, admin_name(), $visibleMessage, true);
+            if (filter_var($enquiry['email'], FILTER_VALIDATE_EMAIL)) {
+                crm_send_applicant_email(
+                    $enquiry['email'],
+                    "Visa Decision Received — {$enquiry['tracking_code']}",
+                    "Dear {$enquiry['full_name']},\n\n$visibleMessage\n\nTracking Code: {$enquiry['tracking_code']}\nCurrent Status: $newStatus\n\n" .
+                    "Track your application anytime at:\n" .
+                    (($_SERVER['HTTPS'] ?? '') === 'on' ? 'https://' : 'http://') . ($_SERVER['HTTP_HOST'] ?? 'visaagency.in') . "/track-application\n\n" .
+                    "Regards,\nVisaAgency.in"
+                );
+            }
+        } elseif ($newStatus !== $enquiry['status']) {
+            crm_log_status_change($pdo, $enquiry['id'], $enquiry['status'], $newStatus, admin_name());
         }
     }
 
@@ -182,6 +211,10 @@ $payStmt = $pdo->prepare('SELECT * FROM payments WHERE enquiry_id = ? ORDER BY p
 $payStmt->execute([$enquiry['id']]);
 $payments = $payStmt->fetchAll(PDO::FETCH_ASSOC);
 
+$statusHistoryStmt = $pdo->prepare('SELECT * FROM status_updates WHERE enquiry_id = ? ORDER BY created_at DESC, id DESC');
+$statusHistoryStmt->execute([$enquiry['id']]);
+$statusHistory = $statusHistoryStmt->fetchAll(PDO::FETCH_ASSOC);
+
 $ADMIN_PAGE_TITLE = $enquiry['enquiry_ref'];
 $ADMIN_ACTIVE_NAV = 'enquiries';
 $ADMIN_BREADCRUMB = ['CRM', 'Enquiries', $enquiry['enquiry_ref']];
@@ -192,13 +225,18 @@ function fmt($v) { return ($v !== null && $v !== '') ? htmlspecialchars((string)
 <a href="enquiries.php" style="font-size:12.5px;color:var(--c-text);display:inline-block;margin-bottom:14px;">&larr; Back to all enquiries</a>
 
 <div class="crm-detail-header">
-    <div class="ref"><?php echo htmlspecialchars($enquiry['enquiry_ref']); ?></div>
+    <div class="ref">
+        <?php echo htmlspecialchars($enquiry['enquiry_ref']); ?>
+        <?php if (!empty($enquiry['tracking_code'])): ?>
+        &middot; Tracking Code: <strong style="color:#fff;"><?php echo htmlspecialchars($enquiry['tracking_code']); ?></strong>
+        <?php endif; ?>
+    </div>
     <h1><?php echo htmlspecialchars($enquiry['full_name']); ?></h1>
     <div class="sub"><?php echo htmlspecialchars($enquiry['destination_country']); ?> &middot; <?php echo htmlspecialchars($enquiry['visa_type']); ?></div>
     <div class="crm-detail-badges">
         <span class="crm-status-badge <?php echo crm_status_class($enquiry['status']); ?>"><?php echo htmlspecialchars($enquiry['status']); ?></span>
         <span class="crm-priority-badge priority-<?php echo strtolower($enquiry['priority']); ?>"><?php echo htmlspecialchars($enquiry['priority']); ?> Priority</span>
-        <?php if ($enquiry['assigned_to']): ?><span class="crm-status-badge status-new" style="background:rgba(255,255,255,0.15);color:#fff;">Assigned: <?php echo htmlspecialchars($enquiry['assigned_to']); ?></span><?php endif; ?>
+        <?php if ($enquiry['assigned_to']): ?><span class="crm-status-badge status-new-enquiry" style="background:rgba(255,255,255,0.15);color:#fff;">Assigned: <?php echo htmlspecialchars($enquiry['assigned_to']); ?></span><?php endif; ?>
     </div>
     <div class="crm-quick-actions">
         <a class="crm-btn" href="tel:<?php echo htmlspecialchars($enquiry['mobile']); ?>"><i class="fa-solid fa-phone"></i> Call</a>
@@ -307,8 +345,9 @@ function fmt($v) { return ($v !== null && $v !== '') ? htmlspecialchars((string)
             <div class="crm-form-field"><label>Decision</label>
                 <select name="decision"><?php foreach (CRM_DECISIONS as $d): ?><option <?php echo ($enquiry['decision'] ?: 'Pending') === $d ? 'selected' : ''; ?>><?php echo $d; ?></option><?php endforeach; ?></select>
             </div>
+            <div class="crm-form-field"><label>Expected Completion Date</label><input type="date" name="expected_completion_date" value="<?php echo htmlspecialchars($enquiry['expected_completion_date'] ?? ''); ?>"></div>
         </div>
-        <p style="font-size:11.5px;color:var(--c-muted);margin:-6px 0 14px;">Setting the decision to Approved or Rejected also updates the enquiry status and notifies the team.</p>
+        <p style="font-size:11.5px;color:var(--c-muted);margin:-6px 0 14px;">Setting the decision to Approved or Refused also updates the enquiry status and notifies the team.</p>
         <button type="submit" class="crm-btn crm-btn-primary crm-btn-sm">Save Application Details</button>
     </form>
 </div>
@@ -331,8 +370,40 @@ function fmt($v) { return ($v !== null && $v !== '') ? htmlspecialchars((string)
                 <select name="visa_consultant"><option value="">Unassigned</option><?php foreach ($crmUsers as $u): ?><option <?php echo $enquiry['visa_consultant'] === $u['name'] ? 'selected' : ''; ?>><?php echo htmlspecialchars($u['name']); ?></option><?php endforeach; ?></select>
             </div>
         </div>
+        <div class="crm-form-field" style="margin-bottom:12px;">
+            <label>Applicant-visible update message (optional)</label>
+            <input type="text" name="applicant_message" placeholder="e.g. Your documents are being reviewed by our team.">
+        </div>
+        <label style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--c-text);margin-bottom:14px;">
+            <input type="checkbox" name="notify_applicant" checked style="width:auto;"> Notify applicant by email when status changes
+        </label>
         <button type="submit" class="crm-btn crm-btn-primary crm-btn-sm">Save</button>
     </form>
+</div>
+
+<div class="crm-card">
+    <h3>Status History</h3>
+    <?php if (empty($statusHistory)): ?>
+    <div class="crm-empty">No status changes recorded yet.</div>
+    <?php else: ?>
+    <div class="crm-table-wrap">
+    <table class="crm-table">
+        <thead><tr><th>Date &amp; Time</th><th>Previous Status</th><th>New Status</th><th>Updated By</th><th>Applicant Notified</th><th>Message</th></tr></thead>
+        <tbody>
+        <?php foreach ($statusHistory as $h): ?>
+        <tr>
+            <td class="crm-cell-sub"><?php echo date('d M Y — h:i A', strtotime($h['created_at'])); ?></td>
+            <td><?php echo $h['previous_status'] ? htmlspecialchars($h['previous_status']) : '<span class="crm-cell-sub">&mdash;</span>'; ?></td>
+            <td><span class="crm-status-badge <?php echo crm_status_class($h['new_status']); ?>"><?php echo htmlspecialchars($h['new_status']); ?></span></td>
+            <td><?php echo htmlspecialchars($h['updated_by']); ?></td>
+            <td><?php echo $h['notified'] ? '<i class="fa-solid fa-check" style="color:var(--c-green);"></i>' : '<span class="crm-cell-sub">&mdash;</span>'; ?></td>
+            <td class="crm-cell-sub"><?php echo htmlspecialchars($h['message'] ?: '—'); ?></td>
+        </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+    </div>
+    <?php endif; ?>
 </div>
 
 <div class="crm-card" id="documents">

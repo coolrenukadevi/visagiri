@@ -18,9 +18,19 @@ $placeholders = implode(',', array_fill(0, count($ids), '?'));
 
 if ($action === 'status') {
     if (!in_array($value, CRM_STATUSES, true)) { echo json_encode(['success' => false, 'message' => 'Invalid status.']); exit; }
+    $prevStmt = $pdo->prepare("SELECT id, status FROM enquiries WHERE id IN ($placeholders)");
+    $prevStmt->execute($ids);
+    $previousStatuses = $prevStmt->fetchAll(PDO::FETCH_KEY_PAIR);
+
     $stmt = $pdo->prepare("UPDATE enquiries SET status = ?, updated_at = ? WHERE id IN ($placeholders)");
     $stmt->execute(array_merge([$value, gmdate('c')], $ids));
     $note = "status changed to $value (bulk update)";
+
+    foreach ($ids as $id) {
+        if (($previousStatuses[$id] ?? null) !== $value) {
+            crm_log_status_change($pdo, $id, $previousStatuses[$id] ?? null, $value, admin_name(), '', false);
+        }
+    }
 } elseif ($action === 'priority') {
     if (!in_array($value, CRM_PRIORITIES, true)) { echo json_encode(['success' => false, 'message' => 'Invalid priority.']); exit; }
     $stmt = $pdo->prepare("UPDATE enquiries SET priority = ?, updated_at = ? WHERE id IN ($placeholders)");

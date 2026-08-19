@@ -11,10 +11,10 @@ if (mb_strlen($q) < 2) {
 
 $pdo = enquiry_db();
 $like = '%' . $q . '%';
-$sql = 'SELECT enquiry_ref, full_name, mobile, email, passport_number, destination_country, visa_type, assigned_to
+$sql = 'SELECT enquiry_ref, tracking_code, full_name, mobile, email, passport_number, destination_country, visa_type, assigned_to
     FROM enquiries
-    WHERE enquiry_ref LIKE :q OR full_name LIKE :q OR mobile LIKE :q OR email LIKE :q
-       OR passport_number LIKE :q OR destination_country LIKE :q OR visa_type LIKE :q';
+    WHERE enquiry_ref LIKE :q OR tracking_code LIKE :q OR full_name LIKE :q OR mobile LIKE :q OR email LIKE :q
+       OR passport_number LIKE :q OR destination_country LIKE :q OR visa_type LIKE :q OR status LIKE :q';
 $params = ['q' => $like];
 if (!admin_can_view_all()) {
     $sql .= ' AND assigned_to = :me';
@@ -31,7 +31,7 @@ $results = array_map(function ($r) {
         'ref' => $r['enquiry_ref'],
         'name' => htmlspecialchars($r['full_name']),
         'mobile' => htmlspecialchars($r['mobile']),
-        'destination' => htmlspecialchars($r['destination_country']),
+        'destination' => htmlspecialchars($r['destination_country']) . ($r['tracking_code'] ? ' &middot; ' . htmlspecialchars($r['tracking_code']) : ''),
     ];
 }, $rows);
 

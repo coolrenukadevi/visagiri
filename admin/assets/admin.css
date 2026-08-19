@@ -347,16 +347,22 @@ table.crm-table tr:hover td { background: var(--c-bg); }
     font-weight: 600;
     white-space: nowrap;
 }
-.status-new { background: var(--c-blue-dim); color: var(--c-blue); }
+.status-new-enquiry { background: var(--c-blue-dim); color: var(--c-blue); }
 .status-contacted { background: var(--c-teal-bg); color: var(--c-teal); }
-.status-qualified { background: var(--c-indigo-bg); color: var(--c-indigo); }
 .status-documents-pending { background: var(--c-amber-bg); color: var(--c-amber); }
-.status-application-processing { background: var(--c-orange-bg); color: var(--c-orange); }
-.status-submitted { background: var(--c-cyan-bg); color: var(--c-cyan); }
+.status-documents-under-review { background: var(--c-amber-bg); color: var(--c-amber); }
+.status-documents-approved { background: var(--c-indigo-bg); color: var(--c-indigo); }
+.status-payment-pending { background: var(--c-orange-bg); color: var(--c-orange); }
+.status-application-preparation { background: var(--c-orange-bg); color: var(--c-orange); }
+.status-application-submitted { background: var(--c-cyan-bg); color: var(--c-cyan); }
+.status-under-embassy-processing { background: var(--c-cyan-bg); color: var(--c-cyan); }
+.status-additional-documents-required { background: var(--c-amber-bg); color: var(--c-amber); }
+.status-decision-received { background: var(--c-indigo-bg); color: var(--c-indigo); }
 .status-visa-approved { background: var(--c-green-bg); color: var(--c-green); }
-.status-visa-rejected { background: var(--c-red-bg); color: var(--c-red); }
-.status-closed { background: var(--c-grey-bg); color: var(--c-grey); }
-.status-lost { background: var(--c-deep-red-bg); color: var(--c-deep-red); }
+.status-visa-refused { background: var(--c-red-bg); color: var(--c-red); }
+.status-passport-ready { background: var(--c-green-bg); color: var(--c-green); }
+.status-completed { background: var(--c-grey-bg); color: var(--c-grey); }
+.status-cancelled { background: var(--c-deep-red-bg); color: var(--c-deep-red); }
 
 .crm-priority-badge.priority-high { background: var(--c-red-bg); color: var(--c-red); }
 .crm-priority-badge.priority-medium { background: var(--c-amber-bg); color: var(--c-amber); }

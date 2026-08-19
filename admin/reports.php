@@ -47,11 +47,11 @@ $approvedStmt = $pdo->prepare("SELECT COUNT(*) FROM enquiries WHERE archived_at 
 $approvedStmt->execute($dateParams);
 $approvedInRange = (int) $approvedStmt->fetchColumn();
 
-$rejectedStmt = $pdo->prepare("SELECT COUNT(*) FROM enquiries WHERE archived_at IS NULL AND status = 'Visa Rejected' AND $dateCond");
+$rejectedStmt = $pdo->prepare("SELECT COUNT(*) FROM enquiries WHERE archived_at IS NULL AND status = 'Visa Refused' AND $dateCond");
 $rejectedStmt->execute($dateParams);
 $rejectedInRange = (int) $rejectedStmt->fetchColumn();
 
-$lostStmt = $pdo->prepare("SELECT COUNT(*) FROM enquiries WHERE archived_at IS NULL AND status = 'Lost' AND $dateCond");
+$lostStmt = $pdo->prepare("SELECT COUNT(*) FROM enquiries WHERE archived_at IS NULL AND status = 'Cancelled' AND $dateCond");
 $lostStmt->execute($dateParams);
 $lostInRange = (int) $lostStmt->fetchColumn();
 

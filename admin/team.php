@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $users = $pdo->query('SELECT id, name, username, role, created_at FROM users ORDER BY created_at ASC')->fetchAll(PDO::FETCH_ASSOC);
-$loadStmt = $pdo->prepare("SELECT COUNT(*) FROM enquiries WHERE assigned_to = ? AND archived_at IS NULL AND status NOT IN ('Visa Approved','Visa Rejected','Closed','Lost')");
+$loadStmt = $pdo->prepare("SELECT COUNT(*) FROM enquiries WHERE assigned_to = ? AND archived_at IS NULL AND status NOT IN ('Visa Approved','Visa Refused','Passport Ready','Completed','Cancelled')");
 ?>
 <div class="crm-page-header">
     <div>
@@ -67,7 +67,7 @@ $loadStmt = $pdo->prepare("SELECT COUNT(*) FROM enquiries WHERE assigned_to = ? 
         <tr>
             <td class="crm-cell-name"><?php echo htmlspecialchars($u['name']); ?></td>
             <td><?php echo htmlspecialchars($u['username']); ?></td>
-            <td><span class="crm-status-badge status-new"><?php echo htmlspecialchars($u['role']); ?></span></td>
+            <td><span class="crm-status-badge status-new-enquiry"><?php echo htmlspecialchars($u['role']); ?></span></td>
             <td><?php echo $load; ?></td>
             <td class="crm-cell-sub"><?php echo substr($u['created_at'], 0, 10); ?></td>
             <td>

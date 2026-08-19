@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // Honeypot: real visitors never fill this hidden field.
 if (!empty($_POST['website'])) {
-    echo json_encode(['success' => true, 'enquiry_ref' => 'VA-0000000-00000']);
+    echo json_encode(['success' => true, 'tracking_code' => 'VISA-0000-000000']);
     exit;
 }
 
@@ -40,7 +40,22 @@ $tokenStmt = $pdo->prepare('SELECT enquiry_ref FROM submission_tokens WHERE toke
 $tokenStmt->execute([$submissionToken]);
 $existingRef = $tokenStmt->fetchColumn();
 if ($existingRef) {
-    echo json_encode(['success' => true, 'enquiry_ref' => $existingRef, 'duplicate' => true]);
+    $existingStmt = $pdo->prepare('SELECT * FROM enquiries WHERE enquiry_ref = ?');
+    $existingStmt->execute([$existingRef]);
+    $existing = $existingStmt->fetch(PDO::FETCH_ASSOC);
+    echo json_encode([
+        'success' => true,
+        'duplicate' => true,
+        'tracking_code' => $existing['tracking_code'] ?? '',
+        'full_name' => $existing['full_name'] ?? '',
+        'passport_masked' => crm_mask_passport($existing['passport_number'] ?? ''),
+        'mobile_masked' => crm_mask_mobile($existing['mobile'] ?? ''),
+        'email_masked' => crm_mask_email($existing['email'] ?? ''),
+        'destination_country' => $existing['destination_country'] ?? '',
+        'visa_type' => $existing['visa_type'] ?? '',
+        'submitted_at' => $existing['created_at'] ?? '',
+        'warnings' => [],
+    ]);
     exit;
 }
 
@@ -69,6 +84,11 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 $mobile = preg_replace('/\D/', '', $_POST['mobile'] ?? '');
 if (!preg_match('/^[6-9]\d{9}$/', $mobile)) {
     $fieldErrors['mobile'] = 'Please enter a valid 10-digit Indian mobile number.';
+}
+
+$passportNumber = strtoupper(trim($_POST['passport_number'] ?? ''));
+if (!preg_match('/^[A-Z0-9]{6,12}$/', $passportNumber)) {
+    $fieldErrors['passport_number'] = 'Please enter a valid passport number.';
 }
 
 $countryResidence = trim($_POST['country_residence'] ?? '');
@@ -124,15 +144,16 @@ $utmTerm = substr(trim($_POST['utm_term'] ?? ''), 0, 100);
 $utmContent = substr(trim($_POST['utm_content'] ?? ''), 0, 100);
 
 $enquiryRef = enquiry_generate_ref($pdo);
+$trackingCode = crm_generate_tracking_code($pdo);
 $now = gmdate('c');
 
 $insert = $pdo->prepare('INSERT INTO enquiries (
-    enquiry_ref, full_name, email, mobile, country_residence, contact_method,
+    enquiry_ref, tracking_code, full_name, email, mobile, passport_number, country_residence, contact_method,
     visa_category, service_required, destination_country, visa_type, travel_date, travellers,
     purpose, message, source, source_url, utm_source, utm_medium, utm_campaign, utm_term,
     utm_content, status, ip_address, user_agent, created_at
 ) VALUES (
-    :ref, :full_name, :email, :mobile, :country_residence, :contact_method,
+    :ref, :tracking_code, :full_name, :email, :mobile, :passport_number, :country_residence, :contact_method,
     :visa_category, :service_required, :destination_country, :visa_type, :travel_date, :travellers,
     :purpose, :message, :source, :source_url, :utm_source, :utm_medium, :utm_campaign, :utm_term,
     :utm_content, :status, :ip, :ua, :created_at
@@ -140,9 +161,11 @@ $insert = $pdo->prepare('INSERT INTO enquiries (
 
 $insert->execute([
     'ref' => $enquiryRef,
+    'tracking_code' => $trackingCode,
     'full_name' => $fullName,
     'email' => $email,
     'mobile' => '+91' . $mobile,
+    'passport_number' => $passportNumber,
     'country_residence' => $countryResidence,
     'contact_method' => $contactMethod,
     'visa_category' => $serviceRequired,
@@ -160,7 +183,7 @@ $insert->execute([
     'utm_campaign' => $utmCampaign,
     'utm_term' => $utmTerm,
     'utm_content' => $utmContent,
-    'status' => 'New',
+    'status' => 'New Enquiry',
     'ip' => $_SERVER['REMOTE_ADDR'] ?? '',
     'ua' => substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 300),
     'created_at' => $now,
@@ -171,7 +194,22 @@ $tokenInsert = $pdo->prepare('INSERT INTO submission_tokens (token, enquiry_ref,
 $tokenInsert->execute([$submissionToken, $enquiryRef, $now]);
 
 crm_log_activity($pdo, $enquiryId, 'Website', 'created this enquiry', 'Submitted via the website enquiry popup.');
+crm_log_status_change($pdo, $enquiryId, null, 'New Enquiry', 'Website', 'Your enquiry has been received and registered with our visa management team.');
 crm_notify($pdo, null, 'new_enquiry', "New enquiry $enquiryRef created for $fullName.", $enquiryId);
+
+crm_send_applicant_email(
+    $email,
+    "Your Visa Enquiry is Registered — $trackingCode",
+    "Dear $fullName,\n\n" .
+    "Your visa enquiry has been successfully registered with our visa management team.\n\n" .
+    "Tracking Code: $trackingCode\n" .
+    "Visa Country: $destinationCountry\n" .
+    "Visa Type: $visaType\n\n" .
+    "Please save this Tracking Code. Use your Tracking Code, Passport Number and registered Mobile Number or Email Address to track your application status at any time:\n" .
+    (($_SERVER['HTTPS'] ?? '') === 'on' ? 'https://' : 'http://') . ($_SERVER['HTTP_HOST'] ?? 'visaagency.in') . "/track-application\n\n" .
+    "Our team will contact you shortly with the next steps.\n\n" .
+    "Regards,\nVisaAgency.in"
+);
 
 // ---- Document uploads (best-effort: the enquiry itself is already saved) ----
 $allowedExt = ['pdf', 'jpg', 'jpeg', 'png'];
@@ -240,6 +278,13 @@ foreach ($categories as $fieldName => $label) {
 
 echo json_encode([
     'success' => true,
-    'enquiry_ref' => $enquiryRef,
+    'tracking_code' => $trackingCode,
+    'full_name' => $fullName,
+    'passport_masked' => crm_mask_passport($passportNumber),
+    'mobile_masked' => crm_mask_mobile('+91' . $mobile),
+    'email_masked' => crm_mask_email($email),
+    'destination_country' => $destinationCountry,
+    'visa_type' => $visaType,
+    'submitted_at' => $now,
     'warnings' => $uploadWarnings,
 ]);

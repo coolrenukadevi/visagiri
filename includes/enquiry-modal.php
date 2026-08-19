@@ -49,6 +49,11 @@
                             <span class="enquiry-error" data-error-for="mobile"></span>
                         </div>
                         <div class="enquiry-field">
+                            <label for="enqPassportNumber">Passport Number *</label>
+                            <input type="text" id="enqPassportNumber" name="passport_number" required maxlength="12" placeholder="e.g. N1234567" style="text-transform:uppercase;">
+                            <span class="enquiry-error" data-error-for="passport_number"></span>
+                        </div>
+                        <div class="enquiry-field">
                             <label for="enqCountryResidence">Country of Residence</label>
                             <select id="enqCountryResidence" name="country_residence">
                                 <option value="">Select country</option>
@@ -218,14 +223,32 @@
 
             <div class="enquiry-success" id="enquirySuccess" hidden>
                 <div class="enquiry-success-icon"><i class="fa-solid fa-circle-check"></i></div>
-                <h2>Thank You!</h2>
-                <p>Your enquiry has been submitted successfully. Our expert will contact you shortly.</p>
-                <div class="enquiry-success-ref">
-                    Enquiry Reference: <strong id="enquirySuccessRef"></strong>
+                <h2>Enquiry Submitted Successfully</h2>
+                <p>Thank you for submitting your visa enquiry. Your enquiry has been successfully registered with our visa management team.</p>
+
+                <div class="enquiry-tracking-code">
+                    <span class="etc-label">Tracking Code</span>
+                    <span class="etc-value" id="enquirySuccessCode"></span>
                 </div>
+                <p class="enquiry-success-warn"><i class="fa-solid fa-triangle-exclamation"></i> Please save your Tracking Code. You will need it to check your application status.</p>
+
+                <div class="enquiry-success-grid">
+                    <div><label>Applicant Name</label><span id="esFullName"></span></div>
+                    <div><label>Passport Number</label><span id="esPassport"></span></div>
+                    <div><label>Mobile Number</label><span id="esMobile"></span></div>
+                    <div><label>Email Address</label><span id="esEmail"></span></div>
+                    <div><label>Visa Country</label><span id="esCountry"></span></div>
+                    <div><label>Visa Type</label><span id="esVisaType"></span></div>
+                    <div class="enquiry-field-full"><label>Submission Date &amp; Time</label><span id="esSubmittedAt"></span></div>
+                </div>
+
                 <p class="enquiry-success-warnings" id="enquirySuccessWarnings" hidden></p>
-                <button type="button" class="enquiry-btn-primary" data-enquiry-close>Close Now</button>
-                <p class="enquiry-success-auto">This window will close automatically in <span id="enquiryCountdown">6</span>s.</p>
+
+                <div class="enquiry-success-actions">
+                    <a class="enquiry-btn-primary" id="esTrackBtn" href="track-application" target="_blank" rel="noopener">Track Application</a>
+                    <a class="enquiry-btn-secondary" id="esDownloadBtn" href="#" target="_blank" rel="noopener">Download Confirmation</a>
+                    <button type="button" class="enquiry-btn-secondary" data-enquiry-close>Back to Home</button>
+                </div>
             </div>
         </div>
     </div>
