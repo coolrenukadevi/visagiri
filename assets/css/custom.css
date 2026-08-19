@@ -1198,6 +1198,12 @@ summary:focus-visible {
     margin: 0 !important;
     border-radius: 0 !important;
 }
+
+/* ---- Breadcrumb banner: edge-to-edge, no rounded corners ---- */
+.breadcrumb-wrapper {
+    margin: 0 !important;
+    border-radius: 0 !important;
+}
 .footer-cta-strip {
     padding: 28px 0;
 }
