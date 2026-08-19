@@ -39,6 +39,8 @@ include __DIR__ . '/footer-cta.php';
             <i class="fa-solid fa-arrow-up"></i>
         </button>
 
+        <?php include __DIR__ . '/enquiry-modal.php'; ?>
+
         <div class="mobile-sticky-cta">
             <a href="tel:<?php echo $site_phone_e164; ?>"><i class="fa-solid fa-phone"></i> Call</a>
             <a href="<?php echo $site_whatsapp_url; ?>" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
@@ -79,5 +81,6 @@ include __DIR__ . '/footer-cta.php';
         <!--<< Main.js >>-->
         <script src="assets/js/main.js"></script>
         <script src="assets/js/custom.js"></script>
+        <script src="assets/js/enquiry-modal.js"></script>
     </body>
 </html>

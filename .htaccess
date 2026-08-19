@@ -7,6 +7,7 @@ RewriteBase /
 # which is a form-submission endpoint, not a browsable page).
 RewriteCond %{THE_REQUEST} \s/+([a-zA-Z0-9_-]+)\.php[\s?] [NC]
 RewriteCond %1 !^mail-handler$ [NC]
+RewriteCond %1 !^enquiry-handler$ [NC]
 RewriteCond %1 !^index$ [NC]
 RewriteRule ^ /%1 [R=301,L]
 
@@ -27,8 +28,14 @@ RewriteRule ^([a-zA-Z0-9_-]+)/?$ $1.php [L]
 # 404 fallback
 ErrorDocument 404 /404.php
 
-# Never allow mail-handler.php to be listed/browsed directly via GET from the address bar
+# Never allow mail-handler.php / enquiry-handler.php to be listed/browsed
+# directly via GET from the address bar — they are POST-only endpoints.
 <Files "mail-handler.php">
+    <If "%{REQUEST_METHOD} = 'GET'">
+        Require all denied
+    </If>
+</Files>
+<Files "enquiry-handler.php">
     <If "%{REQUEST_METHOD} = 'GET'">
         Require all denied
     </If>
