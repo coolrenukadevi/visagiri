@@ -3,11 +3,6 @@
                             <a href="/"><img src="assets/img/logo/white-logo.svg" alt="Visa Agency logo"></a>
                             <p class="va-footer-tagline">Visa Agency is a technology-enabled visa consultancy and a unit of Tripgation Private Limited.</p>
                         </div>
-                        <div class="va-footer-contact-quick">
-                            <a href="tel:+917844819819"><i class="fa-solid fa-phone"></i> +91 78448 19819</a>
-                            <a href="mailto:info@visaagency.in"><i class="fa-solid fa-envelope"></i> info@visaagency.in</a>
-                            <a href="contact"><i class="fa-solid fa-location-dot"></i> Patna, Bihar</a>
-                        </div>
                     </div>
 
                     <nav class="va-footer-columns" aria-label="Footer navigation">
@@ -84,12 +79,6 @@
                                 <li><a href="contact">Contact Us</a></li>
                                 <li><a href="customer-login">Customer Login</a></li>
                             </ul>
-                            <div class="footer-need-help">
-                                <h5>Need Help?</h5>
-                                <p><i class="fa-solid fa-phone"></i> <a href="tel:+917844819819">+91 78448 19819</a></p>
-                                <p><i class="fa-solid fa-envelope"></i> <a href="mailto:info@visaagency.in">info@visaagency.in</a></p>
-                                <p><i class="fa-solid fa-location-dot"></i> Patna, Bihar</p>
-                            </div>
                         </details>
                     </nav>
 

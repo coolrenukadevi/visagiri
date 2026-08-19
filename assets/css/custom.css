@@ -1203,3 +1203,32 @@ summary:focus-visible {
     max-width: 100%;
     height: 450px;
 }
+
+/* ---- Footer: edge-to-edge blue background + compact spacing ---- */
+.footer-section {
+    margin: 0 !important;
+    border-radius: 0 !important;
+}
+.footer-cta-strip {
+    padding: 28px 0;
+}
+.va-footer-top {
+    padding-bottom: 16px;
+    margin-bottom: 18px;
+}
+.va-footer-columns {
+    gap: 20px;
+}
+.footer-accordion summary {
+    margin-bottom: 10px;
+}
+.footer-trust-bar {
+    padding: 14px 0;
+    margin-top: 18px;
+}
+.footer-local-seo {
+    padding: 14px 0 2px;
+}
+.footer-bottom {
+    padding: 14px 0 !important;
+}
