@@ -1,10 +1,3 @@
-                    <div class="va-footer-top">
-                        <div class="va-footer-logo">
-                            <a href="/"><img src="assets/img/logo/white-logo.svg" alt="Visa Agency logo"></a>
-                            <p class="va-footer-tagline">Visa Agency is a technology-enabled visa consultancy and a unit of Tripgation Private Limited.</p>
-                        </div>
-                    </div>
-
                     <nav class="va-footer-columns" aria-label="Footer navigation">
                         <div class="footer-col-brand">
                             <h4>VisaAgency.in</h4>
