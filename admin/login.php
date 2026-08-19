@@ -24,14 +24,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>Admin Login &ndash; Visa Agency</title>
+<title>Sign In &ndash; Visa Agency CRM</title>
 <link rel="stylesheet" href="assets/admin.css">
 </head>
 <body>
 <div class="admin-login-wrap">
     <div class="admin-login-box">
-        <h1>Enquiry Admin</h1>
-        <p class="sub">Sign in to manage website enquiries.</p>
+        <h1>Visa Enquiry CRM</h1>
+        <p class="sub">Sign in to manage visa service enquiries.</p>
         <?php if ($error): ?>
         <div class="admin-error"><?php echo htmlspecialchars($error); ?></div>
         <?php endif; ?>

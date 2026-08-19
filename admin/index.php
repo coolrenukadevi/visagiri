@@ -1,183 +1,176 @@
 <?php
-require_once __DIR__ . '/includes/admin-auth.php';
-admin_require_login();
+$ADMIN_PAGE_TITLE = 'Dashboard';
+$ADMIN_ACTIVE_NAV = 'dashboard';
+$ADMIN_BREADCRUMB = ['CRM', 'Dashboard'];
+require __DIR__ . '/includes/layout-top.php';
 
-$pdo = enquiry_db();
+$scopeSql = admin_can_view_all() ? '' : ' AND assigned_to = :me';
+$scopeParams = admin_can_view_all() ? [] : ['me' => admin_name()];
 
-$totalCount = (int) $pdo->query('SELECT COUNT(*) FROM enquiries')->fetchColumn();
+function crm_count(PDO $pdo, string $where, array $params = []): int
+{
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM enquiries WHERE archived_at IS NULL $where");
+    $stmt->execute($params);
+    return (int) $stmt->fetchColumn();
+}
 
-$weekAgo = gmdate('c', time() - 7 * 86400);
-$stmt = $pdo->prepare('SELECT COUNT(*) FROM enquiries WHERE created_at >= ?');
-$stmt->execute([$weekAgo]);
-$newThisWeek = (int) $stmt->fetchColumn();
+$totalCount = crm_count($pdo, '1=1' . $scopeSql, $scopeParams);
+$newCount = crm_count($pdo, "AND status = 'New'" . $scopeSql, $scopeParams);
+$inProgressCount = crm_count($pdo, "AND status IN ('Contacted','Qualified','Documents Pending','Application Processing','Submitted')" . $scopeSql, $scopeParams);
+$docsPendingCount = crm_count($pdo, "AND status = 'Documents Pending'" . $scopeSql, $scopeParams);
+$convertedCount = crm_count($pdo, "AND status = 'Visa Approved'" . $scopeSql, $scopeParams);
+$lostCount = crm_count($pdo, "AND status = 'Lost'" . $scopeSql, $scopeParams);
 
-$todayStart = gmdate('Y-m-d\T00:00:00\Z');
-$stmt = $pdo->prepare('SELECT COUNT(*) FROM enquiries WHERE created_at >= ?');
-$stmt->execute([$todayStart]);
-$newToday = (int) $stmt->fetchColumn();
+$today = gmdate('Y-m-d');
+$fuStmt = $pdo->prepare("SELECT COUNT(*) FROM follow_ups f JOIN enquiries e ON e.id = f.enquiry_id
+    WHERE f.completed_at IS NULL AND f.follow_up_date <= ? AND e.archived_at IS NULL" . $scopeSql);
+$fuParams = array_merge([$today], $scopeParams);
+$fuStmt->execute($fuParams);
+$followUpDueCount = (int) $fuStmt->fetchColumn();
 
-$convertedCount = (int) $pdo->query("SELECT COUNT(*) FROM enquiries WHERE status = 'Converted'")->fetchColumn();
-$conversionRate = $totalCount > 0 ? round(($convertedCount / $totalCount) * 100, 1) : 0.0;
+$revenueStmt = $pdo->prepare("SELECT COALESCE(SUM(paid_amount),0) FROM enquiries WHERE archived_at IS NULL" . $scopeSql);
+$revenueStmt->execute($scopeParams);
+$revenue = (float) $revenueStmt->fetchColumn();
+$revenueDisplay = $revenue >= 100000 ? '₹' . round($revenue / 100000, 1) . 'L' : '₹' . number_format($revenue);
 
-$statuses = ['New', 'Contacted', 'In Progress', 'Converted', 'Closed'];
+$weekAgo = gmdate('Y-m-d\TH:i:s\Z', time() - 7 * 86400);
+$twoWeeksAgo = gmdate('Y-m-d\TH:i:s\Z', time() - 14 * 86400);
+$thisWeekStmt = $pdo->prepare("SELECT COUNT(*) FROM enquiries WHERE created_at >= ? AND archived_at IS NULL" . $scopeSql);
+$thisWeekStmt->execute(array_merge([$weekAgo], $scopeParams));
+$thisWeek = (int) $thisWeekStmt->fetchColumn();
+$lastWeekStmt = $pdo->prepare("SELECT COUNT(*) FROM enquiries WHERE created_at >= ? AND created_at < ? AND archived_at IS NULL" . $scopeSql);
+$lastWeekStmt->execute(array_merge([$twoWeeksAgo, $weekAgo], $scopeParams));
+$lastWeek = (int) $lastWeekStmt->fetchColumn();
+$weekTrend = $lastWeek > 0 ? round((($thisWeek - $lastWeek) / $lastWeek) * 100) : ($thisWeek > 0 ? 100 : 0);
+
+$kpis = [
+    ['label' => 'Total Enquiries', 'value' => $totalCount, 'icon' => 'inbox', 'trend' => $weekTrend, 'filter' => ''],
+    ['label' => 'New', 'value' => $newCount, 'icon' => 'sparkles', 'trend' => null, 'filter' => 'New'],
+    ['label' => 'In Progress', 'value' => $inProgressCount, 'icon' => 'spinner', 'trend' => null, 'filter' => ''],
+    ['label' => 'Follow-up Due', 'value' => $followUpDueCount, 'icon' => 'phone-volume', 'trend' => null, 'filter' => ''],
+    ['label' => 'Documents Pending', 'value' => $docsPendingCount, 'icon' => 'folder-open', 'trend' => null, 'filter' => 'Documents Pending'],
+    ['label' => 'Converted', 'value' => $convertedCount, 'icon' => 'circle-check', 'trend' => null, 'filter' => 'Visa Approved'],
+    ['label' => 'Lost', 'value' => $lostCount, 'icon' => 'circle-xmark', 'trend' => null, 'filter' => 'Lost'],
+    ['label' => 'Revenue', 'value' => $revenueDisplay, 'icon' => 'sack-dollar', 'trend' => null, 'filter' => ''],
+];
+
 $statusCounts = [];
-foreach ($statuses as $s) {
-    $stmt = $pdo->prepare('SELECT COUNT(*) FROM enquiries WHERE status = ?');
-    $stmt->execute([$s]);
-    $statusCounts[$s] = (int) $stmt->fetchColumn();
+foreach (CRM_STATUSES as $s) {
+    $statusCounts[$s] = crm_count($pdo, 'AND status = :s' . $scopeSql, array_merge(['s' => $s], $scopeParams));
 }
 $statusMax = max(1, max($statusCounts));
 
-$today = gmdate('Y-m-d');
-$overdueStmt = $pdo->prepare("SELECT * FROM enquiries WHERE follow_up_date IS NOT NULL AND follow_up_date != ''
-    AND follow_up_date < ? AND status NOT IN ('Converted', 'Closed') ORDER BY follow_up_date ASC LIMIT 8");
-$overdueStmt->execute([$today]);
+$today10 = gmdate('Y-m-d');
+$overdueSql = "SELECT f.*, e.enquiry_ref, e.full_name, e.status FROM follow_ups f JOIN enquiries e ON e.id = f.enquiry_id
+    WHERE f.completed_at IS NULL AND f.follow_up_date < ? AND e.archived_at IS NULL" . $scopeSql . " ORDER BY f.follow_up_date ASC LIMIT 6";
+$overdueStmt = $pdo->prepare($overdueSql);
+$overdueStmt->execute(array_merge([$today10], $scopeParams));
 $overdueFollowUps = $overdueStmt->fetchAll(PDO::FETCH_ASSOC);
 
-$upcomingStmt = $pdo->prepare("SELECT * FROM enquiries WHERE follow_up_date IS NOT NULL AND follow_up_date != ''
-    AND follow_up_date >= ? AND status NOT IN ('Converted', 'Closed') ORDER BY follow_up_date ASC LIMIT 8");
-$upcomingStmt->execute([$today]);
+$upcomingSql = "SELECT f.*, e.enquiry_ref, e.full_name, e.status FROM follow_ups f JOIN enquiries e ON e.id = f.enquiry_id
+    WHERE f.completed_at IS NULL AND f.follow_up_date >= ? AND e.archived_at IS NULL" . $scopeSql . " ORDER BY f.follow_up_date ASC LIMIT 6";
+$upcomingStmt = $pdo->prepare($upcomingSql);
+$upcomingStmt->execute(array_merge([$today10], $scopeParams));
 $upcomingFollowUps = $upcomingStmt->fetchAll(PDO::FETCH_ASSOC);
 
-$topDestinations = $pdo->query('SELECT destination_country, COUNT(*) as c FROM enquiries
-    GROUP BY destination_country ORDER BY c DESC LIMIT 6')->fetchAll(PDO::FETCH_ASSOC);
+$topDestStmt = $pdo->prepare("SELECT destination_country, COUNT(*) as c FROM enquiries WHERE archived_at IS NULL" . $scopeSql . "
+    GROUP BY destination_country ORDER BY c DESC LIMIT 6");
+$topDestStmt->execute($scopeParams);
+$topDestinations = $topDestStmt->fetchAll(PDO::FETCH_ASSOC);
 $topDestMax = 1;
 foreach ($topDestinations as $d) { $topDestMax = max($topDestMax, (int) $d['c']); }
 
-$recentStmt = $pdo->query('SELECT * FROM enquiries ORDER BY created_at DESC LIMIT 8');
+$recentStmt = $pdo->prepare("SELECT * FROM enquiries WHERE archived_at IS NULL" . $scopeSql . " ORDER BY created_at DESC LIMIT 8");
+$recentStmt->execute($scopeParams);
 $recentEnquiries = $recentStmt->fetchAll(PDO::FETCH_ASSOC);
-
-function admin_status_class(string $status): string
-{
-    return 'status-' . strtolower(str_replace(' ', '-', $status));
-}
 ?>
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="robots" content="noindex, nofollow">
-<title>CRM Dashboard &ndash; Visa Agency Admin</title>
-<link rel="stylesheet" href="../assets/css/all.min.css">
-<link rel="stylesheet" href="assets/admin.css">
-</head>
-<body>
-<div class="admin-shell">
-    <div class="admin-sidebar">
-        <span class="brand">VISA AGENCY CRM</span>
-        <a href="index.php" class="active"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
-        <a href="dashboard.php"><i class="fa-solid fa-inbox"></i> Enquiries</a>
-        <a href="logout.php">Log Out</a>
-    </div>
-    <div class="admin-main">
-        <div class="admin-topbar">
-            <h1>Visa Enquiry CRM</h1>
-            <span class="who">Signed in as <?php echo htmlspecialchars($_SESSION['admin_user']); ?></span>
-        </div>
-
-        <div class="admin-kpi-grid">
-            <div class="admin-kpi">
-                <div class="kpi-label">Total Enquiries</div>
-                <div class="kpi-value"><?php echo $totalCount; ?></div>
-            </div>
-            <div class="admin-kpi">
-                <div class="kpi-label">New Today</div>
-                <div class="kpi-value"><?php echo $newToday; ?></div>
-            </div>
-            <div class="admin-kpi">
-                <div class="kpi-label">New This Week</div>
-                <div class="kpi-value"><?php echo $newThisWeek; ?></div>
-            </div>
-            <div class="admin-kpi">
-                <div class="kpi-label">Conversion Rate</div>
-                <div class="kpi-value"><?php echo $conversionRate; ?>%</div>
-            </div>
-            <div class="admin-kpi kpi-warn">
-                <div class="kpi-label">Overdue Follow-ups</div>
-                <div class="kpi-value"><?php echo count($overdueFollowUps); ?></div>
-            </div>
-        </div>
-
-        <div class="admin-two-col">
-            <div class="admin-card">
-                <h3 style="margin-top:0;">Pipeline by Status</h3>
-                <div class="admin-bar-chart">
-                    <?php foreach ($statusCounts as $s => $c): ?>
-                    <div class="admin-bar-row">
-                        <span class="bar-label"><?php echo htmlspecialchars($s); ?></span>
-                        <div class="bar-track">
-                            <div class="bar-fill <?php echo admin_status_class($s); ?>" style="width: <?php echo round(($c / $statusMax) * 100); ?>%;"></div>
-                        </div>
-                        <span class="bar-count"><?php echo $c; ?></span>
-                    </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-
-            <div class="admin-card">
-                <h3 style="margin-top:0;">Top Destinations</h3>
-                <?php if (empty($topDestinations)): ?>
-                <p style="color:#94A0BD;font-size:13px;">No enquiries yet.</p>
-                <?php else: ?>
-                <div class="admin-bar-chart">
-                    <?php foreach ($topDestinations as $d): ?>
-                    <div class="admin-bar-row">
-                        <span class="bar-label"><?php echo htmlspecialchars($d['destination_country']); ?></span>
-                        <div class="bar-track">
-                            <div class="bar-fill status-converted" style="width: <?php echo round(((int) $d['c'] / $topDestMax) * 100); ?>%;"></div>
-                        </div>
-                        <span class="bar-count"><?php echo (int) $d['c']; ?></span>
-                    </div>
-                    <?php endforeach; ?>
-                </div>
-                <?php endif; ?>
-            </div>
-        </div>
-
-        <div class="admin-two-col">
-            <div class="admin-card">
-                <h3 style="margin-top:0;">Follow-ups Due</h3>
-                <?php if (empty($overdueFollowUps) && empty($upcomingFollowUps)): ?>
-                <p style="color:#94A0BD;font-size:13px;">No follow-ups scheduled.</p>
-                <?php else: ?>
-                <div class="admin-followup-list">
-                    <?php foreach ($overdueFollowUps as $row): ?>
-                    <a href="enquiry.php?ref=<?php echo urlencode($row['enquiry_ref']); ?>" class="admin-followup-item is-overdue">
-                        <span class="fu-date"><?php echo htmlspecialchars($row['follow_up_date']); ?> <em>overdue</em></span>
-                        <span class="fu-name"><?php echo htmlspecialchars($row['full_name']); ?></span>
-                        <span class="admin-status <?php echo admin_status_class($row['status']); ?>"><?php echo htmlspecialchars($row['status']); ?></span>
-                    </a>
-                    <?php endforeach; ?>
-                    <?php foreach ($upcomingFollowUps as $row): ?>
-                    <a href="enquiry.php?ref=<?php echo urlencode($row['enquiry_ref']); ?>" class="admin-followup-item">
-                        <span class="fu-date"><?php echo htmlspecialchars($row['follow_up_date']); ?></span>
-                        <span class="fu-name"><?php echo htmlspecialchars($row['full_name']); ?></span>
-                        <span class="admin-status <?php echo admin_status_class($row['status']); ?>"><?php echo htmlspecialchars($row['status']); ?></span>
-                    </a>
-                    <?php endforeach; ?>
-                </div>
-                <?php endif; ?>
-            </div>
-
-            <div class="admin-card">
-                <h3 style="margin-top:0;">Recent Enquiries</h3>
-                <?php if (empty($recentEnquiries)): ?>
-                <p style="color:#94A0BD;font-size:13px;">No enquiries yet.</p>
-                <?php else: ?>
-                <div class="admin-recent-list">
-                    <?php foreach ($recentEnquiries as $row): ?>
-                    <a href="enquiry.php?ref=<?php echo urlencode($row['enquiry_ref']); ?>" class="admin-recent-item">
-                        <span class="ri-name"><?php echo htmlspecialchars($row['full_name']); ?></span>
-                        <span class="ri-dest"><?php echo htmlspecialchars($row['destination_country']); ?> &middot; <?php echo htmlspecialchars($row['service_required']); ?></span>
-                        <span class="admin-status <?php echo admin_status_class($row['status']); ?>"><?php echo htmlspecialchars($row['status']); ?></span>
-                    </a>
-                    <?php endforeach; ?>
-                </div>
-                <?php endif; ?>
-            </div>
-        </div>
+<div class="crm-page-header">
+    <div>
+        <h1 class="crm-page-title">Visa Enquiry CRM</h1>
+        <p class="crm-page-subtitle">Overview of all visa service enquiries<?php echo admin_can_view_all() ? '' : ' assigned to you'; ?>.</p>
     </div>
 </div>
-</body>
-</html>
+
+<div class="crm-kpi-grid">
+    <?php foreach ($kpis as $k): ?>
+    <a class="crm-kpi" href="enquiries.php<?php echo $k['filter'] ? '?status=' . urlencode($k['filter']) : ''; ?>">
+        <div class="crm-kpi-top">
+            <div class="crm-kpi-icon"><i class="fa-solid fa-<?php echo $k['icon']; ?>"></i></div>
+            <?php if ($k['trend'] !== null): ?>
+            <div class="crm-kpi-trend <?php echo $k['trend'] >= 0 ? 'up' : 'down'; ?>">
+                <i class="fa-solid fa-arrow-<?php echo $k['trend'] >= 0 ? 'up' : 'down'; ?>"></i> <?php echo abs($k['trend']); ?>%
+            </div>
+            <?php endif; ?>
+        </div>
+        <div class="crm-kpi-value"><?php echo $k['value']; ?></div>
+        <div class="crm-kpi-label"><?php echo $k['label']; ?></div>
+    </a>
+    <?php endforeach; ?>
+</div>
+
+<div class="crm-two-col">
+    <div class="crm-card">
+        <h3>Pipeline by Status</h3>
+        <?php foreach ($statusCounts as $s => $c): ?>
+        <a href="enquiries.php?status=<?php echo urlencode($s); ?>" style="display:flex;align-items:center;gap:10px;margin-bottom:10px;color:inherit;">
+            <span style="width:150px;flex-shrink:0;font-size:12.5px;color:var(--c-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><?php echo htmlspecialchars($s); ?></span>
+            <div style="flex:1;background:var(--c-bg);border-radius:20px;height:9px;overflow:hidden;">
+                <div style="height:100%;border-radius:20px;width:<?php echo round(($c / $statusMax) * 100); ?>%;background:var(--c-blue);"></div>
+            </div>
+            <span style="width:24px;text-align:right;font-size:12px;font-weight:700;"><?php echo $c; ?></span>
+        </a>
+        <?php endforeach; ?>
+    </div>
+    <div class="crm-card">
+        <h3>Top Destinations</h3>
+        <?php if (empty($topDestinations)): ?>
+        <div class="crm-empty">No enquiries yet.</div>
+        <?php else: foreach ($topDestinations as $d): ?>
+        <a href="enquiries.php?country=<?php echo urlencode($d['destination_country']); ?>" style="display:flex;align-items:center;gap:10px;margin-bottom:10px;color:inherit;">
+            <span style="width:150px;flex-shrink:0;font-size:12.5px;color:var(--c-text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><?php echo htmlspecialchars($d['destination_country']); ?></span>
+            <div style="flex:1;background:var(--c-bg);border-radius:20px;height:9px;overflow:hidden;">
+                <div style="height:100%;border-radius:20px;width:<?php echo round(((int) $d['c'] / $topDestMax) * 100); ?>%;background:var(--c-green);"></div>
+            </div>
+            <span style="width:24px;text-align:right;font-size:12px;font-weight:700;"><?php echo (int) $d['c']; ?></span>
+        </a>
+        <?php endforeach; endif; ?>
+    </div>
+</div>
+
+<div class="crm-two-col">
+    <div class="crm-card">
+        <h3>Follow-ups Due</h3>
+        <?php if (empty($overdueFollowUps) && empty($upcomingFollowUps)): ?>
+        <div class="crm-empty">No follow-ups scheduled.</div>
+        <?php else: ?>
+        <?php foreach ($overdueFollowUps as $f): ?>
+        <a href="enquiry.php?ref=<?php echo urlencode($f['enquiry_ref']); ?>" class="crm-followup-item">
+            <span class="fu-when"><?php echo htmlspecialchars($f['follow_up_date']); ?></span>
+            <span class="fu-notes"><?php echo htmlspecialchars($f['full_name']); ?></span>
+            <span class="crm-fu-state state-overdue">Overdue</span>
+        </a>
+        <?php endforeach; ?>
+        <?php foreach ($upcomingFollowUps as $f): ?>
+        <a href="enquiry.php?ref=<?php echo urlencode($f['enquiry_ref']); ?>" class="crm-followup-item">
+            <span class="fu-when"><?php echo htmlspecialchars($f['follow_up_date']); ?></span>
+            <span class="fu-notes"><?php echo htmlspecialchars($f['full_name']); ?></span>
+            <span class="crm-fu-state <?php echo $f['follow_up_date'] === $today10 ? 'state-due-today' : 'state-upcoming'; ?>"><?php echo $f['follow_up_date'] === $today10 ? 'Due Today' : 'Upcoming'; ?></span>
+        </a>
+        <?php endforeach; ?>
+        <?php endif; ?>
+    </div>
+    <div class="crm-card">
+        <h3>Recent Enquiries</h3>
+        <?php if (empty($recentEnquiries)): ?>
+        <div class="crm-empty">No enquiries yet.</div>
+        <?php else: foreach ($recentEnquiries as $row): ?>
+        <a href="enquiry.php?ref=<?php echo urlencode($row['enquiry_ref']); ?>" class="crm-followup-item">
+            <span class="fu-when" style="width:130px;"><?php echo htmlspecialchars($row['full_name']); ?></span>
+            <span class="fu-notes"><?php echo htmlspecialchars($row['destination_country']); ?> &middot; <?php echo htmlspecialchars($row['visa_type']); ?></span>
+            <span class="crm-status-badge <?php echo crm_status_class($row['status']); ?>"><?php echo htmlspecialchars($row['status']); ?></span>
+        </a>
+        <?php endforeach; endif; ?>
+    </div>
+</div>
+
+<?php require __DIR__ . '/includes/layout-bottom.php'; ?>

@@ -128,13 +128,13 @@ $now = gmdate('c');
 
 $insert = $pdo->prepare('INSERT INTO enquiries (
     enquiry_ref, full_name, email, mobile, country_residence, contact_method,
-    service_required, destination_country, visa_type, travel_date, travellers,
-    purpose, message, source_url, utm_source, utm_medium, utm_campaign, utm_term,
+    visa_category, service_required, destination_country, visa_type, travel_date, travellers,
+    purpose, message, source, source_url, utm_source, utm_medium, utm_campaign, utm_term,
     utm_content, status, ip_address, user_agent, created_at
 ) VALUES (
     :ref, :full_name, :email, :mobile, :country_residence, :contact_method,
-    :service_required, :destination_country, :visa_type, :travel_date, :travellers,
-    :purpose, :message, :source_url, :utm_source, :utm_medium, :utm_campaign, :utm_term,
+    :visa_category, :service_required, :destination_country, :visa_type, :travel_date, :travellers,
+    :purpose, :message, :source, :source_url, :utm_source, :utm_medium, :utm_campaign, :utm_term,
     :utm_content, :status, :ip, :ua, :created_at
 )');
 
@@ -145,6 +145,7 @@ $insert->execute([
     'mobile' => '+91' . $mobile,
     'country_residence' => $countryResidence,
     'contact_method' => $contactMethod,
+    'visa_category' => $serviceRequired,
     'service_required' => $serviceRequired,
     'destination_country' => $destinationCountry,
     'visa_type' => $visaType,
@@ -152,6 +153,7 @@ $insert->execute([
     'travellers' => $travellers,
     'purpose' => $purpose,
     'message' => $message,
+    'source' => 'Website',
     'source_url' => $sourceUrl,
     'utm_source' => $utmSource,
     'utm_medium' => $utmMedium,
@@ -167,6 +169,9 @@ $enquiryId = (int) $pdo->lastInsertId();
 
 $tokenInsert = $pdo->prepare('INSERT INTO submission_tokens (token, enquiry_ref, created_at) VALUES (?, ?, ?)');
 $tokenInsert->execute([$submissionToken, $enquiryRef, $now]);
+
+crm_log_activity($pdo, $enquiryId, 'Website', 'created this enquiry', 'Submitted via the website enquiry popup.');
+crm_notify($pdo, null, 'new_enquiry', "New enquiry $enquiryRef created for $fullName.", $enquiryId);
 
 // ---- Document uploads (best-effort: the enquiry itself is already saved) ----
 $allowedExt = ['pdf', 'jpg', 'jpeg', 'png'];
