@@ -12,7 +12,7 @@
                                 <span role="listitem" aria-label="Twitter (coming soon)"><i class="fa-brands fa-twitter"></i></span>
                                 <span role="listitem" aria-label="Instagram (coming soon)"><i class="fa-brands fa-instagram"></i></span>
                                 <span role="listitem" aria-label="YouTube (coming soon)"><i class="fa-brands fa-youtube"></i></span>
-                                <a href="https://wa.me/917844819819" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+                                <a href="<?php echo $site_whatsapp_url; ?>" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
                             </div>
                         </div>
 

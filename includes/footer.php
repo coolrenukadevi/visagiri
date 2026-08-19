@@ -1,4 +1,7 @@
-<?php include __DIR__ . '/footer-cta.php'; ?>
+<?php
+require_once __DIR__ . '/site-contact.php';
+include __DIR__ . '/footer-cta.php';
+?>
 
         <footer class="footer-section fix bg-cover" style="background-image: url(assets/img/home-1/footer-bg.jpg);">
             <div class="container">
@@ -11,7 +14,7 @@
             </div>
         </footer>
 
-        <a href="https://wa.me/917844819819" target="_blank" rel="noopener" class="floating-whatsapp" aria-label="Chat on WhatsApp">
+        <a href="<?php echo $site_whatsapp_url; ?>" target="_blank" rel="noopener" class="floating-whatsapp" aria-label="Chat on WhatsApp">
             <i class="fa-brands fa-whatsapp"></i>
         </a>
 
@@ -20,8 +23,8 @@
         </button>
 
         <div class="mobile-sticky-cta">
-            <a href="tel:+917844819819"><i class="fa-solid fa-phone"></i> Call</a>
-            <a href="https://wa.me/917844819819" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+            <a href="tel:<?php echo $site_phone_e164; ?>"><i class="fa-solid fa-phone"></i> Call</a>
+            <a href="<?php echo $site_whatsapp_url; ?>" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
             <a href="contact"><i class="fa-solid fa-paper-plane"></i> Enquire</a>
         </div>
 
