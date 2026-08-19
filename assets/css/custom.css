@@ -664,10 +664,10 @@
     font-size: 12px;
     line-height: 1.7;
     color: rgba(255, 255, 255, 0.45);
-    max-width: 900px;
-    margin: 0 auto 16px;
+    width: 100%;
+    margin: 0 0 16px;
     text-align: justify;
-    text-align-last: center;
+    text-align-last: left;
 }
 
 /* ---- Visa category cards ---- */
