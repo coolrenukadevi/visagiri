@@ -144,8 +144,8 @@ include __DIR__ . '/includes/header.php';
         <!-- Map-section Start -->
         <div class="map-section section-padding pt-0">
             <div class="map-items">
-                <div class="googpemap map-fixed-size">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3598.438531084284!2d85.15988777456785!3d25.590340277459994!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ed597c852dfc31%3A0x21f24bd0607f87d0!2sVisa%20Agency!5e0!3m2!1sen!2sin!4v1787104153782!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                <div class="googpemap">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3598.438531084284!2d85.15988777456785!3d25.590340277459994!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ed597c852dfc31%3A0x21f24bd0607f87d0!2sVisa%20Agency!5e0!3m2!1sen!2sin!4v1787104153782!5m2!1sen!2sin" style="border:0; width:100%;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
                 </div>
             </div>
         </div>
