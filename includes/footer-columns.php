@@ -49,14 +49,14 @@
                         <details class="footer-accordion" open>
                             <summary>Visa Resources</summary>
                             <ul>
-                                <li><a href="visa-consultancy-services">Visa Requirements</a></li>
-                                <li><a href="/#checklist">Visa Checklist</a></li>
-                                <li><a href="appointment">Visa Appointment</a></li>
+                                <li><a href="visa-requirements">Visa Requirements</a></li>
+                                <li><a href="visa-checklist">Visa Checklist</a></li>
+                                <li><a href="visa-appointment">Visa Appointment</a></li>
                                 <li><a href="visa-consultancy-services">Visa Application Guide</a></li>
                                 <li><a href="apostille">Travel Documentation</a></li>
                                 <li><a href="visa-refusal">Visa Refusal Guidance</a></li>
                                 <li><a href="/#faq">Visa FAQs</a></li>
-                                <li><a href="news">Visa News &amp; Updates</a></li>
+                                <li><a href="visa-news">Visa News &amp; Updates</a></li>
                             </ul>
                             <a href="visa-consultancy-services" class="footer-col-more">Explore Visa Resources &rarr;</a>
                         </details>
@@ -65,9 +65,9 @@
                             <summary>Company</summary>
                             <ul>
                                 <li><a href="about">About Us</a></li>
-                                <li><a href="visa-consultancy-services">Our Services</a></li>
+                                <li><a href="our-services">Our Services</a></li>
                                 <li><a href="careers">Careers</a></li>
-                                <li><a href="news">News &amp; Updates</a></li>
+                                <li><a href="visa-news">News &amp; Updates</a></li>
                                 <li><a href="contact">Contact Us</a></li>
                                 <li><a href="customer-login">Customer Login</a></li>
                             </ul>

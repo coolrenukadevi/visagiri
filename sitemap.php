@@ -104,8 +104,9 @@ foreach ($VISA_AGENCY_COUNTRIES as $c) {
                                 <div class="policy-link-col">
                                     <h3>Visa Assistance</h3>
                                     <ul>
-                                        <li><a href="appointment">Visa Eligibility Check</a></li>
-                                        <li><a href="/#checklist">Document Checklist</a></li>
+                                        <li><a href="visa-appointment">Book a Visa Appointment</a></li>
+                                        <li><a href="visa-checklist">Document Checklist</a></li>
+                                        <li><a href="visa-requirements">Visa Requirements Checker</a></li>
                                         <li><a href="visa-refusal">Visa Refusal Guidance</a></li>
                                     </ul>
                                 </div>
@@ -170,8 +171,9 @@ foreach ($VISA_AGENCY_COUNTRIES as $c) {
                                     <h3>Company</h3>
                                     <ul>
                                         <li><a href="about">About Us</a></li>
+                                        <li><a href="our-services">Our Services</a></li>
                                         <li><a href="careers">Careers</a></li>
-                                        <li><a href="news">News &amp; Blog</a></li>
+                                        <li><a href="visa-news">News &amp; Updates</a></li>
                                         <li><a href="contact">Contact Us</a></li>
                                     </ul>
                                 </div>
@@ -180,7 +182,9 @@ foreach ($VISA_AGENCY_COUNTRIES as $c) {
                                     <ul>
                                         <li><a href="news">Blog</a></li>
                                         <li><a href="news-grid">Visa Guides</a></li>
-                                        <li><a href="/#checklist">Document Checklist</a></li>
+                                        <li><a href="visa-checklist">Document Checklist</a></li>
+                                        <li><a href="visa-requirements">Visa Requirements Checker</a></li>
+                                        <li><a href="visa-appointment">Book an Appointment</a></li>
                                         <li><a href="visa-refusal">Visa Refusal Guidance</a></li>
                                         <li><a href="/#faq">FAQs</a></li>
                                     </ul>

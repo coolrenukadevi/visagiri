@@ -1,21 +1,8 @@
 <?php
 $page_title = "About Us &ndash; Visa Agency";
-$page_description = "Learn about Visa Agency, a Ministry of Tourism recognised visa consultancy serving Patna, Ranchi, Raipur and Bhopal.";
+$page_description = "Visa Agency is a Ministry of Tourism recognised, technology-enabled visa consultancy based in Patna, Bihar, serving Patna, Ranchi, Raipur and Bhopal.";
 include __DIR__ . '/includes/header.php';
 ?>
-        <!-- Search Area Start -->
-        <div class="search-popup">
-            <div class="search-popup__overlay search-toggler"></div>
-            <div class="search-popup__content">
-                <form role="search" method="get" class="search-popup__form" action="#">
-                    <input type="text" id="search" name="search" placeholder="Search Here...">
-                    <button type="submit" aria-label="search submit" class="search-btn">
-                        <span><i class="fa-regular fa-magnifying-glass"></i></span>
-                    </button>
-                </form>
-            </div>
-        </div>
-       
         <!-- Breadcrumb-Wrapper Section Start -->
         <section class="breadcrumb-wrapper fix bg-cover" style="background-image: url(assets/img/inner-page/breadcrumb.jpg);">
             <div class="shape">
@@ -25,289 +12,138 @@ include __DIR__ . '/includes/header.php';
                 <div class="page-heading">
                     <h1 class="breadcrumb-title">About Us</h1>
                     <ul class="breadcrumb-list">
-                        <li>
-                            <a href="/">Home</a>
-                        </li>
-                        <li>
-                            <i class="fa-solid fa-chevron-right"></i>
-                        </li>
-                        <li>
-                           About Us
-                        </li>
+                        <li><a href="/">Home</a></li>
+                        <li><i class="fa-solid fa-chevron-right"></i></li>
+                        <li>About Us</li>
                     </ul>
                 </div>
             </div>
         </section>
 
-        <!--Choose-us Section3 Start -->
-        <section class="intro-section section-padding fix pb-0">
+        <section class="console-intro">
+            <div class="console-intro-inner">
+                <div class="console-tag"><span class="blink"></span> company.about() &middot; Patna, Bihar</div>
+                <p class="lede">Visa Agency is a Ministry of Tourism recognised, technology-enabled visa consultancy based in Patna, Bihar &mdash; helping applicants across Patna, Ranchi, Raipur and Bhopal navigate visa, apostille and documentation processes with a clear, tracked process instead of guesswork.</p>
+                <div class="console-cta-row">
+                    <a class="console-btn console-btn-primary" href="contact">Start Your Visa Enquiry</a>
+                    <a class="console-btn console-btn-outline-dark" href="#leadership">Meet the Team</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-padding fix">
             <div class="container">
-                <div class="section-title-area">
-                    <div class="section-title">
-                    <span class="sub-title-2 wow fadeInUp">Company Intro</span>
-                    <h2 class="split-text-right split-text-in-right">
-                        Building Pathways to Your Immigration Success
-                    </h2>
+                <div class="console-section-head">
+                    <p class="console-eyebrow">What we do</p>
+                    <h2>Consultancy, Not Just Paperwork</h2>
+                    <p>We guide applicants through eligibility checks, documentation, application preparation and appointment support &mdash; across tourist, business, work, family, medical and transit visa categories, plus apostille and attestation for supporting documents.</p>
                 </div>
-                <p>
-                    We provide expert guidance, personalized solutions, and transparent processes to help you achieve your immigration goals. Our dedicated team ensures a smooth journey, building pathways to your international success.
-                </p>
-                </div>
-                <div class="row">
-                    <div class="intro-image tp-clip-anim p-relative">
-                        <img src="assets/img/inner-page/intro.jpg" alt="img" class="tp-anim-img" data-animate="true">
+                <div class="console-card-grid">
+                    <div class="console-tcard">
+                        <div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l2.5 2.5L16 9"/></svg></div>
+                        <h3>Eligibility-first</h3>
+                        <p>We check what actually applies to you before recommending a visa category, rather than a one-size-fits-all process.</p>
+                    </div>
+                    <div class="console-tcard">
+                        <div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v5h5"/></svg></div>
+                        <h3>Documentation-led</h3>
+                        <p>Most delays come from incomplete or inconsistent documents &mdash; our process is built around catching that early.</p>
+                    </div>
+                    <div class="console-tcard">
+                        <div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18M3 12h18"/></svg></div>
+                        <h3>Multi-city coverage</h3>
+                        <p>We serve applicants across Patna, Ranchi, Raipur and Bhopal from our Patna base, in person and remotely.</p>
+                    </div>
+                    <div class="console-tcard">
+                        <div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 5-3.5 8-7 9-3.5-1-7-4-7-9V6l7-3z"/></svg></div>
+                        <h3>No guaranteed outcomes, said plainly</h3>
+                        <p>We're upfront that visa decisions rest solely with the relevant embassy or authority &mdash; we help you present the strongest possible case.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!--About Section Start -->
-        <section class="about-section section-padding fix pb-0">
-            <div class="top-shape">
-                <img src="assets/img/home-1/about/globe.png" alt="img">
-            </div>
+        <section class="section-padding fix section-bg-1" id="leadership">
             <div class="container">
-                <div class="about-wrapper">
-                    <div class="row g-4">
-                        <div class="col-lg-6">
-                            <div class="about-image">
-                                <img src="assets/img/home-1/about/about-1.jpg" alt="img" class="wow img-custom-anim-left">
-                                <div class="about-image-2">
-                                    <img src="assets/img/home-1/about/about-02.jpg" alt="img" class="wow img-custom-anim-right">
-                                </div>
-                                <div class="bg-shape">
-                                    <img src="assets/img/home-1/about/Vector.png" alt="img">
-                                </div>
-                                <div class="plane-shape float-bob-y">
-                                    <img src="assets/img/home-1/about/plane.png" alt="img">
-                                </div>
-                                 <div class="top-shape float-bob-y">
-                                    <img src="assets/img/home-1/about/shape.png" alt="img">
-                                </div>
-                            </div>
+                <div class="console-section-head">
+                    <p class="console-eyebrow">Leadership</p>
+                    <h2>The People Behind The Process</h2>
+                    <p>Our leadership team oversees case strategy, documentation standards and client experience across every office we serve.</p>
+                </div>
+                <div class="console-card-grid">
+                    <div class="console-tcard" style="padding:24px;">
+                        <div style="width:52px; height:52px; border-radius:50%; background:var(--signal-dim); display:flex; align-items:center; justify-content:center; margin-bottom:14px;">
+                            <svg viewBox="0 0 24 24" width="24" height="24" stroke="var(--signal)" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
                         </div>
-                        <div class="col-lg-6">
-                            <div class="about-content">
-                                <div class="section-title mb-0">
-                                    <span class="sub-title wow fadeInUp">About Our Consultancy</span>
-                                    <h2 class="split-text-right split-text-in-right">
-                                        Turning Travel <span>Dreams</span> Into Reality
-                                    </h2>
-                                </div>
-                                <p class="text wow fadeInUp" data-wow-delay=".3s">
-                                    We guide travellers with expert visa consulting, ensuring a smooth process from application to approval, turning travel aspirations into life-changing opportunities for a brighter future.
-                                </p>
-                                <div class="about-item wow fadeInUp" data-wow-delay=".5s">
-                                    <div class="content">
-                                        <span><img src="assets/img/home-1/icon/01.svg" alt=""> Global Reach-</span>
-                                        <p>Expanding Opportunities Worldwide</p>
-                                    </div>
-                                    <div class="content">
-                                        <span><img src="assets/img/home-1/icon/01.svg" alt=""> Personal Support-</span>
-                                        <p>A Consultant With You at Every Step</p>
-                                    </div>
-                                </div>
-                                <ul class="list wow fadeInUp" data-wow-delay=".3s">
-                                    <li>
-                                        <i class="fa-solid fa-chevrons-right"></i>
-                                        Fastest Visa form processing with skilled immigration agents
-                                    </li>
-                                     <li>
-                                        <i class="fa-solid fa-chevrons-right"></i>
-                                        Partnership with International Educational Institutions
-                                    </li>
-                                </ul>
-                                <a href="about" class="theme-btn wow fadeInUp" data-wow-delay=".5s">
-                                    Get Started
-                                    <i class="fa-solid fa-arrow-right"></i>
-                                </a>
-                            </div>
+                        <h3>Founder &amp; Director</h3>
+                        <p>Sets overall case strategy and oversees relationships with embassy and consular partners.</p>
+                    </div>
+                    <div class="console-tcard" style="padding:24px;">
+                        <div style="width:52px; height:52px; border-radius:50%; background:var(--signal-dim); display:flex; align-items:center; justify-content:center; margin-bottom:14px;">
+                            <svg viewBox="0 0 24 24" width="24" height="24" stroke="var(--signal)" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
                         </div>
+                        <h3>Head of Visa Operations</h3>
+                        <p>Leads documentation review and application quality across tourist, business, work and family visa categories.</p>
+                    </div>
+                    <div class="console-tcard" style="padding:24px;">
+                        <div style="width:52px; height:52px; border-radius:50%; background:var(--signal-dim); display:flex; align-items:center; justify-content:center; margin-bottom:14px;">
+                            <svg viewBox="0 0 24 24" width="24" height="24" stroke="var(--signal)" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                        </div>
+                        <h3>Head of Apostille &amp; Attestation</h3>
+                        <p>Oversees document legalisation casework, including MEA apostille and embassy attestation chains.</p>
+                    </div>
+                    <div class="console-tcard" style="padding:24px;">
+                        <div style="width:52px; height:52px; border-radius:50%; background:var(--signal-dim); display:flex; align-items:center; justify-content:center; margin-bottom:14px;">
+                            <svg viewBox="0 0 24 24" width="24" height="24" stroke="var(--signal)" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                        </div>
+                        <h3>Client Experience Lead</h3>
+                        <p>Coordinates appointments, communication and support for clients across all four cities we serve.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Choose-us-section-2 Start -->
-       <section class="choose-us-section-2 section-padding fix bg-cover" id="why-choose-us" style="background-image: url(assets/img/home-2/feature/bg-shape.png);">
+        <section class="section-padding fix">
             <div class="container">
-                <div class="choose-us-wrapper-2">
-                    <div class="row g-4">
-                        <div class="col-lg-6">
-                            <div class="choose-us-image">
-                                <img src="assets/img/home-2/feature/02.png" alt="img">
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="feature-content">
-                                 <div class="section-title mb-0">
-                                    <span class="sub-title-2 wow fadeInUp">Why Choose Us</span>
-                                    <h2 class="split-text-right split-text-in-right">
-                                        A Smoother Visa Journey, Guided By Experts
-                                    </h2>
-                                </div>
-                                <p class="text">
-                                    We provide expert guidance for every visa application, ensuring smooth processing, personalized support, and reliable assistance 
-                                </p>
-                                <div class="choose-us-box">
-                                    <div class="icon">
-                                        <img src="assets/img/home-2/icon/01.png" alt="img">
-                                    </div>
-                                    <div class="content">
-                                        <h5>Expert Consultants</h5>
-                                        <p>
-                                            Skilled and knowledgeable visa advisors. Skilled and knowled geable visa advisors.
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="choose-us-box">
-                                    <div class="icon">
-                                        <img src="assets/img/home-2/icon/01.png" alt="img">
-                                    </div>
-                                    <div class="content">
-                                        <h5>Personalized Support</h5>
-                                        <p>
-                                            Skilled and knowledgeable visa advisors. Skilled and knowled geable visa advisors.
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="choose-us-box">
-                                    <div class="icon">
-                                        <img src="assets/img/home-2/icon/01.png" alt="img">
-                                    </div>
-                                    <div class="content">
-                                        <h5>Transparent Process</h5>
-                                        <p>
-                                            Skilled and knowledgeable visa advisors. Skilled and knowled geable visa advisors.
-                                        </p>
-                                    </div>
-                                </div>
-                                 <a href="contact" class="theme-btn">
-                                    Get Started Today
-                                    <i class="fa-solid fa-arrow-right"></i>
-                                </a>
-                            </div>
-                        </div>
+                <div class="console-section-head">
+                    <p class="console-eyebrow">Why choose us</p>
+                    <h2>What We Try To Get Right</h2>
+                </div>
+                <div class="console-card-grid">
+                    <div class="console-tcard">
+                        <div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg></div>
+                        <h3>Expert consultants</h3>
+                        <p>A team focused specifically on visa consultancy and documentation, not general travel booking.</p>
+                    </div>
+                    <div class="console-tcard">
+                        <div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2 21v-2a5 5 0 0 1 5-5h2a5 5 0 0 1 5 5v2"/></svg></div>
+                        <h3>One case handler</h3>
+                        <p>A single point of contact for your case, rather than being passed between departments.</p>
+                    </div>
+                    <div class="console-tcard">
+                        <div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="1.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
+                        <h3>Transparent process</h3>
+                        <p>Clear checklists and status updates, so you know exactly where your application stands.</p>
                     </div>
                 </div>
             </div>
-       </section>
+        </section>
 
-        <!--News Section Start -->
-        <section class="news-section section-padding fix pt-0">
+        <section class="section-padding fix section-bg-1">
             <div class="container">
-                <div class="section-title-area">
-                    <div class="section-title">
-                        <span class="sub-title">Visa Tips & Guides</span>
-                        <h2 class="split-text-right split-text-in-right">
-                           Latest Insights & Updates
-                        </h2>
-                    </div>
-                    <a href="news" class="theme-btn">
-                        view all articies
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                </div>
-                <div class="row">
-                    <div class="col-xl-4 col-lg-6 col-md-6">
-                        <div class="news-card-item">
-                            <div class="news-image">
-                                <img src="assets/img/home-1/news/news-1.jpg" alt="img">
-                                <span>Business Visa</span>
-                                <div class="news-layer-wrapper">
-                                    <div class="news-layer-image" style="background-image: url('assets/img/home-1/news/news-1.jpg');"></div>
-                                    <div class="news-layer-image" style="background-image: url('assets/img/home-1/news/news-1.jpg');"></div>
-                                    <div class="news-layer-image" style="background-image: url('assets/img/home-1/news/news-1.jpg');"></div>
-                                    <div class="news-layer-image" style="background-image: url('assets/img/home-1/news/news-1.jpg');"></div>
-                                </div>
-                            </div>
-                            <div class="news-content">
-                                <div class="list">
-                                    <span>Comment (08)</span>
-                                    <span>_ 20 August ,2025</span>
-                                </div>
-                                <h3>
-                                    <a href="news-details">
-                                        Step-by-Step Guide to Applying for a Business Visa
-                                    </a>
-                                </h3>
-                                <div class="news-bottom">
-                                    <div class="info-item">
-                                        <img src="assets/img/home-1/news/client.png" alt="img">
-                                        <span>By Sohel</span>
-                                    </div>
-                                    <a href="news-details" class="link-btn">View Articles<i class="fa-solid fa-arrow-right"></i></a>
-                                </div>
-                            </div>
+                <div class="console-cta-band">
+                    <div class="console-cta-inner">
+                        <div>
+                            <h3>Want To Talk To The Team Directly?</h3>
+                            <p>Book a consultation or send us your case details &mdash; we'll get back to you promptly.</p>
                         </div>
-                    </div>
-                    <div class="col-xl-4 col-lg-6 col-md-6">
-                        <div class="news-card-item">
-                            <div class="news-image">
-                                <img src="assets/img/home-1/news/news-2.jpg" alt="img">
-                                <span>IELTS / TOEFL</span>
-                                <div class="news-layer-wrapper">
-                                    <div class="news-layer-image" style="background-image: url('assets/img/home-1/news/news-2.jpg');"></div>
-                                    <div class="news-layer-image" style="background-image: url('assets/img/home-1/news/news-2.jpg');"></div>
-                                    <div class="news-layer-image" style="background-image: url('assets/img/home-1/news/news-2.jpg');"></div>
-                                    <div class="news-layer-image" style="background-image: url('assets/img/home-1/news/news-2.jpg');"></div>
-                                </div>
-                            </div>
-                            <div class="news-content">
-                                <div class="list">
-                                    <span>Comment (08)</span>
-                                    <span>_ 20 August ,2025</span>
-                                </div>
-                                <h3>
-                                    <a href="news-details">
-                                        Tips to Prepare Financial Documents for Visa Approval
-                                    </a>
-                                </h3>
-                                <div class="news-bottom">
-                                    <div class="info-item">
-                                        <img src="assets/img/home-1/news/client.png" alt="img">
-                                        <span>By Sohel</span>
-                                    </div>
-                                    <a href="news-details" class="link-btn">View Articles<i class="fa-solid fa-arrow-right"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                     <div class="col-xl-4 col-lg-6 col-md-6">
-                        <div class="news-card-item">
-                            <div class="news-image">
-                                <img src="assets/img/home-1/news/news-3.jpg" alt="img">
-                                <span>Study Abroad</span>
-                                <div class="news-layer-wrapper">
-                                    <div class="news-layer-image" style="background-image: url('assets/img/home-1/news/news-3.jpg');"></div>
-                                    <div class="news-layer-image" style="background-image: url('assets/img/home-1/news/news-3.jpg');"></div>
-                                    <div class="news-layer-image" style="background-image: url('assets/img/home-1/news/news-3.jpg');"></div>
-                                    <div class="news-layer-image" style="background-image: url('assets/img/home-1/news/news-3.jpg');"></div>
-                                </div>
-                            </div>
-                            <div class="news-content">
-                                <div class="list">
-                                    <span>Comment (08)</span>
-                                    <span>_ 20 August ,2025</span>
-                                </div>
-                                <h3>
-                                    <a href="news-details">
-                                        Post-Arrival Guide What Every Traveller Should Know
-                                    </a>
-                                </h3>
-                                <div class="news-bottom">
-                                    <div class="info-item">
-                                        <img src="assets/img/home-1/news/client.png" alt="img">
-                                        <span>By Sohel</span>
-                                    </div>
-                                    <a href="news-details" class="link-btn">View Articles<i class="fa-solid fa-arrow-right"></i></a>
-                                </div>
-                            </div>
+                        <div class="console-cta-buttons">
+                            <a class="console-btn console-btn-primary" href="contact">Start Your Visa Enquiry</a>
+                            <a class="console-btn console-btn-outline-dark" href="tel:+917844819819">Call +91 78448 19819</a>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-         <!--Footer Section Start -->
 <?php include __DIR__ . '/includes/footer.php'; ?>

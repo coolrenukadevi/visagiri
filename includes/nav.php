@@ -20,6 +20,7 @@
                         <div class="mega-col">
                             <h5><i class="fa-solid fa-passport"></i>Visa Services</h5>
                             <ul class="mega-links">
+                                <li><a href="our-services">All Services &mdash; Directory</a></li>
                                 <li><a href="visa-tourist">Tourist Visa</a></li>
                                 <li><a href="visa-business">Business Visa</a></li>
                                 <li><a href="service-details">Work Visa</a></li>
@@ -153,7 +154,7 @@
         </li>
 
         <li class="has-dropdown">
-            <a href="news">Resources</a>
+            <a href="visa-news">Resources</a>
             <ul class="submenu has-homemenu mega-panel">
                 <li>
                     <div class="mega-panel-inner">
@@ -162,18 +163,18 @@
                             <ul class="mega-links">
                                 <li><a href="news-grid">Visa Guides</a></li>
                                 <li><a href="country-list">Country Guides</a></li>
-                                <li><a href="/#checklist">Visa Checklists</a></li>
+                                <li><a href="visa-checklist">Visa Checklists</a></li>
                                 <li><a href="/#faq">Visa FAQs</a></li>
-                                <li><a href="news">Visa News</a></li>
+                                <li><a href="visa-news">Visa News</a></li>
                             </ul>
                         </div>
                         <div class="mega-col">
                             <h5><i class="fa-solid fa-toolbox"></i>Useful Tools</h5>
                             <ul class="mega-links">
-                                <li><a href="/#visa-search">Visa Finder</a></li>
-                                <li><a href="/#checklist">Document Checklist</a></li>
+                                <li><a href="visa-requirements">Visa Requirements Checker</a></li>
+                                <li><a href="visa-checklist">Document Checklist</a></li>
                                 <li><a href="country-list">Country Search</a></li>
-                                <li><a href="appointment">Appointment Assistance</a></li>
+                                <li><a href="visa-appointment">Book an Appointment</a></li>
                             </ul>
                         </div>
                         <div class="mega-col">
@@ -183,7 +184,7 @@
                                 <li><a href="news-grid">Travel Tips</a></li>
                                 <li><a href="visa-refusal">Visa Refusal Guidance</a></li>
                             </ul>
-                            <a href="news" class="mega-cta">Visit Resources <i class="fa-solid fa-arrow-right"></i></a>
+                            <a href="visa-news" class="mega-cta">Visit Resources <i class="fa-solid fa-arrow-right"></i></a>
                         </div>
                     </div>
                 </li>
