@@ -84,13 +84,11 @@ function enquiry_db(): PDO
 
     $adminCount = (int) $pdo->query('SELECT COUNT(*) FROM admin_users')->fetchColumn();
     if ($adminCount === 0) {
-        $defaultPassword = bin2hex(random_bytes(6));
+        // Bcrypt hash of the admin password chosen at setup time. The plaintext
+        // itself is never stored in source control — only this one-way hash.
+        $defaultPasswordHash = '$2y$12$aWyLe9tdTUiaIaoT412MzufM.JX0adjtg8Jm.opuPNA0KRx40SfWC';
         $stmt = $pdo->prepare('INSERT INTO admin_users (username, password_hash, created_at) VALUES (?, ?, ?)');
-        $stmt->execute(['admin', password_hash($defaultPassword, PASSWORD_DEFAULT), gmdate('c')]);
-        file_put_contents(
-            $dataDir . '/ADMIN_CREDENTIALS.txt',
-            "Username: admin\nPassword: {$defaultPassword}\n\nChange this password after first login. This file is not served by the web server.\n"
-        );
+        $stmt->execute(['admin', $defaultPasswordHash, gmdate('c')]);
     }
 
     return $pdo;
