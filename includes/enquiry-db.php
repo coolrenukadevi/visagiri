@@ -18,6 +18,8 @@ const CRM_VISA_CATEGORIES = [
 ];
 const CRM_ROLES = ['Super Admin', 'Admin', 'Sales Manager', 'Travel Consultant', 'Visa Consultant', 'Accounts'];
 const CRM_FOLLOWUP_TYPES = ['Call', 'WhatsApp', 'Email', 'Meeting'];
+const CRM_PAYMENT_METHODS = ['Cash', 'UPI', 'Bank Transfer', 'Credit Card', 'Debit Card', 'Cheque', 'Other'];
+const CRM_DECISIONS = ['Pending', 'Approved', 'Rejected'];
 const CRM_DOC_CATEGORIES = [
     'Passport Scan Copy', 'Photograph', 'Flight Tickets', 'Hotel Reservation', 'Bank Statement',
     'ITR', 'Employment Certificate', 'Salary Slip', 'Cover Letter', 'Invitation Letter',
@@ -100,11 +102,12 @@ function enquiry_db(): PDO
         discount_amount REAL,
         paid_amount REAL,
 
-        -- Application tracking (lightweight, ahead of the full Applications module)
+        -- Application tracking
         application_number TEXT,
         appointment_date TEXT,
         submission_date TEXT,
         decision_date TEXT,
+        decision TEXT,
 
         message TEXT,
         source_url TEXT,
@@ -122,6 +125,18 @@ function enquiry_db(): PDO
         user_agent TEXT,
         created_at TEXT NOT NULL,
         updated_at TEXT
+    )");
+
+    $pdo->exec("CREATE TABLE IF NOT EXISTS payments (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        enquiry_id INTEGER NOT NULL REFERENCES enquiries(id) ON DELETE CASCADE,
+        amount REAL NOT NULL,
+        payment_method TEXT,
+        reference_number TEXT,
+        payment_date TEXT NOT NULL,
+        notes TEXT,
+        recorded_by TEXT,
+        created_at TEXT NOT NULL
     )");
 
     $pdo->exec("CREATE TABLE IF NOT EXISTS enquiry_documents (

@@ -116,22 +116,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($action === 'update_financial') {
         $quoted = $_POST['quoted_amount'] !== '' ? (float) $_POST['quoted_amount'] : null;
         $discount = $_POST['discount_amount'] !== '' ? (float) $_POST['discount_amount'] : null;
-        $paid = $_POST['paid_amount'] !== '' ? (float) $_POST['paid_amount'] : null;
-        $pdo->prepare('UPDATE enquiries SET quoted_amount = ?, discount_amount = ?, paid_amount = ?, updated_at = ? WHERE id = ?')
-            ->execute([$quoted, $discount, $paid, gmdate('c'), $enquiry['id']]);
-        crm_log_activity($pdo, $enquiry['id'], admin_name(), 'updated financial details', "Paid: ₹" . number_format((float) $paid, 2));
-        if ($paid && $paid > (float) ($enquiry['paid_amount'] ?? 0)) {
-            crm_notify($pdo, null, 'payment', "Payment recorded for {$enquiry['enquiry_ref']}: ₹" . number_format($paid, 2), $enquiry['id']);
+        $pdo->prepare('UPDATE enquiries SET quoted_amount = ?, discount_amount = ?, updated_at = ? WHERE id = ?')
+            ->execute([$quoted, $discount, gmdate('c'), $enquiry['id']]);
+        crm_log_activity($pdo, $enquiry['id'], admin_name(), 'updated quoted amount / discount');
+
+    } elseif ($action === 'add_payment') {
+        $amount = (float) ($_POST['amount'] ?? 0);
+        $method = trim($_POST['payment_method'] ?? '');
+        $reference = trim($_POST['reference_number'] ?? '');
+        $payDate = trim($_POST['payment_date'] ?? gmdate('Y-m-d'));
+        $notes = trim($_POST['payment_notes'] ?? '');
+        if ($amount > 0) {
+            $pdo->prepare('INSERT INTO payments (enquiry_id, amount, payment_method, reference_number, payment_date, notes, recorded_by, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)')->execute([$enquiry['id'], $amount, $method, $reference, $payDate, $notes, admin_name(), gmdate('c')]);
+            $newPaid = (float) ($enquiry['paid_amount'] ?? 0) + $amount;
+            $pdo->prepare('UPDATE enquiries SET paid_amount = ?, updated_at = ? WHERE id = ?')->execute([$newPaid, gmdate('c'), $enquiry['id']]);
+            crm_log_activity($pdo, $enquiry['id'], admin_name(), 'recorded a payment', "₹" . number_format($amount, 2) . ($method ? " via $method" : ''));
+            crm_notify($pdo, null, 'payment', "Payment of ₹" . number_format($amount, 2) . " recorded for {$enquiry['enquiry_ref']}.", $enquiry['id']);
         }
 
     } elseif ($action === 'update_application') {
-        $pdo->prepare('UPDATE enquiries SET application_number = ?, appointment_date = ?, submission_date = ?, decision_date = ?, updated_at = ? WHERE id = ?')
+        $decision = trim($_POST['decision'] ?? 'Pending');
+        if (!in_array($decision, CRM_DECISIONS, true)) $decision = 'Pending';
+        $newStatus = $enquiry['status'];
+        if ($decision === 'Approved') $newStatus = 'Visa Approved';
+        elseif ($decision === 'Rejected') $newStatus = 'Visa Rejected';
+
+        $pdo->prepare('UPDATE enquiries SET application_number = ?, appointment_date = ?, submission_date = ?, decision_date = ?, decision = ?, status = ?, updated_at = ? WHERE id = ?')
             ->execute([
                 trim($_POST['application_number'] ?? ''), trim($_POST['appointment_date'] ?? '') ?: null,
                 trim($_POST['submission_date'] ?? '') ?: null, trim($_POST['decision_date'] ?? '') ?: null,
-                gmdate('c'), $enquiry['id'],
+                $decision, $newStatus, gmdate('c'), $enquiry['id'],
             ]);
         crm_log_activity($pdo, $enquiry['id'], admin_name(), 'updated application tracking details');
+        if ($decision !== ($enquiry['decision'] ?: 'Pending') && $decision !== 'Pending') {
+            crm_log_activity($pdo, $enquiry['id'], admin_name(), "recorded visa decision: $decision");
+            crm_notify($pdo, null, 'decision', "Visa decision for {$enquiry['enquiry_ref']}: $decision.", $enquiry['id']);
+        }
     }
 
     header('Location: enquiry.php?ref=' . urlencode($ref) . (isset($_POST['redirect_hash']) ? '#' . $_POST['redirect_hash'] : ''));
@@ -156,6 +177,10 @@ $actStmt->execute([$enquiry['id']]);
 $activities = $actStmt->fetchAll(PDO::FETCH_ASSOC);
 
 $crmUsers = $pdo->query('SELECT name, role FROM users ORDER BY name')->fetchAll(PDO::FETCH_ASSOC);
+
+$payStmt = $pdo->prepare('SELECT * FROM payments WHERE enquiry_id = ? ORDER BY payment_date DESC, id DESC');
+$payStmt->execute([$enquiry['id']]);
+$payments = $payStmt->fetchAll(PDO::FETCH_ASSOC);
 
 $ADMIN_PAGE_TITLE = $enquiry['enquiry_ref'];
 $ADMIN_ACTIVE_NAV = 'enquiries';
@@ -182,6 +207,8 @@ function fmt($v) { return ($v !== null && $v !== '') ? htmlspecialchars((string)
         <a class="crm-btn" href="#followup"><i class="fa-solid fa-phone-volume"></i> Add Follow-up</a>
         <a class="crm-btn" href="#documents"><i class="fa-solid fa-upload"></i> Upload Document</a>
         <a class="crm-btn" href="#status"><i class="fa-solid fa-pen"></i> Change Status</a>
+        <a class="crm-btn" href="#application"><i class="fa-solid fa-passport"></i> Create Application</a>
+        <a class="crm-btn" href="#financial"><i class="fa-solid fa-money-bill-wave"></i> Add Payment</a>
         <a class="crm-btn" href="enquiry.php?ref=<?php echo urlencode($ref); ?>&archive=1" data-confirm="Archive this enquiry? It will be hidden from active lists."><i class="fa-solid fa-box-archive"></i> Archive</a>
     </div>
 </div>
@@ -227,22 +254,48 @@ function fmt($v) { return ($v !== null && $v !== '') ? htmlspecialchars((string)
             <div class="crm-panel-item"><label>Created</label><div class="val"><?php echo fmt(substr($enquiry['created_at'], 0, 16)); ?> UTC</div></div>
         </div>
     </div>
-    <div class="crm-card">
+    <div class="crm-card" id="financial">
         <h3>Financial Information</h3>
         <form method="post">
             <input type="hidden" name="action" value="update_financial">
             <div class="crm-panel-grid" style="margin-bottom:14px;">
                 <div class="crm-form-field"><label>Quoted Amount (₹)</label><input type="number" name="quoted_amount" value="<?php echo htmlspecialchars((string) ($enquiry['quoted_amount'] ?? '')); ?>"></div>
                 <div class="crm-form-field"><label>Discount (₹)</label><input type="number" name="discount_amount" value="<?php echo htmlspecialchars((string) ($enquiry['discount_amount'] ?? '')); ?>"></div>
-                <div class="crm-form-field"><label>Paid Amount (₹)</label><input type="number" name="paid_amount" value="<?php echo htmlspecialchars((string) ($enquiry['paid_amount'] ?? '')); ?>"></div>
-                <div class="crm-panel-item"><label>Pending</label><div class="val">₹<?php echo number_format(max(0, (float) ($enquiry['quoted_amount'] ?? 0) - (float) ($enquiry['discount_amount'] ?? 0) - (float) ($enquiry['paid_amount'] ?? 0)), 2); ?></div></div>
+                <div class="crm-panel-item"><label>Paid to Date</label><div class="val">₹<?php echo number_format((float) ($enquiry['paid_amount'] ?? 0), 2); ?></div></div>
+                <div class="crm-panel-item"><label>Balance Due</label><div class="val">₹<?php echo number_format(max(0, (float) ($enquiry['quoted_amount'] ?? 0) - (float) ($enquiry['discount_amount'] ?? 0) - (float) ($enquiry['paid_amount'] ?? 0)), 2); ?></div></div>
             </div>
-            <button type="submit" class="crm-btn crm-btn-primary crm-btn-sm">Save Financial Details</button>
+            <button type="submit" class="crm-btn crm-btn-primary crm-btn-sm">Save Quoted / Discount</button>
+        </form>
+
+        <?php if (!empty($payments)): ?>
+        <div style="margin-top:18px;">
+            <?php foreach ($payments as $p): ?>
+            <div class="crm-followup-item">
+                <span class="fu-when" style="width:100px;">₹<?php echo number_format((float) $p['amount'], 2); ?></span>
+                <span class="fu-notes"><?php echo htmlspecialchars($p['payment_date']); ?> &middot; <?php echo htmlspecialchars($p['payment_method'] ?: '—'); ?></span>
+                <a href="invoice.php?payment_id=<?php echo (int) $p['id']; ?>" target="_blank" class="crm-btn crm-btn-ghost crm-btn-sm"><i class="fa-solid fa-file-invoice"></i> Invoice</a>
+            </div>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+
+        <form method="post" style="margin-top:14px;border-top:1px solid var(--c-border);padding-top:14px;">
+            <input type="hidden" name="action" value="add_payment">
+            <div class="crm-form-grid" style="margin-bottom:12px;">
+                <div class="crm-form-field"><label>Amount (₹)</label><input type="number" name="amount" min="1" step="0.01" required></div>
+                <div class="crm-form-field"><label>Payment Date</label><input type="date" name="payment_date" value="<?php echo gmdate('Y-m-d'); ?>" required></div>
+                <div class="crm-form-field"><label>Method</label>
+                    <select name="payment_method"><?php foreach (CRM_PAYMENT_METHODS as $m): ?><option><?php echo $m; ?></option><?php endforeach; ?></select>
+                </div>
+                <div class="crm-form-field"><label>Reference Number</label><input type="text" name="reference_number"></div>
+                <div class="crm-form-field crm-form-field-full"><label>Notes</label><input type="text" name="payment_notes"></div>
+            </div>
+            <button type="submit" class="crm-btn crm-btn-primary crm-btn-sm"><i class="fa-solid fa-plus"></i> Record Payment</button>
         </form>
     </div>
 </div>
 
-<div class="crm-card">
+<div class="crm-card" id="application">
     <h3>Application Information</h3>
     <form method="post">
         <input type="hidden" name="action" value="update_application">
@@ -251,7 +304,11 @@ function fmt($v) { return ($v !== null && $v !== '') ? htmlspecialchars((string)
             <div class="crm-form-field"><label>Appointment Date</label><input type="date" name="appointment_date" value="<?php echo htmlspecialchars($enquiry['appointment_date'] ?? ''); ?>"></div>
             <div class="crm-form-field"><label>Submission Date</label><input type="date" name="submission_date" value="<?php echo htmlspecialchars($enquiry['submission_date'] ?? ''); ?>"></div>
             <div class="crm-form-field"><label>Decision Date</label><input type="date" name="decision_date" value="<?php echo htmlspecialchars($enquiry['decision_date'] ?? ''); ?>"></div>
+            <div class="crm-form-field"><label>Decision</label>
+                <select name="decision"><?php foreach (CRM_DECISIONS as $d): ?><option <?php echo ($enquiry['decision'] ?: 'Pending') === $d ? 'selected' : ''; ?>><?php echo $d; ?></option><?php endforeach; ?></select>
+            </div>
         </div>
+        <p style="font-size:11.5px;color:var(--c-muted);margin:-6px 0 14px;">Setting the decision to Approved or Rejected also updates the enquiry status and notifies the team.</p>
         <button type="submit" class="crm-btn crm-btn-primary crm-btn-sm">Save Application Details</button>
     </form>
 </div>
