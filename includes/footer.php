@@ -17,6 +17,10 @@
             </div>
         </div>
 
+        <a href="https://wa.me/917844819819" target="_blank" rel="noopener" class="floating-whatsapp" aria-label="Chat on WhatsApp">
+            <i class="fa-brands fa-whatsapp"></i>
+        </a>
+
         <button type="button" class="back-to-top" id="backToTop" aria-label="Back to top">
             <i class="fa-solid fa-arrow-up"></i>
         </button>

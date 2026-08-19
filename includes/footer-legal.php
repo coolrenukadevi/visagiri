@@ -1,5 +1,5 @@
                 <p class="footer-disclaimer">
-                    VisaAgency.in is an independent visa consultancy/management service and is not affiliated with any government, embassy or consulate unless expressly stated. Visa decisions are made solely by the relevant immigration authority. Requirements, fees and processing times may change without notice &mdash; applicants should verify current requirements before submission.
+                    Visa decisions are made solely by the relevant embassy, consulate, or government immigration authority. Visa Agency provides visa consultancy and application-management assistance and does not guarantee visa approval.
                 </p>
                 <p>
                     © <?php echo date('Y'); ?> <span>VISA AGENCY</span>. All Rights Reserved. &mdash; A unit of Tripgation Private Limited

@@ -1159,3 +1159,30 @@ summary:focus-visible {
     color: var(--text);
     margin-top: 14px;
 }
+
+/* ---- Floating WhatsApp button (desktop; mobile already has it in the sticky CTA bar) ---- */
+.floating-whatsapp {
+    position: fixed;
+    right: 20px;
+    bottom: 76px;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--gold);
+    color: var(--header);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+    z-index: 999;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+.floating-whatsapp:hover {
+    transform: scale(1.06);
+    background: #b78f45;
+    color: var(--header);
+}
+@media (max-width: 767px) {
+    .floating-whatsapp { display: none; }
+}
