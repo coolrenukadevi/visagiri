@@ -1,0 +1,57 @@
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tourist visa illustration with passport, sun and landmark">
+<defs>
+<linearGradient id="tvBg" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#EAF0FF"/>
+<stop offset="1" stop-color="#F7E6E4"/>
+</linearGradient>
+<linearGradient id="tvPassport" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#E4222A"/>
+<stop offset="1" stop-color="#B81A21"/>
+</linearGradient>
+<linearGradient id="tvSun" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="#FFD27A"/>
+<stop offset="1" stop-color="#F2A93C"/>
+</linearGradient>
+</defs>
+<rect width="800" height="600" fill="url(#tvBg)"/>
+<circle cx="620" cy="140" r="70" fill="url(#tvSun)"/>
+<g stroke="#F2A93C" stroke-width="6" stroke-linecap="round">
+<line x1="620" y1="30" x2="620" y2="55"/>
+<line x1="620" y1="225" x2="620" y2="250"/>
+<line x1="510" y1="140" x2="535" y2="140"/>
+<line x1="705" y1="140" x2="730" y2="140"/>
+<line x1="546" y1="66" x2="563" y2="83"/>
+<line x1="677" y1="197" x2="694" y2="214"/>
+<line x1="694" y1="66" x2="677" y2="83"/>
+<line x1="563" y1="197" x2="546" y2="214"/>
+</g>
+<!-- landmark tower -->
+<g fill="#1B3F93">
+<polygon points="150,480 175,480 175,300 150,300"/>
+<polygon points="180,480 205,480 205,260 180,260"/>
+<polygon points="210,480 225,480 225,220 210,220"/>
+<rect x="130" y="480" width="240" height="18" rx="3"/>
+<polygon points="200,150 220,220 180,220"/>
+</g>
+<!-- flight path -->
+<path d="M120 380 Q 300 260 470 340" stroke="#B81A21" stroke-width="3" stroke-dasharray="10 10" fill="none"/>
+<g transform="translate(455,330) rotate(25)">
+<path d="M0 0 L34 6 L0 12 L8 6 Z" fill="#0F2557"/>
+</g>
+<!-- passport card -->
+<g transform="translate(430,380)">
+<rect width="220" height="150" rx="14" fill="url(#tvPassport)"/>
+<rect x="24" y="30" width="60" height="60" rx="30" fill="#FCE3E3"/>
+<circle cx="54" cy="52" r="14" fill="#B81A21"/>
+<path d="M32 82 q22 -22 44 0" stroke="#B81A21" stroke-width="8" fill="none" stroke-linecap="round"/>
+<rect x="100" y="34" width="96" height="10" rx="5" fill="#FCE3E3"/>
+<rect x="100" y="56" width="80" height="8" rx="4" fill="#F6B9B9"/>
+<rect x="100" y="72" width="88" height="8" rx="4" fill="#F6B9B9"/>
+<rect x="24" y="112" width="172" height="8" rx="4" fill="#F6B9B9"/>
+</g>
+<!-- approved stamp -->
+<g transform="translate(560,360) rotate(-12)">
+<circle cx="0" cy="0" r="46" fill="none" stroke="#1E8E52" stroke-width="6"/>
+<text x="0" y="6" text-anchor="middle" font-family="monospace" font-size="16" font-weight="700" fill="#1E8E52">VISA</text>
+</g>
+</svg>

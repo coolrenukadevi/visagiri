@@ -113,40 +113,40 @@ include __DIR__ . '/includes/header-home.php';
                             <div class="swiper-slide">
                                 <div class="service-box-item">
                                     <div class="service-image">
-                                        <img src="assets/img/home-2/service.jpg" alt="img">
+                                        <img src="assets/img/home-2/service-tourist.svg" alt="Tourist visa assistance">
                                     </div>
                                     <h2>01</h2>
                                     <h3>
-                                        <a href="service-details">Tourist Visa <br> Assistance</a>
+                                        <a href="visa-tourist">Tourist Visa <br> Assistance</a>
                                     </h3>
                                 </div>
                             </div>
                             <div class="swiper-slide">
                                 <div class="service-box-item">
                                     <div class="service-image">
-                                        <img src="assets/img/home-2/service.jpg" alt="img">
+                                        <img src="assets/img/home-2/service-family.svg" alt="Family visit visa">
                                     </div>
                                     <h2>02</h2>
                                     <h3>
-                                        <a href="service-details">Family Visit <br> Visa</a>
+                                        <a href="visa-family">Family Visit <br> Visa</a>
                                     </h3>
                                 </div>
                             </div>
                             <div class="swiper-slide">
                                 <div class="service-box-item">
                                     <div class="service-image">
-                                        <img src="assets/img/home-2/service.jpg" alt="img">
+                                        <img src="assets/img/home-2/service-business.svg" alt="Business visa services">
                                     </div>
                                     <h2>03</h2>
                                     <h3>
-                                        <a href="service-details">Business Visa <br> Services</a>
+                                        <a href="visa-business">Business Visa <br> Services</a>
                                     </h3>
                                 </div>
                             </div>
                             <div class="swiper-slide">
                                 <div class="service-box-item">
                                     <div class="service-image">
-                                        <img src="assets/img/home-2/service.jpg" alt="img">
+                                        <img src="assets/img/home-2/service-work.svg" alt="Work visa consulting">
                                     </div>
                                     <h2>04</h2>
                                     <h3>
