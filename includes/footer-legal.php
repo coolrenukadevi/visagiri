@@ -8,8 +8,8 @@
                     <li><a href="privacy-policy">Privacy Policy</a></li>
                     <li><a href="terms-and-conditions">Terms &amp; Conditions</a></li>
                     <li><a href="cookie-policy">Cookie Policy</a></li>
-                    <li><a href="contact">Disclaimer</a></li>
-                    <li><a href="contact">Refund Policy</a></li>
-                    <li><a href="contact">Data Security</a></li>
-                    <li><a href="sitemap.xml">Sitemap</a></li>
+                    <li><a href="disclaimer">Disclaimer</a></li>
+                    <li><a href="refund-policy">Refund Policy</a></li>
+                    <li><a href="data-security">Data Security</a></li>
+                    <li><a href="sitemap">Sitemap</a></li>
                 </ul>
