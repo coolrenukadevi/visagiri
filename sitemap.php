@@ -84,20 +84,20 @@ foreach ($VISA_AGENCY_COUNTRIES as $c) {
                                 <div class="policy-link-col">
                                     <h3>Visa Categories</h3>
                                     <ul>
-                                        <li><a href="service-details">Tourist Visa</a></li>
-                                        <li><a href="service-details">Business Visa</a></li>
+                                        <li><a href="visa-tourist">Tourist Visa</a></li>
+                                        <li><a href="visa-business">Business Visa</a></li>
                                         <li><a href="service-details">Work Visa</a></li>
-                                        <li><a href="service">Family Visa</a></li>
-                                        <li><a href="service-details">Transit Visa</a></li>
+                                        <li><a href="visa-family">Family Visa</a></li>
+                                        <li><a href="visa-transit">Transit Visa</a></li>
                                     </ul>
                                 </div>
                                 <div class="policy-link-col">
                                     <h3>More Categories</h3>
                                     <ul>
-                                        <li><a href="visa-consultancy-services">Conference &amp; Event Visa</a></li>
-                                        <li><a href="visa-consultancy-services">Medical Visa</a></li>
-                                        <li><a href="visa-consultancy-services">Immigration / PR Assistance</a></li>
-                                        <li><a href="visa-consultancy-services">E-Visa</a></li>
+                                        <li><a href="visa-sports">Sports Visa</a></li>
+                                        <li><a href="visa-medical">Medical Visa</a></li>
+                                        <li><a href="visa-crew">Crew Visa</a></li>
+                                        <li><a href="visa-extension">Visa Extension</a></li>
                                         <li class="more"><a href="visa-consultancy-services">Explore all visa services</a></li>
                                     </ul>
                                 </div>

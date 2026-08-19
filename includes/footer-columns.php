@@ -19,15 +19,15 @@
                         <details class="footer-accordion" open>
                             <summary>Visa Services</summary>
                             <ul>
-                                <li><a href="service-details">Tourist Visa</a></li>
-                                <li><a href="service-details">Business Visa</a></li>
+                                <li><a href="visa-tourist">Tourist Visa</a></li>
+                                <li><a href="visa-business">Business Visa</a></li>
                                 <li><a href="service-details">Work Visa</a></li>
-                                <li><a href="service">Family Visa</a></li>
-                                <li><a href="service-details">Transit Visa</a></li>
-                                <li><a href="visa-consultancy-services">Sports Visa</a></li>
-                                <li><a href="visa-consultancy-services">Medical Visa</a></li>
-                                <li><a href="visa-consultancy-services">Crew Visa</a></li>
-                                <li><a href="visa-consultancy-services">Visa Extension</a></li>
+                                <li><a href="visa-family">Family Visa</a></li>
+                                <li><a href="visa-transit">Transit Visa</a></li>
+                                <li><a href="visa-sports">Sports Visa</a></li>
+                                <li><a href="visa-medical">Medical Visa</a></li>
+                                <li><a href="visa-crew">Crew Visa</a></li>
+                                <li><a href="visa-extension">Visa Extension</a></li>
                             </ul>
                             <a href="visa-consultancy-services" class="footer-col-more">View All Visa Services &rarr;</a>
                         </details>

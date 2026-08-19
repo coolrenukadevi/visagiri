@@ -1994,3 +1994,43 @@ summary:focus-visible {
     background: var(--white);
     color: var(--header);
 }
+
+/* ---- Document checklist (visa-type pages) ---- */
+.svc-checklist {
+    max-width: 780px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px 24px;
+}
+.svc-checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+.svc-checklist-item .tick {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #EEF3E4;
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+}
+.svc-checklist-item .tick svg {
+    width: 14px;
+    height: 14px;
+    stroke: #4C6B2C;
+    stroke-width: 2.4;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.svc-checklist-item .txt {
+    font-size: 14.5px;
+    color: var(--text);
+    line-height: 1.6;
+    padding-top: 2px;
+}

@@ -20,11 +20,11 @@
                         <div class="mega-col">
                             <h5><i class="fa-solid fa-passport"></i>Visa Services</h5>
                             <ul class="mega-links">
-                                <li><a href="service-details">Tourist Visa</a></li>
-                                <li><a href="service-details">Business Visa</a></li>
+                                <li><a href="visa-tourist">Tourist Visa</a></li>
+                                <li><a href="visa-business">Business Visa</a></li>
                                 <li><a href="service-details">Work Visa</a></li>
-                                <li><a href="service">Family Visa</a></li>
-                                <li><a href="service-details">Transit Visa</a></li>
+                                <li><a href="visa-family">Family Visa</a></li>
+                                <li><a href="visa-transit">Transit Visa</a></li>
                                 <li><a href="visa-consultancy-services">Immigration / PR Assistance</a></li>
                             </ul>
                         </div>
@@ -96,12 +96,12 @@
                         <div class="mega-col">
                             <h5><i class="fa-solid fa-passport"></i>Visa Categories</h5>
                             <ul class="mega-links">
-                                <li><a href="service-details">Tourist Visa</a></li>
-                                <li><a href="service-details">Business Visa</a></li>
+                                <li><a href="visa-tourist">Tourist Visa</a></li>
+                                <li><a href="visa-business">Business Visa</a></li>
                                 <li><a href="service-details">Work Visa</a></li>
-                                <li><a href="service">Family Visa</a></li>
-                                <li><a href="service-details">Transit Visa</a></li>
-                                <li><a href="visa-consultancy-services">Medical Visa</a></li>
+                                <li><a href="visa-family">Family Visa</a></li>
+                                <li><a href="visa-transit">Transit Visa</a></li>
+                                <li><a href="visa-medical">Medical Visa</a></li>
                                 <li><a href="visa-consultancy-services">E-Visa</a></li>
                                 <li><a href="visa-consultancy-services">Immigration / PR</a></li>
                             </ul>
