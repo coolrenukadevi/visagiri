@@ -1740,3 +1740,30 @@ summary:focus-visible {
     background: var(--header);
     color: var(--white);
 }
+
+/* ---- Footer legal line: copyright + links in one flowing row ---- */
+.footer-legal-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 6px 10px;
+    font-size: 12.5px;
+}
+.footer-legal-line .footer-copyright {
+    color: rgba(255, 255, 255, 0.65);
+}
+.footer-legal-line .footer-copyright span {
+    color: var(--theme);
+    text-transform: uppercase;
+}
+.footer-legal-line a {
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 12.5px;
+}
+.footer-legal-line a:hover {
+    color: var(--gold);
+}
+.footer-legal-line .footer-legal-sep {
+    color: rgba(255, 255, 255, 0.25);
+}

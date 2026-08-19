@@ -24,7 +24,6 @@
                                 <li><a href="service-details">Work Visa</a></li>
                                 <li><a href="service">Family Visa</a></li>
                                 <li><a href="service-details">Transit Visa</a></li>
-                                <li><a href="visa-consultancy-services">Conference &amp; Event Visa</a></li>
                                 <li><a href="visa-consultancy-services">Sports Visa</a></li>
                                 <li><a href="visa-consultancy-services">Medical Visa</a></li>
                                 <li><a href="visa-consultancy-services">Crew Visa</a></li>
@@ -82,13 +81,4 @@
                         <div class="trust-item"><i class="fa-solid fa-scale-balanced"></i> Transparent Process</div>
                         <div class="trust-item"><i class="fa-solid fa-headset"></i> Expert Support</div>
                         <div class="trust-item"><i class="fa-solid fa-earth-americas"></i> Global Visa Coverage</div>
-                    </div>
-
-                    <div class="footer-local-seo">
-                        <h4>Visa Assistance in Patna</h4>
-                        <p>
-                            Looking for professional visa assistance in Patna, Bihar? Connect with our visa experts
-                            for country-specific guidance, documentation support and application assistance.
-                        </p>
-                        <a href="contact">Contact Our Patna Visa Team &rarr;</a>
                     </div>
