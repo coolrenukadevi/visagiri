@@ -13,8 +13,9 @@ document.addEventListener('DOMContentLoaded', function () {
             var region = activeBtn ? activeBtn.getAttribute('data-region') : 'all';
             chips.forEach(function (chip) {
                 var name = chip.getAttribute('data-name') || '';
+                var slug = chip.getAttribute('data-slug') || '';
                 var chipRegion = chip.getAttribute('data-region') || '';
-                var matchesQuery = !q || name.indexOf(q) !== -1;
+                var matchesQuery = !q || name.indexOf(q) !== -1 || slug.indexOf(q) !== -1;
                 var matchesRegion = region === 'all' || region === chipRegion;
                 chip.classList.toggle('is-hidden', !(matchesQuery && matchesRegion));
             });

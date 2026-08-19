@@ -75,7 +75,7 @@ include __DIR__ . '/includes/header.php';
                 </div>
                 <div class="country-explorer-grid country-nav-grid">
                     <?php foreach ($VISA_AGENCY_COUNTRIES as $c): ?>
-                    <a href="country-<?php echo $c['slug']; ?>" class="country-chip" data-name="<?php echo strtolower($c['name']); ?>" data-region="<?php echo $c['region']; ?>">
+                    <a href="country-<?php echo $c['slug']; ?>" class="country-chip" data-name="<?php echo strtolower($c['name']); ?>" data-slug="<?php echo strtolower(str_replace('-', ' ', $c['slug'])); ?>" data-region="<?php echo $c['region']; ?>">
                         <span class="flag"><?php echo $c['flag']; ?></span>
                         <span><?php echo $c['name']; ?></span>
                     </a>

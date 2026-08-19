@@ -2337,7 +2337,7 @@ summary:focus-visible {
 .header-main .main-menu ul li a {
     font-size: 14.5px;
 }
-@media (min-width: 1200px) and (max-width: 1799px) {
+@media (min-width: 1200px) and (max-width: 2559px) {
     .header-main .main-menu ul li {
         margin-inline-end: 12px;
     }
@@ -2358,8 +2358,13 @@ summary:focus-visible {
         font-size: 14px;
     }
     /* Contact is already reachable via the Apply Now CTA and the topbar phone/WhatsApp links,
-       so it's the first to give way at this cramped width range. */
-    .header-main .main-menu > ul > li:last-child {
+       so it's the first to give way if a 1200-1920px-class desktop is still too tight. */
+    .header-main .main-menu ul li a {
+        white-space: nowrap;
+    }
+}
+@media (min-width: 1200px) and (max-width: 1799px) {
+    .header-main .main-menu > #mobile-menu > ul > li:last-child {
         display: none;
     }
 }
