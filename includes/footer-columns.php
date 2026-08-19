@@ -1,6 +1,6 @@
                     <nav class="va-footer-columns" aria-label="Footer navigation">
                         <div class="footer-col-brand">
-                            <h4>VisaAgency.in</h4>
+                            <a href="/" class="footer-brand-logo"><img src="assets/img/logo/white-logo.svg" alt="Visa Agency logo"></a>
                             <p class="footer-brand-desc">
                                 VisaAgency.in is your trusted partner for international visa solutions&mdash;combining
                                 expert guidance, meticulous documentation and end-to-end application support to make

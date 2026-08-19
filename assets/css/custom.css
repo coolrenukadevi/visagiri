@@ -1259,3 +1259,13 @@ summary:focus-visible {
 .footer-legal-inline .va-footer-bottom-links li a:hover {
     color: var(--gold);
 }
+
+/* ---- Footer brand logo ---- */
+.footer-brand-logo {
+    display: inline-block;
+    margin-bottom: 14px;
+}
+.footer-brand-logo img {
+    height: 40px;
+    width: auto;
+}
