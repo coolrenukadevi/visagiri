@@ -44,7 +44,8 @@ function admin_status_class(string $status): string
 <body>
 <div class="admin-shell">
     <div class="admin-sidebar">
-        <span class="brand">VISA AGENCY</span>
+        <span class="brand">VISA AGENCY CRM</span>
+        <a href="index.php"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
         <a href="dashboard.php" class="active"><i class="fa-solid fa-inbox"></i> Enquiries</a>
         <a href="logout.php">Log Out</a>
     </div>

@@ -3,7 +3,7 @@ require_once __DIR__ . '/includes/admin-auth.php';
 enquiry_db(); // ensures the database + default admin account exist
 
 if (!empty($_SESSION['admin_user'])) {
-    header('Location: dashboard.php');
+    header('Location: index.php');
     exit;
 }
 
@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username'] ?? '');
     $password = (string) ($_POST['password'] ?? '');
     if (admin_attempt_login($username, $password)) {
-        header('Location: dashboard.php');
+        header('Location: index.php');
         exit;
     }
     $error = 'Incorrect username or password.';
