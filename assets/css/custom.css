@@ -1232,3 +1232,30 @@ summary:focus-visible {
 .footer-bottom {
     padding: 14px 0 !important;
 }
+
+/* ---- Legal/disclaimer block moved inline into the blue footer ---- */
+.footer-legal-inline {
+    text-align: center;
+    padding-top: 16px;
+    margin-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+.footer-legal-inline p {
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 13.5px;
+    margin: 0 0 10px;
+}
+.footer-legal-inline p span {
+    color: var(--theme);
+    text-transform: uppercase;
+}
+.footer-legal-inline .va-footer-bottom-links {
+    margin: 0;
+}
+.footer-legal-inline .va-footer-bottom-links li a {
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 13px;
+}
+.footer-legal-inline .va-footer-bottom-links li a:hover {
+    color: var(--gold);
+}

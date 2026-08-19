@@ -4,18 +4,12 @@
             <div class="container">
                 <div class="footer-wrapper">
 <?php include __DIR__ . '/footer-columns.php'; ?>
+                    <div class="footer-legal-inline">
+<?php include __DIR__ . '/footer-legal.php'; ?>
+                    </div>
                 </div>
             </div>
         </footer>
-
-        <!--Footer-Bottom Section Start -->
-        <div class="footer-bottom">
-            <div class="container">
-                <div class="footer-wrapper" style="flex-direction:column;gap:10px;">
-<?php include __DIR__ . '/footer-legal.php'; ?>
-                </div>
-            </div>
-        </div>
 
         <a href="https://wa.me/917844819819" target="_blank" rel="noopener" class="floating-whatsapp" aria-label="Chat on WhatsApp">
             <i class="fa-brands fa-whatsapp"></i>
