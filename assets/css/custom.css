@@ -1160,31 +1160,116 @@ summary:focus-visible {
     margin-top: 14px;
 }
 
-/* ---- Floating WhatsApp button (desktop; mobile already has it in the sticky CTA bar) ---- */
-.floating-whatsapp {
+/* ---- Floating contact FAB (WhatsApp / Email / Enquiry Form) ---- */
+.floating-fab {
     position: fixed;
     right: 20px;
     bottom: 76px;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 14px;
+}
+.floating-fab-toggle {
+    position: relative;
     width: 52px;
     height: 52px;
     border-radius: 50%;
+    border: none;
     background: var(--gold);
     color: var(--header);
+    font-size: 22px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 22px;
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
-    z-index: 999;
+    cursor: pointer;
     transition: transform 0.2s ease, background 0.2s ease;
+    flex: none;
 }
-.floating-whatsapp:hover {
+.floating-fab-toggle:hover {
     transform: scale(1.06);
     background: #b78f45;
-    color: var(--header);
 }
+.floating-fab-toggle .floating-fab-icon-close {
+    position: absolute;
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.6);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.floating-fab-toggle .floating-fab-icon-open {
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.floating-fab.is-open .floating-fab-toggle {
+    background: var(--theme);
+    color: var(--white);
+}
+.floating-fab.is-open .floating-fab-toggle .floating-fab-icon-open {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.6);
+}
+.floating-fab.is-open .floating-fab-toggle .floating-fab-icon-close {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+}
+
+.floating-fab-options {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+}
+.floating-fab-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px) scale(0.9);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+    pointer-events: none;
+}
+.floating-fab.is-open .floating-fab-option {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+.floating-fab.is-open .floating-fab-options a:nth-child(1) { transition-delay: 0.06s; }
+.floating-fab.is-open .floating-fab-options a:nth-child(2) { transition-delay: 0.03s; }
+.floating-fab.is-open .floating-fab-options a:nth-child(3) { transition-delay: 0s; }
+.floating-fab-label {
+    background: var(--header);
+    color: var(--white);
+    font-size: 13.5px;
+    font-weight: 600;
+    white-space: nowrap;
+    padding: 8px 14px;
+    border-radius: 6px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.16);
+}
+.floating-fab-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: var(--white);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.16);
+    flex: none;
+    transition: transform 0.15s ease;
+}
+.floating-fab-option:hover .floating-fab-icon { transform: scale(1.08); }
+.fab-icon-whatsapp { background: #25D366; }
+.fab-icon-email { background: var(--theme-2); }
+.fab-icon-form { background: var(--theme); }
+
 @media (max-width: 767px) {
-    .floating-whatsapp { display: none; }
+    .floating-fab { display: none; }
 }
 
 /* ---- Footer brand description: justified ---- */

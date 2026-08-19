@@ -137,4 +137,29 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    /* ---- Floating contact FAB ---- */
+    var fab = document.getElementById('floatingFab');
+    var fabToggle = document.getElementById('floatingFabToggle');
+    if (fab && fabToggle) {
+        var fabOptions = fab.querySelector('.floating-fab-options');
+        var closeFab = function () {
+            fab.classList.remove('is-open');
+            fabToggle.setAttribute('aria-expanded', 'false');
+            if (fabOptions) { fabOptions.setAttribute('aria-hidden', 'true'); }
+        };
+        fabToggle.addEventListener('click', function () {
+            var isOpen = fab.classList.toggle('is-open');
+            fabToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            if (fabOptions) { fabOptions.setAttribute('aria-hidden', isOpen ? 'false' : 'true'); }
+        });
+        document.addEventListener('click', function (e) {
+            if (fab.classList.contains('is-open') && !fab.contains(e.target)) {
+                closeFab();
+            }
+        });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') { closeFab(); }
+        });
+    }
+
 });

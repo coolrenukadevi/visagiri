@@ -14,9 +14,26 @@ include __DIR__ . '/footer-cta.php';
             </div>
         </footer>
 
-        <a href="<?php echo $site_whatsapp_url; ?>" target="_blank" rel="noopener" class="floating-whatsapp" aria-label="Chat on WhatsApp">
-            <i class="fa-brands fa-whatsapp"></i>
-        </a>
+        <div class="floating-fab" id="floatingFab">
+            <div class="floating-fab-options" role="menu" aria-hidden="true">
+                <a href="<?php echo $site_whatsapp_url; ?>" target="_blank" rel="noopener" class="floating-fab-option" role="menuitem">
+                    <span class="floating-fab-label">WhatsApp Me</span>
+                    <span class="floating-fab-icon fab-icon-whatsapp"><i class="fa-brands fa-whatsapp"></i></span>
+                </a>
+                <a href="mailto:<?php echo $site_email; ?>" class="floating-fab-option" role="menuitem">
+                    <span class="floating-fab-label">Email Me</span>
+                    <span class="floating-fab-icon fab-icon-email"><i class="fa-solid fa-envelope"></i></span>
+                </a>
+                <a href="contact" class="floating-fab-option" role="menuitem">
+                    <span class="floating-fab-label">Fill Enquiry Form</span>
+                    <span class="floating-fab-icon fab-icon-form"><i class="fa-solid fa-file-pen"></i></span>
+                </a>
+            </div>
+            <button type="button" class="floating-fab-toggle" id="floatingFabToggle" aria-expanded="false" aria-label="Contact us">
+                <i class="fa-solid fa-comment-dots floating-fab-icon-open"></i>
+                <i class="fa-solid fa-xmark floating-fab-icon-close"></i>
+            </button>
+        </div>
 
         <button type="button" class="back-to-top" id="backToTop" aria-label="Back to top">
             <i class="fa-solid fa-arrow-up"></i>
