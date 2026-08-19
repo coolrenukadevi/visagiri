@@ -5,7 +5,7 @@
                     © <?php echo date('Y'); ?> <span>VISA AGENCY</span>. All Rights Reserved. &mdash; A unit of Tripgation Private Limited
                 </p>
                 <ul class="bottom-list va-footer-bottom-links">
-                    <li><a href="contact">Privacy Policy</a></li>
+                    <li><a href="privacy-policy">Privacy Policy</a></li>
                     <li><a href="contact">Terms &amp; Conditions</a></li>
                     <li><a href="contact">Cookie Policy</a></li>
                     <li><a href="contact">Disclaimer</a></li>
