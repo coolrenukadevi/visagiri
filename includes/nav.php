@@ -43,8 +43,8 @@
                             <h5><i class="fa-solid fa-stamp"></i>Specialized Services</h5>
                             <ul class="mega-links">
                                 <li><a href="apostille">Apostille &amp; Attestation</a></li>
-                                <li><a href="apostille">Embassy Legalization</a></li>
-                                <li><a href="apostille">Translation Services</a></li>
+                                <li><a href="apostille-embassy-attestation">Embassy Legalization</a></li>
+                                <li><a href="apostille-translation-services">Translation Services</a></li>
                                 <li><a href="other-services">Corporate Visa Services</a></li>
                             </ul>
                             <span class="mega-cta-hint">Need help choosing?</span>
@@ -130,20 +130,20 @@
                         <div class="mega-col">
                             <h5><i class="fa-solid fa-stamp"></i>Apostille Services</h5>
                             <ul class="mega-links">
-                                <li><a href="apostille">MEA Apostille</a></li>
-                                <li><a href="apostille">Educational Certificate Apostille</a></li>
-                                <li><a href="apostille">Birth &amp; Marriage Certificate Apostille</a></li>
-                                <li><a href="apostille">Commercial Document Apostille</a></li>
-                                <li><a href="apostille">Power of Attorney Attestation</a></li>
+                                <li><a href="apostille-mea">MEA Apostille</a></li>
+                                <li><a href="apostille-certificate-attestation">Educational Certificate Apostille</a></li>
+                                <li><a href="apostille-certificate-attestation">Birth &amp; Marriage Certificate Apostille</a></li>
+                                <li><a href="apostille-certificate-attestation">Commercial Document Apostille</a></li>
+                                <li><a href="apostille-certificate-attestation">Power of Attorney Attestation</a></li>
                             </ul>
                         </div>
                         <div class="mega-col">
                             <h5><i class="fa-solid fa-building-columns"></i>Related Services</h5>
                             <ul class="mega-links">
-                                <li><a href="apostille">Embassy Attestation</a></li>
-                                <li><a href="apostille">Certificate Attestation</a></li>
-                                <li><a href="apostille">Document Legalisation</a></li>
-                                <li><a href="apostille">Translation &amp; Notary Assistance</a></li>
+                                <li><a href="apostille-embassy-attestation">Embassy Attestation</a></li>
+                                <li><a href="apostille-certificate-attestation">Certificate Attestation</a></li>
+                                <li><a href="apostille-document-legalisation">Document Legalisation</a></li>
+                                <li><a href="apostille-translation-services">Translation &amp; Notary Assistance</a></li>
                             </ul>
                             <a href="contact" class="mega-cta">Get Document Assistance <i class="fa-solid fa-arrow-right"></i></a>
                         </div>

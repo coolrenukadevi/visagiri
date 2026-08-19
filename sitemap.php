@@ -119,10 +119,11 @@ foreach ($VISA_AGENCY_COUNTRIES as $c) {
                                     <h3>Apostille &amp; Attestation</h3>
                                     <ul>
                                         <li><a href="apostille">Overview</a></li>
-                                        <li><a href="apostille">MEA Apostille</a></li>
-                                        <li><a href="apostille">Embassy Attestation</a></li>
-                                        <li><a href="apostille">Certificate Attestation</a></li>
-                                        <li><a href="apostille">Translation Services</a></li>
+                                        <li><a href="apostille-mea">MEA Apostille</a></li>
+                                        <li><a href="apostille-embassy-attestation">Embassy Attestation</a></li>
+                                        <li><a href="apostille-certificate-attestation">Certificate Attestation</a></li>
+                                        <li><a href="apostille-document-legalisation">Document Legalisation</a></li>
+                                        <li><a href="apostille-translation-services">Translation Services</a></li>
                                     </ul>
                                 </div>
                                 <div class="policy-link-col">
