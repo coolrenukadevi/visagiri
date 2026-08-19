@@ -59,9 +59,10 @@
                             </div>
                         </div>
                         <div class="header-right d-flex align-items-center mt-0">
+                            <?php include __DIR__ . '/header-search.php'; ?>
                             <div class="header-call-item">
                                 <a href="contact" class="theme-btn">
-                                    Enquire Now
+                                    Apply Now
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </a>
                                 <div class="header__hamburger my-auto">

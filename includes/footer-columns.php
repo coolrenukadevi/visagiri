@@ -21,7 +21,6 @@
                             <ul>
                                 <li><a href="visa-tourist">Tourist Visa</a></li>
                                 <li><a href="visa-business">Business Visa</a></li>
-                                <li><a href="service-details">Work Visa</a></li>
                                 <li><a href="visa-family">Family Visa</a></li>
                                 <li><a href="visa-transit">Transit Visa</a></li>
                                 <li><a href="visa-sports">Sports Visa</a></li>
@@ -29,7 +28,7 @@
                                 <li><a href="visa-crew">Crew Visa</a></li>
                                 <li><a href="visa-extension">Visa Extension</a></li>
                             </ul>
-                            <a href="visa-consultancy-services" class="footer-col-more">View All Visa Services &rarr;</a>
+                            <a href="our-services" class="footer-col-more">View All Visa Services &rarr;</a>
                         </details>
 
                         <details class="footer-accordion" open>
@@ -58,17 +57,17 @@
                                 <li><a href="/#faq">Visa FAQs</a></li>
                                 <li><a href="visa-news">Visa News &amp; Updates</a></li>
                             </ul>
-                            <a href="visa-consultancy-services" class="footer-col-more">Explore Visa Resources &rarr;</a>
+                            <a href="visa-news" class="footer-col-more">Explore Visa Resources &rarr;</a>
                         </details>
 
                         <details class="footer-accordion" open>
                             <summary>Company</summary>
                             <ul>
+                                <li><a href="contact">Contact Us</a></li>
+                                <li><a href="visa-appointment">Book a Consultation</a></li>
                                 <li><a href="about">About Us</a></li>
-                                <li><a href="our-services">Our Services</a></li>
                                 <li><a href="careers">Careers</a></li>
                                 <li><a href="visa-news">News &amp; Updates</a></li>
-                                <li><a href="contact">Contact Us</a></li>
                                 <li><a href="customer-login">Customer Login</a></li>
                             </ul>
                         </details>
