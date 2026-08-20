@@ -221,6 +221,8 @@ $ADMIN_BREADCRUMB = ['CRM', 'Enquiries', $enquiry['enquiry_ref']];
 require __DIR__ . '/includes/layout-top.php';
 
 function fmt($v) { return ($v !== null && $v !== '') ? htmlspecialchars((string) $v) : '&mdash;'; }
+
+$paymentStatus = crm_payment_status($enquiry);
 ?>
 <a href="enquiries.php" style="font-size:12.5px;color:var(--c-text);display:inline-block;margin-bottom:14px;">&larr; Back to all enquiries</a>
 
@@ -236,6 +238,7 @@ function fmt($v) { return ($v !== null && $v !== '') ? htmlspecialchars((string)
     <div class="crm-detail-badges">
         <span class="crm-status-badge <?php echo crm_status_class($enquiry['status']); ?>"><?php echo htmlspecialchars($enquiry['status']); ?></span>
         <span class="crm-priority-badge priority-<?php echo strtolower($enquiry['priority']); ?>"><?php echo htmlspecialchars($enquiry['priority']); ?> Priority</span>
+        <span class="crm-payment-badge <?php echo $paymentStatus['class']; ?>"><i class="fa-solid fa-circle-dollar-to-slot"></i> <?php echo htmlspecialchars($paymentStatus['label']); ?></span>
         <?php if ($enquiry['assigned_to']): ?><span class="crm-status-badge status-new-enquiry" style="background:rgba(255,255,255,0.15);color:#fff;">Assigned: <?php echo htmlspecialchars($enquiry['assigned_to']); ?></span><?php endif; ?>
     </div>
     <div class="crm-quick-actions">
@@ -293,7 +296,7 @@ function fmt($v) { return ($v !== null && $v !== '') ? htmlspecialchars((string)
         </div>
     </div>
     <div class="crm-card" id="financial">
-        <h3>Financial Information</h3>
+        <h3>Financial Information <span class="crm-payment-badge <?php echo $paymentStatus['class']; ?>" style="font-weight:400;"><?php echo htmlspecialchars($paymentStatus['label']); ?></span></h3>
         <form method="post">
             <input type="hidden" name="action" value="update_financial">
             <div class="crm-panel-grid" style="margin-bottom:14px;">
@@ -353,12 +356,15 @@ function fmt($v) { return ($v !== null && $v !== '') ? htmlspecialchars((string)
 </div>
 
 <div class="crm-card" id="status">
-    <h3>Status &amp; Assignment</h3>
-    <form method="post">
+    <h3>Status &amp; Assignment <span class="crm-payment-badge <?php echo $paymentStatus['class']; ?>" style="font-weight:400;"><?php echo htmlspecialchars($paymentStatus['label']); ?></span></h3>
+    <?php if ($paymentStatus['label'] !== 'Paid'): ?>
+    <p style="font-size:12px;color:var(--c-amber);margin:-8px 0 14px;"><i class="fa-solid fa-triangle-exclamation"></i> Payment is not yet fully collected for this enquiry (balance due: ₹<?php echo number_format($paymentStatus['balance'], 2); ?>). You'll be asked to confirm before moving this into application-processing stages.</p>
+    <?php endif; ?>
+    <form method="post" id="crmStatusForm" data-payment-status="<?php echo htmlspecialchars($paymentStatus['label']); ?>">
         <input type="hidden" name="action" value="update_status">
         <div class="crm-form-grid" style="margin-bottom:14px;">
             <div class="crm-form-field"><label>Status</label>
-                <select name="status"><?php foreach (CRM_STATUSES as $s): ?><option <?php echo $enquiry['status'] === $s ? 'selected' : ''; ?>><?php echo $s; ?></option><?php endforeach; ?></select>
+                <select name="status" id="crmStatusSelect"><?php foreach (CRM_STATUSES as $s): ?><option <?php echo $enquiry['status'] === $s ? 'selected' : ''; ?>><?php echo $s; ?></option><?php endforeach; ?></select>
             </div>
             <div class="crm-form-field"><label>Priority</label>
                 <select name="priority"><?php foreach (CRM_PRIORITIES as $p): ?><option <?php echo $enquiry['priority'] === $p ? 'selected' : ''; ?>><?php echo $p; ?></option><?php endforeach; ?></select>
@@ -531,5 +537,30 @@ function fmt($v) { return ($v !== null && $v !== '') ? htmlspecialchars((string)
         <button type="submit" class="crm-btn crm-btn-primary crm-btn-sm">Add Note</button>
     </form>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var statusForm = document.getElementById('crmStatusForm');
+    var statusSelect = document.getElementById('crmStatusSelect');
+    if (!statusForm || !statusSelect) { return; }
+    var paymentGatedStatuses = [
+        'Application Preparation', 'Application Submitted', 'Under Embassy Processing',
+        'Decision Received', 'Visa Approved', 'Passport Ready', 'Completed',
+    ];
+    var currentPaymentStatus = statusForm.getAttribute('data-payment-status');
+    var confirmed = false;
+
+    statusForm.addEventListener('submit', function (e) {
+        if (confirmed) { return; }
+        if (currentPaymentStatus === 'Paid') { return; }
+        if (paymentGatedStatuses.indexOf(statusSelect.value) === -1) { return; }
+        e.preventDefault();
+        window.crmConfirm(
+            'Payment status is currently "' + currentPaymentStatus + '" for this enquiry. Moving it to "' + statusSelect.value + '" usually happens after payment is collected. Continue anyway?',
+            function () { confirmed = true; statusForm.requestSubmit ? statusForm.requestSubmit() : statusForm.submit(); }
+        );
+    });
+});
+</script>
 
 <?php require __DIR__ . '/includes/layout-bottom.php'; ?>

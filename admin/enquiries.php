@@ -10,6 +10,7 @@ $visaCategory = trim($_GET['visa_category'] ?? '');
 $country = trim($_GET['country'] ?? '');
 $assignedTo = trim($_GET['assigned_to'] ?? '');
 $priority = trim($_GET['priority'] ?? '');
+$paymentStatusFilter = trim($_GET['payment_status'] ?? '');
 $source = trim($_GET['source'] ?? '');
 $dateRange = trim($_GET['date_range'] ?? '');
 $dateFrom = trim($_GET['date_from'] ?? '');
@@ -29,6 +30,15 @@ if ($visaCategory !== '') { $where[] = 'e.visa_category = :visa_category'; $para
 if ($country !== '') { $where[] = 'e.destination_country = :country'; $params['country'] = $country; }
 if ($assignedTo !== '') { $where[] = 'e.assigned_to = :assigned_to'; $params['assigned_to'] = $assignedTo; }
 if ($priority !== '') { $where[] = 'e.priority = :priority'; $params['priority'] = $priority; }
+if ($paymentStatusFilter === 'Not Quoted') {
+    $where[] = '(e.quoted_amount IS NULL OR e.quoted_amount <= 0)';
+} elseif ($paymentStatusFilter === 'Payment Pending') {
+    $where[] = 'e.quoted_amount > 0 AND (e.paid_amount IS NULL OR e.paid_amount <= 0)';
+} elseif ($paymentStatusFilter === 'Partially Paid') {
+    $where[] = 'e.quoted_amount > 0 AND e.paid_amount > 0 AND (e.quoted_amount - COALESCE(e.discount_amount,0) - e.paid_amount) > 0.01';
+} elseif ($paymentStatusFilter === 'Paid') {
+    $where[] = 'e.quoted_amount > 0 AND e.paid_amount > 0 AND (e.quoted_amount - COALESCE(e.discount_amount,0) - e.paid_amount) <= 0.01';
+}
 if ($source !== '') { $where[] = 'e.source = :source'; $params['source'] = $source; }
 if ($search !== '') {
     $where[] = '(e.full_name LIKE :q OR e.email LIKE :q OR e.mobile LIKE :q OR e.enquiry_ref LIKE :q OR e.tracking_code LIKE :q OR e.passport_number LIKE :q)';
@@ -134,6 +144,12 @@ function crm_time_ago_admin(string $iso): string
             <option value="<?php echo $p; ?>" <?php echo $priority === $p ? 'selected' : ''; ?>><?php echo $p; ?></option>
             <?php endforeach; ?>
         </select>
+        <select name="payment_status">
+            <option value="">All Payment Statuses</option>
+            <?php foreach (CRM_PAYMENT_STATUSES as $ps): ?>
+            <option value="<?php echo $ps; ?>" <?php echo $paymentStatusFilter === $ps ? 'selected' : ''; ?>><?php echo $ps; ?></option>
+            <?php endforeach; ?>
+        </select>
         <select name="source">
             <option value="">All Sources</option>
             <?php foreach (CRM_SOURCES as $s): ?>
@@ -182,6 +198,7 @@ function crm_time_ago_admin(string $iso): string
                 <th>Travel Date</th>
                 <th>Status</th>
                 <th>Priority</th>
+                <th>Payment</th>
                 <th>Assigned To</th>
                 <th>Last Follow-up</th>
                 <th>Documents</th>
@@ -201,6 +218,8 @@ function crm_time_ago_admin(string $iso): string
                 <td><?php echo htmlspecialchars($row['travel_date']); ?></td>
                 <td><span class="crm-status-badge <?php echo crm_status_class($row['status']); ?>"><?php echo htmlspecialchars($row['status']); ?></span></td>
                 <td><span class="crm-priority-badge priority-<?php echo strtolower($row['priority']); ?>"><?php echo htmlspecialchars($row['priority']); ?></span></td>
+                <?php $rowPayment = crm_payment_status($row); ?>
+                <td><span class="crm-payment-badge <?php echo $rowPayment['class']; ?>"><?php echo htmlspecialchars($rowPayment['label']); ?></span></td>
                 <td><?php echo $row['assigned_to'] ? htmlspecialchars($row['assigned_to']) : '<span class="crm-cell-sub">Unassigned</span>'; ?></td>
                 <td><?php echo $row['last_follow_up'] ? htmlspecialchars($row['last_follow_up']) : '<span class="crm-cell-sub">&mdash;</span>'; ?></td>
                 <td><?php echo (int) $row['doc_verified']; ?>/<?php echo (int) $row['doc_total']; ?></td>

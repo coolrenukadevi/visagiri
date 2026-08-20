@@ -387,3 +387,30 @@ function crm_send_applicant_email(string $to, string $subject, string $bodyText)
     $headers = "From: VisaAgency.in <{$site_email}>\r\nContent-Type: text/plain; charset=UTF-8";
     return @mail($to, $subject, $bodyText, $headers);
 }
+
+const CRM_PAYMENT_STATUSES = ['Not Quoted', 'Payment Pending', 'Partially Paid', 'Paid'];
+
+/**
+ * Computed financial state of an enquiry, derived from quoted/discount/paid
+ * amounts rather than stored directly, so it's always in sync with the
+ * payments ledger. Returns ['label', 'class', 'balance'].
+ */
+function crm_payment_status(array $enquiry): array
+{
+    $quoted = (float) ($enquiry['quoted_amount'] ?? 0);
+    $discount = (float) ($enquiry['discount_amount'] ?? 0);
+    $paid = (float) ($enquiry['paid_amount'] ?? 0);
+    $balance = max(0, $quoted - $discount - $paid);
+
+    if ($quoted <= 0) {
+        $label = 'Not Quoted';
+    } elseif ($paid <= 0) {
+        $label = 'Payment Pending';
+    } elseif ($balance > 0.01) {
+        $label = 'Partially Paid';
+    } else {
+        $label = 'Paid';
+    }
+
+    return ['label' => $label, 'class' => 'payment-' . strtolower(str_replace(' ', '-', $label)), 'balance' => $balance];
+}

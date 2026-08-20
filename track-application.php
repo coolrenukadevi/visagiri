@@ -63,6 +63,7 @@ if ($enquiry) {
     $stages = crm_timeline_stages($enquiry['status']);
     $labels = crm_timeline_labels();
     $isCancelled = $enquiry['status'] === 'Cancelled';
+    $paymentStatus = crm_payment_status($enquiry);
 }
 
 include __DIR__ . '/includes/header.php';
@@ -134,6 +135,10 @@ include __DIR__ . '/includes/header.php';
                             <div><label>Application Date</label><span><?php echo htmlspecialchars(substr($enquiry['created_at'], 0, 10)); ?></span></div>
                             <div><label>Current Status</label><span class="track-status-badge"><?php echo htmlspecialchars($enquiry['status']); ?></span></div>
                             <div><label>Assigned Consultant</label><span><?php echo htmlspecialchars($enquiry['visa_consultant'] ?: $enquiry['assigned_to'] ?: 'Not yet assigned'); ?></span></div>
+                            <div><label>Payment Status</label><span class="track-status-badge" style="color:<?php echo $paymentStatus['label'] === 'Paid' ? '#16A34A' : ($paymentStatus['label'] === 'Not Quoted' ? 'var(--theme-2)' : '#C0392B'); ?> !important;"><?php echo htmlspecialchars($paymentStatus['label']); ?></span></div>
+                            <?php if ($paymentStatus['label'] !== 'Not Quoted' && $paymentStatus['label'] !== 'Paid'): ?>
+                            <div><label>Balance Due</label><span>₹<?php echo number_format($paymentStatus['balance'], 2); ?></span></div>
+                            <?php endif; ?>
                             <div><label>Last Updated</label><span><?php echo $lastUpdate ? htmlspecialchars(substr($lastUpdate['created_at'], 0, 16)) . ' UTC' : htmlspecialchars(substr($enquiry['created_at'], 0, 16)) . ' UTC'; ?></span></div>
                         </div>
                         <?php if ($lastUpdate && !empty($lastUpdate['message'])): ?>
