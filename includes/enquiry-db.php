@@ -333,7 +333,7 @@ function crm_mask_mobile(?string $mobile): string
 function crm_mask_email(?string $email): string
 {
     $email = trim((string) $email);
-    if (!str_contains($email, '@')) return '—';
+    if (strpos($email, '@') === false) return '—';
     [$local, $domain] = explode('@', $email, 2);
     if ($local === '') return '@' . $domain;
     return $local[0] . str_repeat('*', max(1, strlen($local) - 1)) . '@' . $domain;
