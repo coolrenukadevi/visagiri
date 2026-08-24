@@ -930,53 +930,82 @@
     --gold: #C6A15B;
 }
 
-/* ---- Footer CTA strip (Level 1) ---- */
-.footer-cta-strip {
-    background: linear-gradient(135deg, var(--theme-2) 0%, #0d2a70 100%);
-    padding: 50px 0;
+/* ---- Footer body: deep gradient + floating CTA card ---- */
+.footer-pro {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(160deg, #0F2557 0%, #163C99 55%, #17348a 100%);
+    padding-top: 46px;
 }
-.fcs-inner {
+.footer-pro::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--theme), var(--gold), var(--theme-2));
+}
+.footer-pro::after {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    width: 640px;
+    height: 640px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.05), transparent 70%);
+    top: -280px;
+    right: -160px;
+    pointer-events: none;
+}
+.footer-pro > .container {
+    position: relative;
+    z-index: 1;
+}
+.footer-cta-card {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 20px;
+    padding: 34px 38px;
+    margin-bottom: 40px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 40px;
+    gap: 28px;
     flex-wrap: wrap;
 }
-.fcs-text { flex: 1 1 480px; }
-.fcs-text h2 {
+.fcc-text h2 {
     color: var(--white);
-    font-size: 26px;
+    font-size: 24px;
+    font-weight: 800;
     line-height: 1.3;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
 }
-.fcs-text > p {
-    color: rgba(255, 255, 255, 0.82);
-    font-size: 15px;
-    margin-bottom: 18px;
-    max-width: 600px;
+.fcc-text p {
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 14px;
+    max-width: 560px;
 }
-.fcs-checklist {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px 22px;
-}
-.fcs-checklist li {
-    color: rgba(255, 255, 255, 0.92);
-    font-size: 13.5px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-}
-.fcs-checklist li i { color: var(--gold); }
-.fcs-actions {
+.fcc-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 14px;
     flex: 0 0 auto;
+    max-width: 100%;
+}
+@media (max-width: 575px) {
+    .footer-cta-card {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .fcc-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    .fcc-actions .theme-btn {
+        width: 100%;
+        justify-content: center;
+    }
 }
 .theme-btn.style-outline {
     background: transparent;
@@ -1016,13 +1045,15 @@
 .va-footer-columns .social-icon span {
     width: 36px;
     height: 36px;
-    line-height: 36px;
+    line-height: 34px;
     text-align: center;
     border-radius: 100px;
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.55);
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: rgba(255, 255, 255, 0.7);
     font-size: 14px;
     display: inline-block;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 .va-footer-columns .social-icon a:hover {
     background: var(--theme);
@@ -1033,14 +1064,27 @@
 /* ---- Accordion columns (native <details>/<summary>, no JS) ---- */
 .footer-accordion summary {
     color: var(--white);
-    font-size: 15px;
-    font-weight: 700;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
     margin-bottom: 16px;
+    padding-bottom: 12px;
+    position: relative;
     cursor: default;
     list-style: none;
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+.footer-accordion summary::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 26px;
+    height: 2px;
+    background: var(--gold);
 }
 .footer-accordion summary::-webkit-details-marker { display: none; }
 .footer-accordion summary::after {
@@ -1107,12 +1151,26 @@
     .footer-trust-bar { justify-content: center; }
 }
 .footer-trust-bar .trust-item {
+    display: flex;
+    align-items: center;
     color: rgba(255, 255, 255, 0.82);
     font-size: 13.5px;
     font-weight: 600;
     flex: 0 1 auto;
 }
-.footer-trust-bar .trust-item i { color: var(--gold); }
+.footer-trust-bar .trust-item i {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(198, 161, 91, 0.16);
+    color: var(--gold);
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 9px;
+    flex: none;
+}
 
 /* ---- Patna / Bihar local SEO block ---- */
 .footer-local-seo {
@@ -1352,9 +1410,6 @@ summary:focus-visible {
     margin: 0 !important;
     border-radius: 0 !important;
 }
-.footer-cta-strip {
-    padding: 28px 0;
-}
 .va-footer-top {
     padding-bottom: 16px;
     margin-bottom: 18px;
@@ -1362,12 +1417,9 @@ summary:focus-visible {
 .va-footer-columns {
     gap: 20px;
 }
-.footer-accordion summary {
-    margin-bottom: 10px;
-}
 .footer-trust-bar {
-    padding: 14px 0;
-    margin-top: 18px;
+    padding: 22px 0;
+    margin-top: 6px;
 }
 .footer-local-seo {
     padding: 14px 0 2px;
@@ -1376,31 +1428,23 @@ summary:focus-visible {
     padding: 14px 0 !important;
 }
 
-/* ---- Legal/disclaimer block moved inline into the blue footer ---- */
+/* ---- Bottom legal strip: darker, edge-to-edge, below the gradient body ---- */
+.footer-bottom-bar {
+    background: #0A1730;
+    padding: 18px 0;
+}
 .footer-legal-inline {
-    text-align: center;
-    padding-top: 16px;
-    margin-top: 16px;
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    text-align: left;
 }
 .footer-legal-inline p {
-    color: rgba(255, 255, 255, 0.65);
-    font-size: 13.5px;
-    margin: 0 0 10px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 12px;
+    line-height: 1.7;
+    margin: 0 0 12px;
 }
 .footer-legal-inline p span {
     color: var(--theme);
     text-transform: uppercase;
-}
-.footer-legal-inline .va-footer-bottom-links {
-    margin: 0;
-}
-.footer-legal-inline .va-footer-bottom-links li a {
-    color: rgba(255, 255, 255, 0.55);
-    font-size: 13px;
-}
-.footer-legal-inline .va-footer-bottom-links li a:hover {
-    color: var(--gold);
 }
 
 /* ---- Footer brand logo ---- */
@@ -1884,31 +1928,33 @@ summary:focus-visible {
     color: var(--white);
 }
 
-/* ---- Footer legal line: copyright + links in one flowing row ---- */
+/* ---- Footer legal line: copyright left, links right ---- */
 .footer-legal-line {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: center;
-    gap: 6px 10px;
-    font-size: 12.5px;
+    justify-content: space-between;
+    gap: 10px 24px;
+    font-size: 12px;
 }
 .footer-legal-line .footer-copyright {
-    color: rgba(255, 255, 255, 0.65);
+    color: rgba(255, 255, 255, 0.5);
 }
 .footer-legal-line .footer-copyright span {
     color: var(--theme);
     text-transform: uppercase;
 }
-.footer-legal-line a {
-    color: rgba(255, 255, 255, 0.55);
-    font-size: 12.5px;
+.footer-legal-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
 }
-.footer-legal-line a:hover {
+.footer-legal-links a {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 12px;
+}
+.footer-legal-links a:hover {
     color: var(--gold);
-}
-.footer-legal-line .footer-legal-sep {
-    color: rgba(255, 255, 255, 0.25);
 }
 
 /* ============================================================

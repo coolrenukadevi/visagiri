@@ -1,12 +1,16 @@
 <?php
 require_once __DIR__ . '/site-contact.php';
-include __DIR__ . '/footer-cta.php';
 ?>
 
-        <footer class="footer-section fix bg-cover" style="background-image: url(assets/img/home-1/footer-bg.jpg);">
+        <footer class="footer-section footer-pro fix">
             <div class="container">
+<?php include __DIR__ . '/footer-cta.php'; ?>
                 <div class="footer-wrapper">
 <?php include __DIR__ . '/footer-columns.php'; ?>
+                </div>
+            </div>
+            <div class="footer-bottom-bar">
+                <div class="container">
                     <div class="footer-legal-inline">
 <?php include __DIR__ . '/footer-legal.php'; ?>
                     </div>
