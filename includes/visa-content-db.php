@@ -11,6 +11,15 @@ require_once __DIR__ . '/enquiry-db.php';
 require_once __DIR__ . '/countries-data.php'; // must load at top-level scope so nav.php's own require_once (same real path) still gets $VISA_AGENCY_COUNTRIES in the global scope
 
 const VISA_PAGE_STATUSES = ['draft', 'under_review', 'published', 'needs_update', 'archived'];
+const VISA_PAGE_STATUS_LABELS = [
+    'draft' => 'Draft', 'under_review' => 'Under Review', 'published' => 'Published',
+    'needs_update' => 'Needs Update', 'archived' => 'Archived',
+];
+const VISA_COUNTRY_REGIONS = [
+    'Asia', 'Europe', 'North America', 'South America', 'Africa', 'Middle East',
+    'Oceania', 'Caribbean', 'Central America',
+];
+const VISA_DOC_GROUPS = ['Basic Documents', 'Financial Documents', 'Travel Documents', 'Supporting Documents'];
 
 const VISA_CATEGORY_DEFS = [
     ['slug' => 'tourist-visa',    'name' => 'Tourist Visa',    'icon' => 'fa-umbrella-beach',  'short_description' => 'Holiday, sightseeing and short leisure visits.'],
@@ -379,6 +388,16 @@ function visa_country_page_url(string $pageSlug): string
 function visa_page_slug(string $countrySlug, string $categorySlug): string
 {
     return $countrySlug . '-' . $categorySlug;
+}
+
+function visa_page_status_class(string $status): string
+{
+    return 'status-' . str_replace('_', '-', $status);
+}
+
+function visa_page_status_label(string $status): string
+{
+    return VISA_PAGE_STATUS_LABELS[$status] ?? ucfirst($status);
 }
 
 /** Renders the honest "not invented" fallback used across quick-info fields. */

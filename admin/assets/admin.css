@@ -364,6 +364,13 @@ table.crm-table tr:hover td { background: var(--c-bg); }
 .status-completed { background: var(--c-grey-bg); color: var(--c-grey); }
 .status-cancelled { background: var(--c-deep-red-bg); color: var(--c-deep-red); }
 
+/* Visa content page statuses (countries x visa-category pages) */
+.status-draft { background: var(--c-grey-bg); color: var(--c-grey); }
+.status-under-review { background: var(--c-amber-bg); color: var(--c-amber); }
+.status-published { background: var(--c-green-bg); color: var(--c-green); }
+.status-needs-update { background: var(--c-orange-bg); color: var(--c-orange); }
+.status-archived { background: var(--c-deep-red-bg); color: var(--c-deep-red); }
+
 .crm-payment-badge.payment-not-quoted { background: var(--c-grey-bg); color: var(--c-grey); }
 .crm-payment-badge.payment-payment-pending { background: var(--c-red-bg); color: var(--c-red); }
 .crm-payment-badge.payment-partially-paid { background: var(--c-amber-bg); color: var(--c-amber); }

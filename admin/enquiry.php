@@ -1,4 +1,5 @@
 <?php
+ob_start(); // buffer output so header()-based redirects below still work even if the host has output_buffering off
 require_once __DIR__ . '/includes/admin-auth.php';
 admin_require_login();
 require_once __DIR__ . '/../includes/countries-data.php';

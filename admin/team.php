@@ -1,4 +1,5 @@
 <?php
+ob_start(); // buffer output so header()-based redirects below still work even if the host has output_buffering off
 $ADMIN_PAGE_TITLE = 'Team Management';
 $ADMIN_ACTIVE_NAV = 'team';
 $ADMIN_BREADCRUMB = ['CRM', 'Team Management'];

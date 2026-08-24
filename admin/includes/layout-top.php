@@ -27,6 +27,7 @@ $navItems = [
     ['key' => 'reports', 'label' => 'Reports', 'icon' => 'chart-line', 'href' => 'reports.php', 'roles' => ['Super Admin', 'Admin', 'Sales Manager']],
     ['key' => 'team', 'label' => 'Team Management', 'icon' => 'people-group', 'href' => 'team.php', 'roles' => ['Super Admin']],
     ['key' => 'countries', 'label' => 'Countries', 'icon' => 'earth-americas', 'href' => 'countries.php'],
+    ['key' => 'visa-pages', 'label' => 'Content Pages', 'icon' => 'file-lines', 'href' => 'visa-pages.php'],
     ['key' => 'visa-types', 'label' => 'Visa Types', 'icon' => 'stamp', 'href' => 'visa-types.php'],
     ['key' => 'settings', 'label' => 'Settings', 'icon' => 'gear', 'href' => 'settings.php'],
 ];
