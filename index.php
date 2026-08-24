@@ -1,6 +1,9 @@
 <?php
 $page_title = "Visa Agency &ndash; Trusted Visa Consultant in Patna, Ranchi, Raipur & Bhopal";
 $page_description = "Visa Agency is a Ministry of Tourism recognised visa consultancy offering fast, reliable and hassle-free visa solutions in Patna, Ranchi, Raipur and Bhopal.";
+require_once __DIR__ . '/includes/visa-content-db.php';
+$vswPdo = visa_content_db();
+$vswCountries = $vswPdo->query("SELECT name, slug, flag, iso2, iso3 FROM countries WHERE is_active = 1 ORDER BY popularity DESC, name ASC")->fetchAll(PDO::FETCH_ASSOC);
 include __DIR__ . '/includes/header-home.php';
 ?>
         <!--Hero Section Start -->
@@ -44,44 +47,34 @@ include __DIR__ . '/includes/header-home.php';
             <div class="container">
                 <div class="visa-search-widget">
                     <div class="vsw-title">Find Your Visa Requirements</div>
-                    <div class="vsw-sub">Tell us where you're travelling and we'll guide you through the visa process.</div>
-                    <form id="visa-search-form" class="vsw-grid">
+                    <div class="vsw-sub">Tell us where you're travelling and we'll take you straight to the right visa page.</div>
+                    <form id="visa-search-form" class="vsw-grid" autocomplete="off">
+                        <div class="vsw-field vsw-field-autocomplete">
+                            <label for="vsw-country-input">Where are you travelling?</label>
+                            <input type="text" id="vsw-country-input" placeholder="Search country e.g. Australia, AUS, tourist visa Australia" required>
+                            <input type="hidden" id="vsw-country-slug" name="country_slug">
+                            <div id="vsw-country-results" class="vsw-autocomplete-results" hidden></div>
+                            <span class="vsw-field-error" id="vsw-country-error"></span>
+                        </div>
                         <div class="vsw-field">
-                            <label for="vsw-country">Where are you travelling?</label>
-                            <select id="vsw-country" required>
-                                <option value="">Search country</option>
-                                <?php require_once __DIR__ . '/includes/countries-data.php'; ?>
-                                <?php foreach ($VISA_AGENCY_COUNTRIES as $c): ?>
-                                <option value="<?php echo htmlspecialchars($c['name']); ?>"><?php echo $c['flag'] . ' ' . htmlspecialchars($c['name']); ?></option>
+                            <label for="vsw-purpose">What is your purpose?</label>
+                            <select id="vsw-purpose">
+                                <?php foreach (VISA_CATEGORY_DEFS as $cat): ?>
+                                <option value="<?php echo htmlspecialchars($cat['slug']); ?>"><?php echo htmlspecialchars($cat['name']); ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="vsw-field">
-                            <label for="vsw-purpose">Purpose of Travel</label>
-                            <select id="vsw-purpose">
-                                <option>Tourism</option>
-                                <option>Business</option>
-                                <option>Visit Family/Friends</option>
-                                <option>Medical</option>
-                                <option>Work</option>
-                                <option>Transit</option>
-                                <option>Other</option>
-                            </select>
-                        </div>
-                        <div class="vsw-field">
-                            <label for="vsw-passport">Passport Country</label>
+                            <label for="vsw-passport">Passport</label>
                             <select id="vsw-passport">
                                 <option>India 🇮🇳</option>
                             </select>
-                        </div>
-                        <div class="vsw-field">
-                            <label for="vsw-name">Your Mobile Number</label>
-                            <input type="tel" id="vsw-name" placeholder="10-digit mobile number" pattern="[6-9][0-9]{9}" maxlength="10">
                         </div>
                         <button type="submit" class="vsw-submit">Check Visa Requirements</button>
                     </form>
                     <div id="vsw-result" class="vsw-result"></div>
                 </div>
+                <script>window.VSW_COUNTRIES = <?php echo json_encode($vswCountries, JSON_UNESCAPED_SLASHES); ?>;</script>
             </div>
         </section>
 

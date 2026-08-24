@@ -35,25 +35,109 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.querySelectorAll('.mega-panel-countries, .country-explorer-section').forEach(wireCountryFilter);
 
-    /* ---- Homepage visa search widget (demo — no backend, shows a sample result) ---- */
+    /* ---- Homepage visa search widget: smart country autocomplete + redirect to the right /countries/ page ---- */
     var vswForm = document.getElementById('visa-search-form');
-    if (vswForm) {
+    if (vswForm && window.VSW_COUNTRIES) {
+        var countryInput = document.getElementById('vsw-country-input');
+        var countrySlugField = document.getElementById('vsw-country-slug');
+        var resultsBox = document.getElementById('vsw-country-results');
+        var countryError = document.getElementById('vsw-country-error');
+        var STOPWORDS = ['visa', 'visas', 'tourist', 'tourism', 'business', 'family', 'transit', 'sports', 'medical', 'crew', 'extension', 'requirements', 'requirement', 'apply', 'application', 'for', 'to', 'the', 'of', 'trip', 'from', 'india'];
+
+        function searchTerms(query) {
+            return query.toLowerCase().split(/\s+/).filter(function (w) {
+                return w && STOPWORDS.indexOf(w) === -1;
+            });
+        }
+
+        function matchCountry(c, terms) {
+            var hay = (c.name + ' ' + c.slug.replace(/-/g, ' ') + ' ' + (c.iso2 || '') + ' ' + (c.iso3 || '')).toLowerCase();
+            return terms.every(function (t) { return hay.indexOf(t) !== -1; });
+        }
+
+        function renderResults(query) {
+            var terms = searchTerms(query);
+            if (!terms.length) { resultsBox.hidden = true; return; }
+            var matches = window.VSW_COUNTRIES.filter(function (c) { return matchCountry(c, terms); }).slice(0, 8);
+            resultsBox.innerHTML = '';
+            if (!matches.length) {
+                resultsBox.innerHTML = '<div class="vsw-ac-empty">No country matches &ldquo;' + query + '&rdquo;.</div>';
+            } else {
+                matches.forEach(function (c, i) {
+                    var btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'vsw-ac-option' + (i === 0 ? ' is-active' : '');
+                    btn.innerHTML = '<span>' + (c.flag || '') + '</span><span>' + c.name + '</span>';
+                    btn.addEventListener('click', function () { selectCountry(c); });
+                    resultsBox.appendChild(btn);
+                });
+            }
+            resultsBox.hidden = false;
+        }
+
+        function selectCountry(c) {
+            countryInput.value = c.name;
+            countrySlugField.value = c.slug;
+            resultsBox.hidden = true;
+            countryError.textContent = '';
+        }
+
+        countryInput.addEventListener('input', function () {
+            countrySlugField.value = '';
+            renderResults(countryInput.value);
+        });
+        countryInput.addEventListener('focus', function () {
+            if (countryInput.value) { renderResults(countryInput.value); }
+        });
+        countryInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && !resultsBox.hidden) {
+                var first = resultsBox.querySelector('.vsw-ac-option');
+                if (first) { e.preventDefault(); first.click(); }
+            }
+        });
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.vsw-field-autocomplete')) { resultsBox.hidden = true; }
+        });
+
         vswForm.addEventListener('submit', function (e) {
             e.preventDefault();
-            var country = document.getElementById('vsw-country').value || 'your destination';
-            var purpose = document.getElementById('vsw-purpose').value || 'Tourism';
+            if (!countrySlugField.value) {
+                countryError.textContent = 'Please select a country from the list.';
+                countryInput.focus();
+                return;
+            }
+            var purpose = document.getElementById('vsw-purpose').value;
             var result = document.getElementById('vsw-result');
-            result.innerHTML =
-                '<strong>' + country + ' — ' + purpose + ' visa</strong><br>' +
-                'Based on what you have told us, our consultants can guide you through eligibility, ' +
-                'the recommended visa category and the documents you will need. Processing time and ' +
-                'exact requirements vary by embassy/consulate — an actual visa decision is made solely ' +
-                'by the relevant authority.' +
-                '<div class="vsw-result-actions">' +
-                '<a href="contact.php">Speak with a consultant &rarr;</a>' +
-                '<a href="#checklist">See a sample document checklist &rarr;</a>' +
-                '</div>';
-            result.classList.add('show');
+            var submitBtn = vswForm.querySelector('.vsw-submit');
+            submitBtn.disabled = true;
+            var originalLabel = submitBtn.textContent;
+            submitBtn.textContent = 'Checking…';
+
+            fetch('visa-search-lookup?country=' + encodeURIComponent(countrySlugField.value) + '&category=' + encodeURIComponent(purpose))
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalLabel;
+                    if (data.ok && data.type === 'page') {
+                        window.location.href = data.url;
+                    } else if (data.ok) {
+                        result.innerHTML = '<strong>' + countryInput.value + '</strong><br>' + data.note +
+                            '<div class="vsw-result-actions">' +
+                            '<a href="' + data.url + '">View ' + countryInput.value + ' visa overview &rarr;</a>' +
+                            '<a href="contact">Speak with a consultant &rarr;</a>' +
+                            '</div>';
+                        result.classList.add('show');
+                    } else {
+                        result.innerHTML = 'We could not find that destination. <a href="contact">Speak with a consultant &rarr;</a>';
+                        result.classList.add('show');
+                    }
+                })
+                .catch(function () {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalLabel;
+                    result.innerHTML = 'Something went wrong checking that destination. <a href="contact">Speak with a consultant &rarr;</a>';
+                    result.classList.add('show');
+                });
         });
     }
 
