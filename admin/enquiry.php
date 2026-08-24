@@ -267,6 +267,7 @@ $paymentStatus = crm_payment_status($enquiry);
             <div class="crm-panel-item"><label>Passport Number</label><div class="val"><?php echo fmt($enquiry['passport_number']); ?></div></div>
             <div class="crm-panel-item"><label>Passport Expiry</label><div class="val"><?php echo fmt($enquiry['passport_expiry']); ?></div></div>
             <div class="crm-panel-item"><label>Country of Residence</label><div class="val"><?php echo fmt($enquiry['country_residence']); ?></div></div>
+            <div class="crm-panel-item"><label>Current City</label><div class="val"><?php echo fmt($enquiry['current_city']); ?></div></div>
         </div>
     </div>
     <div class="crm-card">

@@ -63,6 +63,21 @@
                             </select>
                         </div>
                         <div class="enquiry-field">
+                            <label for="enqCurrentCity">Current City</label>
+                            <input type="text" id="enqCurrentCity" name="current_city" maxlength="100" placeholder="e.g. Patna">
+                        </div>
+                        <div class="enquiry-field">
+                            <label for="enqNationality">Passport Nationality</label>
+                            <select id="enqNationality" name="nationality">
+                                <option value="India">India</option>
+                                <?php foreach ($VISA_AGENCY_COUNTRIES as $c): ?>
+                                <?php if ($c['name'] !== 'India'): ?>
+                                <option value="<?php echo htmlspecialchars($c['name']); ?>"><?php echo htmlspecialchars($c['name']); ?></option>
+                                <?php endif; ?>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="enquiry-field">
                             <label for="enqContactMethod">Preferred Contact Method</label>
                             <select id="enqContactMethod" name="contact_method">
                                 <option value="">Select method</option>

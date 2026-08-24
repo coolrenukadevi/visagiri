@@ -92,12 +92,14 @@ if (!preg_match('/^[A-Z0-9]{6,12}$/', $passportNumber)) {
 }
 
 $countryResidence = trim($_POST['country_residence'] ?? '');
+$currentCity = substr(trim($_POST['current_city'] ?? ''), 0, 100);
+$nationality = substr(trim($_POST['nationality'] ?? ''), 0, 100);
 $contactMethod = trim($_POST['contact_method'] ?? '');
 if (!in_array($contactMethod, ['Phone', 'WhatsApp', 'Email'], true)) {
     $contactMethod = '';
 }
 
-$serviceOptions = ['Tourist Visa', 'Business Visa', 'Student Visa', 'Work Visa', 'Transit Visa', 'Family Visa', 'Other'];
+$serviceOptions = ['Tourist Visa', 'Business Visa', 'Student Visa', 'Work Visa', 'Transit Visa', 'Family Visa', 'Sports Visa', 'Medical Visa', 'Crew Visa', 'Visa Extension', 'Other'];
 $serviceRequired = trim($_POST['service_required'] ?? '');
 if (!in_array($serviceRequired, $serviceOptions, true)) {
     $fieldErrors['service_required'] = 'Please select the service you need.';
@@ -148,12 +150,12 @@ $trackingCode = crm_generate_tracking_code($pdo);
 $now = gmdate('c');
 
 $insert = $pdo->prepare('INSERT INTO enquiries (
-    enquiry_ref, tracking_code, full_name, email, mobile, passport_number, country_residence, contact_method,
+    enquiry_ref, tracking_code, full_name, email, mobile, passport_number, country_residence, current_city, nationality, contact_method,
     visa_category, service_required, destination_country, visa_type, travel_date, travellers,
     purpose, message, source, source_url, utm_source, utm_medium, utm_campaign, utm_term,
     utm_content, status, ip_address, user_agent, created_at
 ) VALUES (
-    :ref, :tracking_code, :full_name, :email, :mobile, :passport_number, :country_residence, :contact_method,
+    :ref, :tracking_code, :full_name, :email, :mobile, :passport_number, :country_residence, :current_city, :nationality, :contact_method,
     :visa_category, :service_required, :destination_country, :visa_type, :travel_date, :travellers,
     :purpose, :message, :source, :source_url, :utm_source, :utm_medium, :utm_campaign, :utm_term,
     :utm_content, :status, :ip, :ua, :created_at
@@ -167,6 +169,8 @@ $insert->execute([
     'mobile' => '+91' . $mobile,
     'passport_number' => $passportNumber,
     'country_residence' => $countryResidence,
+    'current_city' => $currentCity,
+    'nationality' => $nationality,
     'contact_method' => $contactMethod,
     'visa_category' => $serviceRequired,
     'service_required' => $serviceRequired,
