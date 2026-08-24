@@ -32,9 +32,11 @@
                                 <li><a href="our-services">All Services &mdash; Directory</a></li>
                                 <li><a href="visa-consultancy-services">Visa Consultancy Overview</a></li>
                             </ul>
-                            <span class="mega-cta-hint">Need help choosing?</span>
-                            <a href="contact" class="mega-cta">Talk to a Visa Expert <i class="fa-solid fa-arrow-right"></i></a>
                         </div>
+                    </div>
+                    <div class="mega-bottom">
+                        <div class="mega-bottom-text"><strong>Need help choosing?</strong>Get a free 10-minute expert consultation.</div>
+                        <a href="contact" class="mega-cta-btn">Talk to a Visa Expert <i class="fa-solid fa-arrow-right"></i></a>
                     </div>
                 </li>
             </ul>
@@ -67,7 +69,10 @@
                             </a>
                             <?php endforeach; ?>
                         </div>
-                        <a href="country-list" class="mega-cta">View All <?php echo count($VISA_AGENCY_COUNTRIES); ?>+ Countries (A&ndash;Z Directory) <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                    <div class="mega-bottom">
+                        <div class="mega-bottom-text"><strong>Explore more</strong>Browse the complete country directory.</div>
+                        <a href="country-list" class="mega-cta-btn">View All <?php echo count($VISA_AGENCY_COUNTRIES); ?>+ Countries <i class="fa-solid fa-arrow-right"></i></a>
                     </div>
                 </li>
             </ul>
@@ -100,8 +105,11 @@
                                 <li><a href="visa-refusal">Visa Refusal Guidance</a></li>
                                 <li><a href="/#faq">Visa FAQs</a></li>
                             </ul>
-                            <a href="visa-consultancy-services" class="mega-cta">Find the Right Visa <i class="fa-solid fa-arrow-right"></i></a>
                         </div>
+                    </div>
+                    <div class="mega-bottom">
+                        <div class="mega-bottom-text"><strong>Not sure which visa fits?</strong>We'll match you to the right visa category.</div>
+                        <a href="visa-consultancy-services" class="mega-cta-btn">Find the Right Visa <i class="fa-solid fa-arrow-right"></i></a>
                     </div>
                 </li>
             </ul>
@@ -109,7 +117,7 @@
 
         <li class="has-dropdown">
             <a href="apostille"><i class="fa-regular fa-stamp nav-top-icon"></i>Apostille</a>
-            <ul class="submenu has-homemenu mega-panel mega-panel-2col">
+            <ul class="submenu has-homemenu mega-panel mega-panel-2col mega-align-right">
                 <li>
                     <div class="mega-panel-inner">
                         <div class="mega-col">
@@ -127,8 +135,11 @@
                                 <li><a href="apostille-embassy-attestation">Embassy Attestation</a></li>
                                 <li><a href="apostille-translation-services">Translation &amp; Notary Assistance</a></li>
                             </ul>
-                            <a href="apostille" class="mega-cta">Explore Attestation Services <i class="fa-solid fa-arrow-right"></i></a>
                         </div>
+                    </div>
+                    <div class="mega-bottom">
+                        <div class="mega-bottom-text"><strong>Need document attestation?</strong>Get your documents apostilled and legalised end-to-end.</div>
+                        <a href="apostille" class="mega-cta-btn">Explore Attestation Services <i class="fa-solid fa-arrow-right"></i></a>
                     </div>
                 </li>
             </ul>
@@ -136,7 +147,7 @@
 
         <li class="has-dropdown">
             <a href="visa-news"><i class="fa-regular fa-book-open nav-top-icon"></i>Resources</a>
-            <ul class="submenu has-homemenu mega-panel">
+            <ul class="submenu has-homemenu mega-panel mega-align-right">
                 <li>
                     <div class="mega-panel-inner">
                         <div class="mega-col">
@@ -166,8 +177,11 @@
                                 <li><a href="visa-news">Visa News &amp; Updates</a></li>
                                 <li><a href="news-grid">Travel Tips</a></li>
                             </ul>
-                            <a href="visa-news" class="mega-cta">Visit Visa Resources <i class="fa-solid fa-arrow-right"></i></a>
                         </div>
+                    </div>
+                    <div class="mega-bottom">
+                        <div class="mega-bottom-text"><strong>Looking for guidance?</strong>Browse guides, checklists and FAQs in one place.</div>
+                        <a href="visa-news" class="mega-cta-btn">Visit Visa Resources <i class="fa-solid fa-arrow-right"></i></a>
                     </div>
                 </li>
             </ul>

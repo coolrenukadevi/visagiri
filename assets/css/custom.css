@@ -74,63 +74,140 @@
     color: var(--border);
 }
 
-/* ---- Mega menu panels ---- */
+/* ---- Mega menu panels: compact floating card ---- */
 .mega-panel {
-    width: 760px !important;
-    left: -300px !important;
-    padding: 32px !important;
+    width: 660px !important;
+    left: 0 !important;
+    top: 100% !important;
+    margin-top: 14px !important;
+    max-width: calc(100vw - 48px) !important;
+    padding: 0 !important;
+    border-top: none !important;
+    border: 1px solid var(--border);
+    border-radius: 16px !important;
+    box-shadow: 0 20px 50px rgba(16, 24, 40, 0.16) !important;
+    overflow: hidden;
+    isolation: isolate;
+}
+.mega-panel.mega-align-right {
+    left: auto !important;
+    right: 0 !important;
+}
+.mega-panel-2col {
+    width: 460px !important;
+}
+.mega-panel-2col .mega-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+}
+.mega-panel-2col .mega-bottom .mega-cta-btn {
+    width: 100% !important;
+    justify-content: center !important;
 }
 .mega-panel-inner {
     display: grid;
-    grid-template-columns: 1.3fr 1.3fr 1fr;
-    gap: 32px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    padding: 26px 26px 6px;
+}
+.mega-panel-2col .mega-panel-inner {
+    grid-template-columns: 1fr 1fr;
+}
+.mega-col {
+    padding-right: 18px;
+}
+.mega-col:last-child {
+    padding-right: 0;
 }
 .mega-col h5 {
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
     text-transform: uppercase;
     color: var(--theme);
-    margin-bottom: 14px;
+    margin-bottom: 12px;
+}
+.mega-col h5 i {
+    margin-right: 8px;
+    color: var(--theme);
+    font-size: 13px;
 }
 .mega-links {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 1px;
 }
 .mega-links li a {
     display: block;
-    padding: 6px 0 !important;
-    font-size: 14.5px;
-    line-height: 1.4 !important;
+    padding: 6px 8px !important;
+    margin: 0 -8px !important;
+    border-radius: 8px;
+    font-size: 13.5px;
+    line-height: 1.5 !important;
     color: var(--header) !important;
 }
 .mega-links li a:hover {
-    color: var(--theme-2) !important;
-    padding-left: 4px !important;
+    background: var(--bg);
+    color: var(--theme) !important;
+    padding-left: 8px !important;
 }
 .mega-links-flags li a span {
     display: inline-block;
     width: 20px;
 }
-.mega-cta {
-    display: inline-flex;
+
+/* Shared bottom CTA strip across every mega panel */
+.mega-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 14px 26px 22px;
+    padding: 14px 18px;
+    background: linear-gradient(90deg, var(--bg), #fff);
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+}
+.mega-bottom-text {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 12.5px;
+    color: var(--text);
+    line-height: 1.4;
+}
+.mega-bottom-text strong {
+    display: block;
+    font-size: 13.5px;
+    color: var(--header);
+    margin-bottom: 2px;
+}
+.mega-bottom a.mega-cta-btn {
+    width: auto !important;
+    flex: 0 0 auto !important;
+    justify-content: center !important;
+    display: inline-flex !important;
     align-items: center;
     gap: 8px;
-    margin-top: 16px;
-    font-weight: 600;
-    font-size: 14px;
-    color: var(--theme) !important;
+    white-space: nowrap;
+    background: var(--theme-2);
+    color: #fff !important;
+    font-weight: 700;
+    font-size: 12.5px;
+    padding: 10px 16px !important;
+    line-height: normal !important;
+    border-radius: 8px;
+    transition: background 0.2s ease;
 }
-.mega-cta:hover {
-    color: var(--theme-2) !important;
+.mega-cta-btn:hover {
+    background: var(--theme);
 }
 
 /* ---- Countries mega panel ---- */
 .mega-panel-countries {
     width: 640px !important;
-    left: -350px !important;
-    padding: 28px !important;
+}
+.country-explorer-menu {
+    padding: 26px 26px 22px;
 }
 .country-explorer-search {
     position: relative;
@@ -1130,12 +1207,7 @@ summary:focus-visible {
     outline-offset: 2px;
 }
 
-/* ---- Mega-menu heading icons + simple dropdown polish (nav redesign) ---- */
-.mega-col h5 i {
-    margin-right: 8px;
-    color: var(--theme);
-    font-size: 13px;
-}
+/* ---- Simple dropdown polish (nav redesign) ---- */
 .submenu.simple-dropdown {
     min-width: 260px;
 }
@@ -1149,15 +1221,6 @@ summary:focus-visible {
     width: 16px;
     text-align: center;
     font-size: 13px;
-}
-.mega-panel-2col .mega-panel-inner {
-    grid-template-columns: 1fr 1fr;
-}
-.mega-cta-hint {
-    display: block;
-    font-size: 12.5px;
-    color: var(--text);
-    margin-top: 14px;
 }
 
 /* ---- Floating contact FAB (WhatsApp / Email / Enquiry Form) ---- */
