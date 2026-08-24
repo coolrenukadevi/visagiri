@@ -25,7 +25,7 @@ include __DIR__ . '/includes/header.php';
                 <div class="console-tag"><span class="blink"></span> appointment.schedule() &middot; consultation booking</div>
                 <p class="lede">Pick a date and time that works for you, tell us what you need help with, and we'll confirm your consultation &mdash; in person in Patna, or by phone.</p>
                 <div class="console-cta-row">
-                    <a class="console-btn console-btn-primary" href="#scheduler">Pick A Slot</a>
+                    <a class="console-btn console-btn-primary" href="visa-appointment#scheduler">Pick A Slot</a>
                     <a class="console-btn console-btn-outline-dark" href="tel:+917844819819">Or Just Call Us</a>
                 </div>
             </div>

@@ -17,6 +17,13 @@ if ($uri === '/' || $uri === '') {
 }
 
 $clean = trim($uri, '/');
+
+if (preg_match('#^countries/([a-z0-9-]+)$#', $clean, $m)) {
+    $_GET['slug'] = $m[1];
+    require __DIR__ . '/countries.php';
+    return true;
+}
+
 if (preg_match('#^[a-zA-Z0-9_-]+$#', $clean) && file_exists(__DIR__ . '/' . $clean . '.php')) {
     require __DIR__ . '/' . $clean . '.php';
     return true;

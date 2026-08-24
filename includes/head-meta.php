@@ -1,6 +1,9 @@
 <?php
 if (!isset($page_title)) { $page_title = "Visa Agency &ndash; Trusted Visa Consultant in Patna, Ranchi, Raipur & Bhopal"; }
 if (!isset($page_description)) { $page_description = "Visa Agency &ndash; Trusted Visa Consultant in Patna, Ranchi, Raipur & Bhopal."; }
+if (!isset($page_canonical)) { $page_canonical = ''; }
+if (!isset($page_og_title)) { $page_og_title = $page_title; }
+if (!isset($page_og_description)) { $page_og_description = $page_description; }
 require_once __DIR__ . '/site-contact.php';
 ?>
 <!DOCTYPE html>
@@ -9,10 +12,28 @@ require_once __DIR__ . '/site-contact.php';
     <head>
        <!-- ========== Meta Tags ========== -->
         <meta charset="UTF-8">
+        <?php
+        // Every relative href/src/action/fetch URL on the site assumes it's
+        // being resolved from a single-segment root URL (e.g. /contact).
+        // Nested URLs like /countries/australia-tourist-visa/ would otherwise
+        // resolve those relative references one level too deep. An explicit
+        // <base> (computed from the current request, not hardcoded, so local
+        // dev keeps working) fixes every page without touching every link.
+        $__siteScheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+        $__siteBase = $__siteScheme . '://' . $_SERVER['HTTP_HOST'] . '/';
+        ?>
+        <base href="<?php echo htmlspecialchars($__siteBase); ?>">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="author" content="Visa Agency">
         <meta name="description" content="<?php echo $page_description; ?>">
+        <?php if ($page_canonical): ?><link rel="canonical" href="<?php echo $page_canonical; ?>"><?php endif; ?>
+        <meta property="og:type" content="website">
+        <meta property="og:title" content="<?php echo $page_og_title; ?>">
+        <meta property="og:description" content="<?php echo $page_og_description; ?>">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="<?php echo $page_og_title; ?>">
+        <meta name="twitter:description" content="<?php echo $page_og_description; ?>">
         <!-- ======== Page title ============ -->
         <title><?php echo $page_title; ?></title>
         <!--<< Favcion >>-->

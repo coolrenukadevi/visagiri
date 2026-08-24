@@ -48,9 +48,26 @@ document.addEventListener('DOMContentLoaded', function () {
         setSubmitting(false);
     }
 
-    function openModal() {
+    function openModal(trigger) {
         lastFocusedEl = document.activeElement;
         resetForm();
+        if (trigger) {
+            var country = trigger.getAttribute('data-country');
+            var visaType = trigger.getAttribute('data-visa-type');
+            var purpose = trigger.getAttribute('data-purpose');
+            if (country) {
+                var countrySelect = document.getElementById('enqDestinationCountry');
+                if (countrySelect) { countrySelect.value = country; }
+            }
+            if (visaType) {
+                var visaSelect = document.getElementById('enqVisaType');
+                if (visaSelect) { visaSelect.value = visaType; }
+            }
+            if (purpose) {
+                var purposeInput = document.getElementById('enqPurpose');
+                if (purposeInput) { purposeInput.value = purpose; }
+            }
+        }
         modal.hidden = false;
         document.documentElement.classList.add('va-enquiry-modal-open');
         requestAnimationFrame(function () {
@@ -78,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var trigger = e.target.closest('a.theme-btn[href="contact"], [data-open-enquiry]');
         if (trigger) {
             e.preventDefault();
-            openModal();
+            openModal(trigger);
             return;
         }
         if (e.target.closest('[data-enquiry-close]')) {

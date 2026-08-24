@@ -25,7 +25,7 @@ include __DIR__ . '/includes/header.php';
                 <div class="console-tag"><span class="blink"></span> checklist.build() &middot; interactive document tracker</div>
                 <p class="lede">Pick your visa category and check off documents as you gather them &mdash; a live progress readout shows exactly what's left before you're ready to file.</p>
                 <div class="console-cta-row">
-                    <a class="console-btn console-btn-primary" href="#builder">Build My Checklist</a>
+                    <a class="console-btn console-btn-primary" href="visa-checklist#builder">Build My Checklist</a>
                     <a class="console-btn console-btn-outline-dark" href="contact">Get A Personalised Checklist</a>
                 </div>
             </div>

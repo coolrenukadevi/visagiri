@@ -3496,3 +3496,94 @@ html.va-enquiry-modal-open {
     .track-overview-grid { grid-template-columns: 1fr; }
     .track-dash-header, .track-overview-card, .track-timeline-card, .track-docs-card { padding: 20px; }
 }
+
+/* ============================================================
+   Country x Visa-Purpose content pages (/countries/...)
+   ============================================================ */
+.visa-info-card {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 30px 34px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px 30px;
+}
+@media (max-width: 991px) {
+    .visa-info-card { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 575px) {
+    .visa-info-card { grid-template-columns: 1fr; padding: 24px 20px; }
+}
+.visa-info-card label {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text);
+    margin-bottom: 4px;
+}
+.visa-info-card span {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--header);
+}
+.visa-info-card span a { color: var(--theme-2); }
+.visa-info-note {
+    max-width: 1000px;
+    margin: 14px auto 0;
+    font-size: 12.5px;
+    color: var(--text);
+    text-align: center;
+}
+
+.visa-doc-groups {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px 40px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+@media (max-width: 767px) {
+    .visa-doc-groups { grid-template-columns: 1fr; }
+}
+.visa-doc-group h4 {
+    font-size: 15px;
+    color: var(--theme);
+    margin-bottom: 14px;
+}
+
+.visa-fee-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+@media (max-width: 767px) {
+    .visa-fee-cols { grid-template-columns: 1fr; }
+}
+.visa-fee-col {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 24px;
+}
+.visa-fee-col h4 {
+    font-size: 14px;
+    color: var(--header);
+    margin-bottom: 14px;
+}
+.visa-fee-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13.5px;
+}
+.visa-fee-row:last-child { border-bottom: none; }
+.visa-fee-row span { color: var(--text); }
+.visa-fee-row strong { color: var(--header); }

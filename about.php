@@ -26,7 +26,7 @@ include __DIR__ . '/includes/header.php';
                 <p class="lede">Visa Agency is a Ministry of Tourism recognised, technology-enabled visa consultancy based in Patna, Bihar &mdash; helping applicants across Patna, Ranchi, Raipur and Bhopal navigate visa, apostille and documentation processes with a clear, tracked process instead of guesswork.</p>
                 <div class="console-cta-row">
                     <a class="console-btn console-btn-primary" href="contact">Start Your Visa Enquiry</a>
-                    <a class="console-btn console-btn-outline-dark" href="#leadership">Meet the Team</a>
+                    <a class="console-btn console-btn-outline-dark" href="about#leadership">Meet the Team</a>
                 </div>
             </div>
         </section>

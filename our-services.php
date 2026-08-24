@@ -26,7 +26,7 @@ include __DIR__ . '/includes/header.php';
                 <p class="lede">Visa categories, apostille &amp; attestation, and the tools that support your application &mdash; browse everything we offer, or jump straight to what you need.</p>
                 <div class="console-cta-row">
                     <a class="console-btn console-btn-primary" href="contact">Not Sure Where To Start?</a>
-                    <a class="console-btn console-btn-outline-dark" href="#visa-services">Browse Services</a>
+                    <a class="console-btn console-btn-outline-dark" href="our-services#visa-services">Browse Services</a>
                 </div>
             </div>
         </section>

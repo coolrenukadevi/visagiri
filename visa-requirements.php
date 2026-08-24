@@ -25,7 +25,7 @@ include __DIR__ . '/includes/header.php';
                 <div class="console-tag"><span class="blink"></span> visa-requirements.check() &middot; live lookup tool</div>
                 <p class="lede">Select your destination to get an indicative read on entry requirements &mdash; e-visa, visa-on-arrival, or an embassy application &mdash; before you start preparing documents.</p>
                 <div class="console-cta-row">
-                    <a class="console-btn console-btn-primary" href="#checker">Run A Check</a>
+                    <a class="console-btn console-btn-primary" href="visa-requirements#checker">Run A Check</a>
                     <a class="console-btn console-btn-outline-dark" href="contact">Talk To A Visa Expert</a>
                 </div>
             </div>

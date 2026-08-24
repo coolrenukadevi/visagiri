@@ -25,7 +25,7 @@ include __DIR__ . '/includes/header.php';
                 <div class="console-tag"><span class="blink"></span> careers.status() &middot; team &middot; Patna, Bihar</div>
                 <p class="lede">We're a small, growing technology-enabled visa consultancy based in Patna. There are no open roles listed right now, but we're always glad to hear from people who care about clear, honest client service.</p>
                 <div class="console-cta-row">
-                    <a class="console-btn console-btn-primary" href="#apply">Submit Your Resume</a>
+                    <a class="console-btn console-btn-primary" href="careers#apply">Submit Your Resume</a>
                     <a class="console-btn console-btn-outline-dark" href="about#leadership">Meet the Team</a>
                 </div>
             </div>

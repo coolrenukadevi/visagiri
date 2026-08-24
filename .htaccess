@@ -18,6 +18,11 @@ RewriteRule ^ / [R=301,L]
 # Serve index.php for the homepage
 RewriteRule ^$ index.php [L]
 
+# Country x visa-purpose SEO pages: /countries/{slug}/ and
+# /countries/{country-slug}-{category-slug}/ both dispatch to countries.php,
+# which resolves the slug against the DB and renders the hub or content page.
+RewriteRule ^countries/([a-z0-9-]+)/?$ countries.php?slug=$1 [L,QSA]
+
 # Map a clean URL to its .php file when the file exists and no real
 # file/directory already matches the request.
 RewriteCond %{REQUEST_FILENAME} !-f

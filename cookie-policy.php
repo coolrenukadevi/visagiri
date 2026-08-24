@@ -154,7 +154,7 @@ $cookie_toc = [
         </section>
 
         <div class="cookie-banner" id="cookieBanner" role="dialog" aria-live="polite" aria-label="Cookie preferences">
-            <p>We use essential cookies to run this site, and optional analytics/preference cookies to improve it. See our <a href="#types">cookie types</a> above.</p>
+            <p>We use essential cookies to run this site, and optional analytics/preference cookies to improve it. See our <a href="cookie-policy#types">cookie types</a> above.</p>
             <div class="cookie-actions">
                 <button class="cookie-accept" type="button" id="cookieAccept">Accept All</button>
                 <button class="cookie-essential" type="button" id="cookieEssential">Essential Only</button>

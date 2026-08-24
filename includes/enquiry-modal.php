@@ -81,6 +81,10 @@
                                 <option>Work Visa</option>
                                 <option>Transit Visa</option>
                                 <option>Family Visa</option>
+                                <option>Sports Visa</option>
+                                <option>Medical Visa</option>
+                                <option>Crew Visa</option>
+                                <option>Visa Extension</option>
                                 <option>Other</option>
                             </select>
                             <span class="enquiry-error" data-error-for="service_required"></span>
@@ -111,6 +115,10 @@
                                 <option>Work Visa</option>
                                 <option>Transit Visa</option>
                                 <option>Family Visa</option>
+                                <option>Sports Visa</option>
+                                <option>Medical Visa</option>
+                                <option>Crew Visa</option>
+                                <option>Visa Extension</option>
                                 <option>Other</option>
                             </select>
                             <span class="enquiry-error" data-error-for="visa_type"></span>
