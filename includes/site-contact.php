@@ -13,7 +13,7 @@ $site_address       = '#302, Sharda Mansion Apartment, Kailash Puri, Hanuman Nag
 $site_hours         = 'Monday &ndash; Friday, 9:00 AM &ndash; 5:00 PM';
 
 $site_social = [
-    'linkedin'  => '#',
+    'linkedin'  => 'https://www.linkedin.com/company/visaagency/',
     'twitter'   => 'https://x.com/visaaagency_in',
     'instagram' => 'https://www.instagram.com/visaagencyofficial/',
     'youtube'   => '#',

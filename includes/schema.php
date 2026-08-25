@@ -23,7 +23,8 @@
       "sameAs": [
         "https://www.instagram.com/visaagencyofficial/",
         "https://x.com/visaaagency_in",
-        "https://www.facebook.com/visaagencyofficial"
+        "https://www.facebook.com/visaagencyofficial",
+        "https://www.linkedin.com/company/visaagency/"
       ]
     },
     {

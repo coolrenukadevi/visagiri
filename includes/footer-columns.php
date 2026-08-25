@@ -8,7 +8,7 @@
                             </p>
                             <p class="footer-brand-tagline">Global Visa Assistance | Professional Guidance | Transparent Process</p>
                             <div class="social-icon mt-3" role="list" aria-label="Social media">
-                                <span role="listitem" aria-label="LinkedIn (coming soon)"><i class="fa-brands fa-linkedin"></i></span>
+                                <a href="<?php echo htmlspecialchars($site_social['linkedin']); ?>" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
                                 <a href="<?php echo htmlspecialchars($site_social['twitter']); ?>" target="_blank" rel="noopener" aria-label="X (Twitter)"><i class="fa-brands fa-twitter"></i></a>
                                 <a href="<?php echo htmlspecialchars($site_social['instagram']); ?>" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
                                 <a href="<?php echo htmlspecialchars($site_social['facebook']); ?>" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
