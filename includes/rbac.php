@@ -58,3 +58,15 @@ function current_admin_scoped_to_assigned(): bool
     $admin = current_admin();
     return $admin !== null && ($admin['role_slug'] ?? null) === 'visa-consultant';
 }
+
+/**
+ * Same idea as current_admin_scoped_to_assigned(), for the HRMS
+ * recruitment module: an HR Executive only sees candidates assigned
+ * to them (no hrms.candidates.view_all permission); HR Admin and
+ * Super Admin see everything. Checked at the query level by every
+ * HRMS admin page, not just used to hide rows.
+ */
+function current_admin_hrms_scoped_to_assigned(): bool
+{
+    return !has_permission('hrms.candidates.view_all');
+}

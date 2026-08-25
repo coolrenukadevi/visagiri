@@ -1,0 +1,86 @@
+/* HRMS Recruitment CRM — distinct chrome on top of admin.css's layout
+   primitives, plus the Kanban pipeline board and candidate profile
+   tabs that only this module needs. */
+
+.hrms-sidebar {
+    background: linear-gradient(180deg, var(--visa-blue-dark) 0%, #0B2A57 55%, #0A1F40 100%);
+}
+.hrms-sidebar .admin-sidebar__brand span { color: var(--visa-gold); }
+
+.hrms-topbar {
+    border-bottom: 3px solid var(--visa-gold);
+}
+.hrms-topbar__account small { color: var(--text-muted); font-weight: var(--font-weight-regular); }
+
+/* Stat cards with a colored accent bar, used on the HRMS dashboard */
+.hrms-stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-8); }
+.hrms-stat-card {
+    background: var(--white);
+    border-radius: var(--radius-md);
+    padding: var(--space-5);
+    box-shadow: var(--shadow-sm);
+    border-left: 4px solid var(--visa-blue);
+}
+.hrms-stat-card--gold { border-left-color: var(--visa-gold); }
+.hrms-stat-card--success { border-left-color: var(--success); }
+.hrms-stat-card--warning { border-left-color: var(--warning); }
+.hrms-stat-card--danger { border-left-color: var(--danger); }
+.hrms-stat-card__value { font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--text-dark); }
+.hrms-stat-card__label { color: var(--text-muted); font-size: var(--font-size-sm); margin-top: var(--space-1); }
+
+/* Kanban recruitment pipeline */
+.hrms-kanban { display: flex; gap: var(--space-4); overflow-x: auto; padding-bottom: var(--space-4); }
+.hrms-kanban__column {
+    background: var(--surface);
+    border-radius: var(--radius-md);
+    min-width: 260px;
+    max-width: 260px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    max-height: 78vh;
+}
+.hrms-kanban__column-header {
+    padding: var(--space-3) var(--space-4);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-sm);
+    border-bottom: 2px solid var(--visa-blue);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.hrms-kanban__column-count { background: var(--visa-blue-light); color: var(--visa-blue); border-radius: var(--radius-full); padding: 0 var(--space-2); font-size: var(--font-size-xs); }
+.hrms-kanban__cards { padding: var(--space-3); overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: var(--space-3); }
+.hrms-kanban__card {
+    background: var(--white);
+    border-radius: var(--radius-sm);
+    padding: var(--space-3);
+    box-shadow: var(--shadow-sm);
+    font-size: var(--font-size-sm);
+}
+.hrms-kanban__card-name { font-weight: var(--font-weight-semibold); margin-bottom: var(--space-1); }
+.hrms-kanban__card-meta { color: var(--text-muted); font-size: var(--font-size-xs); margin-bottom: var(--space-2); }
+.hrms-kanban__card form { display: flex; gap: var(--space-2); align-items: center; }
+.hrms-kanban__card select { font-size: var(--font-size-xs); flex: 1; }
+
+/* Candidate profile tabs */
+.hrms-tabs { display: flex; gap: var(--space-1); border-bottom: 1px solid var(--border); margin-bottom: var(--space-5); flex-wrap: wrap; }
+.hrms-tabs a {
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-muted);
+    border-bottom: 2px solid transparent;
+}
+.hrms-tabs a.is-active { color: var(--visa-blue); border-bottom-color: var(--visa-gold); }
+
+.hrms-timeline { list-style: none; padding: 0; margin: 0; }
+.hrms-timeline li { padding: var(--space-3) 0; border-bottom: 1px solid var(--border); font-size: var(--font-size-sm); }
+.hrms-timeline li:last-child { border-bottom: none; }
+.hrms-timeline time { color: var(--text-muted); font-size: var(--font-size-xs); display: block; }
+
+.hrms-login-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--visa-blue-dark), var(--visa-blue)); }
+
+@media (max-width: 900px) {
+    .hrms-kanban__column { min-width: 220px; max-width: 220px; }
+}

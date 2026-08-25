@@ -42,6 +42,7 @@ require_once "$root/includes/audit.php";
 require_once "$root/includes/encryption.php";
 require_once "$root/includes/reference-numbers.php";
 require_once "$root/includes/documents.php";
+require_once "$root/includes/hrms.php";
 
 start_secure_session();
 send_security_headers();
@@ -108,7 +109,10 @@ switch ($segments[0] ?? '') {
         $dispatch("$root/attestation/index.php");
 
     case 'careers':
-        $dispatch("$root/pages/careers.php");
+        $dispatch("$root/careers/index.php");
+
+    case 'hrms':
+        $dispatch("$root/hrms/index.php");
 
     case 'leadership':
         $dispatch("$root/pages/leadership.php");
