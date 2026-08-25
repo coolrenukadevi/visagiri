@@ -4,9 +4,12 @@
  * $ADMIN_ACTIVE_NAV before including this, then close with layout-bottom.php.
  */
 require_once __DIR__ . '/admin-auth.php';
+require_once __DIR__ . '/../../includes/forex-db.php';
+require_once __DIR__ . '/forex-permissions.php';
 admin_require_login();
 
 $pdo = enquiry_db();
+forex_db();
 $stmt = $pdo->prepare('SELECT COUNT(*) FROM notifications WHERE is_read = 0 AND (user_id IS NULL OR user_id = ?)');
 $stmt->execute([admin_user_id()]);
 $unreadCount = (int) $stmt->fetchColumn();
@@ -29,6 +32,18 @@ $navItems = [
     ['key' => 'countries', 'label' => 'Countries', 'icon' => 'earth-americas', 'href' => 'countries.php'],
     ['key' => 'visa-pages', 'label' => 'Content Pages', 'icon' => 'file-lines', 'href' => 'visa-pages.php'],
     ['key' => 'visa-types', 'label' => 'Visa Types', 'icon' => 'stamp', 'href' => 'visa-types.php'],
+
+    ['section' => 'Forex'],
+    ['key' => 'forex-new', 'label' => 'New Forex Request', 'icon' => 'plus', 'href' => 'forex-request-new.php', 'soon' => true],
+    ['key' => 'forex-all', 'label' => 'All Requests', 'icon' => 'money-bill-transfer', 'href' => 'forex-requests.php', 'soon' => true],
+    ['key' => 'forex-pending-docs', 'label' => 'Pending Documents', 'icon' => 'file-circle-exclamation', 'href' => 'forex-documents.php', 'soon' => true],
+    ['key' => 'forex-quotations', 'label' => 'Quotations', 'icon' => 'file-invoice-dollar', 'href' => 'forex-quotations.php', 'soon' => true],
+    ['key' => 'forex-approved', 'label' => 'Approved Requests', 'icon' => 'circle-check', 'href' => 'forex-approved.php', 'soon' => true],
+    ['key' => 'forex-delivered', 'label' => 'Delivered', 'icon' => 'hand-holding-dollar', 'href' => 'forex-delivered.php', 'soon' => true],
+    ['key' => 'forex-cancelled', 'label' => 'Cancelled', 'icon' => 'ban', 'href' => 'forex-cancelled.php', 'soon' => true],
+    ['key' => 'forex-audit', 'label' => 'FEMA / Audit Records', 'icon' => 'shield-halved', 'href' => 'forex-audit.php', 'soon' => true, 'roles' => ['Super Admin', 'Forex Manager', 'Compliance / Audit']],
+    ['key' => 'forex-reports', 'label' => 'Reports', 'icon' => 'chart-pie', 'href' => 'forex-reports.php', 'soon' => true],
+
     ['key' => 'settings', 'label' => 'Settings', 'icon' => 'gear', 'href' => 'settings.php'],
 ];
 ?>
@@ -51,6 +66,10 @@ $navItems = [
         </div>
         <nav class="crm-nav">
             <?php foreach ($navItems as $item): ?>
+                <?php if (isset($item['section'])): ?>
+                <div class="crm-nav-section"><?php echo htmlspecialchars($item['section']); ?></div>
+                <?php continue; ?>
+                <?php endif; ?>
                 <?php if (!empty($item['roles']) && !in_array(admin_role(), $item['roles'], true)) continue; ?>
                 <?php if (!empty($item['soon'])): ?>
                 <span class="crm-nav-item is-soon" title="Coming in a later phase">

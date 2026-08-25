@@ -23,7 +23,10 @@ const CRM_VISA_CATEGORIES = [
     'Tourist Visa', 'Business Visa', 'Student Visa', 'Work Visa', 'Dependent Visa',
     'Transit Visa', 'Immigration', 'Conference Visa', 'Sports Visa', 'Medical Visa', 'Other',
 ];
-const CRM_ROLES = ['Super Admin', 'Admin', 'Sales Manager', 'Travel Consultant', 'Visa Consultant', 'Accounts'];
+const CRM_ROLES = [
+    'Super Admin', 'Admin', 'Sales Manager', 'Travel Consultant', 'Visa Consultant', 'Accounts',
+    'Forex Manager', 'Forex Executive', 'Compliance / Audit',
+];
 const CRM_FOLLOWUP_TYPES = ['Call', 'WhatsApp', 'Email', 'Meeting'];
 const CRM_PAYMENT_METHODS = ['Cash', 'UPI', 'Bank Transfer', 'Credit Card', 'Debit Card', 'Cheque', 'Other'];
 const CRM_DECISIONS = ['Pending', 'Approved', 'Refused'];
