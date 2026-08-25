@@ -18,6 +18,10 @@ RewriteRule ^ / [R=301,L]
 # Serve index.php for the homepage
 RewriteRule ^$ index.php [L]
 
+# Dynamically-generated XML sitemap, always in sync with the countries/
+# content-pages database instead of a stale hand-maintained file.
+RewriteRule ^sitemap\.xml$ sitemap-xml.php [L]
+
 # Country x visa-purpose SEO pages: /countries/{slug}/ and
 # /countries/{country-slug}-{category-slug}/ both dispatch to countries.php,
 # which resolves the slug against the DB and renders the hub or content page.

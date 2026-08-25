@@ -162,6 +162,13 @@ foreach ($VISA_AGENCY_COUNTRIES as $c) {
                                 </div>
                                 <a class="btn-small" href="country-list">Open country list &rarr;</a>
                             </div>
+                            <div class="policy-xml-card" style="margin-top:14px;">
+                                <div>
+                                    <p>Visa-category pages by destination</p>
+                                    <span>Country + purpose pages with eligibility, documents, fees and FAQs &mdash; e.g. Australia Tourist Visa</span>
+                                </div>
+                                <a class="btn-small" href="countries/australia">Open Australia visa hub &rarr;</a>
+                            </div>
                         </section>
 
                         <section id="company">

@@ -344,6 +344,39 @@ include __DIR__ . '/../header.php';
 
 <script type="application/ld+json">
 <?php
+$serviceLd = [
+    '@context' => 'https://schema.org',
+    '@type' => 'Service',
+    'name' => $titleBase . ' Consultancy',
+    'serviceType' => $categoryName . ' Consultancy',
+    'description' => $page_description,
+    'url' => $pageUrl,
+    'provider' => ['@id' => 'https://visaagency.in/#organization'],
+    'areaServed' => ['@type' => 'Country', 'name' => 'India'],
+    'audience' => ['@type' => 'Audience', 'audienceType' => 'Indian passport holders travelling to ' . $countryName],
+];
+echo json_encode($serviceLd, JSON_UNESCAPED_SLASHES);
+?>
+</script>
+<script type="application/ld+json">
+<?php
+$webPageLd = [
+    '@context' => 'https://schema.org',
+    '@type' => 'WebPage',
+    'name' => $titleBase,
+    'url' => $pageUrl,
+    'description' => $page_description,
+    'isPartOf' => ['@id' => 'https://visaagency.in/#website'],
+    'about' => ['@type' => 'Country', 'name' => $countryName],
+];
+if ($page['last_reviewed_date']) {
+    $webPageLd['dateModified'] = $page['last_reviewed_date'];
+}
+echo json_encode($webPageLd, JSON_UNESCAPED_SLASHES);
+?>
+</script>
+<script type="application/ld+json">
+<?php
 $breadcrumbLd = [
     '@context' => 'https://schema.org',
     '@type' => 'BreadcrumbList',

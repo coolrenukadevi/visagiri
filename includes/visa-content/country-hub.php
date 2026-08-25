@@ -110,6 +110,17 @@ include __DIR__ . '/../header.php';
 <script type="application/ld+json">
 <?php echo json_encode([
     '@context' => 'https://schema.org',
+    '@type' => 'WebPage',
+    'name' => $countryName . ' Visa',
+    'url' => $page_canonical,
+    'description' => $page_description,
+    'isPartOf' => ['@id' => 'https://visaagency.in/#website'],
+    'about' => ['@type' => 'Country', 'name' => $countryName],
+], JSON_UNESCAPED_SLASHES); ?>
+</script>
+<script type="application/ld+json">
+<?php echo json_encode([
+    '@context' => 'https://schema.org',
     '@type' => 'BreadcrumbList',
     'itemListElement' => [
         ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => 'https://visaagency.in/'],

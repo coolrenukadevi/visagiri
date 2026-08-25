@@ -18,6 +18,11 @@ if ($uri === '/' || $uri === '') {
 
 $clean = trim($uri, '/');
 
+if ($clean === 'sitemap.xml') {
+    require __DIR__ . '/sitemap-xml.php';
+    return true;
+}
+
 if (preg_match('#^countries/([a-z0-9-]+)$#', $clean, $m)) {
     $_GET['slug'] = $m[1];
     require __DIR__ . '/countries.php';
