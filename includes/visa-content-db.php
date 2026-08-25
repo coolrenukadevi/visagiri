@@ -262,6 +262,21 @@ function visa_seed_bulk_generic(PDO $pdo): void
     $faqStmt = $pdo->prepare('INSERT INTO visa_faqs (country_visa_page_id, question, answer, sort_order) VALUES (?, ?, ?, ?)');
     $feeStmt = $pdo->prepare('INSERT INTO visa_fees (country_visa_page_id, label, amount_display, is_government, sort_order) VALUES (?, ?, ?, ?, ?)');
 
+    // Shared hosting often enforces a much stricter max_execution_time than
+    // this was tested under, and generating ~1,600 pages (~48k child rows)
+    // in a single transaction on a live request risks a mid-run timeout —
+    // which, worse, can leave SQLite mid-transaction. @-suppressed because
+    // some hosts disable set_time_limit() entirely; that's fine, the batched
+    // commits below are the real safety net either way.
+    @set_time_limit(240);
+
+    // Commit in small batches rather than one giant transaction: if a
+    // timeout or error does hit partway through, only the current batch is
+    // lost — already-committed pages stay, and the existing page_slug skip
+    // check above means the next request simply resumes from where it left
+    // off instead of redoing (or losing) all prior work.
+    $batchSize = 50;
+    $sinceCommit = 0;
     $pdo->beginTransaction();
     foreach ($countries as $country) {
         foreach ($categories as $category) {
@@ -307,9 +322,19 @@ function visa_seed_bulk_generic(PDO $pdo): void
             }
             $feeStmt->execute([$pageId, 'Government / Application Fee', 'Check the official immigration authority for current fees', 1, 0]);
             $feeStmt->execute([$pageId, 'Visa Agency Service Fee', 'Contact us for current pricing for this visa category', 0, 1]);
+
+            $sinceCommit++;
+            if ($sinceCommit >= $batchSize) {
+                $pdo->commit();
+                @set_time_limit(240);
+                $pdo->beginTransaction();
+                $sinceCommit = 0;
+            }
         }
     }
-    $pdo->commit();
+    if ($pdo->inTransaction()) {
+        $pdo->commit();
+    }
 }
 
 /**
