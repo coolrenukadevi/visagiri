@@ -7,10 +7,11 @@
                                 global travel simpler, smoother and more confident.
                             </p>
                             <p class="footer-brand-tagline">Global Visa Assistance | Professional Guidance | Transparent Process</p>
-                            <div class="social-icon mt-3" role="list" aria-label="Social media (profiles coming soon)">
+                            <div class="social-icon mt-3" role="list" aria-label="Social media">
                                 <span role="listitem" aria-label="LinkedIn (coming soon)"><i class="fa-brands fa-linkedin"></i></span>
-                                <span role="listitem" aria-label="Twitter (coming soon)"><i class="fa-brands fa-twitter"></i></span>
-                                <span role="listitem" aria-label="Instagram (coming soon)"><i class="fa-brands fa-instagram"></i></span>
+                                <a href="<?php echo htmlspecialchars($site_social['twitter']); ?>" target="_blank" rel="noopener" aria-label="X (Twitter)"><i class="fa-brands fa-twitter"></i></a>
+                                <a href="<?php echo htmlspecialchars($site_social['instagram']); ?>" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                                <a href="<?php echo htmlspecialchars($site_social['facebook']); ?>" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
                                 <span role="listitem" aria-label="YouTube (coming soon)"><i class="fa-brands fa-youtube"></i></span>
                                 <a href="<?php echo $site_whatsapp_url; ?>" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
                             </div>

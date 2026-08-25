@@ -31,10 +31,10 @@
                             <a href="employee-login">Employee Login</a>
                         </div>
                         <div class="social-item">
-                            <a href="<?php echo $site_social['linkedin']; ?>"><i class="fa-brands fa-linkedin"></i></a>
-                            <a href="<?php echo $site_social['twitter']; ?>"><i class="fa-brands fa-twitter"></i></a>
-                            <a href="<?php echo $site_social['instagram']; ?>"><i class="fa-brands fa-instagram"></i></a>
-                            <a href="<?php echo $site_social['youtube']; ?>"><i class="fa-brands fa-youtube"></i></a>
+                            <a href="<?php echo $site_social['linkedin']; ?>" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin"></i></a>
+                            <a href="<?php echo $site_social['twitter']; ?>" target="_blank" rel="noopener"><i class="fa-brands fa-twitter"></i></a>
+                            <a href="<?php echo $site_social['instagram']; ?>" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i></a>
+                            <a href="<?php echo $site_social['youtube']; ?>" target="_blank" rel="noopener"><i class="fa-brands fa-youtube"></i></a>
                         </div>
                     </div>
                 </div>

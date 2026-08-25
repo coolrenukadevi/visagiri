@@ -20,7 +20,11 @@
         "postalCode": "800020",
         "addressCountry": "IN"
       },
-      "sameAs": []
+      "sameAs": [
+        "https://www.instagram.com/visaagencyofficial/",
+        "https://x.com/visaaagency_in",
+        "https://www.facebook.com/visaagencyofficial"
+      ]
     },
     {
       "@type": "LocalBusiness",

@@ -14,10 +14,10 @@ $site_hours         = 'Monday &ndash; Friday, 9:00 AM &ndash; 5:00 PM';
 
 $site_social = [
     'linkedin'  => '#',
-    'twitter'   => '#',
-    'instagram' => '#',
+    'twitter'   => 'https://x.com/visaaagency_in',
+    'instagram' => 'https://www.instagram.com/visaagencyofficial/',
     'youtube'   => '#',
-    'facebook'  => '#',
+    'facebook'  => 'https://www.facebook.com/visaagencyofficial',
 ];
 
 $site_logo_black = 'assets/img/logo/black-logo.svg';

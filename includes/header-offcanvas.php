@@ -56,10 +56,10 @@
                                 </li>
                             </ul>
                             <div class="social-icon d-flex align-items-center">
-                                <a href="<?php echo $site_social['facebook']; ?>"><i class="fab fa-facebook-f"></i></a>
-                                <a href="<?php echo $site_social['twitter']; ?>"><i class="fab fa-twitter"></i></a>
-                                <a href="<?php echo $site_social['youtube']; ?>"><i class="fab fa-youtube"></i></a>
-                                <a href="<?php echo $site_social['linkedin']; ?>"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="<?php echo $site_social['facebook']; ?>" target="_blank" rel="noopener"><i class="fab fa-facebook-f"></i></a>
+                                <a href="<?php echo $site_social['twitter']; ?>" target="_blank" rel="noopener"><i class="fab fa-twitter"></i></a>
+                                <a href="<?php echo $site_social['youtube']; ?>" target="_blank" rel="noopener"><i class="fab fa-youtube"></i></a>
+                                <a href="<?php echo $site_social['linkedin']; ?>" target="_blank" rel="noopener"><i class="fab fa-linkedin-in"></i></a>
                             </div>
                         </div>
                     </div>
