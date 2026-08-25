@@ -78,5 +78,9 @@
     acceptBtn.addEventListener('click', function () { setConsent('accepted'); grantAccess(); });
     reconsiderBtn.addEventListener('click', function () { setConsent('accepted'); grantAccess(); });
     declineBtn.addEventListener('click', function () { setConsent('declined'); showDenied(); });
+
+    // Exposed so a "Cookie Settings" link (e.g. in the footer) can let
+    // visitors reopen this dialog and change a previously given choice.
+    window.vaOpenCookieSettings = showAsk;
 })();
 </script>

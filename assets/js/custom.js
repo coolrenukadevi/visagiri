@@ -222,6 +222,17 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    /* ---- Footer "Cookie Settings" link — reopens the cookie consent dialog ---- */
+    var cookieSettingsLink = document.getElementById('cookieSettingsLink');
+    if (cookieSettingsLink) {
+        cookieSettingsLink.addEventListener('click', function (e) {
+            e.preventDefault();
+            if (typeof window.vaOpenCookieSettings === 'function') {
+                window.vaOpenCookieSettings();
+            }
+        });
+    }
+
     /* ---- Floating contact FAB ---- */
     var fab = document.getElementById('floatingFab');
     var fabToggle = document.getElementById('floatingFabToggle');

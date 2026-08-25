@@ -7,6 +7,7 @@
                         <a href="privacy-policy">Privacy Policy</a>
                         <a href="terms-and-conditions">Terms &amp; Conditions</a>
                         <a href="cookie-policy">Cookie Policy</a>
+                        <a href="#" id="cookieSettingsLink">Cookie Settings</a>
                         <a href="disclaimer">Disclaimer</a>
                         <a href="refund-policy">Refund Policy</a>
                         <a href="data-security">Data Security</a>
