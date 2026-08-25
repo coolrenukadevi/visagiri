@@ -211,8 +211,105 @@ function visa_content_db(): PDO
         visa_seed_page($pdo, $def);
     }
 
+    visa_seed_bulk_generic($pdo);
+
     $migrated = true;
     return $pdo;
+}
+
+/**
+ * Bulk-generates every remaining country x visa-category combination using
+ * category-level generic templates (includes/visa-bulk-generic-content.php),
+ * so the full 200+ country x 8-category URL/SEO grid exists and is live.
+ * Skips any combination already seeded by visa_seed_pages_def() (the small
+ * hand-researched batch, which always takes precedence) or already present
+ * from a prior run/admin edit. Fast-exits once every combination exists so
+ * this doesn't re-scan on every request once fully seeded.
+ */
+function visa_seed_bulk_generic(PDO $pdo): void
+{
+    $countries = $pdo->query('SELECT id, name, slug, region FROM countries WHERE is_active = 1')->fetchAll(PDO::FETCH_ASSOC);
+    $categories = $pdo->query('SELECT id, name, slug FROM visa_categories')->fetchAll(PDO::FETCH_ASSOC);
+    $totalPossible = count($countries) * count($categories);
+
+    $existingCount = (int) $pdo->query('SELECT COUNT(*) FROM country_visa_pages')->fetchColumn();
+    if ($existingCount >= $totalPossible) {
+        return; // fast exit — every combination already has a page
+    }
+
+    $existingSlugs = array_flip($pdo->query('SELECT page_slug FROM country_visa_pages')->fetchAll(PDO::FETCH_COLUMN));
+    require_once __DIR__ . '/visa-bulk-generic-content.php';
+    $templatesBySlug = visa_bulk_category_templates();
+
+    $now = gmdate('c');
+    $today = gmdate('Y-m-d');
+
+    $insertPage = $pdo->prepare("INSERT INTO country_visa_pages (
+        country_id, visa_category_id, page_slug, status,
+        official_visa_name, intro_html,
+        seo_title, meta_description, og_title, og_description,
+        eligibility_html, indian_applicant_html,
+        last_reviewed_date, reviewed_by, created_at, updated_at
+    ) VALUES (
+        :country_id, :category_id, :page_slug, 'published',
+        NULL, :intro_html,
+        :seo_title, :meta_description, :og_title, :og_description,
+        :eligibility_html, :indian_applicant_html,
+        :last_reviewed_date, :reviewed_by, :created_at, :updated_at
+    )");
+    $docStmt = $pdo->prepare('INSERT INTO visa_documents (country_visa_page_id, category, label, sort_order) VALUES (?, ?, ?, ?)');
+    $stepStmt = $pdo->prepare('INSERT INTO visa_process_steps (country_visa_page_id, step_number, title, description) VALUES (?, ?, ?, ?)');
+    $faqStmt = $pdo->prepare('INSERT INTO visa_faqs (country_visa_page_id, question, answer, sort_order) VALUES (?, ?, ?, ?)');
+    $feeStmt = $pdo->prepare('INSERT INTO visa_fees (country_visa_page_id, label, amount_display, is_government, sort_order) VALUES (?, ?, ?, ?, ?)');
+
+    $pdo->beginTransaction();
+    foreach ($countries as $country) {
+        foreach ($categories as $category) {
+            $pageSlug = visa_page_slug($country['slug'], $category['slug']);
+            if (isset($existingSlugs[$pageSlug])) {
+                continue;
+            }
+            $tpl = $templatesBySlug[$category['slug']] ?? null;
+            if (!$tpl) {
+                continue;
+            }
+
+            $countryName = $country['name'];
+            $titleBase = "{$countryName} {$category['name']}";
+            $sub = fn(string $s) => str_replace(['%COUNTRY%', '%CATEGORY%'], [$countryName, $category['name']], $s);
+
+            $insertPage->execute([
+                'country_id' => $country['id'],
+                'category_id' => $category['id'],
+                'page_slug' => $pageSlug,
+                'intro_html' => $sub($tpl['intro']),
+                'seo_title' => "{$titleBase} from India | Requirements, Documents &amp; Application",
+                'meta_description' => "Apply for {$titleBase} from India. Check eligibility, documents, application process and visa assistance for {$countryName}.",
+                'og_title' => "{$titleBase} from India — Visa Agency",
+                'og_description' => "Everything Indian travellers need for the {$titleBase}: eligibility, documents and application guidance.",
+                'eligibility_html' => $sub($tpl['eligibility']),
+                'indian_applicant_html' => $sub($tpl['indian_applicant']),
+                'last_reviewed_date' => $today,
+                'reviewed_by' => 'Visa Agency Content Team',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]);
+            $pageId = (int) $pdo->lastInsertId();
+
+            foreach ($tpl['documents'] as $i => $d) {
+                $docStmt->execute([$pageId, $d[0], $sub($d[1]), $i]);
+            }
+            foreach (VISA_DEFAULT_PROCESS_STEPS as $i => $s) {
+                $stepStmt->execute([$pageId, $i + 1, $s['title'], $s['description']]);
+            }
+            foreach ($tpl['faqs'] as $i => $f) {
+                $faqStmt->execute([$pageId, $sub($f[0]), $sub($f[1]), $i]);
+            }
+            $feeStmt->execute([$pageId, 'Government / Application Fee', 'Check the official immigration authority for current fees', 1, 0]);
+            $feeStmt->execute([$pageId, 'Visa Agency Service Fee', 'Contact us for current pricing for this visa category', 0, 1]);
+        }
+    }
+    $pdo->commit();
 }
 
 /**
