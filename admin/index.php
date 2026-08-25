@@ -14,7 +14,7 @@ function crm_count(PDO $pdo, string $where, array $params = []): int
     return (int) $stmt->fetchColumn();
 }
 
-$totalCount = crm_count($pdo, '1=1' . $scopeSql, $scopeParams);
+$totalCount = crm_count($pdo, $scopeSql, $scopeParams);
 $newCount = crm_count($pdo, "AND status = 'New Enquiry'" . $scopeSql, $scopeParams);
 $inProgressCount = crm_count($pdo, "AND status IN ('Contacted','Documents Pending','Documents Under Review','Documents Approved','Payment Pending','Application Preparation','Application Submitted','Under Embassy Processing','Additional Documents Required','Decision Received')" . $scopeSql, $scopeParams);
 $docsPendingCount = crm_count($pdo, "AND status IN ('Documents Pending','Documents Under Review','Additional Documents Required')" . $scopeSql, $scopeParams);
