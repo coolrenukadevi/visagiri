@@ -206,28 +206,38 @@ function visa_content_db(): PDO
         }
     }
 
-    visa_seed_australia_tourist($pdo);
+    require_once __DIR__ . '/visa-seed-data.php';
+    foreach (visa_seed_pages_def() as $def) {
+        visa_seed_page($pdo, $def);
+    }
 
     $migrated = true;
     return $pdo;
 }
 
 /**
- * Seeds the one fully-researched sample page (Australia Tourist Visa) so it
- * renders on any environment this code runs on, not just the session that
- * happened to write to a local, gitignored SQLite file. Idempotent — skips
- * if the page already exists (e.g. an admin has since edited it).
+ * Generic, data-driven seeder for one country x visa-category content page.
+ * Runs on every request (bootstrap-time) so pre-researched content self-installs
+ * on any environment this code runs on, matching the zip-based deployment model
+ * where the SQLite file itself is never committed. Idempotent — skips if the
+ * page already exists (e.g. an admin has since edited it via the CMS).
+ *
+ * $def shape: see includes/visa-seed-data.php for the full field list per entry.
  */
-function visa_seed_australia_tourist(PDO $pdo): void
+function visa_seed_page(PDO $pdo, array $def): void
 {
     $exists = $pdo->prepare('SELECT id FROM country_visa_pages WHERE page_slug = ?');
-    $exists->execute(['australia-tourist-visa']);
+    $exists->execute([$def['page_slug']]);
     if ($exists->fetchColumn()) {
         return;
     }
 
-    $countryId = $pdo->query("SELECT id FROM countries WHERE slug = 'australia'")->fetchColumn();
-    $categoryId = $pdo->query("SELECT id FROM visa_categories WHERE slug = 'tourist-visa'")->fetchColumn();
+    $countryId = $pdo->prepare('SELECT id FROM countries WHERE slug = ?');
+    $countryId->execute([$def['country_slug']]);
+    $countryId = $countryId->fetchColumn();
+    $categoryId = $pdo->prepare('SELECT id FROM visa_categories WHERE slug = ?');
+    $categoryId->execute([$def['category_slug']]);
+    $categoryId = $categoryId->fetchColumn();
     if (!$countryId || !$categoryId) {
         return; // countries/visa_categories not seeded yet — nothing to attach to
     }
@@ -235,10 +245,24 @@ function visa_seed_australia_tourist(PDO $pdo): void
     $now = gmdate('c');
     $today = gmdate('Y-m-d');
 
-    $pdo->prepare("UPDATE countries SET official_name = 'Commonwealth of Australia', iso2 = 'AU', iso3 = 'AUS',
-        capital = 'Canberra', sub_region = 'Australia and New Zealand', currency = 'Australian Dollar',
-        currency_code = 'AUD', popularity = 90, updated_at = :now WHERE id = :id")
-        ->execute(['now' => $now, 'id' => $countryId]);
+    if (!empty($def['country_enrich'])) {
+        $ce = $def['country_enrich'];
+        $pdo->prepare('UPDATE countries SET official_name = :official_name, iso2 = :iso2, iso3 = :iso3,
+            capital = :capital, sub_region = :sub_region, currency = :currency,
+            currency_code = :currency_code, popularity = :popularity, updated_at = :now WHERE id = :id')
+            ->execute([
+                'official_name' => $ce['official_name'] ?? null,
+                'iso2' => $ce['iso2'] ?? null,
+                'iso3' => $ce['iso3'] ?? null,
+                'capital' => $ce['capital'] ?? null,
+                'sub_region' => $ce['sub_region'] ?? null,
+                'currency' => $ce['currency'] ?? null,
+                'currency_code' => $ce['currency_code'] ?? null,
+                'popularity' => $ce['popularity'] ?? 0,
+                'now' => $now,
+                'id' => $countryId,
+            ]);
+    }
 
     $insertPage = $pdo->prepare("INSERT INTO country_visa_pages (
         country_id, visa_category_id, page_slug, status,
@@ -252,8 +276,8 @@ function visa_seed_australia_tourist(PDO $pdo): void
     ) VALUES (
         :country_id, :category_id, :page_slug, 'published',
         :official_visa_name, :visa_subclass_code, :intro_html,
-        :typical_stay, :entry_type, NULL, :validity_text, :application_method,
-        :interview_required, :biometric_required, NULL, :application_centre,
+        :typical_stay, :entry_type, :processing_time_text, :validity_text, :application_method,
+        :interview_required, :biometric_required, :government_fee_text, :application_centre,
         :authority_name, :authority_url,
         :eligibility_html, :indian_applicant_html,
         :seo_title, :meta_description, :og_title, :og_description,
@@ -262,41 +286,27 @@ function visa_seed_australia_tourist(PDO $pdo): void
     $insertPage->execute([
         'country_id' => $countryId,
         'category_id' => $categoryId,
-        'page_slug' => 'australia-tourist-visa',
-        'official_visa_name' => 'Visitor visa (subclass 600) — Tourist stream',
-        'visa_subclass_code' => 'Subclass 600 (Tourist stream)',
-        'intro_html' => "The Visitor visa (subclass 600), Tourist stream, is Australia's standard visa category for Indian citizens travelling for a holiday, sightseeing or to visit family and friends. Indian passport holders are not eligible for Australia's ETA or eVisitor visas, so tourist travel requires this online visa application through the Department of Home Affairs. VisaAgency.in helps you prepare a complete, well-documented application.",
-        'typical_stay' => 'Typically 3, 6 or 12 months, as specified on your visa grant',
-        'entry_type' => 'Single or multiple entry, as granted',
-        'validity_text' => 'As specified on your visa grant notice',
-        'application_method' => 'Online via ImmiAccount (Department of Home Affairs)',
-        'interview_required' => 'Not usually, but may be requested in individual cases',
-        'biometric_required' => 'May be required at a Visa Application Centre — check when you apply',
-        'application_centre' => 'VFS Global Australia Visa Application Centre (India)',
-        'authority_name' => 'Australian Government Department of Home Affairs',
-        'authority_url' => 'https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/visitor-600',
-        'eligibility_html' => '<p>The Visitor visa (subclass 600), Tourist stream, is generally available to Indian passport holders who:</p>
-<ul>
-<li>Are travelling for genuine tourism &mdash; holidays, sightseeing, or visiting family and friends informally</li>
-<li>Can demonstrate they intend to stay temporarily (the Department assesses this as part of the Genuine Temporary Entrant consideration)</li>
-<li>Have sufficient funds to support themselves during the visit</li>
-<li>Meet health and character requirements</li>
-<li>Can show reasonable ties to India (employment, business, family or property) supporting an intention to return</li>
-</ul>
-<p>This is general guidance, not a guarantee of approval &mdash; every application is individually assessed by the Department of Home Affairs.</p>',
-        'indian_applicant_html' => '<p>Indian citizens cannot use the ETA or eVisitor visa (these are limited to specific passport holders) and must apply for the Visitor visa (subclass 600) online through ImmiAccount. Commonly requested supporting evidence for Indian applicants includes:</p>
-<ul>
-<li>Bank statements and income tax returns showing financial capacity</li>
-<li>Salary slips and an employer leave-approval letter (for salaried applicants), or business registration and financial documents (for self-employed applicants)</li>
-<li>Evidence of ties to India, such as property, family or ongoing employment/business</li>
-<li>Previous international travel history, where available</li>
-<li>An invitation or contact details of family/friends in Australia, if visiting them</li>
-</ul>
-<p>Our consultants review your specific profile and help you present this evidence clearly before submission.</p>',
-        'seo_title' => 'Australia Tourist Visa from India | Requirements, Documents &amp; Application',
-        'meta_description' => 'Apply for an Australia Tourist Visa from India. Check eligibility, documents, application process, fees, processing information and visa assistance.',
-        'og_title' => 'Australia Tourist Visa from India — Visa Agency',
-        'og_description' => 'Everything Indian travellers need for the Australia Visitor visa (subclass 600) Tourist stream: eligibility, documents, fees, processing and application steps.',
+        'page_slug' => $def['page_slug'],
+        'official_visa_name' => $def['official_visa_name'],
+        'visa_subclass_code' => $def['visa_subclass_code'] ?? null,
+        'intro_html' => $def['intro_html'],
+        'typical_stay' => $def['typical_stay'] ?? null,
+        'entry_type' => $def['entry_type'] ?? null,
+        'processing_time_text' => $def['processing_time_text'] ?? null,
+        'validity_text' => $def['validity_text'] ?? null,
+        'application_method' => $def['application_method'] ?? null,
+        'interview_required' => $def['interview_required'] ?? null,
+        'biometric_required' => $def['biometric_required'] ?? null,
+        'government_fee_text' => $def['government_fee_text'] ?? null,
+        'application_centre' => $def['application_centre'] ?? null,
+        'authority_name' => $def['authority_name'] ?? null,
+        'authority_url' => $def['authority_url'] ?? null,
+        'eligibility_html' => $def['eligibility_html'] ?? null,
+        'indian_applicant_html' => $def['indian_applicant_html'] ?? null,
+        'seo_title' => $def['seo_title'] ?? null,
+        'meta_description' => $def['meta_description'] ?? null,
+        'og_title' => $def['og_title'] ?? null,
+        'og_description' => $def['og_description'] ?? null,
         'last_reviewed_date' => $today,
         'reviewed_by' => 'Visa Agency Content Team',
         'created_at' => $now,
@@ -304,74 +314,34 @@ function visa_seed_australia_tourist(PDO $pdo): void
     ]);
     $pageId = (int) $pdo->lastInsertId();
 
-    $docs = [
-        ['Basic Documents', "Valid passport (at least 6 months' validity beyond intended stay)"],
-        ['Basic Documents', 'Recent passport-style photograph'],
-        ['Basic Documents', 'Completed online application via ImmiAccount'],
-        ['Basic Documents', 'Government-issued identity documents (e.g. Aadhaar, PAN)'],
-        ['Financial Documents', 'Bank statements (typically last 6 months)'],
-        ['Financial Documents', 'Income tax returns (ITR)'],
-        ['Financial Documents', 'Salary slips (salaried applicants) or business financial documents (self-employed)'],
-        ['Travel Documents', 'Tentative travel itinerary'],
-        ['Travel Documents', 'Hotel booking or accommodation details'],
-        ['Travel Documents', 'Travel insurance (recommended)'],
-        ['Supporting Documents', 'Employment leave-approval letter'],
-        ['Supporting Documents', 'Evidence of ties to India (property, family, employment/business)'],
-        ['Supporting Documents', 'Previous visa or international travel history, if applicable'],
-        ['Supporting Documents', 'Invitation or host details, if visiting family or friends'],
-    ];
     $docStmt = $pdo->prepare('INSERT INTO visa_documents (country_visa_page_id, category, label, sort_order) VALUES (?, ?, ?, ?)');
-    foreach ($docs as $i => $d) {
+    foreach ($def['documents'] as $i => $d) {
         $docStmt->execute([$pageId, $d[0], $d[1], $i]);
     }
 
-    $steps = [
-        ['Check Eligibility', 'Confirm the Visitor visa (subclass 600) Tourist stream is the right category for your trip.'],
-        ['Create an ImmiAccount', "Register on the Department of Home Affairs' online portal to begin your application."],
-        ['Prepare Documents', 'Gather your passport, financial evidence, travel itinerary and supporting documents.'],
-        ['Lodge Application Online', 'Complete and submit your subclass 600 application with supporting documents through ImmiAccount.'],
-        ['Pay the Visa Application Charge', 'Pay the government visa application charge as part of lodgement.'],
-        ['Biometrics, If Requested', 'Provide biometrics at a Visa Application Centre if the Department requests it.'],
-        ['Application Processing', 'The Department assesses your application — track status through ImmiAccount.'],
-        ['Visa Decision &amp; Travel', 'Once granted, review your visa conditions (stay period, entries, work restrictions) before travelling.'],
-    ];
     $stepStmt = $pdo->prepare('INSERT INTO visa_process_steps (country_visa_page_id, step_number, title, description) VALUES (?, ?, ?, ?)');
-    foreach ($steps as $i => $s) {
+    foreach ($def['steps'] as $i => $s) {
         $stepStmt->execute([$pageId, $i + 1, $s[0], $s[1]]);
     }
 
-    $faqs = [
-        ['Do Indian citizens need a visa for Australia?', 'Yes. All Indian passport holders need a visa before travelling to Australia for tourism — Indians are not eligible for the ETA or eVisitor visa, which are limited to specific passport holders.'],
-        ['Which visa should Indian tourists apply for?', 'The Visitor visa (subclass 600), Tourist stream, is the standard visa category for Indian citizens travelling to Australia for a holiday or to visit family and friends.'],
-        ['How do I apply for an Australia Tourist Visa from India?', "Applications are lodged online through the Department of Home Affairs' ImmiAccount portal, with supporting documents uploaded electronically."],
-        ['What documents are required?', 'A valid passport, photograph, financial evidence, travel itinerary and supporting documents demonstrating genuine tourism intent and ties to India — see the Documents section above for the full checklist.'],
-        ['How long does processing take?', "Processing times vary by application volume and individual circumstances. Check the Department of Home Affairs' current published processing times before planning your travel dates."],
-        ['How much does the visa cost?', "The government visa application charge is set by the Department of Home Affairs and may change — check their official fee estimator at the time you apply. VisaAgency's service fee is charged separately from the government fee."],
-        ['Is an interview required?', 'An interview is not usually required, though the Department may request one or ask for additional information in individual cases.'],
-        ['Are biometrics required?', 'Biometrics may be required depending on your application and location. Check current requirements when you apply, or ask your Visa Agency consultant.'],
-        ['How long can I stay in Australia on this visa?', 'Stay duration is specified on your visa grant notice — typically 3, 6 or 12 months, depending on what is granted.'],
-        ['Can I travel for business on a tourist visa?', 'No. The Tourist stream is intended for genuine tourism. Business activities such as meetings or conferences fall under the Business Visitor stream of the same subclass 600 visa — see our Australia Business Visa page.'],
-        ['Can I extend an Australia Tourist Visa?', 'Extension is not automatic. You would generally need to lodge a new Visitor visa application before your current visa expires, meeting the same eligibility and document requirements again.'],
-        ['What happens if my visa is refused?', 'If refused, the Department of Home Affairs will provide the reason. Depending on the circumstances, you may be able to reapply and address the concerns raised. Visa approval is solely at the discretion of the Department.'],
-    ];
     $faqStmt = $pdo->prepare('INSERT INTO visa_faqs (country_visa_page_id, question, answer, sort_order) VALUES (?, ?, ?, ?)');
-    foreach ($faqs as $i => $f) {
+    foreach ($def['faqs'] as $i => $f) {
         $faqStmt->execute([$pageId, $f[0], $f[1], $i]);
     }
 
-    $pdo->prepare('INSERT INTO visa_fees (country_visa_page_id, label, amount_display, is_government, sort_order) VALUES (?, ?, ?, ?, ?)')
-        ->execute([$pageId, 'Base Application Charge', 'Check the official Visa Pricing Estimator — changes periodically', 1, 0]);
-    $pdo->prepare('INSERT INTO visa_fees (country_visa_page_id, label, amount_display, is_government, sort_order) VALUES (?, ?, ?, ?, ?)')
-        ->execute([$pageId, 'Visa Agency Service Fee', 'Contact us for current pricing for this visa category', 0, 0]);
+    $feeStmt = $pdo->prepare('INSERT INTO visa_fees (country_visa_page_id, label, amount_display, is_government, sort_order) VALUES (?, ?, ?, ?, ?)');
+    foreach ($def['fees'] as $i => $fee) {
+        $feeStmt->execute([$pageId, $fee[0], $fee[1], $fee[2], $i]);
+    }
 
     $pdo->prepare('INSERT INTO visa_sources (country_visa_page_id, source_authority, source_url, date_checked, date_reviewed, notes) VALUES (?, ?, ?, ?, ?, ?)')
         ->execute([
             $pageId,
-            'Australian Government Department of Home Affairs',
-            'https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/visitor-600',
+            $def['source']['authority'],
+            $def['source']['url'],
             $today,
             $today,
-            'Subclass 600 Tourist stream — general visa category, eligibility and process information.',
+            $def['source']['notes'] ?? '',
         ]);
 }
 
