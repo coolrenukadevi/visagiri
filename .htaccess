@@ -39,13 +39,8 @@ ErrorDocument 404 /404.php
 
 # Never allow mail-handler.php / enquiry-handler.php to be listed/browsed
 # directly via GET from the address bar — they are POST-only endpoints.
-<Files "mail-handler.php">
-    <If "%{REQUEST_METHOD} = 'GET'">
-        Require all denied
-    </If>
-</Files>
-<Files "enquiry-handler.php">
-    <If "%{REQUEST_METHOD} = 'GET'">
-        Require all denied
-    </If>
-</Files>
+# (Uses mod_rewrite, already required above, rather than <If>/mod_version —
+# some hosts don't have mod_version enabled, and an unsupported directive in
+# .htaccess causes a 500 Internal Server Error for every request on the site.)
+RewriteCond %{REQUEST_METHOD} =GET
+RewriteRule ^(mail-handler|enquiry-handler)\.php$ - [F,L]

@@ -291,7 +291,9 @@ function visa_seed_bulk_generic(PDO $pdo): void
 
             $countryName = $country['name'];
             $titleBase = "{$countryName} {$category['name']}";
-            $sub = fn(string $s) => str_replace(['%COUNTRY%', '%CATEGORY%'], [$countryName, $category['name']], $s);
+            $sub = function ($s) use ($countryName, $category) {
+                return str_replace(['%COUNTRY%', '%CATEGORY%'], [$countryName, $category['name']], $s);
+            };
 
             $insertPage->execute([
                 'country_id' => $country['id'],

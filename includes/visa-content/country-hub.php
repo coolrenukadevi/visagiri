@@ -10,7 +10,7 @@ $categoriesStmt = $pdo->prepare("SELECT vc.id, vc.name, vc.slug, vc.icon, vc.sho
     ORDER BY vc.sort_order ASC");
 $categoriesStmt->execute([$country['id']]);
 $categories = $categoriesStmt->fetchAll(PDO::FETCH_ASSOC);
-$publishedCount = count(array_filter($categories, fn($c) => $c['page_slug'] !== null));
+$publishedCount = count(array_filter($categories, function ($c) { return $c['page_slug'] !== null; }));
 
 $relatedStmt = $pdo->prepare('SELECT * FROM countries WHERE region = ? AND slug != ? AND is_active = 1 ORDER BY popularity DESC, name ASC LIMIT 6');
 $relatedStmt->execute([$country['region'], $country['slug']]);

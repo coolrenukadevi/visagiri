@@ -35,8 +35,8 @@ $faqs = $faqsStmt->fetchAll(PDO::FETCH_ASSOC);
 $feesStmt = $pdo->prepare('SELECT * FROM visa_fees WHERE country_visa_page_id = ? ORDER BY sort_order');
 $feesStmt->execute([$page['id']]);
 $fees = $feesStmt->fetchAll(PDO::FETCH_ASSOC);
-$govFees = array_filter($fees, fn($f) => (int) $f['is_government'] === 1);
-$serviceFees = array_filter($fees, fn($f) => (int) $f['is_government'] === 0);
+$govFees = array_filter($fees, function ($f) { return (int) $f['is_government'] === 1; });
+$serviceFees = array_filter($fees, function ($f) { return (int) $f['is_government'] === 0; });
 
 $sourcesStmt = $pdo->prepare('SELECT * FROM visa_sources WHERE country_visa_page_id = ? ORDER BY id');
 $sourcesStmt->execute([$page['id']]);

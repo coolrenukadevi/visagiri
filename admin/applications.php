@@ -30,7 +30,7 @@ foreach ($applications as $a) {
 }
 
 if ($paymentFilter !== '') {
-    $applications = array_values(array_filter($applications, fn($a) => crm_payment_status($a)['label'] === $paymentFilter));
+    $applications = array_values(array_filter($applications, function ($a) use ($paymentFilter) { return crm_payment_status($a)['label'] === $paymentFilter; }));
 }
 ?>
 <div class="crm-page-header">

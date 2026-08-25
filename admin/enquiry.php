@@ -196,7 +196,7 @@ $enquiry = $stmt->fetch(PDO::FETCH_ASSOC);
 $docStmt = $pdo->prepare('SELECT * FROM enquiry_documents WHERE enquiry_id = ? ORDER BY uploaded_at DESC');
 $docStmt->execute([$enquiry['id']]);
 $documents = $docStmt->fetchAll(PDO::FETCH_ASSOC);
-$docVerifiedCount = count(array_filter($documents, fn($d) => $d['status'] === 'Verified'));
+$docVerifiedCount = count(array_filter($documents, function ($d) { return $d['status'] === 'Verified'; }));
 
 $fuStmt = $pdo->prepare('SELECT * FROM follow_ups WHERE enquiry_id = ? ORDER BY follow_up_date ASC, id ASC');
 $fuStmt->execute([$enquiry['id']]);

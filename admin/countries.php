@@ -43,13 +43,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($id > 0) {
                     $fields['updated_at'] = gmdate('c');
                     $fields['id'] = $id;
-                    $sets = implode(', ', array_map(fn($k) => "$k = :$k", array_diff(array_keys($fields), ['id'])));
+                    $sets = implode(', ', array_map(function ($k) { return "$k = :$k"; }, array_diff(array_keys($fields), ['id'])));
                     $pdo->prepare("UPDATE countries SET $sets WHERE id = :id")->execute($fields);
                 } else {
                     $fields['created_at'] = gmdate('c');
                     $fields['updated_at'] = $fields['created_at'];
                     $cols = implode(', ', array_keys($fields));
-                    $params = implode(', ', array_map(fn($k) => ":$k", array_keys($fields)));
+                    $params = implode(', ', array_map(function ($k) { return ":$k"; }, array_keys($fields)));
                     $pdo->prepare("INSERT INTO countries ($cols) VALUES ($params)")->execute($fields);
                 }
                 header('Location: countries.php');

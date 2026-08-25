@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'save_
         'reviewed_by' => admin_name(),
         'updated_at' => gmdate('c'),
     ];
-    $sets = implode(', ', array_map(fn($k) => "$k = :$k", array_keys($scalar)));
+    $sets = implode(', ', array_map(function ($k) { return "$k = :$k"; }, array_keys($scalar)));
     $scalar['id'] = $id;
     $pdo->prepare("UPDATE country_visa_pages SET $sets WHERE id = :id")->execute($scalar);
 
