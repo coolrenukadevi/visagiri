@@ -517,13 +517,3 @@ function render_not_found(string $message = "The page you're looking for doesn't
     require __DIR__ . '/footer.php';
     exit;
 }
-
-/** Generates a unique enquiry reference number, e.g. VIS-2026-000001. */
-function generate_enquiry_reference(): string
-{
-    $year = date('Y');
-    $stmt = db()->prepare("SELECT COUNT(*) FROM enquiries WHERE reference_number LIKE :prefix");
-    $stmt->execute(['prefix' => "VIS-$year-%"]);
-    $count = (int) $stmt->fetchColumn() + 1;
-    return sprintf('VIS-%s-%06d', $year, $count);
-}

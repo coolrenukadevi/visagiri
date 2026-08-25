@@ -5,7 +5,9 @@ declare(strict_types=1);
  * Admin panel router. $root/$segments come from public/index.php's
  * dispatch closure ($segments[0] === 'admin'). /admin/login/ is the
  * only page reachable without a session; every other sub-route
- * requires require_admin_login() before rendering anything.
+ * requires require_admin_login() before rendering anything. Fine-
+ * grained access beyond "logged in" is enforced per-page via
+ * require_permission() (includes/rbac.php) — see each page.
  */
 
 require_once __DIR__ . '/../includes/admin-layout.php';
@@ -28,6 +30,31 @@ switch ($adminSegment) {
     case 'dashboard':
         require_admin_login();
         require __DIR__ . '/pages/dashboard.php';
+        exit;
+
+    case 'customers':
+        require_admin_login();
+        require __DIR__ . '/pages/customers.php';
+        exit;
+
+    case 'visa-enquiries':
+        require_admin_login();
+        require __DIR__ . '/pages/visa-enquiries.php';
+        exit;
+
+    case 'visa-applications':
+        require_admin_login();
+        require __DIR__ . '/pages/visa-applications.php';
+        exit;
+
+    case 'general-enquiries':
+        require_admin_login();
+        require __DIR__ . '/pages/general-enquiries.php';
+        exit;
+
+    case 'document-download':
+        require_admin_login();
+        require __DIR__ . '/pages/document-download.php';
         exit;
 
     case 'countries':
@@ -55,14 +82,14 @@ switch ($adminSegment) {
         require __DIR__ . '/pages/embassies.php';
         exit;
 
-    case 'enquiries':
+    case 'users':
         require_admin_login();
-        require __DIR__ . '/pages/enquiries.php';
+        require __DIR__ . '/pages/users.php';
         exit;
 
-    case 'contact-messages':
+    case 'audit-log':
         require_admin_login();
-        require __DIR__ . '/pages/contact-messages.php';
+        require __DIR__ . '/pages/audit-log.php';
         exit;
 
     case 'settings':

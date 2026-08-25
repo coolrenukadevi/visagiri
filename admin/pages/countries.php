@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_permission('content.manage');
+
 $pdo = db();
 $regions = $pdo->query('SELECT id, name FROM regions ORDER BY name')->fetchAll();
 $action = $_GET['action'] ?? 'list';

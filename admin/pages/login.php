@@ -26,8 +26,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $hashToCheck = $admin['password_hash'] ?? DUMMY_PASSWORD_HASH;
         $passwordOk = verify_password($password, $hashToCheck);
 
+        record_login_attempt($username, $admin && $passwordOk);
+
         if ($admin && $passwordOk) {
             log_in_admin((int) $admin['id']);
+            log_action('login', 'auth', (int) $admin['id']);
             $redirectTo = $_SESSION['admin_redirect_after_login'] ?? '/admin/dashboard/';
             unset($_SESSION['admin_redirect_after_login']);
             redirect($redirectTo);

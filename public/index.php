@@ -37,6 +37,11 @@ require_once "$root/includes/functions.php";
 require_once "$root/includes/data.php";
 require_once "$root/includes/security.php";
 require_once "$root/includes/auth.php";
+require_once "$root/includes/rbac.php";
+require_once "$root/includes/audit.php";
+require_once "$root/includes/encryption.php";
+require_once "$root/includes/reference-numbers.php";
+require_once "$root/includes/documents.php";
 
 start_secure_session();
 send_security_headers();

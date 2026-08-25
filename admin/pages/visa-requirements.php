@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_permission('content.manage');
+
 $pdo = db();
 $countries = $pdo->query('SELECT id, name FROM countries ORDER BY name')->fetchAll();
 $visaTypesList = $pdo->query('SELECT id, name FROM visa_types ORDER BY sort_order')->fetchAll();

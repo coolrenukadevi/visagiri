@@ -15,6 +15,8 @@ declare(strict_types=1);
  * generically is, not a Visagiri-specific claim.
  */
 
+require __DIR__ . '/../includes/google-sheets.php';
+
 $slug = $segments[1] ?? null;
 
 if ($slug !== null) {
@@ -28,6 +30,87 @@ if ($slug !== null) {
         render_not_found("We couldn't find that attestation service.");
     }
     $service = $services[$slug];
+
+    $submitted = false;
+    $success = false;
+    $referenceNumber = null;
+    $errors = [];
+    $values = ['name' => '', 'email' => '', 'phone' => '', 'message' => ''];
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        csrf_require();
+
+        if (trim((string) ($_POST['website'] ?? '')) !== '') {
+            redirect("/attestation/{$slug}/");
+        }
+
+        $values['name'] = trim((string) ($_POST['name'] ?? ''));
+        $values['email'] = trim((string) ($_POST['email'] ?? ''));
+        $values['phone'] = trim((string) ($_POST['phone'] ?? ''));
+        $values['message'] = trim((string) ($_POST['message'] ?? ''));
+
+        if (!rate_limit_check('attestation:' . ($_SERVER['REMOTE_ADDR'] ?? ''), 5, 900)) {
+            $errors[] = 'Too many submissions. Please try again later, or reach us directly on WhatsApp.';
+        }
+        if ($values['name'] === '') {
+            $errors[] = 'Please enter your name.';
+        }
+        if (!is_valid_email($values['email'])) {
+            $errors[] = 'Please enter a valid email address.';
+        }
+        if ($values['phone'] !== '' && !is_valid_mobile($values['phone'])) {
+            $errors[] = 'Please enter a valid phone number, or leave it blank.';
+        }
+
+        if (!$errors) {
+            $submitted = true;
+            try {
+                for ($attempt = 0; $attempt < 2; $attempt++) {
+                    $referenceNumber = generate_reference_number('GEN', 'general_enquiries', 'enquiry_reference_no');
+                    try {
+                        $stmt = db()->prepare(
+                            'INSERT INTO general_enquiries (enquiry_reference_no, service_type, name, email, phone, description, source_page, ip_address)
+                             VALUES (:ref, :service_type, :name, :email, :phone, :description, :source_page, :ip)'
+                        );
+                        $stmt->execute([
+                            'ref' => $referenceNumber,
+                            'service_type' => $slug,
+                            'name' => $values['name'],
+                            'email' => $values['email'],
+                            'phone' => $values['phone'] !== '' ? $values['phone'] : null,
+                            'description' => $values['message'] !== '' ? $values['message'] : "Enquiry about {$service['name']}.",
+                            'source_page' => "/attestation/{$slug}/",
+                            'ip' => $_SERVER['REMOTE_ADDR'] ?? null,
+                        ]);
+                        break;
+                    } catch (PDOException $e) {
+                        if ($e->getCode() === '23000' && $attempt === 0) {
+                            continue;
+                        }
+                        throw $e;
+                    }
+                }
+                $success = true;
+
+                notify_enquiry_channels([
+                    'reference_number' => $referenceNumber,
+                    'name' => $values['name'],
+                    'email' => $values['email'],
+                    'phone' => $values['phone'],
+                    'destination' => $service['name'],
+                    'message' => $values['message'],
+                    'submitted_at' => date('c'),
+                ]);
+
+                $values = ['name' => '', 'email' => '', 'phone' => '', 'message' => ''];
+            } catch (Throwable $e) {
+                if (APP_DEBUG) {
+                    error_log('[attestation/index.php] failed to save enquiry: ' . $e->getMessage());
+                }
+                $success = false;
+            }
+        }
+    }
     $pageTitle = "{$service['name']} | Visagiri";
     $pageDescription = $service['meta_description'];
     $canonicalUrl = APP_URL . "/attestation/{$slug}/";
@@ -77,6 +160,47 @@ if ($slug !== null) {
             <div class="alert alert-info" style="margin-top:var(--space-6)">
                 Exact fees, processing time, and the exact combination of stages needed depend on your document type and destination country — our team confirms these with you directly.
                 <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to get a quote for {$service['name']}.")) ?>" target="_blank" rel="noopener noreferrer">Chat with us on WhatsApp</a> for current guidance.
+            </div>
+
+            <div class="card" style="margin-top:var(--space-8);max-width:560px">
+                <div class="card-title">Enquire About <?= e($service['name']) ?></div>
+                <?php if ($submitted && $success): ?>
+                <div class="alert alert-success" role="status">
+                    <strong>Thank you.</strong> Your enquiry has been received — reference number <strong><?= e($referenceNumber) ?></strong>. Our team will get back to you soon.
+                </div>
+                <?php elseif ($submitted && !$success): ?>
+                <div class="alert alert-danger" role="alert">
+                    <strong>Something went wrong sending your enquiry.</strong> Please try again, or reach us directly on WhatsApp.
+                </div>
+                <?php else: ?>
+                <?php foreach ($errors as $error): ?>
+                <div class="alert alert-danger"><?= e($error) ?></div>
+                <?php endforeach; ?>
+                <form method="post" action="/attestation/<?= e($slug) ?>/" novalidate>
+                    <?= csrf_field() ?>
+                    <div class="form-group" style="position:absolute;left:-9999px" aria-hidden="true">
+                        <label for="website">Leave this field blank</label>
+                        <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="name">Full Name</label>
+                        <input class="form-input" type="text" id="name" name="name" value="<?= e($values['name']) ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email Address</label>
+                        <input class="form-input" type="email" id="email" name="email" value="<?= e($values['email']) ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="phone">Phone Number (optional)</label>
+                        <input class="form-input" type="tel" id="phone" name="phone" value="<?= e($values['phone']) ?>" placeholder="e.g. +91 98765 43210">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="message">Message (optional)</label>
+                        <textarea class="form-input" id="message" name="message" rows="4"><?= e($values['message']) ?></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width:100%">Submit Enquiry</button>
+                </form>
+                <?php endif; ?>
             </div>
 
             <?php

@@ -29,14 +29,36 @@ function admin_header_start(string $pageTitle, string $activeNav): void
         <div class="admin-sidebar__brand">VISA<span>GIRI</span> <small>Admin</small></div>
         <nav class="admin-sidebar__nav">
             <a href="/admin/dashboard/" class="<?= $activeNav === 'dashboard' ? 'is-active' : '' ?>">Dashboard</a>
+            <?php if (has_permission('customers.view')): ?>
+            <a href="/admin/customers/" class="<?= $activeNav === 'customers' ? 'is-active' : '' ?>">Customers</a>
+            <?php endif; ?>
+            <?php if (has_permission('visa.view')): ?>
+            <a href="/admin/visa-enquiries/" class="<?= $activeNav === 'visa-enquiries' ? 'is-active' : '' ?>">Visa Enquiries</a>
+            <a href="/admin/visa-applications/" class="<?= $activeNav === 'visa-applications' ? 'is-active' : '' ?>">Visa Applications</a>
+            <?php endif; ?>
+            <?php if (has_permission('general_enquiries.view')): ?>
+            <a href="/admin/general-enquiries/" class="<?= $activeNav === 'general-enquiries' ? 'is-active' : '' ?>">General &amp; Attestation Enquiries</a>
+            <?php endif; ?>
+            <?php if (has_permission('content.manage')): ?>
+            <div class="admin-sidebar__group">Content</div>
             <a href="/admin/countries/" class="<?= $activeNav === 'countries' ? 'is-active' : '' ?>">Countries</a>
             <a href="/admin/visa-types/" class="<?= $activeNav === 'visa-types' ? 'is-active' : '' ?>">Visa Types</a>
-            <a href="/admin/visa-requirements/" class="<?= $activeNav === 'countries' ? '' : '' ?>">Visa Requirements</a>
+            <a href="/admin/visa-requirements/" class="<?= $activeNav === 'visa-requirements' ? 'is-active' : '' ?>">Visa Requirements</a>
             <a href="/admin/faqs/" class="<?= $activeNav === 'faqs' ? 'is-active' : '' ?>">FAQs</a>
             <a href="/admin/embassies/" class="<?= $activeNav === 'embassies' ? 'is-active' : '' ?>">Embassies / Consulates / VACs</a>
-            <a href="/admin/enquiries/" class="<?= $activeNav === 'enquiries' ? 'is-active' : '' ?>">Enquiries</a>
-            <a href="/admin/contact-messages/" class="<?= $activeNav === 'contact-messages' ? 'is-active' : '' ?>">Contact Messages</a>
+            <?php endif; ?>
+            <?php if (has_permission('users.manage') || has_permission('settings.manage') || has_permission('audit.view')): ?>
+            <div class="admin-sidebar__group">System</div>
+            <?php endif; ?>
+            <?php if (has_permission('users.manage')): ?>
+            <a href="/admin/users/" class="<?= $activeNav === 'users' ? 'is-active' : '' ?>">Users &amp; Roles</a>
+            <?php endif; ?>
+            <?php if (has_permission('audit.view')): ?>
+            <a href="/admin/audit-log/" class="<?= $activeNav === 'audit-log' ? 'is-active' : '' ?>">Audit Log</a>
+            <?php endif; ?>
+            <?php if (has_permission('settings.manage')): ?>
             <a href="/admin/settings/" class="<?= $activeNav === 'settings' ? 'is-active' : '' ?>">Settings</a>
+            <?php endif; ?>
         </nav>
         <div class="admin-sidebar__footer">
             <a href="/" target="_blank" rel="noopener">View site &rarr;</a>

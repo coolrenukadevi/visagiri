@@ -5,9 +5,10 @@ declare(strict_types=1);
  * General enquiry form — the site's one non-visa-specific contact
  * channel (alongside the WhatsApp/call/email widget on every page,
  * and the structured /enquire/ form for visa-specific enquiries).
- * The database (contact_messages table) is the canonical, admin-
- * manageable record; Google Sheets/Drive and an email ping are
- * best-effort secondary notifications — see includes/google-sheets.php.
+ * Stored in the general_enquiries table (service_type = 'general'),
+ * the same table used for attestation service enquiries, with a
+ * generated reference number; Google Sheets/Drive and an email ping
+ * are best-effort secondary notifications — see includes/google-sheets.php.
  */
 
 require __DIR__ . '/../includes/google-sheets.php';
@@ -50,18 +51,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$errors) {
         $submitted = true;
         try {
-            $stmt = db()->prepare(
-                'INSERT INTO contact_messages (name, email, phone, destination, message, ip_address)
-                 VALUES (:name, :email, :phone, :destination, :message, :ip)'
-            );
-            $stmt->execute([
-                'name' => $values['name'],
-                'email' => $values['email'],
-                'phone' => $values['phone'] !== '' ? $values['phone'] : null,
-                'destination' => $values['destination'] !== '' ? $values['destination'] : null,
-                'message' => $values['message'],
-                'ip' => $_SERVER['REMOTE_ADDR'] ?? null,
-            ]);
+            // Retry once on the rare chance two submissions in the same
+            // instant generate the same COUNT-based reference number —
+            // the UNIQUE constraint catches it, we just regenerate.
+            for ($attempt = 0; $attempt < 2; $attempt++) {
+                $referenceNumber = generate_reference_number('GEN', 'general_enquiries', 'enquiry_reference_no');
+                try {
+                    $stmt = db()->prepare(
+                        'INSERT INTO general_enquiries (enquiry_reference_no, service_type, name, email, phone, subject, description, source_page, ip_address)
+                         VALUES (:ref, :service_type, :name, :email, :phone, :subject, :description, :source_page, :ip)'
+                    );
+                    $stmt->execute([
+                        'ref' => $referenceNumber,
+                        'service_type' => 'general',
+                        'name' => $values['name'],
+                        'email' => $values['email'],
+                        'phone' => $values['phone'] !== '' ? $values['phone'] : null,
+                        'subject' => null,
+                        'description' => $values['destination'] !== ''
+                            ? "Destination: {$values['destination']}\n\n{$values['message']}"
+                            : $values['message'],
+                        'source_page' => '/contact/',
+                        'ip' => $_SERVER['REMOTE_ADDR'] ?? null,
+                    ]);
+                    break;
+                } catch (PDOException $e) {
+                    if ($e->getCode() === '23000' && $attempt === 0) {
+                        continue;
+                    }
+                    throw $e;
+                }
+            }
             $success = true;
 
             notify_enquiry_channels([

@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_permission('content.manage');
+
 $pdo = db();
 $action = $_GET['action'] ?? 'list';
 $id = isset($_GET['id']) ? (int) $_GET['id'] : null;

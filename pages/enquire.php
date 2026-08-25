@@ -7,7 +7,7 @@ declare(strict_types=1);
  * travellers, message. Distinct from the general /contact/ form:
  * this one is what "Enquire" CTAs on visa detail pages link to,
  * pre-filled with the country/visa type the visitor was looking at.
- * Stored in the enquiries table with a generated reference number
+ * Stored in the visa_enquiries table with a generated reference number
  * the visitor can quote when following up; Google Sheets/Drive +
  * email are best-effort secondary notifications.
  */
@@ -76,11 +76,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // instant generate the same COUNT-based reference number —
             // the UNIQUE constraint catches it, we just regenerate.
             for ($attempt = 0; $attempt < 2; $attempt++) {
-                $referenceNumber = generate_enquiry_reference();
+                $referenceNumber = generate_reference_number('ENQ', 'visa_enquiries', 'reference_number');
                 try {
                     $stmt = db()->prepare(
-                        'INSERT INTO enquiries (reference_number, name, mobile, email, country_id, visa_type_id, purpose_of_travel, travel_date, travellers_count, message, ip_address)
-                         VALUES (:ref, :name, :mobile, :email, :country_id, :visa_type_id, :purpose, :travel_date, :travellers, :message, :ip)'
+                        'INSERT INTO visa_enquiries (reference_number, name, mobile, email, country_id, visa_type_id, purpose_of_travel, travel_date, travellers_count, message, ip_address, source_page)
+                         VALUES (:ref, :name, :mobile, :email, :country_id, :visa_type_id, :purpose, :travel_date, :travellers, :message, :ip, :source_page)'
                     );
                     $stmt->execute([
                         'ref' => $referenceNumber,
@@ -94,6 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         'travellers' => $travellersCount,
                         'message' => $values['message'] !== '' ? $values['message'] : null,
                         'ip' => $_SERVER['REMOTE_ADDR'] ?? null,
+                        'source_page' => '/enquire/',
                     ]);
                     break;
                 } catch (PDOException $e) {

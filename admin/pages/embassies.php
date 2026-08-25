@@ -7,6 +7,8 @@ declare(strict_types=1);
  * a "type" selector rather than three near-duplicate pages.
  */
 
+require_permission('content.manage');
+
 $tables = [
     'embassy' => ['table' => 'embassies', 'label' => 'Embassy'],
     'consulate' => ['table' => 'consulates', 'label' => 'Consulate'],

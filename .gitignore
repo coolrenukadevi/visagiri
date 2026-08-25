@@ -1,4 +1,5 @@
 config/database.php
+config/encryption.php
 storage/*
 !storage/.gitkeep
 *.log
