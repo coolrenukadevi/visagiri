@@ -14,7 +14,7 @@ $site_hours         = 'Monday &ndash; Friday, 9:00 AM &ndash; 5:00 PM';
 
 $site_social = [
     'linkedin'  => 'https://www.linkedin.com/company/visaagency/',
-    'twitter'   => 'https://x.com/visaaagency_in',
+    'twitter'   => 'https://x.com/TheVisaAgency',
     'instagram' => 'https://www.instagram.com/visaagencyofficial/',
     'youtube'   => '#',
     'facebook'  => 'https://www.facebook.com/visaagencyofficial',
