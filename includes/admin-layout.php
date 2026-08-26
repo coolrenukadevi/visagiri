@@ -39,6 +39,28 @@ function admin_header_start(string $pageTitle, string $activeNav): void
             <?php if (has_permission('general_enquiries.view')): ?>
             <a href="/admin/general-enquiries/" class="<?= $activeNav === 'general-enquiries' ? 'is-active' : '' ?>">General &amp; Attestation Enquiries</a>
             <?php endif; ?>
+            <?php if (has_permission('forex.requests.view')): ?>
+            <div class="admin-sidebar__group">Forex</div>
+            <a href="/admin/forex-dashboard/" class="<?= $activeNav === 'forex-dashboard' ? 'is-active' : '' ?>">Forex Dashboard</a>
+            <?php if (has_permission('forex.requests.manage')): ?>
+            <a href="/admin/forex-requests/?action=create" class="<?= '' ?>">New Forex Request</a>
+            <?php endif; ?>
+            <a href="/admin/forex-requests/?view=all" class="<?= $activeNav === 'forex' ? 'is-active' : '' ?>">All Requests</a>
+            <a href="/admin/forex-requests/?view=pending_documents">Pending Documents</a>
+            <a href="/admin/forex-requests/?view=quotations">Quotations</a>
+            <a href="/admin/forex-requests/?view=approved">Approved Requests</a>
+            <a href="/admin/forex-requests/?view=delivered">Delivered</a>
+            <a href="/admin/forex-requests/?view=cancelled">Cancelled</a>
+            <?php if (has_permission('forex.compliance.view')): ?>
+            <a href="/admin/forex-fema-audit/">FEMA / Audit Records</a>
+            <?php endif; ?>
+            <?php if (has_permission('forex.rates.manage')): ?>
+            <a href="/admin/forex-rates/" class="<?= $activeNav === 'forex-rates' ? 'is-active' : '' ?>">Exchange Rates</a>
+            <?php endif; ?>
+            <?php if (has_permission('forex.country_rules.manage')): ?>
+            <a href="/admin/forex-country-rules/" class="<?= $activeNav === 'forex-country-rules' ? 'is-active' : '' ?>">Country Rules</a>
+            <?php endif; ?>
+            <?php endif; ?>
             <?php if (has_permission('content.manage')): ?>
             <div class="admin-sidebar__group">Content</div>
             <a href="/admin/countries/" class="<?= $activeNav === 'countries' ? 'is-active' : '' ?>">Countries</a>

@@ -70,3 +70,14 @@ function current_admin_hrms_scoped_to_assigned(): bool
 {
     return !has_permission('hrms.candidates.view_all');
 }
+
+/**
+ * Forex module scoping — the "Sales/Travel Consultant" role from the
+ * spec is the existing visa-consultant role reused (see
+ * database/seed-forex.sql), so it shares the exact same scoping rule
+ * as current_admin_scoped_to_assigned() rather than needing its own.
+ */
+function current_admin_forex_scoped_to_assigned(): bool
+{
+    return !has_permission('forex.requests.view_all');
+}

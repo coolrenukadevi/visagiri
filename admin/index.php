@@ -82,6 +82,36 @@ switch ($adminSegment) {
         require __DIR__ . '/pages/embassies.php';
         exit;
 
+    case 'forex-requests':
+        require_admin_login();
+        require __DIR__ . '/pages/forex-requests.php';
+        exit;
+
+    case 'forex-document-download':
+        require_admin_login();
+        require __DIR__ . '/pages/forex-document-download.php';
+        exit;
+
+    case 'forex-rates':
+        require_admin_login();
+        require __DIR__ . '/pages/forex-rates.php';
+        exit;
+
+    case 'forex-country-rules':
+        require_admin_login();
+        require __DIR__ . '/pages/forex-country-rules.php';
+        exit;
+
+    case 'forex-fema-audit':
+        require_admin_login();
+        require __DIR__ . '/pages/forex-fema-audit.php';
+        exit;
+
+    case 'forex-dashboard':
+        require_admin_login();
+        require __DIR__ . '/pages/forex-dashboard.php';
+        exit;
+
     case 'users':
         require_admin_login();
         require __DIR__ . '/pages/users.php';

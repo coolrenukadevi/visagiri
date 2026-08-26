@@ -259,8 +259,13 @@ $offset = ($page - 1) * $perPage;
 $where = ['c.deleted_at IS NULL'];
 $params = [];
 if ($search !== '') {
-    $where[] = '(c.first_name LIKE :search OR c.last_name LIKE :search OR c.email LIKE :search OR c.mobile LIKE :search OR c.customer_reference_no LIKE :search OR c.passport_number_hash = :passport_hash)';
-    $params['search'] = "%$search%";
+    // PDO with real (non-emulated) prepared statements does not
+    // support the same named placeholder appearing more than once in
+    // a query — each occurrence needs its own key bound to the same
+    // value.
+    $where[] = '(c.first_name LIKE :search1 OR c.last_name LIKE :search2 OR c.email LIKE :search3 OR c.mobile LIKE :search4 OR c.customer_reference_no LIKE :search5 OR c.passport_number_hash = :passport_hash)';
+    $searchTerm = "%$search%";
+    $params['search1'] = $params['search2'] = $params['search3'] = $params['search4'] = $params['search5'] = $searchTerm;
     $params['passport_hash'] = searchable_hash($search);
 }
 if ($statusFilter) {

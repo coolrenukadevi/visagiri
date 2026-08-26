@@ -43,6 +43,7 @@ require_once "$root/includes/encryption.php";
 require_once "$root/includes/reference-numbers.php";
 require_once "$root/includes/documents.php";
 require_once "$root/includes/hrms.php";
+require_once "$root/includes/forex.php";
 
 start_secure_session();
 send_security_headers();
@@ -148,6 +149,12 @@ switch ($segments[0] ?? '') {
 
     case 'enquire':
         $dispatch("$root/pages/enquire.php");
+
+    case 'forex':
+        if (($segments[1] ?? null) === 'track') {
+            $dispatch("$root/forex/track/index.php");
+        }
+        $dispatch("$root/pages/404.php");
 
     case 'admin':
         $dispatch("$root/admin/index.php");

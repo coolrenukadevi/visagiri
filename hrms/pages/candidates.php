@@ -500,8 +500,13 @@ if ($scoped) {
     $params['current_admin'] = current_admin_id();
 }
 if ($search !== '') {
-    $where[] = '(c.full_name LIKE :search OR c.email LIKE :search OR c.mobile LIKE :search OR a.application_reference_no LIKE :search)';
-    $params['search'] = "%$search%";
+    // PDO with real (non-emulated) prepared statements does not
+    // support the same named placeholder appearing more than once in
+    // a query — each occurrence needs its own key bound to the same
+    // value.
+    $where[] = '(c.full_name LIKE :search1 OR c.email LIKE :search2 OR c.mobile LIKE :search3 OR a.application_reference_no LIKE :search4)';
+    $searchTerm = "%$search%";
+    $params['search1'] = $params['search2'] = $params['search3'] = $params['search4'] = $searchTerm;
 }
 if ($statusFilter) {
     $where[] = 'a.status = :status';
