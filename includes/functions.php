@@ -393,6 +393,27 @@ function company_nav_icon(string $key): string
     };
 }
 
+/**
+ * Line icons for the primary header nav tabs (Visa Services,
+ * Attestation, Countries, Visa Process, Visa Updates, Company) — same
+ * visual language as company_nav_icon() (16px, viewBox 0 0 20 20,
+ * stroke currentColor) so a top-level tab icon and its mega-menu's
+ * own icons read as one consistent system, not two different sets.
+ */
+function primary_nav_icon(string $key): string
+{
+    $attrs = 'width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
+    return match ($key) {
+        'visa-services' => "<svg $attrs><rect x=\"4\" y=\"2.5\" width=\"12\" height=\"15\" rx=\"1.3\"/><circle cx=\"10\" cy=\"7.8\" r=\"2.1\"/><path d=\"M6.8 13.5C7.1 11.8 8.4 11 10 11 11.6 11 12.9 11.8 13.2 13.5\"/></svg>",
+        'attestation' => "<svg $attrs><rect x=\"5\" y=\"12.8\" width=\"10\" height=\"2.7\" rx=\"0.8\"/><circle cx=\"10\" cy=\"7\" r=\"4\"/><path d=\"M8.3 7 9.4 8.1 11.8 5.7\"/><path d=\"M10 11V12.8\"/></svg>",
+        'countries' => "<svg $attrs><circle cx=\"10\" cy=\"10\" r=\"7.3\"/><ellipse cx=\"10\" cy=\"10\" rx=\"3.1\" ry=\"7.3\"/><line x1=\"2.9\" y1=\"10\" x2=\"17.1\" y2=\"10\"/></svg>",
+        'visa-process' => "<svg $attrs><circle cx=\"5.3\" cy=\"10\" r=\"2.1\"/><circle cx=\"14.7\" cy=\"10\" r=\"2.1\"/><line x1=\"7.4\" y1=\"10\" x2=\"12.6\" y2=\"10\"/><path d=\"M10.4 7.8 12.6 10 10.4 12.2\"/></svg>",
+        'visa-updates' => "<svg $attrs><path d=\"M10 3C7.7 3 6.2 4.9 6.2 7.3V10.2L4.7 13H15.3L13.8 10.2V7.3C13.8 4.9 12.3 3 10 3Z\"/><path d=\"M8.4 15.3C8.4 16.2 9.1 16.8 10 16.8 10.9 16.8 11.6 16.2 11.6 15.3\"/></svg>",
+        'company' => "<svg $attrs><rect x=\"4\" y=\"3\" width=\"7\" height=\"14\" rx=\"0.8\"/><rect x=\"12.3\" y=\"7.6\" width=\"4\" height=\"9.4\" rx=\"0.8\"/><circle cx=\"6.1\" cy=\"6.4\" r=\"0.55\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"8.9\" cy=\"6.4\" r=\"0.55\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"6.1\" cy=\"9.7\" r=\"0.55\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"8.9\" cy=\"9.7\" r=\"0.55\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"6.1\" cy=\"13\" r=\"0.55\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"8.9\" cy=\"13\" r=\"0.55\" fill=\"currentColor\" stroke=\"none\"/></svg>",
+        default => '',
+    };
+}
+
 /** Small chevron used next to mega-menu nav triggers, rotated via CSS on open. */
 function nav_chevron_icon(): string
 {

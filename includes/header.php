@@ -37,8 +37,8 @@ if (!$noindex) {
 $currentPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
 
 $navLinks = [
-    ['label' => 'Visa Process', 'href' => '/visa-process/'],
-    ['label' => 'Visa Updates', 'href' => '/blog/'],
+    ['label' => 'Visa Process', 'href' => '/visa-process/', 'icon' => 'visa-process'],
+    ['label' => 'Visa Updates', 'href' => '/blog/', 'icon' => 'visa-updates'],
 ];
 
 // Country mega-menu — see includes/data.php's country_mega_menu_data().
@@ -180,7 +180,7 @@ foreach ([
         <nav class="site-header__nav" aria-label="Primary">
             <ul>
                 <li class="has-dropdown">
-                    <a href="/visa-type/" aria-haspopup="true"<?= $isActive('/visa-type/') ? ' class="is-active"' : '' ?>>Visa Services</a>
+                    <a href="/visa-type/" aria-haspopup="true"<?= $isActive('/visa-type/') ? ' class="is-active"' : '' ?>><span class="site-header__nav-icon"><?= primary_nav_icon('visa-services') ?></span>Visa Services</a>
                     <ul class="dropdown-menu">
                         <?php foreach ($visaServiceLinks as $link): ?>
                         <li><a href="<?= e($link['href']) ?>"><?= e($link['label']) ?></a></li>
@@ -188,7 +188,7 @@ foreach ([
                     </ul>
                 </li>
                 <li class="has-dropdown has-mega-menu">
-                    <a href="/attestation/" id="attestation-mega-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="attestation-mega-menu"<?= $isActive('/attestation/') ? ' class="is-active"' : '' ?>>Attestation</a>
+                    <a href="/attestation/" id="attestation-mega-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="attestation-mega-menu"<?= $isActive('/attestation/') ? ' class="is-active"' : '' ?>><span class="site-header__nav-icon"><?= primary_nav_icon('attestation') ?></span>Attestation</a>
                     <div class="mega-menu" id="attestation-mega-menu" aria-labelledby="attestation-mega-trigger">
                         <div class="mega-menu__columns">
                             <?php foreach ($attestationCategories as $megaCategoryName => $megaCategoryServices): ?>
@@ -212,7 +212,7 @@ foreach ([
                     </div>
                 </li>
                 <li class="has-dropdown has-mega-menu has-mega-menu--countries">
-                    <a href="/countries/" id="countries-mega-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="countries-mega-menu"<?= ($isActive('/countries/') || $isActive('/visa/')) ? ' class="is-active"' : '' ?>>Countries <?= nav_chevron_icon() ?></a>
+                    <a href="/countries/" id="countries-mega-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="countries-mega-menu"<?= ($isActive('/countries/') || $isActive('/visa/')) ? ' class="is-active"' : '' ?>><span class="site-header__nav-icon"><?= primary_nav_icon('countries') ?></span>Countries <?= nav_chevron_icon() ?></a>
                     <div class="mega-menu mega-menu--countries" id="countries-mega-menu" aria-labelledby="countries-mega-trigger">
                         <div class="mega-menu__countries-search">
                             <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="6.5" stroke="currentColor" stroke-width="1.6"/><path d="M17 17L13.6 13.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
@@ -354,10 +354,10 @@ foreach ([
                     </div>
                 </li>
                 <?php foreach ($navLinks as $link): ?>
-                <li><a href="<?= e($link['href']) ?>"<?= $isActive($link['href']) ? ' class="is-active"' : '' ?>><?= e($link['label']) ?></a></li>
+                <li><a href="<?= e($link['href']) ?>"<?= $isActive($link['href']) ? ' class="is-active"' : '' ?>><span class="site-header__nav-icon"><?= primary_nav_icon($link['icon']) ?></span><?= e($link['label']) ?></a></li>
                 <?php endforeach; ?>
                 <li class="has-dropdown has-mega-menu has-mega-menu--company">
-                    <a href="/about/" id="company-mega-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="company-mega-menu"<?= $companyIsActive() ? ' class="is-active"' : '' ?>>Company <?= nav_chevron_icon() ?></a>
+                    <a href="/about/" id="company-mega-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="company-mega-menu"<?= $companyIsActive() ? ' class="is-active"' : '' ?>><span class="site-header__nav-icon"><?= primary_nav_icon('company') ?></span>Company <?= nav_chevron_icon() ?></a>
                     <div class="mega-menu mega-menu--company" id="company-mega-menu" aria-labelledby="company-mega-trigger">
                         <div class="mega-menu__columns mega-menu__columns--company">
                             <?php foreach ($companyMenu as $groupName => $groupItems): ?>
@@ -406,10 +406,10 @@ foreach ([
     <div class="site-header__mobile" id="site-header-mobile">
         <nav aria-label="Mobile primary">
             <ul>
-                <li><a href="/visa-type/">Visa Services</a></li>
+                <li><a href="/visa-type/"><span class="site-header__nav-icon"><?= primary_nav_icon('visa-services') ?></span>Visa Services</a></li>
                 <li class="site-header__mobile-accordion">
                     <details>
-                        <summary>Attestation</summary>
+                        <summary><span class="site-header__mobile-summary-label"><span class="site-header__nav-icon"><?= primary_nav_icon('attestation') ?></span>Attestation</span></summary>
                         <div class="site-header__mobile-accordion-body">
                             <?php foreach ($attestationCategories as $megaCategoryName => $megaCategoryServices): ?>
                             <div class="site-header__mobile-subgroup">
@@ -427,7 +427,7 @@ foreach ([
                 </li>
                 <li class="site-header__mobile-accordion">
                     <details>
-                        <summary>Countries</summary>
+                        <summary><span class="site-header__mobile-summary-label"><span class="site-header__nav-icon"><?= primary_nav_icon('countries') ?></span>Countries</span></summary>
                         <div class="site-header__mobile-accordion-body">
                             <div class="site-header__mobile-subgroup">
                                 <span class="site-header__mobile-subheading">Popular Destinations</span>
@@ -508,11 +508,11 @@ foreach ([
                     </details>
                 </li>
                 <?php foreach ($navLinks as $link): ?>
-                <li><a href="<?= e($link['href']) ?>"><?= e($link['label']) ?></a></li>
+                <li><a href="<?= e($link['href']) ?>"><span class="site-header__nav-icon"><?= primary_nav_icon($link['icon']) ?></span><?= e($link['label']) ?></a></li>
                 <?php endforeach; ?>
                 <li class="site-header__mobile-accordion">
                     <details>
-                        <summary>Company</summary>
+                        <summary><span class="site-header__mobile-summary-label"><span class="site-header__nav-icon"><?= primary_nav_icon('company') ?></span>Company</span></summary>
                         <div class="site-header__mobile-accordion-body">
                             <ul class="site-header__mobile-flat">
                                 <?php foreach ($companyMenu as $groupItems): ?>

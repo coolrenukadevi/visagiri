@@ -70,6 +70,9 @@
 }
 
 .site-header__nav > ul > li > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   color: var(--text-dark);
   font-weight: var(--font-weight-medium);
   font-size: var(--font-size-sm);
@@ -79,6 +82,21 @@
 
 .site-header__nav a:hover,
 .site-header__nav a.is-active {
+  color: var(--visa-blue);
+}
+
+/* Top-level nav tab icons — desktop + mobile share the same markup
+   and coloring rule so a tab and its icon always change color
+   together on hover/active rather than looking like two elements. */
+.site-header__nav-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: var(--text-muted);
+  transition: color var(--transition-fast);
+}
+
+.site-header__nav > ul > li > a:hover .site-header__nav-icon,
+.site-header__nav > ul > li > a.is-active .site-header__nav-icon {
   color: var(--visa-blue);
 }
 
@@ -725,6 +743,12 @@
   border-bottom: 1px solid var(--border);
 }
 
+.site-header__mobile-summary-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
 .site-header__mobile-accordion > details > summary::-webkit-details-marker {
   display: none;
 }
@@ -856,7 +880,9 @@
 }
 
 .site-header__mobile a {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
   padding: var(--space-3) var(--space-2);
   color: var(--text-dark);
   font-weight: var(--font-weight-medium);
