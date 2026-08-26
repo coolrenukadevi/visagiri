@@ -44,7 +44,20 @@ rsync -a \
   --exclude '*.zip' \
   --exclude '*.log' \
   --exclude '.DS_Store' \
+  --exclude 'config/database.php' \
+  --exclude 'config/encryption.php' \
   ./ "$BUILD_DIR/"
+
+# config/database.php and config/encryption.php are gitignored for a
+# reason (the real DB password and the real AES key that will encrypt
+# the client's live passport/PAN data) — this working tree's copies
+# are real secrets for THIS sandbox, not placeholders, and must never
+# leave it inside a zip that travels over chat/email. The package
+# ships each one's .example.php sibling as a starting point instead;
+# the client fills in real values directly on the server per the
+# instructions printed at the end of this script.
+cp "$BUILD_DIR/config/database.example.php" "$BUILD_DIR/config/database.php"
+cp "$BUILD_DIR/config/encryption.example.php" "$BUILD_DIR/config/encryption.php"
 
 echo "==> Moving public/ contents up to the package root"
 # public/index.php, public/assets/, public/.htaccess, public/favicon.ico,
@@ -80,13 +93,23 @@ echo ""
 echo "Next steps on cPanel:"
 echo "  1. Upload and extract this zip's CONTENTS directly into public_html/"
 echo "     (not into a subfolder — the files should sit right in public_html/)."
-echo "  2. cPanel > MySQL Databases: create a database + user, import database/schema.sql via phpMyAdmin,"
-echo "     then run database/seed.sql (or re-run the equivalent data import) to load real catalog data."
-echo "  3. Edit config/database.php on the server with the real DB host/name/user/password."
+echo "  2. cPanel > MySQL Databases: create a database + user, then import the SQL files via"
+echo "     phpMyAdmin IN THIS EXACT ORDER (later files depend on tables/rows the earlier ones create):"
+echo "       database/schema.sql       database/seed.sql"
+echo "       database/schema-crm.sql   database/seed-crm.sql"
+echo "       database/schema-hrms.sql  database/seed-hrms.sql"
+echo "       database/schema-forex.sql database/seed-forex.sql"
+echo "  3. config/database.php and config/encryption.php ship as their .example.php templates"
+echo "     (CHANGE-ME placeholders) — the real secrets never leave the dev sandbox. On the server:"
+echo "       - Edit config/database.php with the real DB host/name/user/password."
+echo "       - Edit config/encryption.php with a freshly generated key:"
+echo "         php -r \"echo bin2hex(random_bytes(32));\""
+echo "         (back this key up somewhere safe outside the repo the moment it's set — losing it"
+echo "         makes any already-encrypted passport/PAN data permanently undecryptable)."
 echo "  4. Edit config/site.php on the server: app_env=production, app_debug=false,"
 echo "     app_url=https://yourdomain.com, session_secure_cookie=true."
-echo "  5. Log into /admin/ with the credentials from the initial admin user (see AUDIT.md/setup notes)"
-echo "     and set contact details + (optionally) the Google Apps Script URL under Settings —"
-echo "     see docs/google-sheets-setup.md for that integration."
+echo "  5. Log into /admin/ and /hrms/ with the credentials delivered separately, outside this package"
+echo "     (see AUDIT.md's credential-delivery entry) — change both passwords immediately after first"
+echo "     login, and set contact details + (optionally) the Google Apps Script URL under Settings."
 echo "  6. cPanel > MultiPHP Manager: set PHP 8.2+ for the domain."
 echo "  7. cPanel > SSL/TLS Status: run AutoSSL (the app force-redirects to HTTPS)."

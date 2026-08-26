@@ -40,3 +40,17 @@ INSERT INTO role_permissions (role_id, permission_id)
 SELECT r.id, p.id FROM roles r CROSS JOIN permissions p
 WHERE r.slug = 'hr-executive'
   AND p.permission_key IN ('hrms.dashboard.view', 'hrms.candidates.view', 'hrms.candidates.manage', 'hrms.documents.download', 'hrms.interviews.manage');
+
+-- A dedicated HR Admin login for /hrms/ — separate from the site's
+-- one 'admin' super-admin account, so HR staff have their own
+-- credential rather than sharing the CRM/Forex admin login. Logs in
+-- through the same admin_users table/session as every other role
+-- (see hrms/pages/login.php) — CHANGE THIS PASSWORD and the
+-- placeholder email immediately after first login via
+-- /hrms/dashboard/ > Profile (or the equivalent admin_users update).
+-- Credentials for this specific hash were provided separately,
+-- outside this file, per the same rule as the main admin account.
+INSERT INTO `admin_users` (`username`, `email`, `password_hash`, `full_name`, `status`) VALUES
+('hr.admin', 'hr@visagiri.com', '$2y$12$xQIzwBuAYyTySGMiBAtsue9JNoFqA9udz9xgIlV3ggOBBsXEYTFrK', 'Visagiri HR Admin', 'active');
+
+UPDATE admin_users SET role_id = (SELECT id FROM roles WHERE slug = 'hr-admin') WHERE username = 'hr.admin';
