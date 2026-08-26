@@ -215,6 +215,26 @@ crm_send_applicant_email(
     "Regards,\nVisaAgency.in"
 );
 
+crm_send_staff_email(
+    "New Enquiry Received — $enquiryRef",
+    "A new customer enquiry has been submitted on VisaAgency.in.\n\n" .
+    "Enquiry Ref: $enquiryRef\n" .
+    "Name: $fullName\n" .
+    "Email: $email\n" .
+    "Mobile: +91$mobile\n" .
+    "Passport Number: $passportNumber\n" .
+    "Nationality: $nationality\n" .
+    "Country of Residence: $countryResidence\n\n" .
+    "Service Required: $serviceRequired\n" .
+    "Destination Country: $destinationCountry\n" .
+    "Visa Type: $visaType\n" .
+    "Travel Date: $travelDate\n" .
+    "Travellers: $travellers\n" .
+    "Purpose: $purpose\n\n" .
+    "Message:\n" . ($message !== '' ? $message : '(none)') . "\n\n" .
+    "View in CRM: " . (($_SERVER['HTTPS'] ?? '') === 'on' ? 'https://' : 'http://') . ($_SERVER['HTTP_HOST'] ?? 'visaagency.in') . "/admin/enquiry.php?ref=$enquiryRef"
+);
+
 // ---- Document uploads (best-effort: the enquiry itself is already saved) ----
 $allowedExt = ['pdf', 'jpg', 'jpeg', 'png'];
 $allowedMime = ['application/pdf', 'image/jpeg', 'image/png'];

@@ -12,8 +12,9 @@
         $email = filter_var(trim($_POST["email"] ?? ""), FILTER_SANITIZE_EMAIL);
         $message = trim($_POST["message"] ?? "");
 
-        // Set the recipient email address.
-        $recipient = "info@visaagency.in";
+        // Set the recipient email address(es) — every customer enquiry is
+        // also forwarded to the parent company.
+        $recipient = "info@visaagency.in, info@tripgation.com";
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             http_response_code(400);

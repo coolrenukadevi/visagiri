@@ -5,6 +5,12 @@
  * every admin page include this file to get a ready PDO handle.
  */
 
+// Required at true top-level scope (not inside a function) so $site_email
+// etc. become real PHP globals exactly once, regardless of which function
+// happens to touch this file first — required_once inside a function body
+// only defines variables in that function's local scope.
+require_once __DIR__ . '/site-contact.php';
+
 const CRM_STATUSES = [
     'New Enquiry', 'Contacted', 'Documents Pending', 'Documents Under Review', 'Documents Approved',
     'Payment Pending', 'Application Preparation', 'Application Submitted', 'Under Embassy Processing',
@@ -386,9 +392,19 @@ function crm_log_status_change(PDO $pdo, int $enquiryId, ?string $previousStatus
 /** Thin wrapper around mail() so every applicant-facing email looks consistent. */
 function crm_send_applicant_email(string $to, string $subject, string $bodyText): bool
 {
-    require_once __DIR__ . '/site-contact.php';
+    global $site_email;
     $headers = "From: VisaAgency.in <{$site_email}>\r\nContent-Type: text/plain; charset=UTF-8";
     return @mail($to, $subject, $bodyText, $headers);
+}
+
+/** Internal copy of every new customer enquiry, forwarded to the parent company. */
+const CRM_STAFF_FORWARD_EMAIL = 'info@tripgation.com';
+
+function crm_send_staff_email(string $subject, string $bodyText): bool
+{
+    global $site_email;
+    $headers = "From: VisaAgency.in <{$site_email}>\r\nContent-Type: text/plain; charset=UTF-8";
+    return @mail(CRM_STAFF_FORWARD_EMAIL, $subject, $bodyText, $headers);
 }
 
 const CRM_PAYMENT_STATUSES = ['Not Quoted', 'Payment Pending', 'Partially Paid', 'Paid'];
