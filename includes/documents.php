@@ -120,3 +120,54 @@ function store_document_upload(
 
     return (int) db()->lastInsertId();
 }
+
+/**
+ * Same storage/validation path as store_document_upload(), but for a
+ * document the customer uploaded themselves through the dashboard —
+ * sets uploaded_by_customer_id instead of uploaded_by (admin), which
+ * the schema-customer-partner-portal.sql migration made nullable
+ * specifically for this. Always tied to one of the customer's own
+ * applications; never to a general enquiry (customers don't have a
+ * dashboard view of those).
+ */
+function store_customer_document_upload(
+    array $file,
+    ?string $documentType,
+    int $customerId,
+    int $visaApplicationId
+): int {
+    if (!is_dir(DOCUMENTS_STORAGE_DIR)) {
+        mkdir(DOCUMENTS_STORAGE_DIR, 0755, true);
+    }
+
+    $originalName = (string) $file['name'];
+    $extension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+    $storedFilename = bin2hex(random_bytes(24)) . '.' . $extension;
+    $destination = DOCUMENTS_STORAGE_DIR . '/' . $storedFilename;
+
+    if (!move_uploaded_file($file['tmp_name'], $destination)) {
+        throw new RuntimeException('Failed to store uploaded file.');
+    }
+
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    $mimeType = finfo_file($finfo, $destination) ?: 'application/octet-stream';
+    finfo_close($finfo);
+
+    $stmt = db()->prepare(
+        'INSERT INTO documents (customer_id, visa_application_id, document_type, original_filename, stored_filename, storage_path, mime_type, file_size, uploaded_by_customer_id)
+         VALUES (:customer_id, :application_id, :doc_type, :original_name, :stored_name, :storage_path, :mime, :size, :uploaded_by_customer_id)'
+    );
+    $stmt->execute([
+        'customer_id' => $customerId,
+        'application_id' => $visaApplicationId,
+        'doc_type' => $documentType,
+        'original_name' => basename($originalName),
+        'stored_name' => $storedFilename,
+        'storage_path' => 'storage/documents/' . $storedFilename,
+        'mime' => $mimeType,
+        'size' => $file['size'],
+        'uploaded_by_customer_id' => $customerId,
+    ]);
+
+    return (int) db()->lastInsertId();
+}

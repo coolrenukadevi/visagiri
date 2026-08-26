@@ -37,6 +37,8 @@ require_once "$root/includes/functions.php";
 require_once "$root/includes/data.php";
 require_once "$root/includes/security.php";
 require_once "$root/includes/auth.php";
+require_once "$root/includes/customer-auth.php";
+require_once "$root/includes/partner-auth.php";
 require_once "$root/includes/rbac.php";
 require_once "$root/includes/audit.php";
 require_once "$root/includes/encryption.php";
@@ -47,6 +49,8 @@ require_once "$root/includes/forex.php";
 
 start_secure_session();
 send_security_headers();
+resume_customer_session_from_remember_cookie();
+resume_partner_session_from_remember_cookie();
 
 $requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
 $requestPath = rawurldecode($requestPath);
@@ -170,6 +174,24 @@ switch ($segments[0] ?? '') {
             $dispatch("$root/forex/track/index.php");
         }
         $dispatch("$root/pages/404.php");
+
+    case 'login':
+        $dispatch("$root/auth/login.php");
+
+    case 'register':
+        $dispatch("$root/auth/register.php");
+
+    case 'logout':
+        $dispatch("$root/auth/logout.php");
+
+    case 'forgot-password':
+        $dispatch("$root/auth/forgot-password.php");
+
+    case 'reset-password':
+        $dispatch("$root/auth/reset-password.php");
+
+    case 'dashboard':
+        $dispatch("$root/dashboard/index.php");
 
     case 'admin':
         $dispatch("$root/admin/index.php");

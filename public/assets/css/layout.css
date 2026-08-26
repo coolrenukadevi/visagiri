@@ -1017,6 +1017,29 @@
   margin: 0;
 }
 
+.site-footer__social {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+.site-footer__social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--visa-blue-light);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.site-footer__social a:hover {
+  background: var(--visa-gold);
+  color: var(--visa-blue-dark);
+}
+
 .site-footer__col h3 {
   display: flex;
   align-items: center;
