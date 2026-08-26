@@ -17,7 +17,7 @@ declare(strict_types=1);
         <div class="site-footer__brand">
             <div class="site-header__logo-mark">VISA<span>GIRI</span></div>
             <p class="site-footer__tagline">Seamless Visas. Limitless Journeys.</p>
-            <p class="site-footer__muted">Technology-enabled visa consultancy and document attestation assistance for travellers, students, professionals, and businesses. A Unit of Tripgation Pvt Ltd.</p>
+            <p class="site-footer__muted">Visagiri drives innovation with smart, future-ready digital solutions that empower growth and transformation. A Unit of Tripgation Pvt Ltd.</p>
         </div>
 
         <div class="site-footer__col">
