@@ -88,7 +88,7 @@ function fx_fmt($v) { $v = trim((string) $v); return $v === '' ? '<span style="c
         ?>
         <div class="forex-doc-row <?php echo $statusClass; ?>">
             <div class="forex-doc-row-label"><i class="fa-solid fa-<?php echo $icon; ?> forex-doc-row-icon"></i> <?php echo htmlspecialchars(FOREX_DOC_TYPES[$docType]); ?></div>
-            <div style="display:flex;align-items:center;gap:10px;">
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
                 <span class="crm-status-badge forex-doc-status <?php echo $statusClass; ?>"><?php echo htmlspecialchars($d['status']); ?></span>
                 <?php if ($d['stored_filename']): ?><a href="forex-document.php?id=<?php echo (int) $d['id']; ?>" class="crm-btn crm-btn-ghost crm-btn-sm"><i class="fa-solid fa-download"></i></a><?php endif; ?>
                 <?php if ($docType !== 'Declaration'): ?>
@@ -99,8 +99,26 @@ function fx_fmt($v) { $v = trim((string) $v); return $v === '' ? '<span style="c
                     <button type="submit" class="crm-btn crm-btn-ghost crm-btn-sm"><?php echo $d['stored_filename'] ? 'Replace' : 'Upload'; ?></button>
                 </form>
                 <?php endif; ?>
+                <?php if (in_array($d['status'], ['Uploaded', 'Under Verification'], true) && forex_can_verify_documents()): ?>
+                <form method="post" action="forex-documents.php" style="display:flex;gap:4px;align-items:center;">
+                    <input type="hidden" name="action" value="verify">
+                    <input type="hidden" name="doc_id" value="<?php echo (int) $d['id']; ?>">
+                    <input type="hidden" name="return_url" value="forex-request.php?ref=<?php echo urlencode($request['forex_ref']); ?>">
+                    <input type="text" name="remarks" placeholder="Remarks..." style="font-size:11.5px;padding:5px 8px;border:1px solid var(--c-border);border-radius:6px;width:120px;">
+                    <button type="submit" class="crm-btn crm-btn-primary crm-btn-sm">Verify</button>
+                </form>
+                <form method="post" action="forex-documents.php" style="display:flex;gap:4px;align-items:center;">
+                    <input type="hidden" name="action" value="reject">
+                    <input type="hidden" name="doc_id" value="<?php echo (int) $d['id']; ?>">
+                    <input type="hidden" name="return_url" value="forex-request.php?ref=<?php echo urlencode($request['forex_ref']); ?>">
+                    <input type="text" name="reason" placeholder="Reason..." required style="font-size:11.5px;padding:5px 8px;border:1px solid var(--c-border);border-radius:6px;width:120px;">
+                    <button type="submit" class="crm-btn crm-btn-ghost crm-btn-sm" style="color:var(--c-red);">Reject</button>
+                </form>
+                <?php endif; ?>
             </div>
         </div>
+        <?php if ($d['rejection_reason']): ?><p style="font-size:11.5px;color:var(--c-red);margin:-4px 0 0;">Rejected: <?php echo htmlspecialchars($d['rejection_reason']); ?></p><?php endif; ?>
+        <?php if ($d['verification_remarks']): ?><p style="font-size:11.5px;color:var(--c-green);margin:-4px 0 0;">Remarks: <?php echo htmlspecialchars($d['verification_remarks']); ?></p><?php endif; ?>
         <?php endforeach; ?>
         <?php if (!$documents): ?><div class="crm-empty">No document checklist yet.</div><?php endif; ?>
     </div>

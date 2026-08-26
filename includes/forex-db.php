@@ -142,6 +142,7 @@ function forex_db(): PDO
         size INTEGER,
         status TEXT NOT NULL DEFAULT 'Not Uploaded',
         rejection_reason TEXT,
+        verification_remarks TEXT,
         verified_by TEXT,
         verified_at TEXT,
         replaces_document_id INTEGER REFERENCES forex_documents(id),
@@ -289,23 +290,31 @@ function forex_db(): PDO
     // Additive column on the existing notifications table so the Forex module
     // can reuse crm_notify()/admin/notifications.php as-is rather than
     // building a parallel notification system.
-    $cols = $pdo->query("PRAGMA table_info(notifications)")->fetchAll(PDO::FETCH_ASSOC);
-    $hasForexCol = false;
-    foreach ($cols as $c) {
-        if ($c['name'] === 'forex_request_id') {
-            $hasForexCol = true;
-            break;
-        }
-    }
-    if (!$hasForexCol) {
-        $pdo->exec('ALTER TABLE notifications ADD COLUMN forex_request_id INTEGER REFERENCES forex_requests(id) ON DELETE CASCADE');
-    }
+    forex_ensure_column($pdo, 'notifications', 'forex_request_id', 'INTEGER REFERENCES forex_requests(id) ON DELETE CASCADE');
+    // Added in Phase 4 for the document verification queue — CREATE TABLE IF
+    // NOT EXISTS above doesn't retrofit new columns onto an already-created
+    // table on environments that bootstrapped forex_documents before this.
+    forex_ensure_column($pdo, 'forex_documents', 'verification_remarks', 'TEXT');
 
     forex_seed_default_settings($pdo);
     forex_seed_default_declaration_template($pdo);
 
     $migrated = true;
     return $pdo;
+}
+
+/** Idempotently adds a column to an already-existing table — CREATE TABLE IF
+ * NOT EXISTS doesn't retrofit schema changes onto a database bootstrapped by
+ * an earlier version of this file. */
+function forex_ensure_column(PDO $pdo, string $table, string $column, string $definition): void
+{
+    $cols = $pdo->query('PRAGMA table_info(' . $table . ')')->fetchAll(PDO::FETCH_ASSOC);
+    foreach ($cols as $c) {
+        if ($c['name'] === $column) {
+            return;
+        }
+    }
+    $pdo->exec("ALTER TABLE $table ADD COLUMN $column $definition");
 }
 
 function forex_seed_default_settings(PDO $pdo): void
