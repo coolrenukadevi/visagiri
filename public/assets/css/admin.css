@@ -34,21 +34,37 @@
 .admin-sidebar__nav a:hover { color: var(--white); background: rgba(255,255,255,0.06); }
 .admin-sidebar__nav a.is-active { color: var(--white); border-left-color: var(--visa-gold); background: rgba(255,255,255,0.08); }
 
-/* Section dividers inside the nav (Forex / Content / System) — these
-   had no rule at all before, so they rendered as bare unstyled block
-   text flush against the sidebar edge instead of a labeled section
-   break. */
+/* Section headers inside the nav (Forex / Content / System) — these
+   had no rule at all before, so they rendered as bare unstyled text
+   flush against the sidebar edge. Now a clickable <button> that
+   collapses/expands its sibling .admin-sidebar__subgroup (see
+   admin.js) rather than always showing every sub-link at once. */
 .admin-sidebar__group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
     padding: var(--space-5) var(--space-5) var(--space-2);
     margin-top: var(--space-2);
+    background: none;
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    font-family: inherit;
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-semibold);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: rgba(255,255,255,0.45);
-    border-top: 1px solid rgba(255,255,255,0.1);
+    cursor: pointer;
+    transition: color var(--transition-fast);
 }
+.admin-sidebar__group:hover { color: rgba(255,255,255,0.75); }
+.admin-sidebar__group .mega-menu__trigger-arrow { transition: transform var(--transition-fast); }
+.admin-sidebar__group[aria-expanded="true"] .mega-menu__trigger-arrow { transform: rotate(180deg); }
 .admin-sidebar__nav > .admin-sidebar__group:first-child { margin-top: 0; border-top: none; }
+
+.admin-sidebar__subgroup { display: none; flex-direction: column; }
+.admin-sidebar__subgroup.is-open { display: flex; }
 
 .admin-sidebar__footer { padding: var(--space-5); }
 .admin-sidebar__footer a { color: rgba(255,255,255,0.6); font-size: var(--font-size-sm); }

@@ -10,6 +10,24 @@ declare(strict_types=1);
 function admin_header_start(string $pageTitle, string $activeNav): void
 {
     $admin = current_admin();
+
+    // Which sidebar group (if any) the current page belongs to — used
+    // to auto-expand only that one group server-side, so the sidebar
+    // renders in the right state on first paint with no JS-dependent
+    // flash, and still works if JS fails to load at all.
+    $navGroups = [
+        'forex' => ['forex-dashboard', 'forex', 'forex-rates', 'forex-country-rules', 'forex-fema-audit'],
+        'content' => ['countries', 'visa-types', 'faqs', 'embassies'],
+        'system' => ['users', 'audit-log', 'settings'],
+    ];
+    $activeGroup = null;
+    foreach ($navGroups as $groupKey => $groupNavs) {
+        if (in_array($activeNav, $groupNavs, true)) {
+            $activeGroup = $groupKey;
+            break;
+        }
+    }
+    $isGroupOpen = static fn(string $groupKey): bool => $activeGroup === $groupKey;
     ?>
 <!doctype html>
 <html lang="en">
@@ -40,7 +58,8 @@ function admin_header_start(string $pageTitle, string $activeNav): void
             <a href="/admin/general-enquiries/" class="<?= $activeNav === 'general-enquiries' ? 'is-active' : '' ?>">General &amp; Attestation Enquiries</a>
             <?php endif; ?>
             <?php if (has_permission('forex.requests.view')): ?>
-            <div class="admin-sidebar__group">Forex</div>
+            <button type="button" class="admin-sidebar__group" aria-expanded="<?= $isGroupOpen('forex') ? 'true' : 'false' ?>" aria-controls="sidebar-group-forex">Forex <?= nav_chevron_icon() ?></button>
+            <div class="admin-sidebar__subgroup<?= $isGroupOpen('forex') ? ' is-open' : '' ?>" id="sidebar-group-forex">
             <a href="/admin/forex-dashboard/" class="<?= $activeNav === 'forex-dashboard' ? 'is-active' : '' ?>">Forex Dashboard</a>
             <?php if (has_permission('forex.requests.manage')): ?>
             <a href="/admin/forex-requests/?action=create" class="<?= '' ?>">New Forex Request</a>
@@ -60,18 +79,21 @@ function admin_header_start(string $pageTitle, string $activeNav): void
             <?php if (has_permission('forex.country_rules.manage')): ?>
             <a href="/admin/forex-country-rules/" class="<?= $activeNav === 'forex-country-rules' ? 'is-active' : '' ?>">Country Rules</a>
             <?php endif; ?>
+            </div>
             <?php endif; ?>
             <?php if (has_permission('content.manage')): ?>
-            <div class="admin-sidebar__group">Content</div>
+            <button type="button" class="admin-sidebar__group" aria-expanded="<?= $isGroupOpen('content') ? 'true' : 'false' ?>" aria-controls="sidebar-group-content">Content <?= nav_chevron_icon() ?></button>
+            <div class="admin-sidebar__subgroup<?= $isGroupOpen('content') ? ' is-open' : '' ?>" id="sidebar-group-content">
             <a href="/admin/countries/" class="<?= $activeNav === 'countries' ? 'is-active' : '' ?>">Countries</a>
             <a href="/admin/visa-types/" class="<?= $activeNav === 'visa-types' ? 'is-active' : '' ?>">Visa Types</a>
             <a href="/admin/visa-requirements/" class="<?= $activeNav === 'visa-requirements' ? 'is-active' : '' ?>">Visa Requirements</a>
             <a href="/admin/faqs/" class="<?= $activeNav === 'faqs' ? 'is-active' : '' ?>">FAQs</a>
             <a href="/admin/embassies/" class="<?= $activeNav === 'embassies' ? 'is-active' : '' ?>">Embassies / Consulates / VACs</a>
+            </div>
             <?php endif; ?>
             <?php if (has_permission('users.manage') || has_permission('settings.manage') || has_permission('audit.view')): ?>
-            <div class="admin-sidebar__group">System</div>
-            <?php endif; ?>
+            <button type="button" class="admin-sidebar__group" aria-expanded="<?= $isGroupOpen('system') ? 'true' : 'false' ?>" aria-controls="sidebar-group-system">System <?= nav_chevron_icon() ?></button>
+            <div class="admin-sidebar__subgroup<?= $isGroupOpen('system') ? ' is-open' : '' ?>" id="sidebar-group-system">
             <?php if (has_permission('users.manage')): ?>
             <a href="/admin/users/" class="<?= $activeNav === 'users' ? 'is-active' : '' ?>">Users &amp; Roles</a>
             <?php endif; ?>
@@ -80,6 +102,8 @@ function admin_header_start(string $pageTitle, string $activeNav): void
             <?php endif; ?>
             <?php if (has_permission('settings.manage')): ?>
             <a href="/admin/settings/" class="<?= $activeNav === 'settings' ? 'is-active' : '' ?>">Settings</a>
+            <?php endif; ?>
+            </div>
             <?php endif; ?>
         </nav>
         <div class="admin-sidebar__footer">
@@ -112,6 +136,7 @@ function admin_header_end(): void
         </main>
     </div>
 </div>
+<script src="<?= e(asset_url('/assets/js/admin.js')) ?>"></script>
 </body>
 </html>
     <?php
