@@ -5,7 +5,7 @@ require_permission('customers.view');
 
 $pdo = db();
 $action = $_GET['action'] ?? 'list';
-$id = isset($_GET['id']) ? (int) $_GET['id'] : null;
+$id = isset($_GET['id']) ? (int) $_GET['id'] : (isset($_POST['id']) ? (int) $_POST['id'] : null);
 $employees = $pdo->query('SELECT id, full_name FROM admin_users WHERE status = "active" ORDER BY full_name')->fetchAll();
 
 // --- Handle POST (create, update, soft-delete) ---
@@ -102,6 +102,7 @@ if ($action === 'create' || $action === 'edit') {
         <form method="post" action="/admin/customers/">
             <?= csrf_field() ?>
             <input type="hidden" name="action" value="save">
+            <?php if ($action === 'edit'): ?><input type="hidden" name="id" value="<?= (int) $id ?>"><?php endif; ?>
             <div class="admin-form-grid">
                 <div class="form-group"><label class="form-label" for="first_name">First Name</label><input class="form-input" type="text" id="first_name" name="first_name" value="<?= e($customer['first_name']) ?>" required></div>
                 <div class="form-group"><label class="form-label" for="middle_name">Middle Name</label><input class="form-input" type="text" id="middle_name" name="middle_name" value="<?= e($customer['middle_name'] ?? '') ?>"></div>

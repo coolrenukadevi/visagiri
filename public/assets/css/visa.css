@@ -48,3 +48,39 @@
 @media (min-width: 1024px) {
   .visa-spec-grid { grid-template-columns: repeat(3, 1fr); }
 }
+
+/* Document checklist — the visa detail page's "Required Documents"
+   card, and the printable templates page. Checkbox UI is purely a
+   personal print/tick-off aid (nothing is submitted or saved), so no
+   backend state is needed. */
+.document-checklist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.document-checklist__item {
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.document-checklist__item:last-child { border-bottom: none; }
+
+.document-checklist__item label {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.document-checklist__item input[type="checkbox"] {
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+
+@media print {
+  .site-header, .site-footer, .enquiry-widget, .button-group, .breadcrumb { display: none !important; }
+  .visa-detail { padding-top: 0; }
+}

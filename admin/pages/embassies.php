@@ -18,7 +18,7 @@ $tables = [
 $pdo = db();
 $countries = $pdo->query('SELECT id, name FROM countries ORDER BY name')->fetchAll();
 $action = $_GET['action'] ?? 'list';
-$id = isset($_GET['id']) ? (int) $_GET['id'] : null;
+$id = isset($_GET['id']) ? (int) $_GET['id'] : (isset($_POST['id']) ? (int) $_POST['id'] : null);
 $type = in_array($_GET['type'] ?? '', array_keys($tables), true) ? $_GET['type'] : 'embassy';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -90,6 +90,7 @@ if ($action === 'create' || $action === 'edit') {
             <?= csrf_field() ?>
             <input type="hidden" name="action" value="save">
             <input type="hidden" name="type" value="<?= e($type) ?>">
+            <?php if ($action === 'edit'): ?><input type="hidden" name="id" value="<?= (int) $id ?>"><?php endif; ?>
             <div class="admin-form-grid">
                 <div class="form-group">
                     <label class="form-label" for="country_id">Country</label>

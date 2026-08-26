@@ -6,7 +6,7 @@ require_permission('content.manage');
 $pdo = db();
 $regions = $pdo->query('SELECT id, name FROM regions ORDER BY name')->fetchAll();
 $action = $_GET['action'] ?? 'list';
-$id = isset($_GET['id']) ? (int) $_GET['id'] : null;
+$id = isset($_GET['id']) ? (int) $_GET['id'] : (isset($_POST['id']) ? (int) $_POST['id'] : null);
 
 // --- Handle POST (create, update, delete, toggle) ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -38,6 +38,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'region_id' => (int) ($_POST['region_id'] ?? 0) ?: null,
             'is_popular_destination' => isset($_POST['is_popular_destination']) ? 1 : 0,
             'is_schengen' => isset($_POST['is_schengen']) ? 1 : 0,
+            'is_gcc' => isset($_POST['is_gcc']) ? 1 : 0,
+            'is_asean' => isset($_POST['is_asean']) ? 1 : 0,
+            'is_saarc' => isset($_POST['is_saarc']) ? 1 : 0,
+            'is_middle_east' => isset($_POST['is_middle_east']) ? 1 : 0,
+            'is_caribbean' => isset($_POST['is_caribbean']) ? 1 : 0,
+            'visa_policy_for_indians' => in_array($_POST['visa_policy_for_indians'] ?? '', ['visa_required', 'visa_free', 'visa_on_arrival', 'evisa'], true) ? $_POST['visa_policy_for_indians'] : null,
             'is_active' => isset($_POST['is_active']) ? 1 : 0,
             'meta_title' => trim((string) ($_POST['meta_title'] ?? '')) ?: null,
             'meta_description' => trim((string) ($_POST['meta_description'] ?? '')) ?: null,
@@ -52,14 +58,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data['id'] = $id;
             $pdo->prepare(
                 'UPDATE countries SET name=:name, slug=:slug, iso2=:iso2, iso3=:iso3, region_id=:region_id,
-                 is_popular_destination=:is_popular_destination, is_schengen=:is_schengen, is_active=:is_active,
+                 is_popular_destination=:is_popular_destination, is_schengen=:is_schengen,
+                 is_gcc=:is_gcc, is_asean=:is_asean, is_saarc=:is_saarc, is_middle_east=:is_middle_east, is_caribbean=:is_caribbean,
+                 visa_policy_for_indians=:visa_policy_for_indians, is_active=:is_active,
                  meta_title=:meta_title, meta_description=:meta_description WHERE id=:id'
             )->execute($data);
             flash_set('admin_notice', 'Country updated.');
         } else {
             $pdo->prepare(
-                'INSERT INTO countries (name, slug, iso2, iso3, region_id, is_popular_destination, is_schengen, is_active, meta_title, meta_description)
-                 VALUES (:name, :slug, :iso2, :iso3, :region_id, :is_popular_destination, :is_schengen, :is_active, :meta_title, :meta_description)'
+                'INSERT INTO countries (name, slug, iso2, iso3, region_id, is_popular_destination, is_schengen,
+                 is_gcc, is_asean, is_saarc, is_middle_east, is_caribbean, visa_policy_for_indians, is_active, meta_title, meta_description)
+                 VALUES (:name, :slug, :iso2, :iso3, :region_id, :is_popular_destination, :is_schengen,
+                 :is_gcc, :is_asean, :is_saarc, :is_middle_east, :is_caribbean, :visa_policy_for_indians, :is_active, :meta_title, :meta_description)'
             )->execute($data);
             flash_set('admin_notice', 'Country added.');
         }
@@ -69,7 +79,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // --- Create/Edit form ---
 if ($action === 'create' || $action === 'edit') {
-    $country = ['name' => '', 'slug' => '', 'iso2' => '', 'iso3' => '', 'region_id' => '', 'is_popular_destination' => 0, 'is_schengen' => 0, 'is_active' => 1, 'meta_title' => '', 'meta_description' => ''];
+    $country = [
+        'name' => '', 'slug' => '', 'iso2' => '', 'iso3' => '', 'region_id' => '',
+        'is_popular_destination' => 0, 'is_schengen' => 0,
+        'is_gcc' => 0, 'is_asean' => 0, 'is_saarc' => 0, 'is_middle_east' => 0, 'is_caribbean' => 0,
+        'visa_policy_for_indians' => null, 'is_active' => 1, 'meta_title' => '', 'meta_description' => '',
+    ];
     if ($action === 'edit' && $id) {
         $stmt = $pdo->prepare('SELECT * FROM countries WHERE id = :id');
         $stmt->execute(['id' => $id]);
@@ -87,6 +102,7 @@ if ($action === 'create' || $action === 'edit') {
         <form method="post" action="/admin/countries/">
             <?= csrf_field() ?>
             <input type="hidden" name="action" value="save">
+            <?php if ($action === 'edit'): ?><input type="hidden" name="id" value="<?= (int) $id ?>"><?php endif; ?>
             <div class="admin-form-grid">
                 <div class="form-group">
                     <label class="form-label" for="name">Name</label>
@@ -116,7 +132,26 @@ if ($action === 'create' || $action === 'edit') {
             </div>
             <div class="admin-checkbox-row"><label><input type="checkbox" name="is_popular_destination" <?= $country['is_popular_destination'] ? 'checked' : '' ?>> Popular destination</label></div>
             <div class="admin-checkbox-row"><label><input type="checkbox" name="is_schengen" <?= $country['is_schengen'] ? 'checked' : '' ?>> Schengen member</label></div>
+            <div class="admin-checkbox-row"><label><input type="checkbox" name="is_gcc" <?= $country['is_gcc'] ? 'checked' : '' ?>> GCC member</label></div>
+            <div class="admin-checkbox-row"><label><input type="checkbox" name="is_asean" <?= $country['is_asean'] ? 'checked' : '' ?>> ASEAN member</label></div>
+            <div class="admin-checkbox-row"><label><input type="checkbox" name="is_saarc" <?= $country['is_saarc'] ? 'checked' : '' ?>> SAARC member</label></div>
+            <div class="admin-checkbox-row"><label><input type="checkbox" name="is_middle_east" <?= $country['is_middle_east'] ? 'checked' : '' ?>> Middle East</label></div>
+            <div class="admin-checkbox-row"><label><input type="checkbox" name="is_caribbean" <?= $country['is_caribbean'] ? 'checked' : '' ?>> Caribbean</label></div>
             <div class="admin-checkbox-row"><label><input type="checkbox" name="is_active" <?= $country['is_active'] ? 'checked' : '' ?>> Active (visible on site)</label></div>
+
+            <div class="form-group" style="margin-top:var(--space-4)">
+                <label class="form-label" for="visa_policy_for_indians">Visa policy for Indian passport holders</label>
+                <select class="form-select" id="visa_policy_for_indians" name="visa_policy_for_indians">
+                    <option value="">— Not yet verified —</option>
+                    <option value="visa_required" <?= $country['visa_policy_for_indians'] === 'visa_required' ? 'selected' : '' ?>>Visa Required</option>
+                    <option value="visa_free" <?= $country['visa_policy_for_indians'] === 'visa_free' ? 'selected' : '' ?>>Visa Free</option>
+                    <option value="visa_on_arrival" <?= $country['visa_policy_for_indians'] === 'visa_on_arrival' ? 'selected' : '' ?>>Visa on Arrival</option>
+                    <option value="evisa" <?= $country['visa_policy_for_indians'] === 'evisa' ? 'selected' : '' ?>>eVisa</option>
+                </select>
+                <p style="color:var(--text-muted);font-size:var(--font-size-sm);margin-top:var(--space-1)">
+                    Only set this once you've verified it from an authoritative source — it controls whether this country appears in the public Visa Status directories.
+                </p>
+            </div>
 
             <div class="form-group" style="margin-top:var(--space-4)">
                 <label class="form-label" for="meta_title">SEO meta title</label>
@@ -171,7 +206,7 @@ admin_header_start('Countries', 'countries');
     <a href="/admin/countries/?action=create" class="btn btn-primary">+ Add Country</a>
 </div>
 <table class="admin-table">
-    <thead><tr><th>Name</th><th>Region</th><th>Popular</th><th>Schengen</th><th>Active</th><th></th></tr></thead>
+    <thead><tr><th>Name</th><th>Region</th><th>Popular</th><th>Schengen</th><th>Visa Policy (India)</th><th>Active</th><th></th></tr></thead>
     <tbody>
     <?php foreach ($countries as $c): ?>
         <tr>
@@ -184,6 +219,10 @@ admin_header_start('Countries', 'countries');
             <td>
                 <form method="post" action="/admin/countries/" style="display:inline"><?= csrf_field() ?><input type="hidden" name="action" value="toggle"><input type="hidden" name="field" value="is_schengen"><input type="hidden" name="id" value="<?= (int) $c['id'] ?>">
                 <button type="submit" class="badge <?= $c['is_schengen'] ? 'badge-success' : 'badge-neutral' ?>" style="border:none;cursor:pointer"><?= $c['is_schengen'] ? 'Yes' : 'No' ?></button></form>
+            </td>
+            <td>
+                <?php $policyLabels = ['visa_required' => 'Visa Required', 'visa_free' => 'Visa Free', 'visa_on_arrival' => 'On Arrival', 'evisa' => 'eVisa']; ?>
+                <span class="badge <?= $c['visa_policy_for_indians'] ? 'badge-info' : 'badge-neutral' ?>"><?= e($policyLabels[$c['visa_policy_for_indians']] ?? 'Not verified') ?></span>
             </td>
             <td>
                 <form method="post" action="/admin/countries/" style="display:inline"><?= csrf_field() ?><input type="hidden" name="action" value="toggle"><input type="hidden" name="field" value="is_active"><input type="hidden" name="id" value="<?= (int) $c['id'] ?>">

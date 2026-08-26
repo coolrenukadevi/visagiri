@@ -5,7 +5,7 @@ require_permission('content.manage');
 
 $pdo = db();
 $action = $_GET['action'] ?? 'list';
-$id = isset($_GET['id']) ? (int) $_GET['id'] : null;
+$id = isset($_GET['id']) ? (int) $_GET['id'] : (isset($_POST['id']) ? (int) $_POST['id'] : null);
 $countries = $pdo->query('SELECT id, name FROM countries ORDER BY name')->fetchAll();
 $visaTypesList = $pdo->query('SELECT id, name FROM visa_types ORDER BY sort_order')->fetchAll();
 
@@ -74,6 +74,7 @@ if ($action === 'create' || $action === 'edit') {
         <form method="post" action="/admin/faqs/">
             <?= csrf_field() ?>
             <input type="hidden" name="action" value="save">
+            <?php if ($action === 'edit'): ?><input type="hidden" name="id" value="<?= (int) $id ?>"><?php endif; ?>
             <div class="form-group">
                 <label class="form-label" for="question">Question</label>
                 <input class="form-input" type="text" id="question" name="question" value="<?= e($faq['question']) ?>" required>

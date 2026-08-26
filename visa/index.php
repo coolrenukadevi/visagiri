@@ -21,6 +21,11 @@ if ($countrySlug === null) {
     redirect('/countries/');
 }
 
+if (isset(CONTINENT_HUBS[$countrySlug])) {
+    require __DIR__ . '/continent.php';
+    exit;
+}
+
 $country = country_by_slug($countrySlug);
 
 if (!$country) {
@@ -102,7 +107,24 @@ if ($typeSlug !== null) {
             <?php if ($requirement): ?>
             <div class="visa-spec-grid">
                 <div class="card"><div class="card-title">Eligibility</div><p><?= nl2br(e($requirement['eligibility'] ?? 'Not specified')) ?></p></div>
-                <div class="card"><div class="card-title">Required Documents</div><p><?= nl2br(e($requirement['documents_required'] ?? 'Not specified')) ?></p></div>
+                <div class="card">
+                    <div class="card-title">Required Documents</div>
+                    <?php
+                    $documentLines = array_values(array_filter(array_map('trim', explode("\n", (string) ($requirement['documents_required'] ?? '')))));
+                    ?>
+                    <?php if ($documentLines): ?>
+                    <ul class="document-checklist">
+                        <?php foreach ($documentLines as $line): ?>
+                        <li class="document-checklist__item"><label><input type="checkbox"> <span><?= e($line) ?></span></label></li>
+                        <?php endforeach; ?>
+                    </ul>
+                    <div class="button-group" style="margin-top:var(--space-3)">
+                        <button type="button" class="btn btn-outline btn-sm" onclick="window.print()">Print Checklist</button>
+                    </div>
+                    <?php else: ?>
+                    <p>Not specified</p>
+                    <?php endif; ?>
+                </div>
                 <div class="card"><div class="card-title">Application Process</div><p><?= nl2br(e($requirement['application_process'] ?? 'Not specified')) ?></p></div>
                 <div class="card"><div class="card-title">Processing Time</div><p><?= e($requirement['processing_time'] ?? 'Not specified') ?></p></div>
                 <div class="card"><div class="card-title">Fees</div><p>

@@ -135,6 +135,99 @@ function fetch_visa_requirement(int $countryId, int $visaTypeId): ?array
 }
 
 /**
+ * Continent/region hub pages (/visa/{slug}) and the country-status
+ * directories (/visa-status/{slug}) both group the same 208 real
+ * countries by a stable membership flag rather than any per-country
+ * visa policy fact — see database/schema-visa-portal.sql for why
+ * these five flags (GCC/ASEAN/SAARC/Middle East/Caribbean) are safe
+ * to hardcode while visa_policy_for_indians is not.
+ */
+const CONTINENT_HUBS = [
+    'asia' => ['label' => 'Asia', 'region_slug' => 'asia'],
+    'europe' => ['label' => 'Europe', 'region_slug' => 'europe'],
+    'africa' => ['label' => 'Africa', 'region_slug' => 'africa'],
+    'north-america' => ['label' => 'North America', 'region_slug' => 'north-america'],
+    'south-america' => ['label' => 'South America', 'region_slug' => 'south-america'],
+    'oceania' => ['label' => 'Oceania', 'region_slug' => 'oceania'],
+    'middle-east' => ['label' => 'Middle East', 'flag_column' => 'is_middle_east'],
+    'caribbean' => ['label' => 'Caribbean', 'flag_column' => 'is_caribbean'],
+];
+
+/** @return list<array<string,mixed>> */
+function countries_by_continent_slug(string $slug): array
+{
+    if (!isset(CONTINENT_HUBS[$slug])) {
+        return [];
+    }
+    $hub = CONTINENT_HUBS[$slug];
+
+    if (isset($hub['region_slug'])) {
+        $stmt = db()->prepare(
+            'SELECT c.id, c.name, c.slug, c.iso2, c.iso3, r.name AS region, c.is_popular_destination, c.is_schengen
+             FROM countries c JOIN regions r ON r.id = c.region_id
+             WHERE c.is_active = 1 AND r.slug = :region_slug
+             ORDER BY c.name'
+        );
+        $stmt->execute(['region_slug' => $hub['region_slug']]);
+        return $stmt->fetchAll();
+    }
+
+    $column = $hub['flag_column'];
+    $stmt = db()->query(
+        "SELECT c.id, c.name, c.slug, c.iso2, c.iso3, r.name AS region, c.is_popular_destination, c.is_schengen
+         FROM countries c LEFT JOIN regions r ON r.id = c.region_id
+         WHERE c.is_active = 1 AND c.$column = 1
+         ORDER BY c.name"
+    );
+    return $stmt->fetchAll();
+}
+
+/**
+ * Visa-status directories (/visa-status/{slug}) — same "group by a
+ * verifiable flag" approach. visa_policy_for_indians-backed slugs
+ * only ever return countries a staff member has actually set that
+ * field for (see AUDIT.md) — an empty result here means "not yet
+ * verified for any country," never a false "none of these exist."
+ */
+const VISA_STATUS_DIRECTORIES = [
+    'visa-free' => ['label' => 'Visa Free for Indians', 'policy_value' => 'visa_free'],
+    'visa-on-arrival' => ['label' => 'Visa on Arrival', 'policy_value' => 'visa_on_arrival'],
+    'evisa' => ['label' => 'eVisa Countries', 'policy_value' => 'evisa'],
+    'schengen' => ['label' => 'Schengen Countries', 'flag_column' => 'is_schengen'],
+    'gcc' => ['label' => 'GCC Countries', 'flag_column' => 'is_gcc'],
+    'asean' => ['label' => 'ASEAN Countries', 'flag_column' => 'is_asean'],
+    'saarc' => ['label' => 'SAARC Countries', 'flag_column' => 'is_saarc'],
+];
+
+/** @return list<array<string,mixed>> */
+function countries_by_visa_status_slug(string $slug): array
+{
+    if (!isset(VISA_STATUS_DIRECTORIES[$slug])) {
+        return [];
+    }
+    $dir = VISA_STATUS_DIRECTORIES[$slug];
+
+    if (isset($dir['policy_value'])) {
+        $stmt = db()->prepare(
+            'SELECT c.id, c.name, c.slug, c.iso2, c.iso3, r.name AS region, c.is_popular_destination
+             FROM countries c LEFT JOIN regions r ON r.id = c.region_id
+             WHERE c.is_active = 1 AND c.visa_policy_for_indians = :policy
+             ORDER BY c.name'
+        );
+        $stmt->execute(['policy' => $dir['policy_value']]);
+        return $stmt->fetchAll();
+    }
+
+    $column = $dir['flag_column'];
+    return db()->query(
+        "SELECT c.id, c.name, c.slug, c.iso2, c.iso3, r.name AS region, c.is_popular_destination
+         FROM countries c LEFT JOIN regions r ON r.id = c.region_id
+         WHERE c.is_active = 1 AND c.$column = 1
+         ORDER BY c.name"
+    )->fetchAll();
+}
+
+/**
  * Single source of truth for the Country mega-menu — grouped by
  * region plus the popular-destination and Schengen-membership flags.
  */

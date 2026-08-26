@@ -5,7 +5,7 @@ require_permission('content.manage');
 
 $pdo = db();
 $action = $_GET['action'] ?? 'list';
-$id = isset($_GET['id']) ? (int) $_GET['id'] : null;
+$id = isset($_GET['id']) ? (int) $_GET['id'] : (isset($_POST['id']) ? (int) $_POST['id'] : null);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_require();
@@ -77,6 +77,7 @@ if ($action === 'create' || $action === 'edit') {
         <form method="post" action="/admin/visa-types/">
             <?= csrf_field() ?>
             <input type="hidden" name="action" value="save">
+            <?php if ($action === 'edit'): ?><input type="hidden" name="id" value="<?= (int) $id ?>"><?php endif; ?>
             <div class="admin-form-grid">
                 <div class="form-group">
                     <label class="form-label" for="name">Name</label>

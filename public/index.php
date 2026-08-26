@@ -150,6 +150,15 @@ switch ($segments[0] ?? '') {
     case 'enquire':
         $dispatch("$root/pages/enquire.php");
 
+    case 'visa-status':
+        $dispatch("$root/pages/visa-status.php");
+
+    case 'track-visa':
+        $dispatch("$root/pages/track-visa.php");
+
+    case 'document-templates':
+        $dispatch("$root/pages/document-templates.php");
+
     case 'forex':
         if (($segments[1] ?? null) === 'track') {
             $dispatch("$root/forex/track/index.php");
