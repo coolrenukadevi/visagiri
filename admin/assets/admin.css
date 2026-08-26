@@ -554,3 +554,134 @@ table.crm-table tr:hover td { background: var(--c-bg); }
     .crm-row-card .rc-actions { display: flex; gap: 8px; }
     .crm-row-card .rc-actions a { flex: 1; text-align: center; padding: 8px; border-radius: 8px; background: var(--c-bg); font-size: 12px; color: var(--c-heading); }
 }
+
+/* ============================================================
+   Forex module — step wizard, search dropdown, compliance notes
+   ============================================================ */
+.compliance-note {
+    font-size: 13px;
+    color: var(--c-text);
+    background: var(--c-bg);
+    border-radius: 10px;
+    padding: 14px 18px;
+    line-height: 1.6;
+}
+.forex-step-indicator {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 26px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--c-border);
+}
+.forex-step-dot {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--c-muted);
+    padding: 6px 12px;
+    border-radius: 20px;
+    background: var(--c-bg);
+}
+.forex-step-dot span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--c-border);
+    color: var(--c-white);
+    font-size: 11px;
+}
+.forex-step-dot.is-active { background: var(--c-blue); color: #fff; }
+.forex-step-dot.is-active span { background: #fff; color: var(--c-blue); }
+.forex-step-dot.is-done { color: var(--c-green); }
+.forex-step-dot.is-done span { background: var(--c-green); color: #fff; }
+.forex-step-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--c-border);
+}
+.forex-search-results {
+    position: relative;
+    margin-top: 6px;
+    border: 1px solid var(--c-border);
+    border-radius: 10px;
+    background: var(--c-white);
+    box-shadow: var(--shadow);
+    max-height: 260px;
+    overflow-y: auto;
+}
+.forex-search-result {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    width: 100%;
+    text-align: left;
+    padding: 10px 14px;
+    border: none;
+    border-bottom: 1px solid var(--c-border);
+    background: none;
+    cursor: pointer;
+    font-size: 13px;
+}
+.forex-search-result:last-child { border-bottom: none; }
+.forex-search-result:hover { background: var(--c-bg); }
+.forex-search-result strong { color: var(--c-heading); }
+.forex-search-result span { color: var(--c-text); font-size: 12px; }
+.forex-search-result em { color: var(--c-blue); font-style: normal; font-size: 10.5px; font-weight: 700; text-transform: uppercase; }
+.forex-search-empty { padding: 12px 14px; font-size: 12.5px; color: var(--c-muted); }
+
+.forex-doc-checklist { display: flex; flex-direction: column; gap: 10px; margin: 16px 0; }
+.forex-doc-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 16px;
+    border: 1px solid var(--c-border);
+    border-radius: 10px;
+    background: var(--c-bg);
+}
+.forex-doc-row-label { display: flex; align-items: center; gap: 10px; font-size: 13.5px; font-weight: 600; color: var(--c-heading); }
+.forex-doc-row-icon { width: 22px; text-align: center; }
+.forex-doc-row.doc-verified .forex-doc-row-icon { color: var(--c-green); }
+.forex-doc-row.doc-not-uploaded .forex-doc-row-icon,
+.forex-doc-row.doc-under-verification .forex-doc-row-icon { color: #C99A2E; }
+.forex-doc-row.doc-rejected .forex-doc-row-icon { color: var(--c-red); }
+.forex-progress-bar { flex: 1; max-width: 260px; height: 10px; border-radius: 20px; background: var(--c-border); overflow: hidden; }
+.forex-progress-bar-fill { height: 100%; background: var(--c-green); border-radius: 20px; }
+
+/* Forex request statuses */
+.forex-status-new-request { background: var(--c-blue-dim); color: var(--c-blue); }
+.forex-status-awaiting-documents { background: var(--c-amber-bg); color: var(--c-amber); }
+.forex-status-documents-submitted { background: var(--c-amber-bg); color: var(--c-amber); }
+.forex-status-documents-under-verification { background: var(--c-amber-bg); color: var(--c-amber); }
+.forex-status-documents-verified { background: var(--c-indigo-bg); color: var(--c-indigo); }
+.forex-status-quotation-preparing { background: var(--c-orange-bg); color: var(--c-orange); }
+.forex-status-quotation-sent { background: var(--c-orange-bg); color: var(--c-orange); }
+.forex-status-customer-accepted { background: var(--c-teal-bg); color: var(--c-teal); }
+.forex-status-payment-pending { background: var(--c-red-bg); color: var(--c-red); }
+.forex-status-payment-received { background: var(--c-green-bg); color: var(--c-green); }
+.forex-status-compliance-verification { background: var(--c-indigo-bg); color: var(--c-indigo); }
+.forex-status-approved-for-processing { background: var(--c-cyan-bg); color: var(--c-cyan); }
+.forex-status-forex-procurement-processing { background: var(--c-cyan-bg); color: var(--c-cyan); }
+.forex-status-ready-for-delivery { background: var(--c-teal-bg); color: var(--c-teal); }
+.forex-status-delivered { background: var(--c-green-bg); color: var(--c-green); }
+.forex-status-cancelled { background: var(--c-deep-red-bg); color: var(--c-deep-red); }
+.forex-status-rejected { background: var(--c-deep-red-bg); color: var(--c-deep-red); }
+.forex-status-refund-reversal { background: var(--c-grey-bg); color: var(--c-grey); }
+
+/* Forex document statuses */
+.forex-doc-not-uploaded { background: var(--c-grey-bg); color: var(--c-grey); }
+.forex-doc-uploaded { background: var(--c-amber-bg); color: var(--c-amber); }
+.forex-doc-under-verification { background: var(--c-amber-bg); color: var(--c-amber); }
+.forex-doc-verified { background: var(--c-green-bg); color: var(--c-green); }
+.forex-doc-rejected { background: var(--c-red-bg); color: var(--c-red); }
