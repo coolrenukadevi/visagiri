@@ -22,19 +22,6 @@ if (!$q) {
 
 require_once __DIR__ . '/../includes/lib/fpdf.php';
 
-/**
- * FPDF's core fonts only support single-byte Windows-1252, not UTF-8 — any
- * database value (customer name, payment terms, etc.) that contains a
- * genuinely non-Latin1 character would otherwise render as garbled bytes.
- * Transliterates what it can and drops the rest rather than corrupting output.
- */
-function forex_pdf_safe(?string $text): string
-{
-    $text = (string) $text;
-    $converted = @iconv('UTF-8', 'CP1252//TRANSLIT//IGNORE', $text);
-    return $converted !== false ? $converted : preg_replace('/[^\x20-\x7E]/', '', $text);
-}
-
 foreach ($q as $key => $value) {
     if (is_string($value)) {
         $q[$key] = forex_pdf_safe($value);

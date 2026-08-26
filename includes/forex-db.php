@@ -493,6 +493,81 @@ function forex_timeline_labels(): array
     ];
 }
 
+/**
+ * The hard pre-delivery compliance gate (spec §17). Returns an array of
+ * human-readable missing-requirement strings — empty array means delivery
+ * is allowed. Called both to render the on-screen checklist AND to block
+ * the "Mark as Delivered" action server-side; never trust the UI alone.
+ */
+function forex_delivery_blockers(PDO $pdo, array $request): array
+{
+    $blockers = [];
+    $requestId = (int) $request['id'];
+
+    $docsStmt = $pdo->prepare('SELECT * FROM forex_documents WHERE forex_request_id = ? ORDER BY doc_type, id DESC');
+    $docsStmt->execute([$requestId]);
+    $currentDocs = [];
+    foreach ($docsStmt->fetchAll(PDO::FETCH_ASSOC) as $d) {
+        if (!isset($currentDocs[$d['doc_type']])) {
+            $currentDocs[$d['doc_type']] = $d;
+        }
+    }
+
+    foreach ($currentDocs as $docType => $d) {
+        if ($d['status'] !== 'Verified') {
+            $blockers[] = FOREX_DOC_TYPES[$docType] . ' is not yet verified (currently: ' . $d['status'] . ').';
+        }
+    }
+    if (!isset($currentDocs['Passport'])) {
+        // Passport identity verification is the spec's own explicit example of a
+        // mandatory check — called out even if, unusually, it's missing from the checklist entirely.
+        $blockers[] = 'Customer identity (passport) has not been captured on this request.';
+    }
+
+    $quotStmt = $pdo->prepare("SELECT * FROM forex_quotations WHERE forex_request_id = ? ORDER BY id DESC LIMIT 1");
+    $quotStmt->execute([$requestId]);
+    $quotation = $quotStmt->fetch(PDO::FETCH_ASSOC);
+    if (!$quotation) {
+        $blockers[] = 'No quotation has been created for this request.';
+    } elseif ($quotation['status'] === 'Draft') {
+        $blockers[] = 'The quotation is still awaiting approval.';
+    } elseif (!in_array($quotation['status'], ['Sent', 'Accepted'], true)) {
+        $blockers[] = 'The quotation has not been sent/accepted (status: ' . $quotation['status'] . ').';
+    }
+
+    $paidStmt = $pdo->prepare("SELECT COALESCE(SUM(amount), 0) FROM forex_payments WHERE forex_request_id = ? AND status = 'Paid'");
+    $paidStmt->execute([$requestId]);
+    $totalPaid = (float) $paidStmt->fetchColumn();
+    if ($quotation && $totalPaid < (float) $quotation['total_inr'] - 0.01) {
+        $blockers[] = 'Payment not fully confirmed (received Rs. ' . number_format($totalPaid, 2) . ' of Rs. ' . number_format((float) $quotation['total_inr'], 2) . ' due).';
+    }
+
+    if (isset($currentDocs['Declaration'])) {
+        $declStmt = $pdo->prepare('SELECT * FROM forex_declarations WHERE forex_request_id = ? ORDER BY id DESC LIMIT 1');
+        $declStmt->execute([$requestId]);
+        $decl = $declStmt->fetch(PDO::FETCH_ASSOC);
+        if (!$decl || !$decl['verified_at']) {
+            $blockers[] = 'Visa-on-Arrival/Visa-Free declaration has not been verified.';
+        }
+    }
+
+    return array_values(array_unique($blockers));
+}
+
+/**
+ * FPDF's core fonts only support single-byte Windows-1252, not UTF-8 — any
+ * database value (customer name, payment terms, etc.) that contains a
+ * genuinely non-Latin1 character would otherwise render as garbled bytes in
+ * a generated PDF. Transliterates what it can and drops the rest rather
+ * than corrupting output. Shared by every admin/forex-*-pdf.php generator.
+ */
+function forex_pdf_safe(?string $text): string
+{
+    $text = (string) $text;
+    $converted = @iconv('UTF-8', 'CP1252//TRANSLIT//IGNORE', $text);
+    return $converted !== false ? $converted : preg_replace('/[^\x20-\x7E]/', '', $text);
+}
+
 function forex_render_declaration(string $bodyHtml, array $vars): string
 {
     $map = [];

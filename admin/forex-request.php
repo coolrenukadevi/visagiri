@@ -19,6 +19,8 @@ $ADMIN_BREADCRUMB = ['CRM', 'Forex', $request['forex_ref']];
 
 $statusMessage = '';
 $quotationError = '';
+$paymentError = '';
+$deliveryError = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
     if ($action === 'change_status' && forex_can_verify_documents()) {
@@ -75,6 +77,92 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Location: forex-request.php?ref=' . urlencode($request['forex_ref']) . '#quotations');
             exit;
         }
+    } elseif ($action === 'record_payment' && forex_can_manage_payments()) {
+        $amount = filter_var($_POST['amount'] ?? '', FILTER_VALIDATE_FLOAT);
+        $status = trim($_POST['status'] ?? '');
+        if ($amount === false || $amount <= 0 || !in_array($status, FOREX_PAYMENT_STATUSES, true)) {
+            $paymentError = 'Please provide a valid amount and status.';
+        } else {
+            $pdo->prepare('INSERT INTO forex_payments (forex_request_id, status, method, transaction_id, amount, payment_date, reference, remarks, recorded_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+                ->execute([
+                    $requestId, $status,
+                    in_array($_POST['method'] ?? '', FOREX_PAYMENT_METHODS, true) ? $_POST['method'] : null,
+                    trim($_POST['transaction_id'] ?? '') ?: null,
+                    $amount,
+                    trim($_POST['payment_date'] ?? '') ?: gmdate('Y-m-d'),
+                    trim($_POST['reference'] ?? '') ?: null,
+                    trim($_POST['remarks'] ?? '') ?: null,
+                    admin_name(), gmdate('c'),
+                ]);
+            forex_log_audit($pdo, $requestId, admin_name(), admin_role(), 'Recorded payment', '', "$status: Rs. " . number_format($amount, 2));
+            if ($status === 'Paid') {
+                $pdo->prepare("UPDATE forex_requests SET status = 'Payment Received', updated_at = ? WHERE id = ?")->execute([gmdate('c'), $requestId]);
+                forex_log_status_change($pdo, $requestId, $request['status'], 'Payment Received', admin_name(), 'Payment recorded.');
+                forex_notify($pdo, null, 'forex_payment_received', "Payment received on {$request['forex_ref']}: Rs. " . number_format($amount, 2) . '.', $requestId);
+            }
+            header('Location: forex-request.php?ref=' . urlencode($request['forex_ref']) . '#payments');
+            exit;
+        }
+    } elseif ($action === 'mark_delivered') {
+        $blockers = forex_delivery_blockers($pdo, $request);
+        $isOverride = !empty($_POST['override']) && forex_can_override_compliance();
+
+        if ($blockers && !$isOverride) {
+            $deliveryError = $blockers;
+        } elseif ($blockers && $isOverride && trim($_POST['override_reason'] ?? '') === '') {
+            $deliveryError = ['An override reason is required.'];
+        } elseif (!forex_can_manage_delivery()) {
+            $deliveryError = ['You do not have permission to mark this request as delivered.'];
+        } else {
+            $denomValues = $_POST['denom_value'] ?? [];
+            $denomQtys = $_POST['denom_qty'] ?? [];
+            $totalAmount = filter_var($_POST['total_amount'] ?? '', FILTER_VALIDATE_FLOAT);
+            $denomTotal = 0.0;
+            $denomRows = [];
+            foreach ($denomValues as $i => $dv) {
+                $val = filter_var($dv, FILTER_VALIDATE_FLOAT);
+                $qty = filter_var($denomQtys[$i] ?? '', FILTER_VALIDATE_INT);
+                if ($val !== false && $val > 0 && $qty !== false && $qty > 0) {
+                    $denomTotal += $val * $qty;
+                    $denomRows[] = [$val, $qty];
+                }
+            }
+
+            if ($totalAmount === false || $totalAmount <= 0) {
+                $deliveryError = ['Please provide the total currency amount delivered.'];
+            } elseif ($denomRows && abs($denomTotal - $totalAmount) > 0.01) {
+                $deliveryError = ["Denomination total ({$request['currency_code']} " . number_format($denomTotal, 2) . ") does not match the delivered amount ({$request['currency_code']} " . number_format($totalAmount, 2) . '). Please correct before completing delivery.'];
+            } else {
+                $now = gmdate('c');
+                $pdo->prepare('INSERT INTO forex_deliveries (forex_request_id, delivered_by, received_by, delivery_date, delivery_time, currency_code, total_amount, customer_ack, remarks, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+                    ->execute([
+                        $requestId, admin_name(), trim($_POST['received_by'] ?? '') ?: $request['full_name'],
+                        trim($_POST['delivery_date'] ?? '') ?: gmdate('Y-m-d'), trim($_POST['delivery_time'] ?? '') ?: gmdate('H:i'),
+                        $request['currency_code'], $totalAmount, !empty($_POST['customer_ack']) ? 1 : 0,
+                        trim($_POST['delivery_remarks'] ?? '') ?: null, $now,
+                    ]);
+                $deliveryId = (int) $pdo->lastInsertId();
+                $denomStmt = $pdo->prepare('INSERT INTO forex_denominations (delivery_id, denomination_value, quantity) VALUES (?, ?, ?)');
+                foreach ($denomRows as $row) {
+                    $denomStmt->execute([$deliveryId, $row[0], $row[1]]);
+                }
+
+                $pdo->prepare("UPDATE forex_requests SET status = 'Delivered', updated_at = ? WHERE id = ?")->execute([$now, $requestId]);
+                forex_log_status_change($pdo, $requestId, $request['status'], 'Delivered', admin_name(), 'Forex delivered to customer.');
+
+                if ($blockers && $isOverride) {
+                    $pdo->prepare('INSERT INTO forex_approvals (forex_request_id, action, approver, previous_value, new_value, remarks, ip_address, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
+                        ->execute([$requestId, 'Delivery Compliance Override', admin_name(), implode(' | ', $blockers), 'Delivered', trim($_POST['override_reason']), $_SERVER['REMOTE_ADDR'] ?? null, $now]);
+                    forex_log_audit($pdo, $requestId, admin_name(), admin_role(), 'Overrode delivery compliance block', implode(' | ', $blockers), trim($_POST['override_reason']));
+                } else {
+                    forex_log_audit($pdo, $requestId, admin_name(), admin_role(), 'Marked delivered', '', "{$request['currency_code']} " . number_format($totalAmount, 2));
+                }
+                forex_notify($pdo, null, 'forex_delivered', "Forex delivered on {$request['forex_ref']}: {$request['currency_code']} " . number_format($totalAmount, 2) . '.', $requestId);
+
+                header('Location: forex-request.php?ref=' . urlencode($request['forex_ref']) . '&delivered=1#delivery');
+                exit;
+            }
+        }
     }
 }
 
@@ -89,6 +177,23 @@ foreach ($allDocRows as $d) {
 }
 $totalDocs = count($documents);
 $verifiedDocs = count(array_filter($documents, function ($d) { return $d['status'] === 'Verified'; }));
+
+$paymentsStmt = $pdo->prepare('SELECT * FROM forex_payments WHERE forex_request_id = ? ORDER BY id DESC');
+$paymentsStmt->execute([$requestId]);
+$payments = $paymentsStmt->fetchAll(PDO::FETCH_ASSOC);
+$totalPaid = array_sum(array_map(function ($p) { return $p['status'] === 'Paid' ? (float) $p['amount'] : 0; }, $payments));
+
+$deliveryStmt = $pdo->prepare('SELECT * FROM forex_deliveries WHERE forex_request_id = ?');
+$deliveryStmt->execute([$requestId]);
+$delivery = $deliveryStmt->fetch(PDO::FETCH_ASSOC);
+if ($delivery) {
+    $denomStmt = $pdo->prepare('SELECT * FROM forex_denominations WHERE delivery_id = ? ORDER BY denomination_value DESC');
+    $denomStmt->execute([$delivery['id']]);
+    $denominations = $denomStmt->fetchAll(PDO::FETCH_ASSOC);
+} else {
+    $denominations = [];
+}
+$blockers = $delivery ? [] : forex_delivery_blockers($pdo, $request);
 
 $quotStmt = $pdo->prepare('SELECT * FROM forex_quotations WHERE forex_request_id = ? ORDER BY id DESC');
 $quotStmt->execute([$requestId]);
@@ -129,6 +234,9 @@ function fx_fmt($v) { $v = trim((string) $v); return $v === '' ? '<span style="c
         <?php if ($request['email']): ?><a class="crm-btn" href="mailto:<?php echo htmlspecialchars($request['email']); ?>"><i class="fa-solid fa-envelope"></i> Email</a><?php endif; ?>
         <a class="crm-btn" href="#status"><i class="fa-solid fa-pen"></i> Change Status</a>
         <a class="crm-btn" href="#documents"><i class="fa-solid fa-upload"></i> Documents</a>
+        <a class="crm-btn" href="#quotations"><i class="fa-solid fa-file-invoice-dollar"></i> Quotations</a>
+        <a class="crm-btn" href="#payments"><i class="fa-solid fa-money-bill-wave"></i> Payments</a>
+        <a class="crm-btn" href="#delivery"><i class="fa-solid fa-hand-holding-dollar"></i> Delivery</a>
     </div>
 </div>
 
@@ -378,6 +486,200 @@ function fx_fmt($v) { $v = trim((string) $v); return $v === '' ? '<span style="c
     recalc();
 })();
 </script>
+
+<div class="crm-card" id="payments">
+    <div class="crm-page-header" style="margin:0 0 16px;padding:0;">
+        <h3 style="margin:0;">Payments</h3>
+        <?php if (forex_can_manage_payments()): ?>
+        <button type="button" class="crm-btn crm-btn-primary crm-btn-sm" id="crmOpenPaymentDrawer"><i class="fa-solid fa-plus"></i> Record Payment</button>
+        <?php endif; ?>
+    </div>
+    <?php if ($paymentError): ?><div style="background:var(--c-red-bg);color:var(--c-red);padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:14px;"><?php echo htmlspecialchars($paymentError); ?></div><?php endif; ?>
+    <p style="font-size:13px;color:var(--c-text);margin-bottom:14px;">Total confirmed paid: <strong>₹<?php echo number_format($totalPaid, 2); ?></strong></p>
+    <?php if (!$payments): ?>
+    <div class="crm-empty">No payments recorded yet.</div>
+    <?php else: ?>
+    <div class="crm-table-wrap">
+    <table class="crm-table">
+        <thead><tr><th>Status</th><th>Method</th><th>Amount</th><th>Date</th><th>Reference</th><th>Recorded By</th></tr></thead>
+        <tbody>
+        <?php foreach ($payments as $p): ?>
+        <tr>
+            <td><span class="crm-payment-badge" style="background:<?php echo $p['status'] === 'Paid' ? 'var(--c-green-bg)' : 'var(--c-amber-bg)'; ?>;color:<?php echo $p['status'] === 'Paid' ? 'var(--c-green)' : 'var(--c-amber)'; ?>;"><?php echo htmlspecialchars($p['status']); ?></span></td>
+            <td class="crm-cell-sub"><?php echo htmlspecialchars($p['method'] ?: '—'); ?></td>
+            <td>₹<?php echo number_format((float) $p['amount'], 2); ?></td>
+            <td class="crm-cell-sub"><?php echo htmlspecialchars($p['payment_date']); ?></td>
+            <td class="crm-cell-sub"><?php echo htmlspecialchars($p['reference'] ?: '—'); ?></td>
+            <td class="crm-cell-sub"><?php echo htmlspecialchars($p['recorded_by']); ?></td>
+        </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+    </div>
+    <?php endif; ?>
+</div>
+
+<div class="crm-drawer-overlay" id="crmPaymentDrawer">
+    <div class="crm-drawer">
+        <div class="crm-drawer-header"><h2>Record Payment</h2><button type="button" class="crm-drawer-close" id="crmPaymentDrawerClose"><i class="fa-solid fa-xmark"></i></button></div>
+        <div class="crm-drawer-body">
+            <form method="post">
+                <input type="hidden" name="action" value="record_payment">
+                <div class="crm-form-grid" style="margin-bottom:16px;">
+                    <div class="crm-form-field"><label>Status *</label>
+                        <select name="status" required>
+                            <?php foreach (FOREX_PAYMENT_STATUSES as $s): ?><option value="<?php echo htmlspecialchars($s); ?>"><?php echo htmlspecialchars($s); ?></option><?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="crm-form-field"><label>Method</label>
+                        <select name="method">
+                            <option value="">Select</option>
+                            <?php foreach (FOREX_PAYMENT_METHODS as $m): ?><option value="<?php echo htmlspecialchars($m); ?>"><?php echo htmlspecialchars($m); ?></option><?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="crm-form-field"><label>Amount (₹) *</label><input type="number" step="0.01" name="amount" required></div>
+                    <div class="crm-form-field"><label>Payment Date</label><input type="date" name="payment_date" value="<?php echo date('Y-m-d'); ?>"></div>
+                    <div class="crm-form-field"><label>Transaction ID</label><input type="text" name="transaction_id"></div>
+                    <div class="crm-form-field"><label>Reference</label><input type="text" name="reference"></div>
+                    <div class="crm-form-field crm-form-field-full"><label>Remarks</label><input type="text" name="remarks"></div>
+                </div>
+                <button type="submit" class="crm-btn crm-btn-primary">Save Payment</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+(function () {
+    var d = document.getElementById('crmPaymentDrawer');
+    var btn = document.getElementById('crmOpenPaymentDrawer');
+    if (btn) { btn.addEventListener('click', function () { d.hidden = false; requestAnimationFrame(function () { d.classList.add('is-open', 'is-visible'); }); }); }
+    document.getElementById('crmPaymentDrawerClose').addEventListener('click', function () {
+        d.classList.remove('is-visible');
+        setTimeout(function () { d.classList.remove('is-open'); d.hidden = true; }, 250);
+    });
+})();
+</script>
+
+<div class="crm-card" id="delivery">
+    <h3>Delivery</h3>
+    <?php if ($delivery): ?>
+    <div class="compliance-note" style="background:var(--c-green-bg);color:var(--c-green);margin-bottom:14px;"><i class="fa-solid fa-circle-check"></i> Delivered on <?php echo htmlspecialchars($delivery['delivery_date']); ?> at <?php echo htmlspecialchars($delivery['delivery_time']); ?> by <?php echo htmlspecialchars($delivery['delivered_by']); ?>.</div>
+    <div class="crm-panel-grid" style="margin-bottom:14px;">
+        <div class="crm-panel-item"><label>Received By</label><div class="val"><?php echo fx_fmt($delivery['received_by']); ?></div></div>
+        <div class="crm-panel-item"><label>Amount</label><div class="val"><?php echo htmlspecialchars($delivery['currency_code']); ?> <?php echo number_format((float) $delivery['total_amount'], 2); ?></div></div>
+        <div class="crm-panel-item"><label>Customer Acknowledgement</label><div class="val"><?php echo $delivery['customer_ack'] ? 'Confirmed' : 'Not confirmed'; ?></div></div>
+        <div class="crm-panel-item"><label>Remarks</label><div class="val"><?php echo fx_fmt($delivery['remarks']); ?></div></div>
+    </div>
+    <?php if ($denominations): ?>
+    <table class="crm-table" style="max-width:400px;">
+        <thead><tr><th>Denomination</th><th>Qty</th><th>Subtotal</th></tr></thead>
+        <tbody>
+        <?php foreach ($denominations as $dn): ?>
+        <tr><td><?php echo htmlspecialchars($delivery['currency_code']); ?> <?php echo number_format((float) $dn['denomination_value'], 2); ?></td><td><?php echo (int) $dn['quantity']; ?></td><td><?php echo number_format((float) $dn['denomination_value'] * (int) $dn['quantity'], 2); ?></td></tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+    <?php endif; ?>
+    <a href="forex-delivery-receipt.php?ref=<?php echo urlencode($request['forex_ref']); ?>" target="_blank" class="crm-btn crm-btn-ghost crm-btn-sm" style="margin-top:14px;"><i class="fa-solid fa-file-pdf"></i> Download Delivery Receipt</a>
+    <?php else: ?>
+        <?php if ($blockers): ?>
+        <div class="compliance-note" style="background:var(--c-red-bg);color:var(--c-red);margin-bottom:14px;">
+            <strong>Delivery blocked. Mandatory compliance requirements have not been completed.</strong>
+            <ul style="margin:8px 0 0;padding-left:20px;">
+                <?php foreach ($blockers as $b): ?><li><?php echo htmlspecialchars($b); ?></li><?php endforeach; ?>
+            </ul>
+        </div>
+        <?php else: ?>
+        <div class="compliance-note" style="background:var(--c-green-bg);color:var(--c-green);margin-bottom:14px;"><i class="fa-solid fa-circle-check"></i> All mandatory compliance requirements are satisfied. Ready for delivery.</div>
+        <?php endif; ?>
+
+        <?php if ($deliveryError): ?>
+        <div style="background:var(--c-red-bg);color:var(--c-red);padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:14px;">
+            <?php foreach ($deliveryError as $e): ?><div><?php echo htmlspecialchars($e); ?></div><?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+
+        <?php if (!$blockers && forex_can_manage_delivery()): ?>
+        <button type="button" class="crm-btn crm-btn-primary" id="crmOpenDeliveryDrawer"><i class="fa-solid fa-hand-holding-dollar"></i> Mark as Delivered</button>
+        <?php elseif ($blockers && forex_can_override_compliance()): ?>
+        <button type="button" class="crm-btn crm-btn-ghost" id="crmOpenDeliveryDrawer" style="color:var(--c-red);"><i class="fa-solid fa-triangle-exclamation"></i> Override &amp; Deliver Anyway</button>
+        <?php endif; ?>
+    <?php endif; ?>
+</div>
+
+<?php if (!$delivery): ?>
+<div class="crm-drawer-overlay" id="crmDeliveryDrawer">
+    <div class="crm-drawer">
+        <div class="crm-drawer-header"><h2><?php echo $blockers ? 'Override & Deliver' : 'Mark as Delivered'; ?></h2><button type="button" class="crm-drawer-close" id="crmDeliveryDrawerClose"><i class="fa-solid fa-xmark"></i></button></div>
+        <div class="crm-drawer-body">
+            <form method="post" id="crmDeliveryForm">
+                <input type="hidden" name="action" value="mark_delivered">
+                <?php if ($blockers): ?>
+                <input type="hidden" name="override" value="1">
+                <div class="crm-form-field crm-form-field-full" style="margin-bottom:16px;">
+                    <label>Override Reason * (required, permanently recorded)</label>
+                    <textarea name="override_reason" rows="3" required></textarea>
+                </div>
+                <?php endif; ?>
+                <div class="crm-form-grid" style="margin-bottom:16px;">
+                    <div class="crm-form-field"><label>Received By</label><input type="text" name="received_by" value="<?php echo htmlspecialchars($request['full_name']); ?>"></div>
+                    <div class="crm-form-field"><label>Delivery Date</label><input type="date" name="delivery_date" value="<?php echo date('Y-m-d'); ?>"></div>
+                    <div class="crm-form-field"><label>Delivery Time</label><input type="time" name="delivery_time" value="<?php echo date('H:i'); ?>"></div>
+                    <div class="crm-form-field"><label>Total Amount Delivered (<?php echo htmlspecialchars($request['currency_code']); ?>) *</label><input type="number" step="0.01" name="total_amount" id="delTotalAmount" value="<?php echo htmlspecialchars($request['amount_required']); ?>" required></div>
+                </div>
+                <div class="crm-form-section">
+                    <h4><i class="fa-solid fa-money-bill-wave"></i> Denomination Breakdown</h4>
+                    <p style="font-size:12px;color:var(--c-muted);margin-bottom:10px;">Total denominations must match the amount delivered above.</p>
+                    <div id="denomRows"></div>
+                    <button type="button" class="crm-btn crm-btn-ghost crm-btn-sm" id="addDenomRow"><i class="fa-solid fa-plus"></i> Add Denomination</button>
+                    <p style="font-size:12.5px;margin-top:10px;">Denomination Total: <strong id="denomTotalDisplay"><?php echo htmlspecialchars($request['currency_code']); ?> 0.00</strong></p>
+                </div>
+                <div class="crm-form-field" style="margin-bottom:16px;">
+                    <label style="display:flex;align-items:center;gap:8px;"><input type="checkbox" name="customer_ack" style="width:auto;"> Customer has acknowledged receipt</label>
+                </div>
+                <div class="crm-form-field crm-form-field-full" style="margin-bottom:16px;"><label>Delivery Remarks</label><input type="text" name="delivery_remarks"></div>
+                <button type="submit" class="crm-btn crm-btn-primary">Complete Delivery</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+(function () {
+    var d = document.getElementById('crmDeliveryDrawer');
+    var btn = document.getElementById('crmOpenDeliveryDrawer');
+    if (btn) { btn.addEventListener('click', function () { d.hidden = false; requestAnimationFrame(function () { d.classList.add('is-open', 'is-visible'); }); }); }
+    document.getElementById('crmDeliveryDrawerClose').addEventListener('click', function () {
+        d.classList.remove('is-visible');
+        setTimeout(function () { d.classList.remove('is-open'); d.hidden = true; }, 250);
+    });
+    var rowsEl = document.getElementById('denomRows');
+    var currency = <?php echo json_encode($request['currency_code']); ?>;
+    function recalcDenom() {
+        var total = 0;
+        rowsEl.querySelectorAll('.denom-row').forEach(function (row) {
+            var v = parseFloat(row.querySelector('[name="denom_value[]"]').value) || 0;
+            var q = parseInt(row.querySelector('[name="denom_qty[]"]').value, 10) || 0;
+            total += v * q;
+        });
+        document.getElementById('denomTotalDisplay').textContent = currency + ' ' + total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    function addDenomRow() {
+        var row = document.createElement('div');
+        row.className = 'denom-row';
+        row.style.cssText = 'display:flex;gap:8px;margin-bottom:8px;align-items:center;';
+        row.innerHTML = '<input type="number" step="0.01" name="denom_value[]" placeholder="' + currency + ' value" style="flex:1;padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;">' +
+            '<span>&times;</span>' +
+            '<input type="number" name="denom_qty[]" placeholder="Qty" style="width:90px;padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;">' +
+            '<button type="button" class="crm-btn crm-btn-ghost crm-btn-sm remove-denom">&times;</button>';
+        row.querySelectorAll('input').forEach(function (inp) { inp.addEventListener('input', recalcDenom); });
+        row.querySelector('.remove-denom').addEventListener('click', function () { row.remove(); recalcDenom(); });
+        rowsEl.appendChild(row);
+    }
+    document.getElementById('addDenomRow').addEventListener('click', addDenomRow);
+    addDenomRow();
+})();
+</script>
+<?php endif; ?>
 
 <div class="crm-card" id="status">
     <h3>Change Status</h3>
