@@ -18,6 +18,7 @@ $requestId = (int) $request['id'];
 $ADMIN_BREADCRUMB = ['CRM', 'Forex', $request['forex_ref']];
 
 $statusMessage = '';
+$quotationError = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
     if ($action === 'change_status' && forex_can_verify_documents()) {
@@ -28,6 +29,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             forex_log_status_change($pdo, $requestId, $request['status'], $newStatus, admin_name(), trim($_POST['message'] ?? ''));
             forex_log_audit($pdo, $requestId, admin_name(), admin_role(), 'Changed status', $request['status'], $newStatus);
             $request['status'] = $newStatus;
+        }
+    } elseif ($action === 'create_quotation' && forex_can_prepare_quotation()) {
+        $currencyCode = strtoupper(trim($_POST['currency_code'] ?? ''));
+        $currencyAmount = filter_var($_POST['currency_amount'] ?? '', FILTER_VALIDATE_FLOAT);
+        $exchangeRate = filter_var($_POST['exchange_rate'] ?? '', FILTER_VALIDATE_FLOAT);
+        $rateType = trim($_POST['rate_type'] ?? '');
+        $serviceCharge = filter_var($_POST['service_charge'] ?? '0', FILTER_VALIDATE_FLOAT) ?: 0;
+        $markup = filter_var($_POST['markup'] ?? '0', FILTER_VALIDATE_FLOAT) ?: 0;
+        $gst = filter_var($_POST['gst'] ?? '0', FILTER_VALIDATE_FLOAT) ?: 0;
+        $otherCharges = filter_var($_POST['other_charges'] ?? '0', FILTER_VALIDATE_FLOAT) ?: 0;
+
+        if ($currencyCode === '' || $currencyAmount === false || $currencyAmount <= 0 || $exchangeRate === false || $exchangeRate <= 0 || !in_array($rateType, FOREX_RATE_TYPES, true)) {
+            $quotationError = 'Please provide a valid currency, amount, exchange rate and rate type.';
+        } else {
+            $baseInr = round($currencyAmount * $exchangeRate, 2);
+            $totalInr = round($baseInr + $serviceCharge + $markup + $gst + $otherCharges, 2);
+            $threshold = (float) forex_setting($pdo, 'approval_threshold_inr', '200000');
+            $needsApproval = $totalInr > $threshold;
+
+            $insQ = $pdo->prepare("INSERT INTO forex_quotations (
+                forex_request_id, currency_code, currency_amount, exchange_rate, rate_type, base_inr,
+                service_charge, markup, gst, other_charges, total_inr, payment_terms, valid_until, status, created_by, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $insQ->execute([
+                $requestId, $currencyCode, $currencyAmount, $exchangeRate, $rateType, $baseInr,
+                $serviceCharge, $markup, $gst, $otherCharges, $totalInr,
+                trim($_POST['payment_terms'] ?? '') ?: null,
+                trim($_POST['valid_until'] ?? '') ?: null,
+                $needsApproval ? 'Draft' : 'Sent',
+                admin_name(), gmdate('c'),
+            ]);
+            $quotationId = (int) $pdo->lastInsertId();
+
+            forex_log_audit($pdo, $requestId, admin_name(), admin_role(), 'Created quotation', '', "$currencyCode $currencyAmount @ $exchangeRate = ₹$totalInr" . ($needsApproval ? ' (requires approval)' : ''));
+
+            if ($needsApproval) {
+                $pdo->prepare('UPDATE forex_requests SET status = ?, updated_at = ? WHERE id = ?')->execute(['Quotation Preparing', gmdate('c'), $requestId]);
+                forex_notify($pdo, null, 'forex_quotation_approval', "Quotation on {$request['forex_ref']} (₹" . number_format($totalInr, 2) . ') exceeds the approval threshold and needs sign-off.', $requestId);
+            } else {
+                $pdo->prepare('UPDATE forex_requests SET status = ?, updated_at = ? WHERE id = ?')->execute(['Quotation Sent', gmdate('c'), $requestId]);
+                forex_notify($pdo, null, 'forex_quotation_ready', "Forex quotation ready on {$request['forex_ref']}: $currencyCode $currencyAmount for ₹" . number_format($totalInr, 2) . '.', $requestId);
+            }
+            forex_log_status_change($pdo, $requestId, $request['status'], $needsApproval ? 'Quotation Preparing' : 'Quotation Sent', admin_name(), 'Quotation created.');
+            header('Location: forex-request.php?ref=' . urlencode($request['forex_ref']) . '#quotations');
+            exit;
         }
     }
 }
@@ -43,6 +89,14 @@ foreach ($allDocRows as $d) {
 }
 $totalDocs = count($documents);
 $verifiedDocs = count(array_filter($documents, function ($d) { return $d['status'] === 'Verified'; }));
+
+$quotStmt = $pdo->prepare('SELECT * FROM forex_quotations WHERE forex_request_id = ? ORDER BY id DESC');
+$quotStmt->execute([$requestId]);
+$quotations = $quotStmt->fetchAll(PDO::FETCH_ASSOC);
+$currentRateStmt = $pdo->prepare('SELECT currency_code, sell_rate FROM forex_rates WHERE currency_code = ? AND effective_until IS NULL');
+$currentRateStmt->execute([$request['currency_code']]);
+$suggestedRate = $currentRateStmt->fetchColumn();
+$approvalThreshold = (float) forex_setting($pdo, 'approval_threshold_inr', '200000');
 
 $declStmt = $pdo->prepare('SELECT * FROM forex_declarations WHERE forex_request_id = ? ORDER BY id DESC LIMIT 1');
 $declStmt->execute([$requestId]);
@@ -200,6 +254,125 @@ function fx_fmt($v) { $v = trim((string) $v); return $v === '' ? '<span style="c
         <div class="crm-panel-item"><label>Delivery Method</label><div class="val"><?php echo fx_fmt($request['delivery_method']); ?></div></div>
     </div>
 </div>
+
+<div class="crm-card" id="quotations">
+    <div class="crm-page-header" style="margin:0 0 16px;padding:0;">
+        <h3 style="margin:0;">Quotations</h3>
+        <?php if (forex_can_prepare_quotation()): ?>
+        <button type="button" class="crm-btn crm-btn-primary crm-btn-sm" id="crmOpenQuotationDrawer"><i class="fa-solid fa-plus"></i> Create Quotation</button>
+        <?php endif; ?>
+    </div>
+    <?php if ($quotationError): ?><div style="background:var(--c-red-bg);color:var(--c-red);padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:14px;"><?php echo htmlspecialchars($quotationError); ?></div><?php endif; ?>
+    <?php if (!$quotations): ?>
+    <div class="crm-empty">No quotations yet.</div>
+    <?php else: foreach ($quotations as $q): ?>
+    <div style="border:1px solid var(--c-border);border-radius:10px;padding:16px;margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:10px;">
+            <div>
+                <strong><?php echo htmlspecialchars($q['currency_code']); ?> <?php echo number_format((float) $q['currency_amount'], 2); ?></strong>
+                <span class="crm-status-badge" style="background:var(--c-blue-dim);color:var(--c-blue);margin-left:8px;"><?php echo htmlspecialchars($q['rate_type']); ?></span>
+                <span class="crm-status-badge" style="background:var(--c-bg);color:var(--c-text);margin-left:4px;"><?php echo htmlspecialchars($q['status']); ?></span>
+            </div>
+            <div style="font-size:12px;color:var(--c-muted);"><?php echo htmlspecialchars(substr($q['created_at'], 0, 16)); ?> by <?php echo htmlspecialchars($q['created_by']); ?></div>
+        </div>
+        <div class="crm-panel-grid">
+            <div class="crm-panel-item"><label>Exchange Rate</label><div class="val">₹<?php echo number_format((float) $q['exchange_rate'], 4); ?></div></div>
+            <div class="crm-panel-item"><label>Base Amount</label><div class="val">₹<?php echo number_format((float) $q['base_inr'], 2); ?></div></div>
+            <div class="crm-panel-item"><label>Service Charge</label><div class="val">₹<?php echo number_format((float) $q['service_charge'], 2); ?></div></div>
+            <div class="crm-panel-item"><label>Markup</label><div class="val">₹<?php echo number_format((float) $q['markup'], 2); ?></div></div>
+            <div class="crm-panel-item"><label>GST</label><div class="val">₹<?php echo number_format((float) $q['gst'], 2); ?></div></div>
+            <div class="crm-panel-item"><label>Other Charges</label><div class="val">₹<?php echo number_format((float) $q['other_charges'], 2); ?></div></div>
+            <div class="crm-panel-item"><label>Total Payable</label><div class="val" style="font-weight:700;">₹<?php echo number_format((float) $q['total_inr'], 2); ?></div></div>
+            <div class="crm-panel-item"><label>Valid Until</label><div class="val"><?php echo fx_fmt($q['valid_until']); ?></div></div>
+        </div>
+        <?php if ($q['status'] === 'Draft' && (float) $q['total_inr'] > $approvalThreshold): ?>
+        <div class="compliance-note" style="margin-top:10px;background:var(--c-amber-bg);color:var(--c-amber);">This quotation exceeds the ₹<?php echo number_format($approvalThreshold, 0); ?> approval threshold and needs sign-off before it can be sent to the customer.</div>
+        <?php if (forex_can_approve_quotation()): ?>
+        <form method="post" action="forex-quotations.php" style="display:flex;gap:8px;align-items:center;margin-top:10px;">
+            <input type="hidden" name="action" value="approve">
+            <input type="hidden" name="quotation_id" value="<?php echo (int) $q['id']; ?>">
+            <input type="hidden" name="return_url" value="forex-request.php?ref=<?php echo urlencode($request['forex_ref']); ?>">
+            <input type="text" name="remarks" placeholder="Approval remarks..." style="font-size:12px;padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;flex:1;max-width:260px;">
+            <button type="submit" class="crm-btn crm-btn-primary crm-btn-sm">Approve &amp; Send</button>
+        </form>
+        <?php endif; ?>
+        <?php elseif ($q['status'] === 'Sent'): ?>
+        <form method="post" action="forex-quotations.php" style="margin-top:10px;">
+            <input type="hidden" name="action" value="mark_accepted">
+            <input type="hidden" name="quotation_id" value="<?php echo (int) $q['id']; ?>">
+            <input type="hidden" name="return_url" value="forex-request.php?ref=<?php echo urlencode($request['forex_ref']); ?>">
+            <button type="submit" class="crm-btn crm-btn-ghost crm-btn-sm">Mark Customer Accepted</button>
+        </form>
+        <?php endif; ?>
+    </div>
+    <?php endforeach; endif; ?>
+</div>
+
+<div class="crm-drawer-overlay" id="crmQuotationDrawer">
+    <div class="crm-drawer">
+        <div class="crm-drawer-header"><h2>Create Quotation</h2><button type="button" class="crm-drawer-close" id="crmQuotationDrawerClose"><i class="fa-solid fa-xmark"></i></button></div>
+        <div class="crm-drawer-body">
+            <form method="post" id="crmQuotationForm">
+                <input type="hidden" name="action" value="create_quotation">
+                <div class="crm-form-section">
+                    <div class="crm-form-grid">
+                        <div class="crm-form-field"><label>Currency *</label><input type="text" name="currency_code" id="qCurrency" value="<?php echo htmlspecialchars($request['currency_code']); ?>" required></div>
+                        <div class="crm-form-field"><label>Currency Amount *</label><input type="number" step="0.01" name="currency_amount" id="qAmount" value="<?php echo htmlspecialchars($request['amount_required']); ?>" required></div>
+                        <div class="crm-form-field"><label>Exchange Rate *</label><input type="number" step="0.0001" name="exchange_rate" id="qRate" value="<?php echo $suggestedRate ? htmlspecialchars($suggestedRate) : ''; ?>" required></div>
+                        <div class="crm-form-field"><label>Rate Type *</label>
+                            <select name="rate_type" id="qRateType" required>
+                                <?php foreach (FOREX_RATE_TYPES as $rt): ?><option value="<?php echo htmlspecialchars($rt); ?>"><?php echo htmlspecialchars($rt); ?></option><?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="crm-form-field"><label>Service Charge (₹)</label><input type="number" step="0.01" name="service_charge" id="qService" value="0"></div>
+                        <div class="crm-form-field"><label>Commission / Markup (₹)</label><input type="number" step="0.01" name="markup" id="qMarkup" value="0"></div>
+                        <div class="crm-form-field"><label>GST (₹)</label><input type="number" step="0.01" name="gst" id="qGst" value="0"></div>
+                        <div class="crm-form-field"><label>Other Charges (₹)</label><input type="number" step="0.01" name="other_charges" id="qOther" value="0"></div>
+                        <div class="crm-form-field"><label>Valid Until</label><input type="datetime-local" name="valid_until" id="qValidUntil"></div>
+                        <div class="crm-form-field crm-form-field-full"><label>Payment Terms</label><input type="text" name="payment_terms" id="qPaymentTerms"></div>
+                    </div>
+                </div>
+                <div class="compliance-note" style="margin-bottom:16px;">
+                    Base Amount: <strong id="qBaseDisplay">₹0.00</strong> &middot; Total Payable: <strong id="qTotalDisplay">₹0.00</strong>
+                </div>
+                <button type="submit" class="crm-btn crm-btn-primary">Create Quotation</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    var drawer = document.getElementById('crmQuotationDrawer');
+    var openBtn = document.getElementById('crmOpenQuotationDrawer');
+    if (openBtn) {
+        openBtn.addEventListener('click', function () {
+            drawer.hidden = false;
+            requestAnimationFrame(function () { drawer.classList.add('is-open', 'is-visible'); });
+        });
+    }
+    document.getElementById('crmQuotationDrawerClose').addEventListener('click', function () {
+        drawer.classList.remove('is-visible');
+        setTimeout(function () { drawer.classList.remove('is-open'); drawer.hidden = true; }, 250);
+    });
+    function recalc() {
+        var amount = parseFloat(document.getElementById('qAmount').value) || 0;
+        var rate = parseFloat(document.getElementById('qRate').value) || 0;
+        var base = amount * rate;
+        var total = base
+            + (parseFloat(document.getElementById('qService').value) || 0)
+            + (parseFloat(document.getElementById('qMarkup').value) || 0)
+            + (parseFloat(document.getElementById('qGst').value) || 0)
+            + (parseFloat(document.getElementById('qOther').value) || 0);
+        document.getElementById('qBaseDisplay').textContent = '₹' + base.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        document.getElementById('qTotalDisplay').textContent = '₹' + total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    ['qAmount', 'qRate', 'qService', 'qMarkup', 'qGst', 'qOther'].forEach(function (id) {
+        document.getElementById(id).addEventListener('input', recalc);
+    });
+    recalc();
+})();
+</script>
 
 <div class="crm-card" id="status">
     <h3>Change Status</h3>

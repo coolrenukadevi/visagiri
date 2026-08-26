@@ -37,13 +37,14 @@ $navItems = [
     ['key' => 'forex-new', 'label' => 'New Forex Request', 'icon' => 'plus', 'href' => 'forex-request-new.php'],
     ['key' => 'forex-all', 'label' => 'All Requests', 'icon' => 'money-bill-transfer', 'href' => 'forex-requests.php'],
     ['key' => 'forex-pending-docs', 'label' => 'Pending Documents', 'icon' => 'file-circle-exclamation', 'href' => 'forex-documents.php'],
-    ['key' => 'forex-quotations', 'label' => 'Quotations', 'icon' => 'file-invoice-dollar', 'href' => 'forex-quotations.php', 'soon' => true],
+    ['key' => 'forex-quotations', 'label' => 'Quotations', 'icon' => 'file-invoice-dollar', 'href' => 'forex-quotations.php'],
     ['key' => 'forex-approved', 'label' => 'Approved Requests', 'icon' => 'circle-check', 'href' => 'forex-approved.php', 'soon' => true],
     ['key' => 'forex-delivered', 'label' => 'Delivered', 'icon' => 'hand-holding-dollar', 'href' => 'forex-delivered.php', 'soon' => true],
     ['key' => 'forex-cancelled', 'label' => 'Cancelled', 'icon' => 'ban', 'href' => 'forex-cancelled.php', 'soon' => true],
     ['key' => 'forex-audit', 'label' => 'FEMA / Audit Records', 'icon' => 'shield-halved', 'href' => 'forex-audit.php', 'soon' => true, 'roles' => ['Super Admin', 'Forex Manager', 'Compliance / Audit']],
     ['key' => 'forex-reports', 'label' => 'Reports', 'icon' => 'chart-pie', 'href' => 'forex-reports.php', 'soon' => true],
     ['key' => 'forex-country-rules', 'label' => 'Country Rules', 'icon' => 'gavel', 'href' => 'forex-country-rules.php', 'roles' => ['Super Admin', 'Forex Manager', 'Compliance / Audit']],
+    ['key' => 'forex-rates', 'label' => 'Rates', 'icon' => 'coins', 'href' => 'forex-rates.php', 'roles' => ['Super Admin', 'Forex Manager']],
 
     ['key' => 'settings', 'label' => 'Settings', 'icon' => 'gear', 'href' => 'settings.php'],
 ];
