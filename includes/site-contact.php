@@ -22,3 +22,17 @@ $site_social = [
 
 $site_logo_black = 'assets/img/logo/black-logo.svg';
 $site_logo_white = 'assets/img/logo/white-logo.svg';
+
+/**
+ * Bank transfer / UPI details shown on the public "Make a Payment" page
+ * (payment.php). Left blank on purpose — these are real financial
+ * identifiers and must never be fabricated. Fill in your actual account
+ * details here once available; until then, the payment page shows a
+ * "contact us to arrange payment" fallback instead of blank/fake fields.
+ */
+$site_bank_account_name   = '';
+$site_bank_account_number = '';
+$site_bank_ifsc           = '';
+$site_bank_name           = '';
+$site_bank_branch         = '';
+$site_upi_id              = '';

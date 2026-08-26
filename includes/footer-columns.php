@@ -70,6 +70,7 @@
                                 <li><a href="careers">Careers</a></li>
                                 <li><a href="visa-news">News &amp; Updates</a></li>
                                 <li><a href="customer-login">Customer Login</a></li>
+                                <li><a href="payment">Payment Link</a></li>
                             </ul>
                         </details>
                     </nav>
