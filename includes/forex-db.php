@@ -452,6 +452,32 @@ function forex_notify(PDO $pdo, ?int $userId, string $type, string $message, ?in
 }
 
 /**
+ * Sends a milestone email to the customer on a forex request (Request
+ * Created / Documents Pending / Document Rejected / Quotation Ready /
+ * Payment Received / Ready for Delivery / Completed) and records the
+ * attempt on the audit trail, mirroring how crm_send_applicant_email()
+ * is used for visa enquiries. Silently no-ops if the request has no
+ * email on file — email is optional at intake, this is not a hard error.
+ */
+function forex_notify_customer(PDO $pdo, array $request, string $subject, string $bodyText): void
+{
+    $email = trim((string) ($request['email'] ?? ''));
+    if ($email === '') {
+        return;
+    }
+    $sent = crm_send_applicant_email($email, $subject, $bodyText);
+    forex_log_audit(
+        $pdo,
+        (int) $request['id'],
+        'System',
+        'System',
+        'customer_email_' . ($sent ? 'sent' : 'failed'),
+        '',
+        $subject
+    );
+}
+
+/**
  * Renders a declaration template's {{placeholders}} against a forex request.
  * Kept as a pure string function (no HTML escaping decisions baked in) so
  * both the on-screen render and the PDF export (added in a later phase) can

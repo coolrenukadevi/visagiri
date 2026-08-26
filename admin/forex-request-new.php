@@ -126,6 +126,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         forex_log_audit($pdo, $requestId, admin_name(), admin_role(), 'Created forex request ' . $ref);
         forex_notify($pdo, null, 'forex_new_request', "New forex request $ref created for $fullName ($countryVisit, $currencyCode " . number_format($amountRequired, 2) . ').', $requestId);
 
+        $newRequestStmt = $pdo->prepare('SELECT * FROM forex_requests WHERE id = ?');
+        $newRequestStmt->execute([$requestId]);
+        $newRequest = $newRequestStmt->fetch(PDO::FETCH_ASSOC);
+        if ($newRequest) {
+            $docLabels = array_map(fn($t) => FOREX_DOC_TYPES[$t] ?? $t, array_unique($checklist));
+            forex_notify_customer(
+                $pdo,
+                $newRequest,
+                "Forex Request Received — $ref",
+                "Dear $fullName,\n\nThank you for your foreign currency purchase request with VisaAgency.in.\n\n" .
+                "Reference Number: $ref\nDestination: $countryVisit\nCurrency Required: $currencyCode " . number_format($amountRequired, 2) . "\n\n" .
+                "Documents required:\n- " . implode("\n- ", $docLabels) . "\n\n" .
+                "Please upload or submit these documents so we can proceed. You can track your request anytime at https://visaagency.in/forex-track using this reference number and your registered mobile number.\n\n" .
+                "Regards,\nVisaAgency.in"
+            );
+        }
+
         header('Location: forex-request.php?ref=' . urlencode($ref));
         exit;
     }

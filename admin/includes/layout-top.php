@@ -34,6 +34,7 @@ $navItems = [
     ['key' => 'visa-types', 'label' => 'Visa Types', 'icon' => 'stamp', 'href' => 'visa-types.php'],
 
     ['section' => 'Forex'],
+    ['key' => 'forex-dashboard', 'label' => 'Forex Dashboard', 'icon' => 'gauge-high', 'href' => 'forex-dashboard.php'],
     ['key' => 'forex-new', 'label' => 'New Forex Request', 'icon' => 'plus', 'href' => 'forex-request-new.php'],
     ['key' => 'forex-all', 'label' => 'All Requests', 'icon' => 'money-bill-transfer', 'href' => 'forex-requests.php'],
     ['key' => 'forex-pending-docs', 'label' => 'Pending Documents', 'icon' => 'file-circle-exclamation', 'href' => 'forex-documents.php'],

@@ -38,6 +38,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ->execute([$reason, admin_name(), $now, $docId]);
                 forex_log_audit($pdo, $doc['request_id'], admin_name(), admin_role(), 'Rejected document: ' . FOREX_DOC_TYPES[$doc['doc_type']], '', $reason);
                 forex_notify($pdo, null, 'forex_document_rejected', "Document rejected on {$doc['forex_ref']}: " . FOREX_DOC_TYPES[$doc['doc_type']] . ($reason ? " — $reason" : ''), $doc['request_id']);
+                $rejReqStmt = $pdo->prepare('SELECT * FROM forex_requests WHERE id = ?');
+                $rejReqStmt->execute([$doc['request_id']]);
+                $rejRequest = $rejReqStmt->fetch(PDO::FETCH_ASSOC);
+                if ($rejRequest) {
+                    forex_notify_customer(
+                        $pdo, $rejRequest, "Document Rejected — {$doc['forex_ref']}",
+                        "Dear {$rejRequest['full_name']},\n\nYour submitted document (" . FOREX_DOC_TYPES[$doc['doc_type']] . ") for forex request {$doc['forex_ref']} could not be verified" . ($reason ? ": $reason" : '.') . "\n\nPlease re-upload a valid copy so we can proceed. Track your request at https://visaagency.in/forex-track\n\nRegards,\nVisaAgency.in"
+                    );
+                }
             } else {
                 $pdo->prepare("UPDATE forex_documents SET status = 'Under Verification' WHERE id = ?")->execute([$docId]);
                 forex_log_audit($pdo, $doc['request_id'], admin_name(), admin_role(), 'Marked under verification: ' . FOREX_DOC_TYPES[$doc['doc_type']]);

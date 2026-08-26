@@ -31,6 +31,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             forex_log_status_change($pdo, $requestId, $request['status'], $newStatus, admin_name(), trim($_POST['message'] ?? ''));
             forex_log_audit($pdo, $requestId, admin_name(), admin_role(), 'Changed status', $request['status'], $newStatus);
             $request['status'] = $newStatus;
+
+            if ($newStatus === 'Awaiting Documents') {
+                forex_notify_customer(
+                    $pdo, $request, "Documents Required — {$request['forex_ref']}",
+                    "Dear {$request['full_name']},\n\nYour forex request {$request['forex_ref']} is awaiting document submission. Please upload the pending documents so we can proceed.\n\nTrack your request: https://visaagency.in/forex-track\n\nRegards,\nVisaAgency.in"
+                );
+            } elseif ($newStatus === 'Ready for Delivery') {
+                forex_notify_customer(
+                    $pdo, $request, "Your Forex is Ready for Delivery — {$request['forex_ref']}",
+                    "Dear {$request['full_name']},\n\nYour foreign currency ({$request['currency_code']} {$request['amount_required']}) is ready for delivery/collection under reference {$request['forex_ref']}. Our team will contact you shortly to arrange delivery.\n\nRegards,\nVisaAgency.in"
+                );
+            }
         }
     } elseif ($action === 'create_quotation' && forex_can_prepare_quotation()) {
         $currencyCode = strtoupper(trim($_POST['currency_code'] ?? ''));
@@ -72,6 +84,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 $pdo->prepare('UPDATE forex_requests SET status = ?, updated_at = ? WHERE id = ?')->execute(['Quotation Sent', gmdate('c'), $requestId]);
                 forex_notify($pdo, null, 'forex_quotation_ready', "Forex quotation ready on {$request['forex_ref']}: $currencyCode $currencyAmount for ₹" . number_format($totalInr, 2) . '.', $requestId);
+                forex_notify_customer(
+                    $pdo, $request, "Your Forex Quotation is Ready — {$request['forex_ref']}",
+                    "Dear {$request['full_name']},\n\nYour forex quotation is ready:\n$currencyCode " . number_format($currencyAmount, 2) . " for Rs. " . number_format($totalInr, 2) . "\n\nReference: {$request['forex_ref']}\n\nOur team will share the detailed quotation with you shortly. Track your request at https://visaagency.in/forex-track\n\nRegards,\nVisaAgency.in"
+                );
             }
             forex_log_status_change($pdo, $requestId, $request['status'], $needsApproval ? 'Quotation Preparing' : 'Quotation Sent', admin_name(), 'Quotation created.');
             header('Location: forex-request.php?ref=' . urlencode($request['forex_ref']) . '#quotations');
@@ -99,6 +115,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $pdo->prepare("UPDATE forex_requests SET status = 'Payment Received', updated_at = ? WHERE id = ?")->execute([gmdate('c'), $requestId]);
                 forex_log_status_change($pdo, $requestId, $request['status'], 'Payment Received', admin_name(), 'Payment recorded.');
                 forex_notify($pdo, null, 'forex_payment_received', "Payment received on {$request['forex_ref']}: Rs. " . number_format($amount, 2) . '.', $requestId);
+                forex_notify_customer(
+                    $pdo, $request, "Payment Received — {$request['forex_ref']}",
+                    "Dear {$request['full_name']},\n\nWe have received your payment of Rs. " . number_format($amount, 2) . " for forex request {$request['forex_ref']}. We are now processing your request.\n\nRegards,\nVisaAgency.in"
+                );
             }
             header('Location: forex-request.php?ref=' . urlencode($request['forex_ref']) . '#payments');
             exit;
@@ -158,6 +178,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     forex_log_audit($pdo, $requestId, admin_name(), admin_role(), 'Marked delivered', '', "{$request['currency_code']} " . number_format($totalAmount, 2));
                 }
                 forex_notify($pdo, null, 'forex_delivered', "Forex delivered on {$request['forex_ref']}: {$request['currency_code']} " . number_format($totalAmount, 2) . '.', $requestId);
+                forex_notify_customer(
+                    $pdo, $request, "Forex Delivered — {$request['forex_ref']}",
+                    "Dear {$request['full_name']},\n\nYour foreign currency purchase is complete. {$request['currency_code']} " . number_format($totalAmount, 2) . " has been delivered under reference {$request['forex_ref']}.\n\nThank you for choosing VisaAgency.in.\n\nRegards,\nVisaAgency.in"
+                );
 
                 header('Location: forex-request.php?ref=' . urlencode($request['forex_ref']) . '&delivered=1#delivery');
                 exit;

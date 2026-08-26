@@ -25,6 +25,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 forex_log_status_change($pdo, $quotation['forex_request_id'], 'Quotation Preparing', 'Quotation Sent', admin_name(), 'Quotation approved and sent.');
                 forex_log_audit($pdo, $quotation['forex_request_id'], admin_name(), admin_role(), 'Approved quotation', 'Draft', 'Sent');
                 forex_notify($pdo, null, 'forex_quotation_ready', "Forex quotation approved and sent on {$quotation['forex_ref']}: ₹" . number_format((float) $quotation['total_inr'], 2) . '.', $quotation['forex_request_id']);
+                $qReqStmt = $pdo->prepare('SELECT * FROM forex_requests WHERE id = ?');
+                $qReqStmt->execute([$quotation['forex_request_id']]);
+                $qRequest = $qReqStmt->fetch(PDO::FETCH_ASSOC);
+                if ($qRequest) {
+                    forex_notify_customer(
+                        $pdo, $qRequest, "Your Forex Quotation is Ready — {$quotation['forex_ref']}",
+                        "Dear {$qRequest['full_name']},\n\nYour forex quotation has been approved and is ready:\n{$quotation['currency_code']} " . number_format((float) $quotation['currency_amount'], 2) . " for Rs. " . number_format((float) $quotation['total_inr'], 2) . "\n\nReference: {$quotation['forex_ref']}\n\nOur team will share the detailed quotation with you shortly. Track your request at https://visaagency.in/forex-track\n\nRegards,\nVisaAgency.in"
+                    );
+                }
             } elseif ($action === 'mark_accepted' && forex_can_verify_documents() && $quotation['status'] === 'Sent') {
                 $pdo->prepare("UPDATE forex_quotations SET status = 'Accepted' WHERE id = ?")->execute([$quotationId]);
                 $pdo->prepare("UPDATE forex_requests SET status = 'Customer Accepted', updated_at = ? WHERE id = ?")->execute([$now, $quotation['forex_request_id']]);
