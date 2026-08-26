@@ -43,6 +43,7 @@ $navItems = [
     ['key' => 'forex-cancelled', 'label' => 'Cancelled', 'icon' => 'ban', 'href' => 'forex-cancelled.php', 'soon' => true],
     ['key' => 'forex-audit', 'label' => 'FEMA / Audit Records', 'icon' => 'shield-halved', 'href' => 'forex-audit.php', 'soon' => true, 'roles' => ['Super Admin', 'Forex Manager', 'Compliance / Audit']],
     ['key' => 'forex-reports', 'label' => 'Reports', 'icon' => 'chart-pie', 'href' => 'forex-reports.php', 'soon' => true],
+    ['key' => 'forex-country-rules', 'label' => 'Country Rules', 'icon' => 'gavel', 'href' => 'forex-country-rules.php', 'roles' => ['Super Admin', 'Forex Manager', 'Compliance / Audit']],
 
     ['key' => 'settings', 'label' => 'Settings', 'icon' => 'gear', 'href' => 'settings.php'],
 ];
