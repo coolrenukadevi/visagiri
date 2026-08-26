@@ -395,10 +395,11 @@ function company_nav_icon(string $key): string
 
 /**
  * Line icons for the primary header nav tabs (Visa Services,
- * Attestation, Countries, Visa Process, Visa Updates, Company) — same
- * visual language as company_nav_icon() (16px, viewBox 0 0 20 20,
- * stroke currentColor) so a top-level tab icon and its mega-menu's
- * own icons read as one consistent system, not two different sets.
+ * Attestation, Countries, Visa Process, Visa Updates, Company) and,
+ * reused as-is, the matching footer column headings (Resources is
+ * footer-only) — same visual language as company_nav_icon() (16px,
+ * viewBox 0 0 20 20, stroke currentColor) so a tab/column icon and its
+ * mega-menu's own icons read as one consistent system, not several.
  */
 function primary_nav_icon(string $key): string
 {
@@ -410,6 +411,7 @@ function primary_nav_icon(string $key): string
         'visa-process' => "<svg $attrs><circle cx=\"5.3\" cy=\"10\" r=\"2.1\"/><circle cx=\"14.7\" cy=\"10\" r=\"2.1\"/><line x1=\"7.4\" y1=\"10\" x2=\"12.6\" y2=\"10\"/><path d=\"M10.4 7.8 12.6 10 10.4 12.2\"/></svg>",
         'visa-updates' => "<svg $attrs><path d=\"M10 3C7.7 3 6.2 4.9 6.2 7.3V10.2L4.7 13H15.3L13.8 10.2V7.3C13.8 4.9 12.3 3 10 3Z\"/><path d=\"M8.4 15.3C8.4 16.2 9.1 16.8 10 16.8 10.9 16.8 11.6 16.2 11.6 15.3\"/></svg>",
         'company' => "<svg $attrs><rect x=\"4\" y=\"3\" width=\"7\" height=\"14\" rx=\"0.8\"/><rect x=\"12.3\" y=\"7.6\" width=\"4\" height=\"9.4\" rx=\"0.8\"/><circle cx=\"6.1\" cy=\"6.4\" r=\"0.55\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"8.9\" cy=\"6.4\" r=\"0.55\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"6.1\" cy=\"9.7\" r=\"0.55\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"8.9\" cy=\"9.7\" r=\"0.55\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"6.1\" cy=\"13\" r=\"0.55\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"8.9\" cy=\"13\" r=\"0.55\" fill=\"currentColor\" stroke=\"none\"/></svg>",
+        'resources' => "<svg $attrs><path d=\"M10 5.3C8.8 4.2 6.5 3.7 3.8 4.1V13.9C6.5 13.5 8.8 14 10 15.1\"/><path d=\"M10 5.3C11.2 4.2 13.5 3.7 16.2 4.1V13.9C13.5 13.5 11.2 14 10 15.1\"/><path d=\"M10 5.3V15.1\"/></svg>",
         default => '',
     };
 }

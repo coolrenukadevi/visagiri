@@ -21,7 +21,7 @@ declare(strict_types=1);
         </div>
 
         <div class="site-footer__col">
-            <h3>Visa Services</h3>
+            <h3><span class="site-footer__col-icon"><?= primary_nav_icon('visa-services') ?></span>Visa Services</h3>
             <ul>
                 <?php
                 // Work Visa and Conference Visa kept out of the footer
@@ -40,7 +40,7 @@ declare(strict_types=1);
         </div>
 
         <div class="site-footer__col">
-            <h3>Attestation</h3>
+            <h3><span class="site-footer__col-icon"><?= primary_nav_icon('attestation') ?></span>Attestation</h3>
             <ul>
                 <?php
                 // One representative service per category, kept short
@@ -62,7 +62,7 @@ declare(strict_types=1);
         </div>
 
         <div class="site-footer__col">
-            <h3>Countries</h3>
+            <h3><span class="site-footer__col-icon"><?= primary_nav_icon('countries') ?></span>Countries</h3>
             <ul>
                 <li><a href="/countries/#region-asia">Asia</a></li>
                 <li><a href="/countries/#region-europe">Europe</a></li>
@@ -75,7 +75,7 @@ declare(strict_types=1);
         </div>
 
         <div class="site-footer__col">
-            <h3>Company</h3>
+            <h3><span class="site-footer__col-icon"><?= primary_nav_icon('company') ?></span>Company</h3>
             <ul>
                 <?php
                 // Careers and Affiliations & Accreditations kept out of
@@ -96,7 +96,7 @@ declare(strict_types=1);
         </div>
 
         <div class="site-footer__col">
-            <h3>Resources</h3>
+            <h3><span class="site-footer__col-icon"><?= primary_nav_icon('resources') ?></span>Resources</h3>
             <ul>
                 <li><a href="/enquire/">Submit a Visa Enquiry</a></li>
                 <li><a href="/visa-process/">Visa Information</a></li>
