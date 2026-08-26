@@ -11,6 +11,25 @@
   z-index: 100;
   background: var(--surface);
   border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 0 rgba(23, 32, 51, 0.02);
+  transition: background-color var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+}
+
+/* Premium scroll state: a soft frosted-glass bar with real depth,
+   replacing the flat hairline border used at rest. Falls back to a
+   plain translucent surface (no blur) automatically on browsers
+   without backdrop-filter support — still legible, just not frosted. */
+.site-header.is-scrolled {
+  background: rgba(255, 255, 255, 0.86);
+  border-bottom-color: transparent;
+  box-shadow: var(--shadow-lg);
+}
+
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  .site-header.is-scrolled {
+    backdrop-filter: blur(14px) saturate(160%);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+  }
 }
 
 .site-header__bar {
@@ -70,6 +89,7 @@
 }
 
 .site-header__nav > ul > li > a {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -83,6 +103,28 @@
 .site-header__nav a:hover,
 .site-header__nav a.is-active {
   color: var(--visa-blue);
+}
+
+/* A thin gold underline that grows in from the center on hover/active,
+   rather than a plain color swap — the one deliberate "premium" flourish
+   in the nav, kept to this single spot so it reads as an accent, not a
+   pattern repeated everywhere. */
+.site-header__nav > ul > li > a::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -2px;
+  width: 0;
+  height: 2px;
+  background: var(--visa-gold);
+  border-radius: var(--radius-full);
+  transform: translateX(-50%);
+  transition: width var(--transition-base);
+}
+
+.site-header__nav > ul > li > a:hover::after,
+.site-header__nav > ul > li > a.is-active::after {
+  width: 100%;
 }
 
 /* Top-level nav tab icons — desktop + mobile share the same markup
@@ -157,18 +199,19 @@
   position: absolute;
   top: 100%;
   left: 50%;
-  transform: translateX(-50%) translateY(4px);
+  transform: translateX(-50%) translateY(4px) scale(0.99);
   width: min(880px, calc(100vw - var(--space-8)));
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 2px 6px rgba(23, 32, 51, 0.05), var(--shadow-lg);
   margin-top: var(--space-2);
   padding: var(--space-6);
   opacity: 0;
   visibility: hidden;
   transition: opacity var(--transition-fast), transform var(--transition-fast), visibility var(--transition-fast);
   z-index: 110;
+  overflow: hidden;
   /* .site-header__nav > ul sets white-space: nowrap for the flat
      top-level links; reset it here at the root rather than per leaf
      element, so no mega-menu built on top of this ever silently
@@ -176,12 +219,24 @@
   white-space: normal;
 }
 
+/* Thin gold rule across the top — a quiet brand mark on every panel,
+   independent of whatever content each mega-menu happens to hold. */
+.mega-menu::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--visa-gold), var(--visa-gold-dark));
+}
+
 .has-mega-menu:hover .mega-menu,
 .has-mega-menu:focus-within .mega-menu,
 .mega-menu.is-open {
   opacity: 1;
   visibility: visible;
-  transform: translateX(-50%) translateY(0);
+  transform: translateX(-50%) translateY(0) scale(1);
 }
 
 /* Escape needs to win over :hover/:focus-within — pressing it doesn't
@@ -224,20 +279,41 @@
 }
 
 .mega-menu__col li a {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-2) var(--space-2);
+  padding: var(--space-2) var(--space-2) var(--space-2) calc(var(--space-2) + 3px);
   border-radius: var(--radius-sm);
   font-size: var(--font-size-sm);
   color: var(--text-dark);
   line-height: var(--line-height-tight);
+  transition: background-color var(--transition-fast), color var(--transition-fast), padding-left var(--transition-fast);
+}
+
+.mega-menu__col li a::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 0;
+  background: var(--visa-gold);
+  border-radius: var(--radius-full);
+  transition: height var(--transition-fast);
 }
 
 .mega-menu__col li a:hover,
 .mega-menu__col li a:focus-visible {
   background: var(--visa-blue-light);
   color: var(--visa-blue-dark);
+  padding-left: calc(var(--space-2) + var(--space-2));
+}
+
+.mega-menu__col li a:hover::before,
+.mega-menu__col li a:focus-visible::before {
+  height: 60%;
 }
 
 .mega-menu__icon {
@@ -820,6 +896,7 @@
   height: 36px;
   border-radius: var(--radius-full);
   color: var(--text-muted);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 
 .site-header__icon-btn:hover {
