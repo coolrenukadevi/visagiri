@@ -43,7 +43,14 @@ function send_security_headers(): void
     header('X-Content-Type-Options: nosniff');
     header('X-Frame-Options: DENY');
     header('Referrer-Policy: strict-origin-when-cross-origin');
-    header('Permissions-Policy: geolocation=(), microphone=(), camera=()');
+    // microphone=(self) rather than fully blocked: the visa search
+    // widget's voice-search button uses the browser's native
+    // SpeechRecognition API, first-party only — never embedded in a
+    // third-party frame, so this doesn't widen the site's real attack
+    // surface. The browser still prompts the visitor for permission
+    // each time; this header only controls whether the API is allowed
+    // to ask at all.
+    header('Permissions-Policy: geolocation=(), microphone=(self), camera=()');
     header("Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; frame-ancestors 'none'");
     // Browsers ignore this entirely over plain HTTP (harmless in local
     // dev), and public/.htaccess already forces HTTP -> HTTPS, so this

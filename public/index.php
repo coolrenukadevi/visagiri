@@ -159,6 +159,9 @@ switch ($segments[0] ?? '') {
     case 'document-templates':
         $dispatch("$root/pages/document-templates.php");
 
+    case 'embassy-directory':
+        $dispatch("$root/pages/embassy-directory.php");
+
     case 'forex':
         if (($segments[1] ?? null) === 'track') {
             $dispatch("$root/forex/track/index.php");

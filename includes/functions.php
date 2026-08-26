@@ -540,3 +540,58 @@ function render_not_found(string $message = "The page you're looking for doesn't
     require __DIR__ . '/footer.php';
     exit;
 }
+
+/**
+ * Every real destination this search widget can suggest — 208
+ * countries, 10 visa types, 8 continent hubs, 7 visa-status
+ * directories, all linking to pages that actually exist. Nothing
+ * here is invented or guessed; it's the same catalog every other page
+ * on the site already reads from.
+ *
+ * @return list<array{label:string,type:string,href:string}>
+ */
+function visa_search_widget_items(): array
+{
+    static $items = null;
+    if ($items !== null) {
+        return $items;
+    }
+
+    $items = [];
+    foreach (countries_all() as $c) {
+        $items[] = ['label' => $c['name'], 'type' => 'Country', 'href' => '/visa/' . $c['slug'] . '/'];
+    }
+    foreach (visa_types_all() as $t) {
+        $items[] = ['label' => $t['name'], 'type' => 'Visa Type', 'href' => '/visa-type/' . $t['slug'] . '/'];
+    }
+    foreach (CONTINENT_HUBS as $slug => $hub) {
+        $items[] = ['label' => $hub['label'], 'type' => 'Continent', 'href' => '/visa/' . $slug . '/'];
+    }
+    foreach (VISA_STATUS_DIRECTORIES as $slug => $dir) {
+        $items[] = ['label' => $dir['label'], 'type' => 'Visa Status', 'href' => '/visa-status/' . $slug . '/'];
+    }
+    return $items;
+}
+
+/**
+ * Renders the enhanced search widget (autocomplete + optional voice
+ * search + per-browser recent searches). $idSuffix keeps element IDs
+ * unique when the widget appears more than once on the same page
+ * layout (e.g. homepage vs /visa/ hub share this markup).
+ */
+function render_visa_search_widget(string $idSuffix = '', string $placeholder = 'Search country, visa type, or continent…'): void
+{
+    $dataId = 'visa-search-data' . ($idSuffix !== '' ? '-' . $idSuffix : '');
+    ?>
+    <div class="visa-search-widget" data-search-widget data-search-source="<?= e($dataId) ?>">
+        <div class="visa-search-widget__input-row">
+            <input type="text" class="form-input visa-search-widget__input" data-search-input placeholder="<?= e($placeholder) ?>" autocomplete="off" aria-label="Search countries, visa types, or continents">
+            <button type="button" class="visa-search-widget__voice" data-search-voice aria-label="Search by voice" hidden>
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7.5" y="2.5" width="5" height="9" rx="2.5"/><path d="M4.5 9.5a5.5 5.5 0 0 0 11 0"/><line x1="10" y1="15" x2="10" y2="17.5"/></svg>
+            </button>
+        </div>
+        <ul class="visa-search-widget__results" data-search-results role="listbox" hidden></ul>
+    </div>
+    <script type="application/json" id="<?= e($dataId) ?>"><?= json_encode(visa_search_widget_items(), JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP) ?></script>
+    <?php
+}

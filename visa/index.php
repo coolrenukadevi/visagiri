@@ -18,7 +18,8 @@ $countrySlug = $segments[1] ?? null;
 $typeSlug = $segments[2] ?? null;
 
 if ($countrySlug === null) {
-    redirect('/countries/');
+    require __DIR__ . '/hub.php';
+    exit;
 }
 
 if (isset(CONTINENT_HUBS[$countrySlug])) {

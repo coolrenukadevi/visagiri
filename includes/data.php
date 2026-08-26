@@ -86,6 +86,20 @@ function faqs_general(): array
     return $faqs;
 }
 
+/**
+ * Every active FAQ, general or country/type-specific — the Visa
+ * Assistant widget's entire knowledge base. It only ever surfaces a
+ * real FAQ's real answer verbatim; it never generates new text.
+ */
+function all_active_faqs(): array
+{
+    static $faqs = null;
+    if ($faqs === null) {
+        $faqs = db()->query('SELECT question, answer FROM visa_faqs WHERE is_active = 1 ORDER BY sort_order')->fetchAll();
+    }
+    return $faqs;
+}
+
 /** FAQs relevant to a specific country/visa-type page: general ones plus any tagged to that country or type. */
 function fetch_relevant_faqs(?int $countryId = null, ?int $visaTypeId = null): array
 {
