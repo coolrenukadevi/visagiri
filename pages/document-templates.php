@@ -60,7 +60,8 @@ if ($templateSlug === null) {
                     <p style="margin-top:var(--space-3)">
                         General-purpose formats to help you prepare common supporting documents. These are starting
                         points — always confirm the exact wording and format your specific embassy or consulate
-                        requires before submitting.
+                        requires before submitting. Not sure which documents apply to you first?
+                        See <a href="/documentation/">Documentation Assistance</a>.
                     </p>
                 </div>
             </div>

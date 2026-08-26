@@ -99,6 +99,7 @@ declare(strict_types=1);
             <h3><span class="site-footer__col-icon"><?= primary_nav_icon('resources') ?></span>Resources</h3>
             <ul>
                 <li><a href="/enquire/">Submit a Visa Enquiry</a></li>
+                <li><a href="/documentation/">Documentation Assistance</a></li>
                 <li><a href="/visa-process/">Visa Information</a></li>
                 <li><a href="/faq/">Visa FAQs</a></li>
                 <li><a href="/blog/">Travel Guides</a></li>

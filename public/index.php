@@ -103,6 +103,9 @@ switch ($segments[0] ?? '') {
     case 'visa-process':
         $dispatch("$root/pages/process.php");
 
+    case 'documentation':
+        $dispatch("$root/pages/documentation.php");
+
     case 'visa-search':
         $dispatch("$root/pages/visa-search.php");
 

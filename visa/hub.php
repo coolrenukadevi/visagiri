@@ -104,6 +104,10 @@ require __DIR__ . '/../includes/header.php';
 
         <h2 class="country-directory__subheading">More Tools</h2>
         <div class="card-grid">
+            <a href="/documentation/" class="card service-card">
+                <div class="card-title">Documentation Assistance</div>
+                <p>What documents you need and why, by category.</p>
+            </a>
             <a href="/document-templates/" class="card service-card">
                 <div class="card-title">Document Templates</div>
                 <p>Cover letters, NOC, consent letters, and other formats.</p>
