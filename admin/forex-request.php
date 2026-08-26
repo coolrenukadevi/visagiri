@@ -275,6 +275,11 @@ function fx_fmt($v) { $v = trim((string) $v); return $v === '' ? '<span style="c
             </div>
             <div style="font-size:12px;color:var(--c-muted);"><?php echo htmlspecialchars(substr($q['created_at'], 0, 16)); ?> by <?php echo htmlspecialchars($q['created_by']); ?></div>
         </div>
+        <div style="display:flex;gap:8px;margin-bottom:12px;">
+            <a href="forex-quotation-pdf.php?id=<?php echo (int) $q['id']; ?>" target="_blank" class="crm-btn crm-btn-ghost crm-btn-sm"><i class="fa-solid fa-file-pdf"></i> Download PDF</a>
+            <a href="https://wa.me/<?php echo preg_replace('/\D/', '', $request['mobile']); ?>?text=<?php echo rawurlencode("Dear {$request['full_name']}, your Forex Quotation ({$request['forex_ref']}) is ready:\n{$q['currency_code']} " . number_format((float) $q['currency_amount'], 2) . " for Rs. " . number_format((float) $q['total_inr'], 2) . "\nWe're sending the detailed PDF quotation on this chat now. For queries, call +91 78448 19819."); ?>" target="_blank" rel="noopener" class="crm-btn crm-btn-ghost crm-btn-sm" title="Opens WhatsApp with a pre-filled message — download the PDF above first and attach it manually in the chat, since WhatsApp links can't attach files automatically"><i class="fa-brands fa-whatsapp"></i> Send via WhatsApp</a>
+            <?php if ($request['email']): ?><a href="mailto:<?php echo htmlspecialchars($request['email']); ?>?subject=<?php echo rawurlencode('Your Forex Quotation - ' . $request['forex_ref']); ?>" class="crm-btn crm-btn-ghost crm-btn-sm"><i class="fa-solid fa-envelope"></i> Email</a><?php endif; ?>
+        </div>
         <div class="crm-panel-grid">
             <div class="crm-panel-item"><label>Exchange Rate</label><div class="val">₹<?php echo number_format((float) $q['exchange_rate'], 4); ?></div></div>
             <div class="crm-panel-item"><label>Base Amount</label><div class="val">₹<?php echo number_format((float) $q['base_inr'], 2); ?></div></div>

@@ -53,6 +53,7 @@ $staticPages = [
     ['news-grid', 'weekly', '0.5'],
     ['news-details', 'monthly', '0.5'],
     ['customer-login', 'yearly', '0.3'],
+    ['forex-track', 'monthly', '0.4'],
     ['visa-refusal', 'monthly', '0.5'],
     ['visa-consultancy-services', 'weekly', '0.9'],
     ['visa-tourist', 'monthly', '0.8'],

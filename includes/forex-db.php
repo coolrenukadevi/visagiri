@@ -457,6 +457,42 @@ function forex_notify(PDO $pdo, ?int $userId, string $type, string $message, ?in
  * both the on-screen render and the PDF export (added in a later phase) can
  * reuse it identically.
  */
+/**
+ * Maps a Forex status to the 8-stage customer-facing tracking timeline.
+ * Cancelled/Rejected are handled as a separate banner by the caller, same
+ * convention as crm_timeline_stages() for visa enquiries.
+ */
+function forex_timeline_stages(string $status): array
+{
+    $table = [
+        'New Request'                     => ['done', 'pending', 'pending', 'pending', 'pending', 'pending', 'pending', 'pending'],
+        'Awaiting Documents'               => ['done', 'current', 'pending', 'pending', 'pending', 'pending', 'pending', 'pending'],
+        'Documents Submitted'              => ['done', 'current', 'pending', 'pending', 'pending', 'pending', 'pending', 'pending'],
+        'Documents Under Verification'     => ['done', 'current', 'pending', 'pending', 'pending', 'pending', 'pending', 'pending'],
+        'Documents Verified'               => ['done', 'done', 'current', 'pending', 'pending', 'pending', 'pending', 'pending'],
+        'Quotation Preparing'              => ['done', 'done', 'done', 'current', 'pending', 'pending', 'pending', 'pending'],
+        'Quotation Sent'                   => ['done', 'done', 'done', 'current', 'pending', 'pending', 'pending', 'pending'],
+        'Customer Accepted'                => ['done', 'done', 'done', 'done', 'current', 'pending', 'pending', 'pending'],
+        'Payment Pending'                  => ['done', 'done', 'done', 'done', 'current', 'pending', 'pending', 'pending'],
+        'Payment Received'                 => ['done', 'done', 'done', 'done', 'done', 'current', 'pending', 'pending'],
+        'Compliance Verification'          => ['done', 'done', 'done', 'done', 'done', 'current', 'pending', 'pending'],
+        'Approved for Processing'          => ['done', 'done', 'done', 'done', 'done', 'done', 'current', 'pending'],
+        'Forex Procurement / Processing'   => ['done', 'done', 'done', 'done', 'done', 'done', 'current', 'pending'],
+        'Ready for Delivery'               => ['done', 'done', 'done', 'done', 'done', 'done', 'done', 'current'],
+        'Delivered'                        => ['done', 'done', 'done', 'done', 'done', 'done', 'done', 'done'],
+        'Refund / Reversal'                => ['done', 'done', 'done', 'done', 'done', 'done', 'done', 'done'],
+    ];
+    return $table[$status] ?? array_fill(0, 8, 'pending');
+}
+
+function forex_timeline_labels(): array
+{
+    return [
+        'Request Submitted', 'Documents Uploaded', 'Documents Verified', 'Quotation Prepared',
+        'Payment', 'Compliance Verification', 'Approved for Processing', 'Ready / Delivered',
+    ];
+}
+
 function forex_render_declaration(string $bodyHtml, array $vars): string
 {
     $map = [];
