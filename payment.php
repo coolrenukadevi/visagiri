@@ -103,7 +103,7 @@ $hasUpi = $site_upi_id !== '';
                 <?php endif; ?>
 
                 <p style="margin-top:24px; font-size:12.5px; color:var(--text);">
-                    <i class="fa-solid fa-shield-halved"></i>
+                    <i class="fa-solid fa-shield-alt"></i>
                     We never ask for your card number, CVV, UPI PIN or online banking password over phone, WhatsApp or email. Only use the account/UPI details published on this page or shared directly by our team in an official invoice.
                 </p>
             </div>

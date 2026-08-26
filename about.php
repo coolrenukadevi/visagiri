@@ -20,7 +20,19 @@ include __DIR__ . '/includes/header.php';
             </div>
         </section>
 
-        <section class="console-intro">
+        <nav class="svc-sibling-nav" aria-label="About Visa Agency">
+            <div class="svc-sibling-inner">
+                <a href="about#overview" class="current">About Us</a>
+                <a href="about#journey">Our Journey</a>
+                <a href="about#leadership">Leadership</a>
+                <a href="about#our-team">Our Team</a>
+                <a href="about#partners">Partners</a>
+                <a href="careers">Careers</a>
+                <a href="visa-news">News &amp; Updates</a>
+            </div>
+        </nav>
+
+        <section class="console-intro" id="overview">
             <div class="console-intro-inner">
                 <div class="console-tag"><span class="blink"></span> company.about() &middot; Patna, Bihar</div>
                 <p class="lede">Visa Agency is a Ministry of Tourism recognised, technology-enabled visa consultancy based in Patna, Bihar &mdash; helping applicants across Patna, Ranchi, Raipur and Bhopal navigate visa, apostille and documentation processes with a clear, tracked process instead of guesswork.</p>
@@ -63,6 +75,22 @@ include __DIR__ . '/includes/header.php';
             </div>
         </section>
 
+        <section class="section-padding fix" id="journey">
+            <div class="container">
+                <div class="console-section-head">
+                    <p class="console-eyebrow">Our Journey</p>
+                    <h2>How We Got Here</h2>
+                </div>
+                <div class="data-pending">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <div>
+                        <h4>Our company timeline is coming soon</h4>
+                        <p>We're putting together the key milestones in Visa Agency's history &mdash; founding, city expansions and major service launches &mdash; for this section. Check back soon, or read about what we do today above.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section class="section-padding fix section-bg-1" id="leadership">
             <div class="container">
                 <div class="console-section-head">
@@ -98,6 +126,39 @@ include __DIR__ . '/includes/header.php';
                         </div>
                         <h3>Client Experience Lead</h3>
                         <p>Coordinates appointments, communication and support for clients across all four cities we serve.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-padding fix" id="our-team">
+            <div class="container">
+                <div class="console-section-head">
+                    <p class="console-eyebrow">Our Team</p>
+                    <h2>Beyond Leadership</h2>
+                    <p>The consultants, documentation specialists and support staff who work your case day to day.</p>
+                </div>
+                <div class="data-pending">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <div>
+                        <h4>Full team profiles are coming soon</h4>
+                        <p>We're building out individual profiles for our visa consultants and documentation specialists. In the meantime, our <a href="about#leadership">leadership team</a> can point you to the right person for your case.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-padding fix section-bg-1" id="partners">
+            <div class="container">
+                <div class="console-section-head">
+                    <p class="console-eyebrow">Partners</p>
+                    <h2>Who We Work With</h2>
+                </div>
+                <div class="data-pending">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <div>
+                        <h4>Partner details are coming soon</h4>
+                        <p>We're finalising the list of partner organisations we work with to bring here. For details on a specific partnership or referral, please <a href="contact">contact us</a> directly.</p>
                     </div>
                 </div>
             </div>

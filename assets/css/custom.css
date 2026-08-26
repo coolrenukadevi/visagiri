@@ -50,28 +50,173 @@
     }
 }
 
-/* ---- Topbar auth links ---- */
+/* ================================================================
+   Premium header redesign — unified navy topbar (both the standard
+   and homepage-transparent header variants), refined main header,
+   icon-led login links, sticky-scroll polish. custom.css loads after
+   main.css so these win without needing !important except where
+   main.css itself used !important (matched below in kind).
+   ================================================================ */
+
+/* ---- Topbar: deep navy gradient on every page (was theme default /
+   solid red block on the homepage variant) ---- */
+.header-top-section,
+.header-top-section-2 {
+    background: linear-gradient(120deg, #0F2557 0%, #163C99 60%, #17348a 100%) !important;
+}
+.header-top-section::before { display: none; }
+.header-top-wrapper .header-left .list li a,
+.header-top-wrapper .header-left .list li,
+.header-top-wrapper-2 .header-left span,
+.header-top-wrapper-2 .header-left span a {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+.header-top-wrapper .header-left .list li a:hover,
+.header-top-wrapper-2 .header-left span a:hover {
+    color: var(--white) !important;
+}
+.header-top-wrapper .header-left .list li.style-2 a,
+.header-top-wrapper-2 .header-left span:first-child a {
+    color: var(--white) !important;
+    font-weight: 600;
+}
+.header-top-wrapper .header-left .list li i,
+.header-top-wrapper .header-left .list li.style-2 i,
+.header-top-wrapper-2 .header-left span i {
+    color: var(--gold, #C6A15B) !important;
+    background: none !important;
+}
+
+/* ---- Topbar login links: icon-led pills ---- */
 .topbar-auth-links {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 14px;
+    gap: 4px;
+    font-size: 13px;
 }
 .topbar-auth-links a {
-    color: rgba(255, 255, 255, 0.85);
-    transition: color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(255, 255, 255, 0.85) !important;
+    padding: 6px 12px;
+    border-radius: 100px;
+    transition: background 0.2s ease, color 0.2s ease;
 }
-.header-top-wrapper .topbar-auth-links a {
-    color: var(--header);
-}
+.topbar-auth-links a i { color: var(--gold, #C6A15B); font-size: 12px; }
 .topbar-auth-links a:hover {
-    color: var(--theme);
+    background: rgba(255, 255, 255, 0.12);
+    color: var(--white) !important;
 }
+.topbar-auth-links a:hover i { color: var(--white); }
 .topbar-auth-links .divider {
-    color: rgba(255, 255, 255, 0.35);
+    width: 1px;
+    height: 14px;
+    background: rgba(255, 255, 255, 0.25);
+    display: inline-block;
 }
-.header-top-wrapper .topbar-auth-links .divider {
-    color: var(--border);
+
+/* ---- Topbar social icons: refined circular style ---- */
+.header-top-wrapper .header-right .social-item,
+.header-top-wrapper-2 .header-right .social-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.header-top-wrapper .header-right .social-item a,
+.header-top-wrapper-2 .header-right .social-item a {
+    width: 30px !important;
+    height: 30px !important;
+    line-height: 28px !important;
+    border-radius: 100px !important;
+    background: transparent !important;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: rgba(255, 255, 255, 0.75) !important;
+    font-size: 12.5px !important;
+    text-align: center;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+.header-top-wrapper .header-right .social-item a:hover,
+.header-top-wrapper-2 .header-right .social-item a:hover {
+    background: var(--theme) !important;
+    border-color: var(--theme);
+    color: var(--white) !important;
+    transform: translateY(-2px);
+}
+
+/* ---- Main header: refined shadow + sticky-scroll polish ---- */
+.header-1 {
+    box-shadow: 0 1px 0 rgba(16, 24, 40, 0.06);
+}
+.header-1.sticky {
+    box-shadow: 0 8px 30px rgba(16, 24, 40, 0.1);
+}
+.header-main .logo img { transition: height 0.2s ease; }
+
+/* ---- Homepage header variant: unify with the standard header
+   instead of the theme's solid red block either side of the nav ---- */
+.header-1.header-2::before,
+.header-1.header-2::after {
+    display: none !important;
+}
+.header-1.header-2 {
+    background: var(--white);
+}
+.header-1.header-2 .header-logo-2 { display: none !important; }
+.header-1.header-2 .header-logo { display: inline-block !important; }
+.header-1.header-2 .main-menu > ul > li > a,
+.header-1.header-2 .header-search-toggle,
+.header-1.header-2 .header-right .header-call-item .theme-btn,
+.header-1.header-2 .header-right .header-call-item .sidebar__toggle {
+    color: var(--header) !important;
+}
+.header-1.header-2 .header-right .header-call-item .theme-btn i {
+    background-color: var(--theme) !important;
+    color: var(--white) !important;
+}
+
+/* ---- Search toggle: circular icon button matching topbar style ---- */
+.header-search-toggle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--bg);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--header);
+    transition: background 0.2s ease, color 0.2s ease;
+}
+.header-search-toggle:hover {
+    background: var(--theme);
+    color: var(--white);
+}
+
+/* ---- Hamburger / offcanvas toggle: refined ---- */
+.sidebar__toggle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--bg);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--header);
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+.sidebar__toggle:hover {
+    background: var(--theme);
+    color: var(--white);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .topbar-auth-links a,
+    .header-top-wrapper .header-right .social-item a,
+    .header-top-wrapper-2 .header-right .social-item a,
+    .header-search-toggle, .sidebar__toggle, .header-main .logo img {
+        transition: none !important;
+    }
 }
 
 /* ---- Mega menu panels: compact floating card ---- */

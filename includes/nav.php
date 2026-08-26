@@ -191,7 +191,7 @@
             <a href="about"><i class="fa-regular fa-building nav-top-icon"></i>Company</a>
             <ul class="submenu simple-dropdown">
                 <li><a href="about"><i class="fa-solid fa-building"></i> About VisaAgency.in</a></li>
-                <li><a href="about#leadership"><i class="fa-solid fa-users"></i> Our Team</a></li>
+                <li><a href="about#our-team"><i class="fa-solid fa-users"></i> Our Team</a></li>
                 <li><a href="our-services"><i class="fa-solid fa-list-check"></i> Our Services</a></li>
                 <li><a href="careers"><i class="fa-solid fa-briefcase"></i> Careers</a></li>
                 <li><a href="visa-news"><i class="fa-solid fa-newspaper"></i> News &amp; Updates</a></li>

@@ -42,7 +42,7 @@ $navItems = [
     ['key' => 'forex-approved', 'label' => 'Approved Requests', 'icon' => 'circle-check', 'href' => 'forex-requests.php?status=Approved+for+Processing'],
     ['key' => 'forex-delivered', 'label' => 'Delivered', 'icon' => 'hand-holding-dollar', 'href' => 'forex-requests.php?status=Delivered'],
     ['key' => 'forex-cancelled', 'label' => 'Cancelled', 'icon' => 'ban', 'href' => 'forex-requests.php?status=Cancelled'],
-    ['key' => 'forex-audit', 'label' => 'FEMA / Audit Records', 'icon' => 'shield-halved', 'href' => 'forex-audit.php', 'roles' => ['Super Admin', 'Forex Manager', 'Compliance / Audit']],
+    ['key' => 'forex-audit', 'label' => 'FEMA / Audit Records', 'icon' => 'shield-alt', 'href' => 'forex-audit.php', 'roles' => ['Super Admin', 'Forex Manager', 'Compliance / Audit']],
     ['key' => 'forex-reports', 'label' => 'Reports', 'icon' => 'chart-pie', 'href' => 'forex-reports.php'],
     ['key' => 'forex-country-rules', 'label' => 'Country Rules', 'icon' => 'gavel', 'href' => 'forex-country-rules.php', 'roles' => ['Super Admin', 'Forex Manager', 'Compliance / Audit']],
     ['key' => 'forex-rates', 'label' => 'Rates', 'icon' => 'coins', 'href' => 'forex-rates.php', 'roles' => ['Super Admin', 'Forex Manager']],

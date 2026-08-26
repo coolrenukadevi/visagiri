@@ -43,7 +43,7 @@
                                         <i class="fal fa-clock"></i>
                                     </div>
                                     <div class="offcanvas__contact-text">
-                                        <a target="_blank" href="#">Mod-friday, 09am -05pm</a>
+                                        <span><?php echo $site_hours; ?></span>
                                     </div>
                                 </li>
                                 <li class="d-flex align-items-center">
