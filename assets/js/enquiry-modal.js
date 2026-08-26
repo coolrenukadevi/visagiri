@@ -48,6 +48,28 @@ document.addEventListener('DOMContentLoaded', function () {
         setSubmitting(false);
     }
 
+    // Services with no meaningful destination country / visa type (Apostille,
+    // Forex, Insurance, Flight/Hotel, General enquiries) — hide those two
+    // fields instead of forcing an irrelevant selection, and fall back to a
+    // sentinel value server-side (enquiry-handler.php mirrors this list).
+    var NON_VISA_SERVICES = ['General Enquiry', 'Apostille & Attestation', 'Forex Assistance', 'Travel Insurance', 'Flight & Hotel Assistance', 'Other Services'];
+    var destinationField = document.getElementById('enqDestinationCountry');
+    var visaTypeField = document.getElementById('enqVisaType');
+    var destinationWrapper = destinationField ? destinationField.closest('.enquiry-field') : null;
+    var visaTypeWrapper = visaTypeField ? visaTypeField.closest('.enquiry-field') : null;
+
+    function applyServiceVisibility() {
+        var isNonVisa = NON_VISA_SERVICES.indexOf(form.service_required.value) !== -1;
+        if (destinationWrapper) { destinationWrapper.hidden = isNonVisa; }
+        if (visaTypeWrapper) { visaTypeWrapper.hidden = isNonVisa; }
+        if (destinationField) { destinationField.required = !isNonVisa; }
+        if (visaTypeField) { visaTypeField.required = !isNonVisa; }
+    }
+
+    if (form.service_required) {
+        form.service_required.addEventListener('change', applyServiceVisibility);
+    }
+
     function openModal(trigger) {
         lastFocusedEl = document.activeElement;
         resetForm();
@@ -55,6 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
             var country = trigger.getAttribute('data-country');
             var visaType = trigger.getAttribute('data-visa-type');
             var purpose = trigger.getAttribute('data-purpose');
+            var service = trigger.getAttribute('data-service');
             if (country) {
                 var countrySelect = document.getElementById('enqDestinationCountry');
                 if (countrySelect) { countrySelect.value = country; }
@@ -67,7 +90,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 var purposeInput = document.getElementById('enqPurpose');
                 if (purposeInput) { purposeInput.value = purpose; }
             }
+            if (service) {
+                var serviceSelect = document.getElementById('enqServiceRequired');
+                if (serviceSelect) { serviceSelect.value = service; }
+            }
         }
+        applyServiceVisibility();
         modal.hidden = false;
         document.documentElement.classList.add('va-enquiry-modal-open');
         requestAnimationFrame(function () {
@@ -224,8 +252,11 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!/^[A-Za-z0-9]{6,12}$/.test(passport)) { setFieldError('passport_number', 'Please enter a valid passport number.'); ok = false; }
 
         if (!form.service_required.value) { setFieldError('service_required', 'Please select a service.'); ok = false; }
-        if (!form.destination_country.value) { setFieldError('destination_country', 'Please select your destination.'); ok = false; }
-        if (!form.visa_type.value) { setFieldError('visa_type', 'Please select a visa type.'); ok = false; }
+        var isNonVisa = NON_VISA_SERVICES.indexOf(form.service_required.value) !== -1;
+        if (!isNonVisa) {
+            if (!form.destination_country.value) { setFieldError('destination_country', 'Please select your destination.'); ok = false; }
+            if (!form.visa_type.value) { setFieldError('visa_type', 'Please select a visa type.'); ok = false; }
+        }
 
         var travelDate = form.travel_date.value;
         if (!travelDate) { setFieldError('travel_date', 'Please choose your expected travel date.'); ok = false; }

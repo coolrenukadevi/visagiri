@@ -49,6 +49,9 @@ $navItems = [
     ['key' => 'forex-declaration-templates', 'label' => 'Declaration Templates', 'icon' => 'file-contract', 'href' => 'forex-declaration-templates.php', 'roles' => ['Super Admin', 'Forex Manager']],
     ['key' => 'forex-settings', 'label' => 'Forex Settings', 'icon' => 'sliders', 'href' => 'forex-settings.php', 'roles' => ['Super Admin', 'Forex Manager']],
 
+    ['section' => 'Marketing'],
+    ['key' => 'newsletter', 'label' => 'Newsletter Subscribers', 'icon' => 'envelope-open-text', 'href' => 'newsletter.php', 'roles' => ['Super Admin', 'Admin', 'Sales Manager']],
+
     ['key' => 'settings', 'label' => 'Settings', 'icon' => 'gear', 'href' => 'settings.php'],
 ];
 ?>

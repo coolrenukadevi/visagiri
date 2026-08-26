@@ -1,10 +1,15 @@
                 <div class="footer-cta-card">
+                    <div class="fcc-visual" aria-hidden="true">
+                        <i class="fa-solid fa-passport"></i>
+                        <i class="fa-solid fa-plane-departure"></i>
+                        <i class="fa-solid fa-earth-americas"></i>
+                    </div>
                     <div class="fcc-text">
-                        <h2>Planning to Travel Abroad?</h2>
-                        <p>Let our visa experts guide you through requirements, documentation and appointment processes.</p>
+                        <h2>Planning Your International Journey?</h2>
+                        <p>Get personalised visa and travel assistance from our experienced consultants.</p>
                     </div>
                     <div class="fcc-actions">
-                        <a href="contact" class="theme-btn">Start Your Visa Enquiry <i class="fa-solid fa-arrow-right"></i></a>
-                        <a href="tel:<?php echo $site_phone_e164; ?>" class="theme-btn style-outline">Talk to a Visa Expert <i class="fa-solid fa-phone"></i></a>
+                        <a href="contact" class="theme-btn" data-open-enquiry>Start Your Visa Enquiry <i class="fa-solid fa-arrow-right"></i></a>
+                        <a href="visa-appointment" class="theme-btn style-outline">Book a Consultation <i class="fa-solid fa-calendar-check"></i></a>
                     </div>
                 </div>

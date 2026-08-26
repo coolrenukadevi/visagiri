@@ -29,16 +29,16 @@ include __DIR__ . '/includes/header.php';
                 <div class="row g-4">
                     <?php
                     $other_services = [
-                        ['icon' => 'fa-shield-alt', 'title' => 'Travel Insurance', 'desc' => 'Travel insurance assistance to meet embassy and personal safety requirements.'],
-                        ['icon' => 'fa-money-bill-wave', 'title' => 'Forex Assistance', 'desc' => 'Guidance on foreign exchange for your trip.'],
-                        ['icon' => 'fa-plane', 'title' => 'Flight &amp; Hotel Reservation', 'desc' => 'Confirmed itinerary and accommodation booking assistance for visa applications.'],
-                        ['icon' => 'fa-envelope-open-text', 'title' => 'Invitation Letter Assistance', 'desc' => 'Support in preparing invitation letters where required.'],
-                        ['icon' => 'fa-plane-arrival', 'title' => 'Airport Meet &amp; Assist', 'desc' => 'Airport meet, assist and transfer support.'],
-                        ['icon' => 'fa-building', 'title' => 'Corporate Visa Assistance', 'desc' => 'Business travel and employee travel documentation support for companies.'],
+                        ['id' => 'travel-insurance', 'icon' => 'fa-shield-alt', 'title' => 'Travel Insurance', 'desc' => 'Travel insurance assistance to meet embassy and personal safety requirements.'],
+                        ['id' => 'forex-assistance', 'icon' => 'fa-money-bill-wave', 'title' => 'Forex Assistance', 'desc' => 'Guidance on foreign exchange for your trip.'],
+                        ['id' => 'flight-hotel-assistance', 'icon' => 'fa-plane', 'title' => 'Flight &amp; Hotel Reservation', 'desc' => 'Confirmed itinerary and accommodation booking assistance for visa applications.'],
+                        ['id' => 'invitation-letter', 'icon' => 'fa-envelope-open-text', 'title' => 'Invitation Letter Assistance', 'desc' => 'Support in preparing invitation letters where required.'],
+                        ['id' => 'airport-assist', 'icon' => 'fa-plane-arrival', 'title' => 'Airport Meet &amp; Assist', 'desc' => 'Airport meet, assist and transfer support.'],
+                        ['id' => 'corporate-visa', 'icon' => 'fa-building', 'title' => 'Corporate Visa Assistance', 'desc' => 'Business travel and employee travel documentation support for companies.'],
                     ];
                     foreach ($other_services as $s): ?>
                     <div class="col-lg-4 col-md-6">
-                        <div class="how-it-works-step">
+                        <div class="how-it-works-step" id="<?php echo $s['id']; ?>" style="scroll-margin-top:110px;">
                             <div class="step-num"><i class="fa-solid <?php echo $s['icon']; ?>" style="font-size:16px;"></i></div>
                             <h4><?php echo $s['title']; ?></h4>
                             <p><?php echo $s['desc']; ?></p>

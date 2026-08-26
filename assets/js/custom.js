@@ -258,4 +258,62 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    /* ---- Footer newsletter subscribe form ---- */
+    var newsletterForm = document.getElementById('footerNewsletterForm');
+    if (newsletterForm) {
+        var nlEmail = document.getElementById('footerNewsletterEmail');
+        var nlSubmit = document.getElementById('footerNewsletterSubmit');
+        var nlStatus = document.getElementById('footerNewsletterStatus');
+        var nlLabel = nlSubmit.querySelector('.fnl-btn-label');
+        var nlSpinner = nlSubmit.querySelector('.fnl-btn-spinner');
+
+        newsletterForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (nlSubmit.disabled) { return; }
+            if (!nlEmail.value || !nlEmail.checkValidity()) {
+                nlStatus.hidden = false;
+                nlStatus.className = 'fnl-status is-error';
+                nlStatus.textContent = 'Please enter a valid email address.';
+                nlEmail.focus();
+                return;
+            }
+
+            nlSubmit.disabled = true;
+            nlLabel.textContent = 'Subscribing…';
+            nlSpinner.hidden = false;
+            nlStatus.hidden = true;
+
+            var fd = new FormData(newsletterForm);
+            fd.set('source_url', window.location.pathname);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'newsletter-subscribe.php', true);
+            xhr.onload = function () {
+                nlSubmit.disabled = false;
+                nlLabel.textContent = 'Subscribe';
+                nlSpinner.hidden = true;
+                var data = {};
+                try { data = JSON.parse(xhr.responseText); } catch (err) { /* ignore */ }
+                nlStatus.hidden = false;
+                if (xhr.status >= 200 && xhr.status < 300 && data.success) {
+                    nlStatus.className = 'fnl-status is-success';
+                    nlStatus.textContent = data.message || "You're subscribed. Thanks for joining!";
+                    newsletterForm.reset();
+                } else {
+                    nlStatus.className = 'fnl-status is-error';
+                    nlStatus.textContent = data.message || 'Something went wrong. Please try again.';
+                }
+            };
+            xhr.onerror = function () {
+                nlSubmit.disabled = false;
+                nlLabel.textContent = 'Subscribe';
+                nlSpinner.hidden = true;
+                nlStatus.hidden = false;
+                nlStatus.className = 'fnl-status is-error';
+                nlStatus.textContent = 'Something went wrong. Please try again.';
+            };
+            xhr.send(fd);
+        });
+    }
+
 });

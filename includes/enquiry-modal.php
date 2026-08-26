@@ -90,17 +90,27 @@
                             <label for="enqServiceRequired">Service Required *</label>
                             <select id="enqServiceRequired" name="service_required" required>
                                 <option value="">Select service</option>
-                                <option>Tourist Visa</option>
-                                <option>Business Visa</option>
-                                <option>Student Visa</option>
-                                <option>Work Visa</option>
-                                <option>Transit Visa</option>
-                                <option>Family Visa</option>
-                                <option>Sports Visa</option>
-                                <option>Medical Visa</option>
-                                <option>Crew Visa</option>
-                                <option>Visa Extension</option>
-                                <option>Other</option>
+                                <optgroup label="Visa Services">
+                                    <option>Tourist Visa</option>
+                                    <option>Business Visa</option>
+                                    <option>Student Visa</option>
+                                    <option>Work Visa</option>
+                                    <option>Transit Visa</option>
+                                    <option>Family Visa</option>
+                                    <option>Sports Visa</option>
+                                    <option>Medical Visa</option>
+                                    <option>Crew Visa</option>
+                                    <option>Visa Extension</option>
+                                    <option>Other</option>
+                                </optgroup>
+                                <optgroup label="Other Services">
+                                    <option>General Enquiry</option>
+                                    <option>Apostille &amp; Attestation</option>
+                                    <option>Forex Assistance</option>
+                                    <option>Travel Insurance</option>
+                                    <option>Flight &amp; Hotel Assistance</option>
+                                    <option>Other Services</option>
+                                </optgroup>
                             </select>
                             <span class="enquiry-error" data-error-for="service_required"></span>
                         </div>

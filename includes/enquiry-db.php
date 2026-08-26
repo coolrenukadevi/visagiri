@@ -28,6 +28,8 @@ const CRM_SOURCES = ['Website', 'WhatsApp', 'Phone', 'Email', 'Walk-in', 'Referr
 const CRM_VISA_CATEGORIES = [
     'Tourist Visa', 'Business Visa', 'Student Visa', 'Work Visa', 'Dependent Visa',
     'Transit Visa', 'Immigration', 'Conference Visa', 'Sports Visa', 'Medical Visa', 'Other',
+    'General Enquiry', 'Apostille & Attestation', 'Forex Assistance', 'Travel Insurance',
+    'Flight & Hotel Assistance', 'Other Services',
 ];
 const CRM_ROLES = [
     'Super Admin', 'Admin', 'Sales Manager', 'Travel Consultant', 'Visa Consultant', 'Accounts',
@@ -242,6 +244,14 @@ function enquiry_db(): PDO
         email TEXT,
         password_hash TEXT NOT NULL,
         role TEXT NOT NULL DEFAULT 'Admin',
+        created_at TEXT NOT NULL
+    )");
+
+    $pdo->exec("CREATE TABLE IF NOT EXISTS newsletter_subscribers (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        email TEXT UNIQUE NOT NULL,
+        source_url TEXT,
+        is_active INTEGER NOT NULL DEFAULT 1,
         created_at TEXT NOT NULL
     )");
 

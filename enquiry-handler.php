@@ -100,19 +100,33 @@ if (!in_array($contactMethod, ['Phone', 'WhatsApp', 'Email'], true)) {
 }
 
 $serviceOptions = ['Tourist Visa', 'Business Visa', 'Student Visa', 'Work Visa', 'Transit Visa', 'Family Visa', 'Sports Visa', 'Medical Visa', 'Crew Visa', 'Visa Extension', 'Other'];
+$nonVisaServiceOptions = ['General Enquiry', 'Apostille & Attestation', 'Forex Assistance', 'Travel Insurance', 'Flight & Hotel Assistance', 'Other Services'];
 $serviceRequired = trim($_POST['service_required'] ?? '');
-if (!in_array($serviceRequired, $serviceOptions, true)) {
+$isNonVisaService = in_array($serviceRequired, $nonVisaServiceOptions, true);
+if (!in_array($serviceRequired, $serviceOptions, true) && !$isNonVisaService) {
     $fieldErrors['service_required'] = 'Please select the service you need.';
 }
 
+// Destination country and visa type only make sense for visa services —
+// non-visa enquiries (Apostille, Forex, Insurance, Flight/Hotel, General)
+// store a sentinel value instead, since both columns are NOT NULL and
+// re-purposing them avoids a schema migration for a same-shaped record.
 $destinationCountry = trim($_POST['destination_country'] ?? '');
 if ($destinationCountry === '') {
-    $fieldErrors['destination_country'] = 'Please select your destination country.';
+    if ($isNonVisaService) {
+        $destinationCountry = 'Not Applicable';
+    } else {
+        $fieldErrors['destination_country'] = 'Please select your destination country.';
+    }
 }
 
 $visaType = trim($_POST['visa_type'] ?? '');
 if ($visaType === '') {
-    $fieldErrors['visa_type'] = 'Please select a visa type.';
+    if ($isNonVisaService) {
+        $visaType = 'Not Applicable';
+    } else {
+        $fieldErrors['visa_type'] = 'Please select a visa type.';
+    }
 }
 
 $travelDate = trim($_POST['travel_date'] ?? '');
