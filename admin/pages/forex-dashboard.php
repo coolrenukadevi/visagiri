@@ -31,10 +31,10 @@ $totalVolume = (float) $pdo->query(
 )->fetchColumn();
 
 $byCurrency = $pdo->query(
-    "SELECT currency_code AS label, COALESCE(SUM(amount_delivered), 0) AS total FROM forex_deliveries d
+    "SELECT d.currency_code AS label, COALESCE(SUM(d.amount_delivered), 0) AS total FROM forex_deliveries d
      JOIN forex_requests fr ON fr.id = d.forex_request_id
      WHERE fr.deleted_at IS NULL" . ($scoped ? ' AND fr.assigned_employee = ' . (int) current_admin_id() : '') . "
-     GROUP BY currency_code ORDER BY total DESC"
+     GROUP BY d.currency_code ORDER BY total DESC"
 )->fetchAll();
 
 admin_header_start('Forex Dashboard', 'forex-dashboard');
