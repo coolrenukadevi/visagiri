@@ -43,10 +43,11 @@ $navItems = [
     ['key' => 'forex-delivered', 'label' => 'Delivered', 'icon' => 'hand-holding-dollar', 'href' => 'forex-requests.php?status=Delivered'],
     ['key' => 'forex-cancelled', 'label' => 'Cancelled', 'icon' => 'ban', 'href' => 'forex-requests.php?status=Cancelled'],
     ['key' => 'forex-audit', 'label' => 'FEMA / Audit Records', 'icon' => 'shield-halved', 'href' => 'forex-audit.php', 'roles' => ['Super Admin', 'Forex Manager', 'Compliance / Audit']],
-    ['key' => 'forex-reports', 'label' => 'Reports', 'icon' => 'chart-pie', 'href' => 'forex-reports.php', 'soon' => true],
+    ['key' => 'forex-reports', 'label' => 'Reports', 'icon' => 'chart-pie', 'href' => 'forex-reports.php'],
     ['key' => 'forex-country-rules', 'label' => 'Country Rules', 'icon' => 'gavel', 'href' => 'forex-country-rules.php', 'roles' => ['Super Admin', 'Forex Manager', 'Compliance / Audit']],
     ['key' => 'forex-rates', 'label' => 'Rates', 'icon' => 'coins', 'href' => 'forex-rates.php', 'roles' => ['Super Admin', 'Forex Manager']],
     ['key' => 'forex-declaration-templates', 'label' => 'Declaration Templates', 'icon' => 'file-contract', 'href' => 'forex-declaration-templates.php', 'roles' => ['Super Admin', 'Forex Manager']],
+    ['key' => 'forex-settings', 'label' => 'Forex Settings', 'icon' => 'sliders', 'href' => 'forex-settings.php', 'roles' => ['Super Admin', 'Forex Manager']],
 
     ['key' => 'settings', 'label' => 'Settings', 'icon' => 'gear', 'href' => 'settings.php'],
 ];

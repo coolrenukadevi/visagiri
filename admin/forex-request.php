@@ -222,10 +222,17 @@ $blockers = $delivery ? [] : forex_delivery_blockers($pdo, $request);
 $quotStmt = $pdo->prepare('SELECT * FROM forex_quotations WHERE forex_request_id = ? ORDER BY id DESC');
 $quotStmt->execute([$requestId]);
 $quotations = $quotStmt->fetchAll(PDO::FETCH_ASSOC);
-$currentRateStmt = $pdo->prepare('SELECT currency_code, sell_rate FROM forex_rates WHERE currency_code = ? AND effective_until IS NULL');
+$currentRateStmt = $pdo->prepare('SELECT sell_rate FROM forex_rates WHERE currency_code = ? AND effective_until IS NULL');
 $currentRateStmt->execute([$request['currency_code']]);
 $suggestedRate = $currentRateStmt->fetchColumn();
 $approvalThreshold = (float) forex_setting($pdo, 'approval_threshold_inr', '200000');
+$defaultServiceCharge = (float) forex_setting($pdo, 'default_service_charge', '0');
+$defaultMarkup = (float) forex_setting($pdo, 'default_markup', '0');
+$defaultGstPercent = (float) forex_setting($pdo, 'default_gst_percent', '0');
+$suggestedBaseInr = ($suggestedRate ? (float) $suggestedRate : 0) * (float) $request['amount_required'];
+$defaultGstAmount = round($suggestedBaseInr * $defaultGstPercent / 100, 2);
+$quotationValidityHours = (int) forex_setting($pdo, 'quotation_validity_hours', '24');
+$defaultValidUntil = gmdate('Y-m-d\TH:i', strtotime("+{$quotationValidityHours} hours"));
 
 $declStmt = $pdo->prepare('SELECT * FROM forex_declarations WHERE forex_request_id = ? ORDER BY id DESC LIMIT 1');
 $declStmt->execute([$requestId]);
@@ -461,11 +468,11 @@ function fx_fmt($v) { $v = trim((string) $v); return $v === '' ? '<span style="c
                                 <?php foreach (FOREX_RATE_TYPES as $rt): ?><option value="<?php echo htmlspecialchars($rt); ?>"><?php echo htmlspecialchars($rt); ?></option><?php endforeach; ?>
                             </select>
                         </div>
-                        <div class="crm-form-field"><label>Service Charge (₹)</label><input type="number" step="0.01" name="service_charge" id="qService" value="0"></div>
-                        <div class="crm-form-field"><label>Commission / Markup (₹)</label><input type="number" step="0.01" name="markup" id="qMarkup" value="0"></div>
-                        <div class="crm-form-field"><label>GST (₹)</label><input type="number" step="0.01" name="gst" id="qGst" value="0"></div>
+                        <div class="crm-form-field"><label>Service Charge (₹)</label><input type="number" step="0.01" name="service_charge" id="qService" value="<?php echo htmlspecialchars((string) $defaultServiceCharge); ?>"></div>
+                        <div class="crm-form-field"><label>Commission / Markup (₹)</label><input type="number" step="0.01" name="markup" id="qMarkup" value="<?php echo htmlspecialchars((string) $defaultMarkup); ?>"></div>
+                        <div class="crm-form-field"><label>GST (₹)</label><input type="number" step="0.01" name="gst" id="qGst" value="<?php echo htmlspecialchars((string) $defaultGstAmount); ?>" title="Pre-filled from the default GST % setting (<?php echo htmlspecialchars((string) $defaultGstPercent); ?>%) against the suggested base amount. Adjust if the final rate/amount changes."></div>
                         <div class="crm-form-field"><label>Other Charges (₹)</label><input type="number" step="0.01" name="other_charges" id="qOther" value="0"></div>
-                        <div class="crm-form-field"><label>Valid Until</label><input type="datetime-local" name="valid_until" id="qValidUntil"></div>
+                        <div class="crm-form-field"><label>Valid Until</label><input type="datetime-local" name="valid_until" id="qValidUntil" value="<?php echo htmlspecialchars($defaultValidUntil); ?>" title="Defaults to <?php echo $quotationValidityHours; ?> hours from now per the Quotation Validity setting."></div>
                         <div class="crm-form-field crm-form-field-full"><label>Payment Terms</label><input type="text" name="payment_terms" id="qPaymentTerms"></div>
                     </div>
                 </div>
