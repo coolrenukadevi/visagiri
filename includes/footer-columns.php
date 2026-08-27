@@ -60,6 +60,8 @@
                                 <li><a href="visa-news">Visa News &amp; Updates</a></li>
                                 <li><a href="customer-login">Customer Login</a></li>
                                 <li><a href="payment">Payment Link</a></li>
+                                <li><a href="b2b-partners">Become a B2B Partner</a></li>
+                                <li><a href="b2b-login">B2B Partner Login</a></li>
                             </ul>
                         </details>
 

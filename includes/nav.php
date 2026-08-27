@@ -188,6 +188,25 @@
         </li>
 
         <li class="has-dropdown">
+            <a href="b2b-partners"><i class="fa-regular fa-handshake nav-top-icon"></i>B2B Partners</a>
+            <ul class="submenu simple-dropdown">
+                <?php if ($b2bPartnerLoggedIn): ?>
+                <li><a href="b2b-dashboard"><i class="fa-solid fa-gauge-high"></i> Dashboard</a></li>
+                <li><a href="b2b-applications"><i class="fa-solid fa-passport"></i> Visa Applications</a></li>
+                <li><a href="b2b-quotations"><i class="fa-solid fa-file-invoice-dollar"></i> Quotations</a></li>
+                <li><a href="b2b-invoices"><i class="fa-solid fa-file-invoice"></i> Invoices &amp; Payments</a></li>
+                <li><a href="b2b-messages"><i class="fa-solid fa-comments"></i> Messages</a></li>
+                <li><a href="b2b-logout"><i class="fa-solid fa-right-from-bracket"></i> Log Out</a></li>
+                <?php else: ?>
+                <li><a href="b2b-partner-register"><i class="fa-solid fa-handshake"></i> Become a B2B Partner</a></li>
+                <li><a href="b2b-login"><i class="fa-solid fa-right-to-bracket"></i> Partner Login</a></li>
+                <li><a href="b2b-partners#benefits"><i class="fa-solid fa-star"></i> Why Partner With Us</a></li>
+                <li><a href="b2b-partners#faq"><i class="fa-solid fa-circle-question"></i> FAQs</a></li>
+                <?php endif; ?>
+            </ul>
+        </li>
+
+        <li class="has-dropdown">
             <a href="about"><i class="fa-regular fa-building nav-top-icon"></i>Company</a>
             <ul class="submenu simple-dropdown">
                 <li><a href="about"><i class="fa-solid fa-building"></i> About VisaAgency.in</a></li>

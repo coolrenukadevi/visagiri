@@ -1042,6 +1042,24 @@ include __DIR__ . '/includes/header-home.php';
         </div>
        </section>
 
+        <!-- B2B Partners Banner Start -->
+        <section class="section-padding fix">
+            <div class="container">
+                <div class="console-cta-band">
+                    <div class="console-cta-inner">
+                        <div>
+                            <h3>Run A Travel Agency Or Corporate Travel Desk?</h3>
+                            <p>Get your own B2B Partner Portal &mdash; submit visa cases, track quotations and invoices, and manage your team in one place.</p>
+                        </div>
+                        <div class="console-cta-buttons">
+                            <a class="console-btn console-btn-primary" href="b2b-partner-register">Become a B2B Partner</a>
+                            <a class="console-btn console-btn-outline-dark" href="b2b-partners">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- FAQ Start -->
         <section id="faq" class="section-padding fix section-bg-1">
             <div class="container">
