@@ -1,0 +1,79 @@
+<?php
+declare(strict_types=1);
+
+if (is_partner_logged_in()) {
+    redirect('/partner/dashboard/');
+}
+
+$errors = [];
+$identifier = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    csrf_require();
+    $identifier = trim((string) ($_POST['identifier'] ?? ''));
+    $password = (string) ($_POST['password'] ?? '');
+    $remember = !empty($_POST['remember']);
+
+    if (!rate_limit_check('partner-login:' . $identifier . ':' . ($_SERVER['REMOTE_ADDR'] ?? ''), 5, 900)) {
+        $errors[] = 'Too many login attempts. Please wait a few minutes and try again.';
+    } elseif ($identifier === '' || $password === '') {
+        $errors[] = 'Enter your email and password.';
+    } else {
+        $stmt = db()->prepare('SELECT * FROM partners WHERE email = :email AND deleted_at IS NULL');
+        $stmt->execute(['email' => $identifier]);
+        $partner = $stmt->fetch();
+
+        $hashToCheck = $partner['password_hash'] ?? DUMMY_PASSWORD_HASH;
+        $passwordOk = verify_password($password, $hashToCheck);
+
+        if ($partner && $passwordOk) {
+            log_in_partner((int) $partner['id']);
+            if ($remember) {
+                remember_partner((int) $partner['id']);
+            }
+            $redirectTo = $_SESSION['partner_redirect_after_login'] ?? '/partner/dashboard/';
+            unset($_SESSION['partner_redirect_after_login']);
+            redirect($redirectTo);
+        }
+
+        $errors[] = 'Invalid email or password.';
+    }
+}
+
+$pageTitle = 'Partner Login - Visagiri';
+$pageDescription = 'Sign in to the Visagiri partner referral portal.';
+$canonicalUrl = APP_URL . '/partner/login/';
+$noindex = true;
+require __DIR__ . '/../../includes/header.php';
+?>
+<section class="section" style="padding-top:var(--space-8)">
+    <div class="container" style="max-width:420px">
+        <div class="section-heading" style="text-align:left;margin-left:0;max-width:none">
+            <span class="section-eyebrow">B2B Partner Program</span>
+            <h1>Partner Sign In</h1>
+        </div>
+        <?php foreach ($errors as $error): ?>
+        <div class="alert alert-danger"><?= e($error) ?></div>
+        <?php endforeach; ?>
+        <form method="post" action="/partner/login/" class="card" style="padding:var(--space-6)">
+            <?= csrf_field() ?>
+            <div class="form-group">
+                <label class="form-label" for="identifier">Email</label>
+                <input class="form-input" type="email" id="identifier" name="identifier" value="<?= e($identifier) ?>" required autofocus>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="password">Password</label>
+                <input class="form-input" type="password" id="password" name="password" required autocomplete="current-password">
+            </div>
+            <div class="form-group" style="display:flex;align-items:center;justify-content:space-between">
+                <label style="display:flex;align-items:center;gap:var(--space-2);font-size:var(--font-size-sm)">
+                    <input type="checkbox" name="remember" value="1"> Remember me
+                </label>
+                <a href="/partner/forgot-password/" style="font-size:var(--font-size-sm)">Forgot password?</a>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%">Sign In</button>
+            <p style="margin-top:var(--space-4);text-align:center;font-size:var(--font-size-sm)">New partner? <a href="/partner/register/">Register here</a></p>
+        </form>
+    </div>
+</section>
+<?php require __DIR__ . '/../../includes/footer.php'; ?>

@@ -193,6 +193,9 @@ switch ($segments[0] ?? '') {
     case 'dashboard':
         $dispatch("$root/dashboard/index.php");
 
+    case 'partner':
+        $dispatch("$root/partner/index.php");
+
     case 'admin':
         $dispatch("$root/admin/index.php");
 

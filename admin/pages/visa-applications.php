@@ -104,9 +104,84 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($postAction === 'add_note' && $id) {
         $note = trim((string) ($_POST['note'] ?? ''));
         if ($note !== '') {
-            $pdo->prepare('INSERT INTO visa_application_notes (visa_application_id, admin_user_id, note) VALUES (:id, :admin, :note)')
-                ->execute(['id' => $id, 'admin' => current_admin_id(), 'note' => $note]);
+            $visibleToCustomer = !empty($_POST['visible_to_customer']) ? 1 : 0;
+            $pdo->prepare('INSERT INTO visa_application_notes (visa_application_id, admin_user_id, note, visible_to_customer) VALUES (:id, :admin, :note, :visible)')
+                ->execute(['id' => $id, 'admin' => current_admin_id(), 'note' => $note, 'visible' => $visibleToCustomer]);
             log_action('update', 'visa_applications', $id, null, 'Note added');
+            if ($visibleToCustomer) {
+                $appStmt = $pdo->prepare('SELECT customer_id, application_reference_no FROM visa_applications WHERE id = :id');
+                $appStmt->execute(['id' => $id]);
+                $app = $appStmt->fetch();
+                if ($app) {
+                    $pdo->prepare('INSERT INTO customer_notifications (customer_id, type, title, body, link) VALUES (:cid, "message", :title, :body, :link)')
+                        ->execute([
+                            'cid' => $app['customer_id'],
+                            'title' => 'New message on ' . $app['application_reference_no'],
+                            'body' => mb_substr($note, 0, 200),
+                            'link' => '/dashboard/messages/?application_id=' . $id,
+                        ]);
+                }
+            }
+        }
+        redirect('/admin/visa-applications/?action=view&id=' . $id);
+    }
+
+    if ($postAction === 'add_appointment' && $id) {
+        $type = trim((string) ($_POST['appointment_type'] ?? ''));
+        $scheduledAt = trim((string) ($_POST['scheduled_at'] ?? ''));
+        if ($type !== '' && $scheduledAt !== '') {
+            $appStmt = $pdo->prepare('SELECT customer_id FROM visa_applications WHERE id = :id');
+            $appStmt->execute(['id' => $id]);
+            $customerId = (int) $appStmt->fetchColumn();
+            $pdo->prepare(
+                'INSERT INTO customer_appointments (customer_id, visa_application_id, appointment_type, location, scheduled_at, notes, created_by)
+                 VALUES (:cid, :id, :type, :location, :scheduled_at, :notes, :admin)'
+            )->execute([
+                'cid' => $customerId,
+                'id' => $id,
+                'type' => $type,
+                'location' => trim((string) ($_POST['location'] ?? '')) ?: null,
+                'scheduled_at' => $scheduledAt,
+                'notes' => trim((string) ($_POST['appointment_notes'] ?? '')) ?: null,
+                'admin' => current_admin_id(),
+            ]);
+            $newApptId = (int) $pdo->lastInsertId();
+            log_action('create', 'customer_appointments', $newApptId, null, $type);
+            $refStmt = $pdo->prepare('SELECT application_reference_no FROM visa_applications WHERE id = :id');
+            $refStmt->execute(['id' => $id]);
+            $pdo->prepare('INSERT INTO customer_notifications (customer_id, type, title, body, link) VALUES (:cid, "appointment", :title, :body, :link)')
+                ->execute([
+                    'cid' => $customerId,
+                    'title' => 'Appointment scheduled: ' . $type,
+                    'body' => 'Scheduled for ' . date('d M Y, g:i A', strtotime($scheduledAt)),
+                    'link' => '/dashboard/appointments/',
+                ]);
+            flash_set('admin_notice', 'Appointment scheduled.');
+        }
+        redirect('/admin/visa-applications/?action=view&id=' . $id);
+    }
+
+    if ($postAction === 'set_commission' && $id) {
+        $appStmt = $pdo->prepare('SELECT cust.referred_by_partner_id FROM visa_applications va JOIN customers cust ON cust.id = va.customer_id WHERE va.id = :id');
+        $appStmt->execute(['id' => $id]);
+        $partnerId = $appStmt->fetchColumn();
+        if ($partnerId) {
+            $amount = ($_POST['commission_amount'] ?? '') !== '' ? (float) $_POST['commission_amount'] : null;
+            $status = in_array($_POST['commission_status'] ?? '', ['pending', 'approved', 'paid'], true) ? $_POST['commission_status'] : 'pending';
+            $pdo->prepare(
+                'INSERT INTO partner_commissions (partner_id, visa_application_id, amount_due, status, set_by, paid_at)
+                 VALUES (:partner_id, :app_id, :amount, :status, :admin, :paid_at)
+                 ON DUPLICATE KEY UPDATE amount_due = VALUES(amount_due), status = VALUES(status), set_by = VALUES(set_by), paid_at = VALUES(paid_at)'
+            )->execute([
+                'partner_id' => $partnerId,
+                'app_id' => $id,
+                'amount' => $amount,
+                'status' => $status,
+                'admin' => current_admin_id(),
+                'paid_at' => $status === 'paid' ? date('Y-m-d H:i:s') : null,
+            ]);
+            log_action('update', 'partner_commissions', $id, null, 'Commission set: ' . ($amount ?? 'null') . ' (' . $status . ')');
+            flash_set('admin_notice', 'Commission updated.');
         }
         redirect('/admin/visa-applications/?action=view&id=' . $id);
     }
@@ -266,11 +341,13 @@ if ($action === 'view' && $id) {
     $stmt = $pdo->prepare(
         'SELECT va.*, c.name AS country_name, v.name AS visa_type_name,
                 cust.customer_reference_no, cust.first_name, cust.last_name, cust.email, cust.mobile,
+                cust.referred_by_partner_id, p.company_name AS partner_company_name, p.partner_reference_no,
                 e.full_name AS assigned_name
          FROM visa_applications va
          JOIN countries c ON c.id = va.country_id
          JOIN visa_types v ON v.id = va.visa_type_id
          JOIN customers cust ON cust.id = va.customer_id
+         LEFT JOIN partners p ON p.id = cust.referred_by_partner_id
          LEFT JOIN admin_users e ON e.id = va.assigned_user
          WHERE va.id = :id AND va.deleted_at IS NULL'
     );
@@ -306,10 +383,23 @@ if ($action === 'view' && $id) {
     $payments = $pdo->prepare('SELECT * FROM visa_payments WHERE visa_application_id = :id ORDER BY created_at DESC');
     $payments->execute(['id' => $id]);
 
+    $appointments = $pdo->prepare('SELECT * FROM customer_appointments WHERE visa_application_id = :id ORDER BY scheduled_at DESC');
+    $appointments->execute(['id' => $id]);
+
+    $commission = null;
+    if ($application['referred_by_partner_id']) {
+        $commissionStmt = $pdo->prepare('SELECT * FROM partner_commissions WHERE visa_application_id = :id');
+        $commissionStmt->execute(['id' => $id]);
+        $commission = $commissionStmt->fetch();
+    }
+
     admin_header_start($application['application_reference_no'], 'visa-applications');
     ?>
     <div class="admin-form-card" style="margin-bottom:var(--space-6)">
         <p><strong>Customer:</strong> <a href="/admin/customers/?action=view&id=<?= (int) $application['customer_id'] ?>"><?= e($application['customer_reference_no']) ?> — <?= e($application['first_name'] . ' ' . ($application['last_name'] ?? '')) ?></a></p>
+        <?php if ($application['referred_by_partner_id']): ?>
+        <p><strong>Referred By:</strong> <?= e($application['partner_company_name']) ?> (<?= e($application['partner_reference_no']) ?>)</p>
+        <?php endif; ?>
         <p><strong>Country / Visa Type:</strong> <?= e($application['country_name']) ?> — <?= e($application['visa_type_name']) ?></p>
         <p><strong>Status:</strong> <span class="badge badge-info"><?= e(ucwords(str_replace('_', ' ', $application['status']))) ?></span> &middot; <strong>Priority:</strong> <?= e(ucfirst($application['priority'])) ?></p>
         <p><strong>Assigned to:</strong> <?= e($application['assigned_name'] ?? 'Unassigned') ?></p>
@@ -460,14 +550,60 @@ if ($action === 'view' && $id) {
     <?php $rows = $notes->fetchAll(); if ($rows): foreach ($rows as $r): ?>
     <div class="card" style="margin-bottom:var(--space-3)">
         <p><?= nl2br(e($r['note'])) ?></p>
-        <p style="color:var(--text-muted);font-size:var(--font-size-sm)"><?= e($r['author'] ?? 'Unknown') ?> &middot; <?= e(date('d M Y H:i', strtotime((string) $r['created_at']))) ?></p>
+        <p style="color:var(--text-muted);font-size:var(--font-size-sm)">
+            <?= $r['customer_id'] ? 'Customer' : e($r['author'] ?? 'Unknown') ?> &middot; <?= e(date('d M Y H:i', strtotime((string) $r['created_at']))) ?>
+            <?php if ($r['visible_to_customer']): ?> &middot; <span class="badge badge-info">Visible to customer</span><?php endif; ?>
+        </p>
     </div>
     <?php endforeach; else: ?><p class="empty-state">No notes yet.</p><?php endif; ?>
     <form method="post" action="/admin/visa-applications/?action=view&id=<?= $id ?>">
         <?= csrf_field() ?><input type="hidden" name="action" value="add_note">
         <textarea class="form-input" name="note" rows="2" placeholder="Add an internal note…" required></textarea>
+        <label style="display:flex;align-items:center;gap:var(--space-2);margin-top:var(--space-2);font-size:var(--font-size-sm)">
+            <input type="checkbox" name="visible_to_customer" value="1"> Send as a message the customer can see in their dashboard
+        </label>
         <button type="submit" class="btn btn-outline btn-sm" style="margin-top:var(--space-2)">Add Note</button>
     </form>
+
+    <h2 class="country-directory__subheading">Appointments</h2>
+    <?php $rows = $appointments->fetchAll(); if ($rows): ?>
+    <table class="admin-table"><thead><tr><th>Type</th><th>When</th><th>Location</th><th>Status</th></tr></thead><tbody>
+        <?php foreach ($rows as $r): ?>
+        <tr><td><?= e($r['appointment_type']) ?></td><td><?= e(date('d M Y, g:i A', strtotime((string) $r['scheduled_at']))) ?></td><td><?= e($r['location'] ?? '—') ?></td><td><span class="badge badge-info"><?= e($r['status']) ?></span></td></tr>
+        <?php endforeach; ?>
+    </tbody></table>
+    <?php else: ?><p class="empty-state">No appointments scheduled yet.</p><?php endif; ?>
+    <?php if (has_permission('visa.manage')): ?>
+    <form method="post" action="/admin/visa-applications/?action=view&id=<?= $id ?>" style="margin-top:var(--space-3)">
+        <?= csrf_field() ?><input type="hidden" name="action" value="add_appointment">
+        <div class="admin-form-grid">
+            <input class="form-input" type="text" name="appointment_type" placeholder="e.g. Biometric Appointment" required>
+            <input class="form-input" type="datetime-local" name="scheduled_at" required>
+            <input class="form-input" type="text" name="location" placeholder="Location">
+            <input class="form-input" type="text" name="appointment_notes" placeholder="Notes (optional)">
+        </div>
+        <button type="submit" class="btn btn-outline btn-sm" style="margin-top:var(--space-2)">Schedule Appointment</button>
+    </form>
+    <?php endif; ?>
+
+    <?php if ($application['referred_by_partner_id']): ?>
+    <h2 class="country-directory__subheading">Partner Commission</h2>
+    <p style="color:var(--text-muted);font-size:var(--font-size-sm)">Referred by <?= e($application['partner_company_name']) ?>.</p>
+    <?php if (has_permission('visa.manage')): ?>
+    <form method="post" action="/admin/visa-applications/?action=view&id=<?= $id ?>" style="margin-top:var(--space-3)">
+        <?= csrf_field() ?><input type="hidden" name="action" value="set_commission">
+        <div class="admin-form-grid">
+            <input class="form-input" type="number" step="0.01" name="commission_amount" placeholder="Commission amount" value="<?= e((string) ($commission['amount_due'] ?? '')) ?>">
+            <select class="form-select" name="commission_status">
+                <?php foreach (['pending', 'approved', 'paid'] as $s): ?>
+                <option value="<?= $s ?>"<?= ($commission['status'] ?? 'pending') === $s ? ' selected' : '' ?>><?= ucfirst($s) ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-outline btn-sm" style="margin-top:var(--space-2)">Save Commission</button>
+    </form>
+    <?php endif; ?>
+    <?php endif; ?>
 
     <h2 class="country-directory__subheading">Status History</h2>
     <?php $rows = $history->fetchAll(); if ($rows): ?>

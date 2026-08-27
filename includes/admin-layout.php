@@ -49,6 +49,7 @@ function admin_header_start(string $pageTitle, string $activeNav): void
             <a href="/admin/dashboard/" class="<?= $activeNav === 'dashboard' ? 'is-active' : '' ?>">Dashboard</a>
             <?php if (has_permission('customers.view')): ?>
             <a href="/admin/customers/" class="<?= $activeNav === 'customers' ? 'is-active' : '' ?>">Customers</a>
+            <a href="/admin/partners/" class="<?= $activeNav === 'partners' ? 'is-active' : '' ?>">Partners</a>
             <?php endif; ?>
             <?php if (has_permission('visa.view')): ?>
             <a href="/admin/visa-enquiries/" class="<?= $activeNav === 'visa-enquiries' ? 'is-active' : '' ?>">Visa Enquiries</a>

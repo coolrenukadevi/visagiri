@@ -79,10 +79,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash_set('notice', 'Welcome back! Your existing enquiries are now linked to your new account.');
             redirect('/dashboard/');
         } else {
+            // A referral link (/register/?ref=VG-PTR-2026-000001) attributes the
+            // new customer to that partner — only if the partner is real and
+            // active, so a pending/suspended partner's link can't backdate
+            // attribution once approved, and a typo'd ref never silently
+            // attaches to the wrong partner.
+            $referredByPartnerId = null;
+            $ref = trim((string) ($_GET['ref'] ?? $_POST['ref'] ?? ''));
+            if ($ref !== '') {
+                $partnerStmt = $pdo->prepare("SELECT id FROM partners WHERE partner_reference_no = :ref AND status = 'active' AND deleted_at IS NULL");
+                $partnerStmt->execute(['ref' => $ref]);
+                $referredByPartnerId = $partnerStmt->fetchColumn() ?: null;
+            }
+
             $reference = generate_reference_number('CUST', 'customers', 'customer_reference_no');
             $insert = $pdo->prepare(
-                'INSERT INTO customers (customer_reference_no, first_name, last_name, email, mobile, password_hash, customer_source, status)
-                 VALUES (:reference, :first_name, :last_name, :email, :mobile, :hash, "Website Registration", "active")'
+                'INSERT INTO customers (customer_reference_no, first_name, last_name, email, mobile, password_hash, customer_source, referred_by_partner_id, status)
+                 VALUES (:reference, :first_name, :last_name, :email, :mobile, :hash, "Website Registration", :referred_by, "active")'
             );
             $insert->execute([
                 'reference' => $reference,
@@ -91,6 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'email' => $old['email'],
                 'mobile' => $old['mobile'],
                 'hash' => hash_password($password),
+                'referred_by' => $referredByPartnerId,
             ]);
             log_in_customer((int) $pdo->lastInsertId());
             flash_set('notice', 'Welcome to Visagiri! Your account has been created.');
@@ -115,6 +129,7 @@ require __DIR__ . '/../includes/header.php';
         <?php endforeach; ?>
         <form method="post" action="/register/" class="card" style="padding:var(--space-6)">
             <?= csrf_field() ?>
+            <?php if (isset($_GET['ref'])): ?><input type="hidden" name="ref" value="<?= e($_GET['ref']) ?>"><?php endif; ?>
             <div class="form-group">
                 <label class="form-label" for="first_name">First Name</label>
                 <input class="form-input" type="text" id="first_name" name="first_name" value="<?= e($old['first_name']) ?>" required autofocus>
