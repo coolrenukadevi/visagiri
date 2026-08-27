@@ -34,6 +34,7 @@ const CRM_VISA_CATEGORIES = [
 const CRM_ROLES = [
     'Super Admin', 'Admin', 'Sales Manager', 'Travel Consultant', 'Visa Consultant', 'Accounts',
     'Forex Manager', 'Forex Executive', 'Compliance / Audit',
+    'B2B Admin', 'B2B Relationship Manager', 'Support Executive',
 ];
 const CRM_FOLLOWUP_TYPES = ['Call', 'WhatsApp', 'Email', 'Meeting'];
 const CRM_PAYMENT_METHODS = ['Cash', 'UPI', 'Bank Transfer', 'Credit Card', 'Debit Card', 'Cheque', 'Other'];

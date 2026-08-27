@@ -6,10 +6,13 @@
 require_once __DIR__ . '/admin-auth.php';
 require_once __DIR__ . '/../../includes/forex-db.php';
 require_once __DIR__ . '/forex-permissions.php';
+require_once __DIR__ . '/../../includes/b2b-db.php';
+require_once __DIR__ . '/b2b-permissions.php';
 admin_require_login();
 
 $pdo = enquiry_db();
 forex_db();
+b2b_db();
 $stmt = $pdo->prepare('SELECT COUNT(*) FROM notifications WHERE is_read = 0 AND (user_id IS NULL OR user_id = ?)');
 $stmt->execute([admin_user_id()]);
 $unreadCount = (int) $stmt->fetchColumn();
@@ -48,6 +51,17 @@ $navItems = [
     ['key' => 'forex-rates', 'label' => 'Rates', 'icon' => 'coins', 'href' => 'forex-rates.php', 'roles' => ['Super Admin', 'Forex Manager']],
     ['key' => 'forex-declaration-templates', 'label' => 'Declaration Templates', 'icon' => 'file-contract', 'href' => 'forex-declaration-templates.php', 'roles' => ['Super Admin', 'Forex Manager']],
     ['key' => 'forex-settings', 'label' => 'Forex Settings', 'icon' => 'sliders', 'href' => 'forex-settings.php', 'roles' => ['Super Admin', 'Forex Manager']],
+
+    ['section' => 'B2B Partners'],
+    ['key' => 'b2b-partners', 'label' => 'Partner Applications', 'icon' => 'building', 'href' => 'b2b-partners.php', 'soon' => true],
+    ['key' => 'b2b-documents', 'label' => 'Document Verification', 'icon' => 'file-check', 'href' => 'b2b-documents.php', 'soon' => true],
+    ['key' => 'b2b-quotations', 'label' => 'Quotations', 'icon' => 'file-invoice-dollar', 'href' => 'b2b-quotations.php', 'soon' => true],
+    ['key' => 'b2b-invoices', 'label' => 'Invoices &amp; Payments', 'icon' => 'file-invoice', 'href' => 'b2b-invoices.php', 'soon' => true, 'roles' => ['Super Admin', 'B2B Admin', 'Accounts']],
+    ['key' => 'b2b-tiers', 'label' => 'Tiers &amp; Pricing', 'icon' => 'layer-group', 'href' => 'b2b-tiers.php', 'soon' => true, 'roles' => ['Super Admin', 'B2B Admin']],
+    ['key' => 'b2b-announcements', 'label' => 'Announcements', 'icon' => 'bullhorn', 'href' => 'b2b-announcements.php', 'soon' => true, 'roles' => ['Super Admin', 'B2B Admin']],
+    ['key' => 'b2b-reports', 'label' => 'Partner Reports', 'icon' => 'chart-column', 'href' => 'b2b-reports.php', 'soon' => true],
+    ['key' => 'b2b-audit', 'label' => 'Audit Log', 'icon' => 'shield-alt', 'href' => 'b2b-audit.php', 'soon' => true, 'roles' => ['Super Admin', 'B2B Admin', 'Compliance / Audit']],
+    ['key' => 'b2b-settings', 'label' => 'B2B Settings', 'icon' => 'sliders', 'href' => 'b2b-settings.php', 'soon' => true, 'roles' => ['Super Admin', 'B2B Admin']],
 
     ['section' => 'Marketing'],
     ['key' => 'newsletter', 'label' => 'Newsletter Subscribers', 'icon' => 'envelope-open-text', 'href' => 'newsletter.php', 'roles' => ['Super Admin', 'Admin', 'Sales Manager']],

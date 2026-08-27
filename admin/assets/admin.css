@@ -848,3 +848,28 @@ table.crm-table tr:hover td { background: var(--c-bg); }
 .forex-doc-under-verification { background: var(--c-amber-bg); color: var(--c-amber); }
 .forex-doc-verified { background: var(--c-green-bg); color: var(--c-green); }
 .forex-doc-rejected { background: var(--c-red-bg); color: var(--c-red); }
+
+/* B2B Partner application statuses */
+.b2b-status-draft { background: var(--c-grey-bg); color: var(--c-grey); }
+.b2b-status-submitted { background: var(--c-blue-dim); color: var(--c-blue); }
+.b2b-status-under-review { background: var(--c-amber-bg); color: var(--c-amber); }
+.b2b-status-documents-required { background: var(--c-orange-bg); color: var(--c-orange); }
+.b2b-status-verification { background: var(--c-indigo-bg); color: var(--c-indigo); }
+.b2b-status-approved { background: var(--c-green-bg); color: var(--c-green); }
+.b2b-status-rejected { background: var(--c-deep-red-bg); color: var(--c-deep-red); }
+.b2b-status-suspended { background: var(--c-red-bg); color: var(--c-red); }
+.b2b-status-deactivated { background: var(--c-grey-bg); color: var(--c-grey); }
+
+/* B2B Partner document statuses */
+.b2b-doc-pending { background: var(--c-amber-bg); color: var(--c-amber); }
+.b2b-doc-verified { background: var(--c-green-bg); color: var(--c-green); }
+.b2b-doc-rejected { background: var(--c-deep-red-bg); color: var(--c-deep-red); }
+.b2b-doc-expired { background: var(--c-grey-bg); color: var(--c-grey); }
+
+/* B2B quotation/invoice statuses */
+.b2b-status-draft, .b2b-quote-draft, .b2b-inv-draft { background: var(--c-grey-bg); color: var(--c-grey); }
+.b2b-quote-sent, .b2b-inv-issued { background: var(--c-blue-dim); color: var(--c-blue); }
+.b2b-quote-accepted, .b2b-inv-paid { background: var(--c-green-bg); color: var(--c-green); }
+.b2b-quote-rejected, .b2b-inv-cancelled { background: var(--c-deep-red-bg); color: var(--c-deep-red); }
+.b2b-quote-revision-requested, .b2b-inv-partially-paid { background: var(--c-amber-bg); color: var(--c-amber); }
+.b2b-quote-expired, .b2b-inv-overdue { background: var(--c-red-bg); color: var(--c-red); }
