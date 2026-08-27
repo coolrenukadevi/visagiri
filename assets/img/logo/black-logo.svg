@@ -1,9 +1,9 @@
 <svg width="180" height="48" viewBox="0 0 180 48" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Visa Agency logo">
 <defs>
 <linearGradient id="ringGradB" x1="6" y1="6" x2="42" y2="42" gradientUnits="userSpaceOnUse">
-<stop offset="0" stop-color="#1B3F93"/>
-<stop offset="0.5" stop-color="#7C2E8F"/>
-<stop offset="1" stop-color="#E4222A"/>
+<stop offset="0" stop-color="#073B37"/>
+<stop offset="0.5" stop-color="#0EA5A0"/>
+<stop offset="1" stop-color="#F0A93E"/>
 </linearGradient>
 <clipPath id="badgeClipB">
 <circle cx="24" cy="24" r="19.5"/>
@@ -12,11 +12,11 @@
 <circle cx="24" cy="24" r="21.5" fill="#FFFFFF"/>
 <circle cx="24" cy="24" r="21.5" stroke="url(#ringGradB)" stroke-width="2.4"/>
 <g clip-path="url(#badgeClipB)">
-<rect x="-6" y="9" width="60" height="15" fill="#E4222A" transform="rotate(-9 24 16.5)"/>
-<rect x="-6" y="25" width="60" height="15" fill="#163C99" transform="rotate(-9 24 32.5)"/>
+<rect x="-6" y="9" width="60" height="15" fill="#0EA5A0" transform="rotate(-9 24 16.5)"/>
+<rect x="-6" y="25" width="60" height="15" fill="#0B6E67" transform="rotate(-9 24 32.5)"/>
 </g>
 <text x="16.5" y="21" font-family="Arial, 'Helvetica Neue', sans-serif" font-size="16" font-weight="800" fill="#FFFFFF" text-anchor="middle" transform="rotate(-9 16.5 21)">V</text>
 <text x="31.5" y="37" font-family="Arial, 'Helvetica Neue', sans-serif" font-size="16" font-weight="800" fill="#FFFFFF" text-anchor="middle" transform="rotate(-9 31.5 37)">A</text>
-<text x="52" y="21" font-family="'Space Grotesk', Arial, sans-serif" font-size="16.5" font-weight="700" letter-spacing="0.3"><tspan fill="#E4222A">VISA</tspan><tspan fill="#101828"> AGENCY</tspan></text>
-<text x="52" y="36" font-family="Arial, sans-serif" font-size="8" letter-spacing="0.3" fill="#163C99">Your World. Our Expertise.</text>
+<text x="52" y="21" font-family="'Space Grotesk', Arial, sans-serif" font-size="16.5" font-weight="700" letter-spacing="0.3"><tspan fill="#0EA5A0">VISA</tspan><tspan fill="#101828"> AGENCY</tspan></text>
+<text x="52" y="36" font-family="Arial, sans-serif" font-size="8" letter-spacing="0.3" fill="#0B6E67">Your World. Our Expertise.</text>
 </svg>

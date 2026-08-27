@@ -2,9 +2,23 @@
    Visa Agency — custom additions on top of the template's main.css
    ============================================================ */
 
+/* ---- Brand palette: teal + gold (overrides the template's default
+   red/blue :root variables in main.css — every var(--theme) /
+   var(--theme-2) usage across main.css and this file picks this up
+   automatically). --theme-2-dark/--theme-2-light are extra stops for
+   the deep gradient panels (hero, topbar, footer, admin login) that
+   used to hardcode a three-stop navy gradient. ---- */
+:root {
+    --theme: #0EA5A0;
+    --theme-2: #0B6E67;
+    --theme-2-dark: #073B37;
+    --theme-2-light: #0C8880;
+    --gold: #F0A93E;
+}
+
 /* ---- Redesigned homepage hero (no stock photography) ---- */
 .va-hero {
-    background: linear-gradient(135deg, #0F2557 0%, #163C99 55%, #1B3F93 100%);
+    background: linear-gradient(135deg, var(--theme-2-dark) 0%, var(--theme-2) 55%, var(--theme-2-light) 100%);
     overflow: hidden;
 }
 .va-hero::before {
@@ -15,7 +29,7 @@
     inset: 0;
     pointer-events: none;
     background:
-        radial-gradient(560px circle at 82% 15%, rgba(228, 34, 42, 0.28), transparent 60%),
+        radial-gradient(560px circle at 82% 15%, rgba(14, 165, 160, 0.28), transparent 60%),
         radial-gradient(700px circle at 15% 85%, rgba(255, 255, 255, 0.08), transparent 60%);
 }
 .va-hero-image {
@@ -62,7 +76,7 @@
    solid red block on the homepage variant) ---- */
 .header-top-section,
 .header-top-section-2 {
-    background: linear-gradient(120deg, #0F2557 0%, #163C99 60%, #17348a 100%) !important;
+    background: linear-gradient(120deg, var(--theme-2-dark) 0%, var(--theme-2) 60%, var(--theme-2-light) 100%) !important;
 }
 .header-top-section::before { display: none; }
 .header-top-wrapper .header-left .list li a,
@@ -83,7 +97,7 @@
 .header-top-wrapper .header-left .list li i,
 .header-top-wrapper .header-left .list li.style-2 i,
 .header-top-wrapper-2 .header-left span i {
-    color: var(--gold, #C6A15B) !important;
+    color: var(--gold, #F0A93E) !important;
     background: none !important;
 }
 
@@ -103,7 +117,7 @@
     border-radius: 100px;
     transition: background 0.2s ease, color 0.2s ease;
 }
-.topbar-auth-links a i { color: var(--gold, #C6A15B); font-size: 12px; }
+.topbar-auth-links a i { color: var(--gold, #F0A93E); font-size: 12px; }
 .topbar-auth-links a:hover {
     background: rgba(255, 255, 255, 0.12);
     color: var(--white) !important;
@@ -1051,9 +1065,6 @@
    bar. Native <details>/<summary> accordion — no JS required, fully
    keyboard operable and screen-reader friendly by default.
    ================================================================ */
-:root {
-    --gold: #C6A15B;
-}
 .visually-hidden {
     position: absolute !important;
     width: 1px; height: 1px;
@@ -1068,7 +1079,7 @@
 .footer-pro {
     position: relative;
     overflow: hidden;
-    background: linear-gradient(160deg, #0F2557 0%, #163C99 55%, #17348a 100%);
+    background: linear-gradient(160deg, var(--theme-2-dark) 0%, var(--theme-2) 55%, var(--theme-2-light) 100%);
     padding-top: 46px;
 }
 .footer-pro::before {
@@ -1416,7 +1427,7 @@
 .fnl-field-row button {
     flex: none;
     background: var(--gold);
-    color: #17204a;
+    color: var(--theme-2-dark);
     border: none;
     font-size: 13.5px;
     font-weight: 700;
@@ -1432,8 +1443,8 @@
 .fnl-btn-spinner {
     width: 13px; height: 13px;
     border-radius: 50%;
-    border: 2px solid rgba(23, 32, 74, 0.35);
-    border-top-color: #17204a;
+    border: 2px solid rgba(7, 59, 55, 0.35);
+    border-top-color: var(--theme-2-dark);
     animation: fnl-spin 0.7s linear infinite;
 }
 @keyframes fnl-spin { to { transform: rotate(360deg); } }
@@ -1683,7 +1694,7 @@ summary:focus-visible {
 }
 .qhelp-icon-whatsapp { background: #25D366; }
 .qhelp-icon-call { background: var(--theme); }
-.qhelp-icon-email { background: var(--gold, #C6A15B); }
+.qhelp-icon-email { background: var(--gold, #F0A93E); }
 .qhelp-option-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
 .qhelp-option-text strong { font-size: 13.5px; color: var(--header); }
 .qhelp-option-text span { font-size: 12px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -1724,7 +1735,7 @@ summary:focus-visible {
 
 /* ---- Bottom legal strip: darker, edge-to-edge, below the gradient body ---- */
 .footer-bottom-bar {
-    background: #0A1730;
+    background: var(--theme-2-dark);
     padding: 18px 0;
 }
 .footer-legal-inline {
@@ -2526,9 +2537,9 @@ summary:focus-visible {
    Console pages (About, Careers, Contact, Our Services, Resources tools)
    ============================================================ */
 :root {
-    --signal: #3D5AFE;
-    --signal-light: #7B8FFF;
-    --signal-dim: #E7EAFF;
+    --signal: #0EA5A0;
+    --signal-light: #5BD8CE;
+    --signal-dim: #E1F5F3;
     --console-ink: #0B1220;
     --console-ok: #16A34A;
     --console-ok-bg: #E7F6EC;
@@ -3099,7 +3110,7 @@ html.va-enquiry-modal-open {
     border-radius: 20px;
 }
 .enquiry-modal-header {
-    background: linear-gradient(135deg, var(--theme-2) 0%, #0d2a70 100%);
+    background: linear-gradient(135deg, var(--theme-2) 0%, var(--theme-2-dark) 100%);
     color: var(--white);
     padding: 34px 40px 28px;
     border-radius: 20px 20px 0 0;
@@ -3425,7 +3436,7 @@ html.va-enquiry-modal-open {
     line-height: 1.7;
 }
 .enquiry-tracking-code {
-    background: linear-gradient(135deg, var(--theme-2) 0%, #0d2a70 100%);
+    background: linear-gradient(135deg, var(--theme-2) 0%, var(--theme-2-dark) 100%);
     border-radius: 12px;
     padding: 16px 24px;
     display: inline-flex;
@@ -3704,7 +3715,7 @@ html.va-qe-modal-open {
 .qe-service-card:focus-visible,
 .qe-service-card.is-selected {
     border-color: var(--theme);
-    box-shadow: 0 0 0 3px rgba(228, 34, 42, 0.12);
+    box-shadow: 0 0 0 3px rgba(14, 165, 160, 0.12);
 }
 .qe-service-icon {
     font-size: 24px;
@@ -3940,7 +3951,7 @@ html.va-qe-modal-open {
     line-height: 1.6;
 }
 .qe-ref-box {
-    background: linear-gradient(135deg, var(--theme-2) 0%, #0d2a70 100%);
+    background: linear-gradient(135deg, var(--theme-2) 0%, var(--theme-2-dark) 100%);
     border-radius: 12px;
     padding: 14px 24px;
     display: inline-flex;
@@ -4135,7 +4146,7 @@ html.va-qe-modal-open {
     margin: 0 auto;
 }
 .track-dash-header {
-    background: linear-gradient(135deg, var(--theme-2) 0%, #0d2a70 100%);
+    background: linear-gradient(135deg, var(--theme-2) 0%, var(--theme-2-dark) 100%);
     border-radius: 16px;
     padding: 22px 28px;
     display: flex;

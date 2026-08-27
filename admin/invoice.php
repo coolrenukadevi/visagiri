@@ -34,8 +34,8 @@ $balance = max(0, $quoted - $discount - $paidToDate);
 <title>Invoice <?php echo htmlspecialchars($invoiceNumber); ?></title>
 <style>
     body { font-family: Arial, sans-serif; color: #101828; max-width: 720px; margin: 40px auto; padding: 0 20px; }
-    .inv-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid #163C99; padding-bottom: 20px; margin-bottom: 24px; }
-    .inv-header h1 { font-size: 20px; margin: 0 0 4px; color: #163C99; }
+    .inv-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid #0EA5A0; padding-bottom: 20px; margin-bottom: 24px; }
+    .inv-header h1 { font-size: 20px; margin: 0 0 4px; color: #0B6E67; }
     .inv-header .meta { font-size: 12.5px; color: #55607A; }
     .inv-number { text-align: right; font-size: 13px; }
     .inv-number b { font-size: 16px; display: block; }
@@ -51,7 +51,7 @@ $balance = max(0, $quoted - $discount - $paidToDate);
     .inv-totals .grand { font-weight: 700; font-size: 15px; border-top: 2px solid #101828; margin-top: 6px; padding-top: 10px; }
     .inv-footer { margin-top: 40px; font-size: 11.5px; color: #94A0BD; text-align: center; }
     .print-btn { margin-bottom: 20px; }
-    .print-btn button { padding: 10px 20px; border-radius: 8px; border: none; background: #163C99; color: #fff; font-size: 13px; cursor: pointer; }
+    .print-btn button { padding: 10px 20px; border-radius: 8px; border: none; background: #0EA5A0; color: #fff; font-size: 13px; cursor: pointer; }
     @media print { .print-btn { display: none; } body { margin: 0; } }
 </style>
 </head>

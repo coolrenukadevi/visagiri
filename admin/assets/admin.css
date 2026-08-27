@@ -68,7 +68,7 @@ button { font-family: inherit; }
 .admin-login-brand {
     position: relative;
     overflow: hidden;
-    background: linear-gradient(150deg, #0F2557 0%, #163C99 55%, #17348a 100%);
+    background: linear-gradient(150deg, #073B37 0%, #0B6E67 55%, #0C8880 100%);
     display: flex;
     align-items: center;
     padding: 48px 44px;
@@ -150,8 +150,8 @@ button { font-family: inherit; }
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 .admin-field-input:focus-within {
-    border-color: var(--c-blue);
-    box-shadow: 0 0 0 3px var(--c-blue-dim);
+    border-color: #0EA5A0;
+    box-shadow: 0 0 0 3px #E1F5F3;
 }
 .admin-field-input i { color: var(--c-muted); font-size: 13.5px; flex: none; }
 .admin-field-input input {
@@ -178,7 +178,7 @@ button { font-family: inherit; }
     padding: 13px;
     border: none;
     border-radius: 100px;
-    background: var(--c-blue);
+    background: #0EA5A0;
     color: #fff;
     font-weight: 700;
     cursor: pointer;
@@ -190,7 +190,7 @@ button { font-family: inherit; }
     margin-top: 8px;
     transition: background 0.2s ease;
 }
-.admin-btn:hover { background: var(--c-navy); }
+.admin-btn:hover { background: #0B6E67; }
 .admin-error {
     background: var(--c-red-bg);
     color: var(--c-red);
@@ -211,7 +211,7 @@ button { font-family: inherit; }
     font-weight: 600;
     color: var(--c-muted);
 }
-.admin-login-back:hover { color: var(--c-blue); }
+.admin-login-back:hover { color: #0EA5A0; }
 @media (prefers-reduced-motion: reduce) {
     .admin-field-input, .admin-btn { transition: none !important; }
 }
