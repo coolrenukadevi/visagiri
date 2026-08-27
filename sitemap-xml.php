@@ -48,6 +48,7 @@ $staticPages = [
     ['visa-appointment', 'monthly', '0.7'],
     ['visa-news', 'weekly', '0.6'],
     ['careers', 'monthly', '0.4'],
+    ['b2b-partners', 'monthly', '0.5'],
     ['contact', 'monthly', '0.8'],
     ['news', 'weekly', '0.6'],
     ['news-grid', 'weekly', '0.5'],

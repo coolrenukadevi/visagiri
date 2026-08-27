@@ -93,6 +93,7 @@ require_once __DIR__ . '/site-contact.php';
         <!--<< Main.js >>-->
         <script src="assets/js/main.js"></script>
         <script src="assets/js/custom.js"></script>
+        <script src="assets/js/currency-rate.js"></script>
         <script src="assets/js/enquiry-modal.js"></script>
         <script src="assets/js/quick-enquiry-modal.js"></script>
     </body>

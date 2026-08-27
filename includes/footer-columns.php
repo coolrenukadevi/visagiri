@@ -10,6 +10,7 @@
                                 <li><i class="fa-solid fa-lock" aria-hidden="true"></i> Secure Enquiry Processing</li>
                                 <li><i class="fa-solid fa-headset" aria-hidden="true"></i> Expert Assistance</li>
                             </ul>
+                            <p class="footer-connect-label">Connect With Us</p>
                             <div class="social-icon mt-3" role="list" aria-label="Social media">
                                 <a href="<?php echo htmlspecialchars($site_social['linkedin']); ?>" target="_blank" rel="noopener" aria-label="Visit our LinkedIn page"><i class="fa-brands fa-linkedin" aria-hidden="true"></i></a>
                                 <a href="<?php echo htmlspecialchars($site_social['twitter']); ?>" target="_blank" rel="noopener" aria-label="Visit our X (Twitter) page"><i class="fa-brands fa-twitter" aria-hidden="true"></i></a>

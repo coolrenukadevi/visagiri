@@ -258,6 +258,33 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    /* ---- Header Login dropdown (Customer / Employee / B2B Partners) ---- */
+    document.querySelectorAll('.header-login-dropdown').forEach(function (dropdown) {
+        var toggle = dropdown.querySelector('.header-login-toggle');
+        var panel = dropdown.querySelector('.header-login-panel');
+        if (!toggle || !panel) { return; }
+        var closeLoginDropdown = function () {
+            dropdown.classList.remove('is-open');
+            toggle.setAttribute('aria-expanded', 'false');
+        };
+        toggle.addEventListener('click', function (e) {
+            e.stopPropagation();
+            var isOpen = dropdown.classList.toggle('is-open');
+            toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+        document.addEventListener('click', function (e) {
+            if (dropdown.classList.contains('is-open') && !dropdown.contains(e.target)) {
+                closeLoginDropdown();
+            }
+        });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && dropdown.classList.contains('is-open')) {
+                closeLoginDropdown();
+                toggle.focus();
+            }
+        });
+    });
+
     /* ---- Lightweight click analytics: WhatsApp / Call / Email ---- */
     document.addEventListener('click', function (e) {
         var el = e.target.closest('[data-track-click]');

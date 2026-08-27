@@ -8,34 +8,8 @@
 
         <div class="header-top-section-2 fix">
             <div class="container-fluid">
-                <div class="header-top-wrapper-2">
-                    <div class="header-left">
-                        <span>
-                            <i class="fa-solid fa-phone"></i>
-                            <a href="tel:<?php echo $site_phone_e164; ?>">Call Us: <?php echo $site_phone_display; ?></a>
-                        </span>
-                        <span>
-                            <i class="fa-brands fa-whatsapp"></i>
-                            <a href="<?php echo $site_whatsapp_url; ?>" target="_blank" rel="noopener">WhatsApp Us</a>
-                        </span>
-                        <span>
-                            <i class="fa-solid fa-location-dot"></i>
-                            <?php echo $site_city; ?>
-                        </span>
-                    </div>
-                    <div class="header-right d-flex align-items-center gap-3">
-                        <div class="topbar-auth-links">
-                            <a href="customer-login"><i class="fa-solid fa-user" aria-hidden="true"></i> Customer Login</a>
-                            <span class="divider" aria-hidden="true"></span>
-                            <a href="employee-login"><i class="fa-solid fa-id-badge" aria-hidden="true"></i> Employee Login</a>
-                        </div>
-                        <div class="social-item">
-                            <a href="<?php echo $site_social['linkedin']; ?>" target="_blank" rel="noopener" aria-label="Visit our LinkedIn page"><i class="fa-brands fa-linkedin"></i></a>
-                            <a href="<?php echo $site_social['twitter']; ?>" target="_blank" rel="noopener" aria-label="Visit our X (Twitter) page"><i class="fa-brands fa-twitter"></i></a>
-                            <a href="<?php echo $site_social['instagram']; ?>" target="_blank" rel="noopener" aria-label="Visit our Instagram page"><i class="fa-brands fa-instagram"></i></a>
-                            <a href="<?php echo $site_social['youtube']; ?>" target="_blank" rel="noopener" aria-label="Visit our YouTube page"><i class="fa-brands fa-youtube"></i></a>
-                        </div>
-                    </div>
+                <div class="header-top-wrapper-2 header-top-wrapper-unified">
+                    <?php include __DIR__ . '/header-topbar.php'; ?>
                 </div>
             </div>
         </div>

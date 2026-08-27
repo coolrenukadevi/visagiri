@@ -1,4 +1,5 @@
 /data/enquiries.db
 /data/ADMIN_CREDENTIALS.txt
+/data/exchange-rates-cache.json
 /uploads/enquiries/*/
 /uploads/forex/*/
