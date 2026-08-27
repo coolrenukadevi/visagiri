@@ -59,8 +59,8 @@ $navItems = [
     ['key' => 'b2b-invoices', 'label' => 'Invoices &amp; Payments', 'icon' => 'file-invoice', 'href' => 'b2b-invoices.php', 'roles' => ['Super Admin', 'B2B Admin', 'Accounts']],
     ['key' => 'b2b-tiers', 'label' => 'Tiers &amp; Pricing', 'icon' => 'layer-group', 'href' => 'b2b-tiers.php', 'roles' => ['Super Admin', 'B2B Admin']],
     ['key' => 'b2b-announcements', 'label' => 'Announcements', 'icon' => 'bullhorn', 'href' => 'b2b-announcements.php', 'roles' => ['Super Admin', 'B2B Admin']],
-    ['key' => 'b2b-reports', 'label' => 'Partner Reports', 'icon' => 'chart-column', 'href' => 'b2b-reports.php', 'soon' => true],
-    ['key' => 'b2b-audit', 'label' => 'Audit Log', 'icon' => 'shield-alt', 'href' => 'b2b-audit.php', 'soon' => true, 'roles' => ['Super Admin', 'B2B Admin', 'Compliance / Audit']],
+    ['key' => 'b2b-reports', 'label' => 'Partner Reports', 'icon' => 'chart-column', 'href' => 'b2b-reports.php'],
+    ['key' => 'b2b-audit', 'label' => 'Audit Log', 'icon' => 'shield-alt', 'href' => 'b2b-audit.php', 'roles' => ['Super Admin', 'B2B Admin', 'Compliance / Audit']],
     ['key' => 'b2b-settings', 'label' => 'B2B Settings', 'icon' => 'sliders', 'href' => 'b2b-settings.php', 'soon' => true, 'roles' => ['Super Admin', 'B2B Admin']],
 
     ['section' => 'Marketing'],

@@ -4940,7 +4940,7 @@ html.va-qe-modal-open {
 .pp-chat-body { font-size: 13px; color: var(--header); line-height: 1.5; white-space: pre-wrap; }
 .pp-chat-form textarea { resize: vertical; }
 
-.pp-page-header { margin-bottom: 20px; }
+.pp-page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
 .pp-page-title { font-size: 22px; font-weight: 700; color: var(--header); margin: 0 0 4px; }
 .pp-page-subtitle { font-size: 13px; color: var(--text); margin: 0; display: flex; align-items: center; gap: 8px; }
 .pp-status-chip { display: inline-block; font-size: 11px; font-weight: 700; background: #E7F6EC; color: #16A34A; padding: 3px 11px; border-radius: 20px; }
