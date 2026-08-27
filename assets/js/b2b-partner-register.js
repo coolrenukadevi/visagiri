@@ -239,6 +239,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('b2bSuccessRef').textContent = data.application_ref;
                 document.getElementById('b2bSuccessDate').textContent = data.registration_date;
                 document.getElementById('b2bSuccessStatus').textContent = data.status;
+                var uploadLink = document.getElementById('b2bUploadDocsLink');
+                if (uploadLink && data.upload_token) {
+                    uploadLink.href = 'b2b-partner-documents?ref=' + encodeURIComponent(data.application_ref) + '&token=' + encodeURIComponent(data.upload_token);
+                }
                 success.scrollIntoView({ behavior: 'smooth' });
             } else if (data.errors) {
                 formError.hidden = false;

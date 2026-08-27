@@ -327,6 +327,11 @@ function b2b_db(): PDO
     b2b_ensure_column($pdo, 'enquiries', 'partner_id', 'INTEGER REFERENCES b2b_partners(id)');
     b2b_ensure_column($pdo, 'enquiries', 'partner_user_id', 'INTEGER REFERENCES b2b_partner_users(id)');
     b2b_ensure_column($pdo, 'notifications', 'partner_id', 'INTEGER REFERENCES b2b_partners(id)');
+    // Phase 3: a random, unguessable token issued at submission time so a
+    // just-registered applicant can upload documents and preview them
+    // before Phase 5's partner login exists — without exposing documents
+    // via the sequential, guessable application_ref alone.
+    b2b_ensure_column($pdo, 'b2b_partners', 'upload_token', 'TEXT');
 
     b2b_seed_default_settings($pdo);
     b2b_seed_default_tiers($pdo);
@@ -503,6 +508,27 @@ function b2b_find_duplicate_partner(PDO $pdo, array $fields): ?array
     $stmt->execute($params);
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
     return $row ?: null;
+}
+
+/**
+ * Looks up a partner by application_ref + upload_token (Phase 3's
+ * pre-login document upload/preview gate). Returns null if the ref
+ * doesn't exist or the token doesn't match — deliberately the same
+ * generic failure for both, so a wrong token can't be used to probe
+ * whether a given ref exists.
+ */
+function b2b_partner_by_token(PDO $pdo, string $applicationRef, string $token): ?array
+{
+    if ($token === '') {
+        return null;
+    }
+    $stmt = $pdo->prepare('SELECT * FROM b2b_partners WHERE application_ref = ? AND archived_at IS NULL');
+    $stmt->execute([$applicationRef]);
+    $partner = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$partner || !$partner['upload_token'] || !hash_equals($partner['upload_token'], $token)) {
+        return null;
+    }
+    return $partner;
 }
 
 /** Matches forex_status_class()'s exact slug-generation pattern — one CSS rule per status lives in admin.css. */

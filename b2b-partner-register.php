@@ -270,8 +270,11 @@ include __DIR__ . '/includes/header.php';
                             <div><label>Registration Date</label><span id="b2bSuccessDate"></span></div>
                             <div><label>Current Status</label><span id="b2bSuccessStatus"></span></div>
                         </div>
-                        <p class="b2b-success-note">Our B2B team will review your application and reach out. You can check your status anytime from the confirmation email we've just sent you.</p>
+                        <p class="b2b-success-note">Next: upload your supporting documents (PAN, GST certificate, IATA certificate if applicable, etc.) so our team can begin verification. We've also emailed you this link.</p>
                         <div class="b2b-success-actions">
+                            <a href="#" id="b2bUploadDocsLink" class="qe-btn-primary">Upload Documents Now <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                        </div>
+                        <div class="b2b-success-actions" style="margin-top:10px;">
                             <a href="b2b-partners" class="b2b-btn-secondary">Back to B2B Partners</a>
                             <a href="/" class="b2b-btn-ghost">Back to Website</a>
                         </div>

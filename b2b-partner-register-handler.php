@@ -129,16 +129,17 @@ if ((int) $usernameCheck->fetchColumn() > 0) {
 }
 
 $applicationRef = b2b_generate_ref($pdo, b2b_setting($pdo, 'application_ref_prefix', 'B2B'));
+$uploadToken = bin2hex(random_bytes(24));
 $now = gmdate('c');
 
 $insert = $pdo->prepare('INSERT INTO b2b_partners (
-    application_ref, status, company_name, business_type, year_established, website, gst_number, pan_number,
+    application_ref, status, upload_token, company_name, business_type, year_established, website, gst_number, pan_number,
     iata_registered, iata_number, tafi_number, other_association, address, city, state, country, pin_code,
     services_offered, visa_specialization, monthly_visa_volume,
     contact_name, contact_designation, contact_email, contact_mobile, contact_whatsapp, contact_alternate_mobile,
     ip_address, submitted_at, created_at
 ) VALUES (
-    :ref, :status, :company_name, :business_type, :year_established, :website, :gst_number, :pan_number,
+    :ref, :status, :upload_token, :company_name, :business_type, :year_established, :website, :gst_number, :pan_number,
     :iata_registered, :iata_number, :tafi_number, :other_association, :address, :city, :state, :country, :pin_code,
     :services_offered, :visa_specialization, :monthly_volume,
     :contact_name, :contact_designation, :contact_email, :contact_mobile, :contact_whatsapp, :contact_alt_mobile,
@@ -147,6 +148,7 @@ $insert = $pdo->prepare('INSERT INTO b2b_partners (
 $insert->execute([
     'ref' => $applicationRef,
     'status' => 'Submitted',
+    'upload_token' => $uploadToken,
     'company_name' => $companyName,
     'business_type' => $businessType,
     'year_established' => $yearEstablished,
@@ -193,12 +195,17 @@ $userInsert->execute([
 b2b_log_audit($pdo, 'partner', $partnerId, 'Website', 'System', 'B2B partner application submitted', '', $applicationRef);
 b2b_notify($pdo, null, 'b2b_new_application', "New B2B partner application $applicationRef from $companyName.", $partnerId);
 
+$scheme = (($_SERVER['HTTPS'] ?? '') === 'on') ? 'https://' : 'http://';
+$host = $_SERVER['HTTP_HOST'] ?? 'visaagency.in';
+$uploadUrl = "$scheme$host/b2b-partner-documents?ref=" . rawurlencode($applicationRef) . '&token=' . rawurlencode($uploadToken);
+
 $partnerRow = ['id' => $partnerId, 'contact_email' => $contactEmail];
 b2b_notify_partner(
     $pdo, $partnerRow,
     "Your B2B Partner Application is Submitted — $applicationRef",
     "Dear $contactName,\n\nThank you for applying to become a VisaAgency.in B2B Partner.\n\n"
     . "Application Number: $applicationRef\nCompany: $companyName\nStatus: Submitted\n\n"
+    . "Please upload your supporting documents (PAN, GST certificate, IATA certificate if applicable, etc.) using the private link below:\n$uploadUrl\n\n"
     . "Our B2B team will review your application and documents. We'll be in touch with next steps.\n\n"
     . "Regards,\nVisaAgency.in B2B Partner Team"
 );
@@ -206,6 +213,7 @@ b2b_notify_partner(
 echo json_encode([
     'success' => true,
     'application_ref' => $applicationRef,
+    'upload_token' => $uploadToken,
     'registration_date' => gmdate('d M Y'),
     'status' => 'Submitted',
 ]);

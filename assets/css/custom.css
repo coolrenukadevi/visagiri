@@ -4809,3 +4809,33 @@ html.va-qe-modal-open {
 @media (prefers-reduced-motion: reduce) {
     .b2b-continue-btn, .b2b-submit-btn, .b2b-chip span, .b2b-reg-progress-fill { transition: none !important; }
 }
+
+/* ---- B2B partner document upload (b2b-partner-documents.php) ---- */
+.b2b-doc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 20px 0 6px; }
+.b2b-doc-box { border: 1.5px solid var(--border); border-radius: 14px; padding: 16px 18px; transition: border-color 0.2s ease; }
+.b2b-doc-box.is-uploading { border-color: var(--theme); }
+.b2b-doc-box-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+.b2b-doc-box-head strong { font-size: 13.5px; color: var(--header); }
+.b2b-doc-badge {
+    display: inline-block; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;
+    padding: 4px 10px; border-radius: 20px; white-space: nowrap;
+}
+.b2b-doc-pending { background: #FDF1DF; color: #A9720F; }
+.b2b-doc-verified { background: #E7F6EC; color: #16A34A; }
+.b2b-doc-rejected { background: #FCE8E6; color: #C0392B; }
+.b2b-doc-expired { background: var(--bg); color: var(--text); }
+.b2b-doc-reject-note { font-size: 11.5px; color: #C0392B; background: #FDEDEC; border-radius: 8px; padding: 6px 10px; margin: 0 0 10px; }
+.b2b-doc-box-body { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.b2b-doc-filename { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--theme); text-decoration: none; text-transform: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.b2b-doc-filename-empty { font-size: 12px; color: var(--text); opacity: 0.7; }
+.b2b-doc-upload-btn {
+    flex-shrink: 0; border: 1.5px solid var(--theme); color: var(--theme); border-radius: 30px; padding: 6px 14px;
+    font-size: 12px; font-weight: 700; cursor: pointer; transition: background 0.2s ease, color 0.2s ease;
+}
+.b2b-doc-upload-btn:hover { background: var(--theme); color: var(--white); }
+.b2b-doc-progress { display: block; font-size: 11.5px; color: var(--text); margin-top: 8px; }
+.b2b-doc-progress.is-error { color: #C0392B; }
+.b2b-doc-hint { font-size: 12px; color: var(--text); opacity: 0.8; margin-top: 4px; }
+@media (max-width: 600px) {
+    .b2b-doc-grid { grid-template-columns: 1fr; }
+}

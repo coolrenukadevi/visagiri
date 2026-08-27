@@ -1,0 +1,9 @@
+# Uploaded B2B partner documents are only ever served through
+# b2b-document-view.php (token-gated) or admin/b2b-document.php
+# (staff-authenticated) — never directly by the web server.
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Deny from all
+</IfModule>
