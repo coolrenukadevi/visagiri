@@ -20,8 +20,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($partner) {
             $token = create_partner_password_reset_token((int) $partner['id']);
-            if (APP_DEBUG) {
-                $devResetLink = APP_URL . '/partner/reset-password/?token=' . $token;
+            $resetLink = APP_URL . '/partner/reset-password/?token=' . $token;
+            $sent = send_mail(
+                $email,
+                'Reset your password — Visagiri B2B Partner Program',
+                '<p>Click the link below to reset your Visagiri partner account password:</p><p><a href="' . e($resetLink) . '">' . e($resetLink) . '</a></p><p>This link expires in 1 hour. If you did not request this, you can ignore this email.</p>'
+            );
+            if (!$sent && APP_DEBUG) {
+                $devResetLink = $resetLink;
             }
         }
 

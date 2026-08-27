@@ -62,6 +62,11 @@ switch ($adminSegment) {
         require __DIR__ . '/pages/document-download.php';
         exit;
 
+    case 'partner-document-download':
+        require_admin_login();
+        require __DIR__ . '/pages/partner-document-download.php';
+        exit;
+
     case 'countries':
         require_admin_login();
         require __DIR__ . '/pages/countries.php';

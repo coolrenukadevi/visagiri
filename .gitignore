@@ -1,5 +1,6 @@
 config/database.php
 config/encryption.php
+config/smtp.php
 storage/*
 !storage/.gitkeep
 *.log

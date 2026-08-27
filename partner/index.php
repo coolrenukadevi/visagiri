@@ -12,6 +12,34 @@ switch ($segments[1] ?? null) {
         require __DIR__ . '/pages/register.php';
         exit;
 
+    case 'register-contact':
+        require __DIR__ . '/pages/register-contact.php';
+        exit;
+
+    case 'register-profile':
+        require_partner_login();
+        require __DIR__ . '/pages/register-profile.php';
+        exit;
+
+    case 'register-documents':
+        require_partner_login();
+        require __DIR__ . '/pages/register-documents.php';
+        exit;
+
+    case 'register-terms':
+        require_partner_login();
+        require __DIR__ . '/pages/register-terms.php';
+        exit;
+
+    case 'register-complete':
+        require_partner_login();
+        require __DIR__ . '/pages/register-complete.php';
+        exit;
+
+    case 'verify-email':
+        require __DIR__ . '/pages/verify-email.php';
+        exit;
+
     case 'logout':
         require __DIR__ . '/pages/logout.php';
         exit;

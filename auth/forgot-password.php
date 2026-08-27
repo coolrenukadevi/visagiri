@@ -2,14 +2,13 @@
 declare(strict_types=1);
 
 /**
- * No email-sending integration exists in this project (see AUDIT.md),
- * so the reset link can't actually reach an inbox yet. The token
- * generation/verification itself is fully real (random 32-byte token,
- * only its SHA-256 hash stored, 1-hour expiry, single-use). This page
- * always shows the same generic message regardless of whether the
- * email matches an account, and only when APP_DEBUG is on (never in
- * production) also prints the reset link directly, so the flow can be
- * tested end-to-end without a mail service.
+ * Sends the reset link via includes/mail.php's send_mail() — a real
+ * send if config/smtp.php is configured, otherwise (or on any send
+ * failure) falls back to printing the link directly when APP_DEBUG is
+ * on, same as always. The token generation/verification itself is
+ * fully real regardless (random 32-byte token, only its SHA-256 hash
+ * stored, 1-hour expiry, single-use). This page always shows the same
+ * generic message regardless of whether the email matches an account.
  */
 
 $submitted = false;
@@ -31,8 +30,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($customer) {
             $token = create_customer_password_reset_token((int) $customer['id']);
-            if (APP_DEBUG) {
-                $devResetLink = APP_URL . '/reset-password/?token=' . $token;
+            $resetLink = APP_URL . '/reset-password/?token=' . $token;
+            $sent = send_mail(
+                $email,
+                'Reset your password — Visagiri',
+                '<p>Click the link below to reset your Visagiri account password:</p><p><a href="' . e($resetLink) . '">' . e($resetLink) . '</a></p><p>This link expires in 1 hour. If you did not request this, you can ignore this email.</p>'
+            );
+            if (!$sent && APP_DEBUG) {
+                $devResetLink = $resetLink;
             }
         }
 

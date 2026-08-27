@@ -53,6 +53,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     };
 
     if ($postAction === 'approve' && $targetId) {
+        // Client spec: "Do not activate the partner account until
+        // verification is completed." Re-checked here, not just
+        // hidden client-side — never trust a hidden button as the
+        // real security/business-rule boundary.
+        $verifiedStmt = $pdo->prepare('SELECT email_verified_at FROM partners WHERE id = :id');
+        $verifiedStmt->execute(['id' => $targetId]);
+        if ($verifiedStmt->fetchColumn() === null) {
+            flash_set('admin_error', 'This partner has not verified their email yet — cannot approve.');
+            redirect('/admin/partners/?action=view&id=' . $targetId);
+        }
+
         $transitionStatus(
             $targetId,
             'active',
@@ -132,6 +143,14 @@ if ($action === 'view' && $id) {
     $historyStmt->execute(['id' => $id]);
     $history = $historyStmt->fetchAll();
 
+    $profileStmt = $pdo->prepare('SELECT * FROM partner_business_profiles WHERE partner_id = :id');
+    $profileStmt->execute(['id' => $id]);
+    $businessProfile = $profileStmt->fetch() ?: null;
+
+    $documentsStmt = $pdo->prepare('SELECT * FROM partner_documents WHERE partner_id = :id AND deleted_at IS NULL ORDER BY uploaded_at DESC');
+    $documentsStmt->execute(['id' => $id]);
+    $partnerDocuments = $documentsStmt->fetchAll();
+
     admin_header_start($partner['company_name'], 'partners');
     ?>
     <div class="admin-form-card" style="max-width:900px;margin-bottom:var(--space-6)">
@@ -140,13 +159,19 @@ if ($action === 'view' && $id) {
         <p><strong>Status:</strong> <?= status_badge((string) $partner['status'], $partnerStatusBadgeMap) ?></p>
         <p><strong>Registered:</strong> <?= e(date('d M Y', strtotime((string) $partner['created_at']))) ?><?php if ($partner['approved_at']): ?> &middot; <strong>Approved:</strong> <?= e(date('d M Y', strtotime((string) $partner['approved_at']))) ?><?= $partner['approved_by_name'] ? ' by ' . e($partner['approved_by_name']) : '' ?><?php endif; ?></p>
         <p><strong>Relationship Manager:</strong> <?= e($partner['manager_name'] ?? 'Unassigned') ?></p>
+        <p><strong>Email Verified:</strong> <?= $partner['email_verified_at'] !== null ? '<span class="badge badge-success">Yes</span> (' . e(date('d M Y', strtotime((string) $partner['email_verified_at']))) . ')' : '<span class="badge badge-danger">Not yet</span>' ?></p>
+        <p><strong>Enrollment:</strong> <?= $partner['enrollment_completed_at'] !== null ? '<span class="badge badge-success">Completed</span> (' . e(date('d M Y', strtotime((string) $partner['enrollment_completed_at']))) . ')' : '<span class="badge badge-warning">Incomplete — still in the registration wizard</span>' ?></p>
 
         <?php if (has_permission('partners.manage')): ?>
         <div style="display:flex;gap:var(--space-4);flex-wrap:wrap;margin-top:var(--space-4)">
             <form method="post" action="/admin/partners/">
                 <?= csrf_field() ?><input type="hidden" name="id" value="<?= $id ?>">
                 <?php if ($partner['status'] === 'pending'): ?>
+                    <?php if ($partner['email_verified_at'] !== null): ?>
                 <button type="submit" name="action" value="approve" class="btn btn-primary btn-sm">Approve</button>
+                    <?php else: ?>
+                <button type="button" class="btn btn-primary btn-sm" disabled title="Email not verified yet">Approve</button>
+                    <?php endif; ?>
                 <?php elseif ($partner['status'] === 'active'): ?>
                 <button type="submit" name="action" value="suspend" class="btn btn-outline btn-sm">Suspend</button>
                 <?php else: ?>
@@ -166,6 +191,43 @@ if ($action === 'view' && $id) {
         </div>
         <?php endif; ?>
     </div>
+
+    <h2 class="country-directory__subheading">Business Profile</h2>
+    <?php if (!$businessProfile): ?>
+    <p class="empty-state">Not submitted yet — this partner hasn't completed the enrollment wizard's business info step.</p>
+    <?php else: ?>
+    <div class="admin-form-card" style="max-width:900px;margin-bottom:var(--space-6)">
+        <p><strong>Business Type:</strong> <?= e(PARTNER_BUSINESS_TYPES[$businessProfile['business_type']] ?? '—') ?></p>
+        <p><strong>Year Established:</strong> <?= e($businessProfile['year_established'] !== null ? (string) $businessProfile['year_established'] : '—') ?> &middot; <strong>Website:</strong> <?= e($businessProfile['website'] ?? '—') ?></p>
+        <p><strong>GSTIN:</strong> <?= e($businessProfile['gstin'] ?? '—') ?> &middot; <strong>PAN:</strong> <?= e($businessProfile['pan'] ?? '—') ?></p>
+        <p><strong>IATA Registered:</strong> <?= (int) $businessProfile['iata_registered'] === 1 ? 'Yes (' . e($businessProfile['iata_number'] ?? '—') . ')' : 'No' ?> &middot; <strong>TAFI:</strong> <?= e($businessProfile['tafi_number'] ?? '—') ?></p>
+        <?php if ($businessProfile['other_association']): ?>
+        <p><strong>Other Association:</strong> <?= e($businessProfile['other_association']) ?></p>
+        <?php endif; ?>
+        <p><strong>Address:</strong> <?= e(trim(($businessProfile['registered_address'] ?? '') . ', ' . ($businessProfile['city'] ?? '') . ', ' . ($businessProfile['state'] ?? '') . ', ' . ($businessProfile['country'] ?? '') . ' ' . ($businessProfile['pincode'] ?? ''), ', ')) ?: '—' ?></p>
+        <p><strong>Services Offered:</strong> <?= $businessProfile['services_offered'] ? e(implode(', ', array_map(static fn($k) => PARTNER_SERVICES_OFFERED[$k] ?? $k, explode(',', $businessProfile['services_offered'])))) : '—' ?></p>
+        <p><strong>Visa Specialization:</strong> <?= $businessProfile['visa_specialization'] ? e(implode(', ', array_map(static fn($k) => PARTNER_VISA_SPECIALIZATION[$k] ?? $k, explode(',', $businessProfile['visa_specialization'])))) : '—' ?></p>
+        <p><strong>Approx. Monthly Visa Volume:</strong> <?= e($businessProfile['monthly_visa_volume'] ?? '—') ?></p>
+    </div>
+    <?php endif; ?>
+
+    <h2 class="country-directory__subheading">Documents (<?= count($partnerDocuments) ?>)</h2>
+    <?php if (!$partnerDocuments): ?>
+    <p class="empty-state">No documents uploaded yet.</p>
+    <?php else: ?>
+    <table class="admin-table"><thead><tr><th>Type</th><th>File</th><th>Verification</th><th>Uploaded</th><th></th></tr></thead><tbody>
+        <?php foreach ($partnerDocuments as $doc): ?>
+        <tr>
+            <td><?= e(PARTNER_DOCUMENT_TYPES[$doc['document_type']] ?? $doc['document_type']) ?></td>
+            <td><?= e($doc['original_filename']) ?></td>
+            <td><span class="badge <?= $doc['verification_status'] === 'verified' ? 'badge-success' : ($doc['verification_status'] === 'rejected' ? 'badge-danger' : 'badge-warning') ?>"><?= e($doc['verification_status']) ?></span></td>
+            <td><?= e(date('d M Y', strtotime((string) $doc['uploaded_at']))) ?></td>
+            <td class="actions"><a href="/admin/partner-document-download/?id=<?= (int) $doc['id'] ?>" class="btn btn-outline btn-sm">Download</a></td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody></table>
+    <p style="color:var(--text-muted);font-size:var(--font-size-sm);margin-top:var(--space-2)">Verification actions (verify/reject) aren't available yet — every document ships "pending" until that's built.</p>
+    <?php endif; ?>
 
     <h2 class="country-directory__subheading">Referred Customers &amp; Applications (<?= count($referred) ?>)</h2>
     <?php if (!$referred): ?>
@@ -286,7 +348,7 @@ admin_header_start('Partners', 'partners');
             <td><?= e($p['contact_name']) ?> &middot; <?= e($p['email']) ?></td>
             <td><?= e($p['partner_reference_no']) ?></td>
             <td><?= e($p['manager_name'] ?? '—') ?></td>
-            <td><?= status_badge((string) $p['status'], $partnerStatusBadgeMap) ?></td>
+            <td><?= status_badge((string) $p['status'], $partnerStatusBadgeMap) ?><?= $p['enrollment_completed_at'] === null ? ' <span class="badge badge-neutral">Incomplete</span>' : '' ?></td>
             <td><?= e(date('d M Y', strtotime((string) $p['created_at']))) ?></td>
         </tr>
     <?php endforeach; ?>

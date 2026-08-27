@@ -162,3 +162,48 @@ function reset_partner_password(int $partnerId, string $newPlainPassword): void
     );
     $stmt->execute(['hash' => hash_password($newPlainPassword), 'id' => $partnerId]);
 }
+
+/**
+ * Email verification (enrollment wizard step 2) — same token shape as
+ * the password-reset pair above (random 32-byte token, only its
+ * SHA-256 hash stored, 1-hour expiry), a deliberately separate column
+ * pair rather than reusing password_reset_token_hash since the two
+ * flows can be in flight at once (e.g. a partner requests a password
+ * reset before ever verifying their email).
+ */
+function create_partner_email_verification_token(int $partnerId): string
+{
+    $token = bin2hex(random_bytes(32));
+    $stmt = db()->prepare(
+        'UPDATE partners SET email_verification_token_hash = :hash, email_verification_expires_at = :expires WHERE id = :id'
+    );
+    $stmt->execute([
+        'hash' => hash('sha256', $token),
+        'expires' => date('Y-m-d H:i:s', time() + 3600),
+        'id' => $partnerId,
+    ]);
+    return $token;
+}
+
+/** Marks the matching partner's email verified and clears the token. Returns the partner row, or null if the token is invalid/expired. */
+function verify_partner_email_verification_token(string $token): ?array
+{
+    $stmt = db()->prepare(
+        'SELECT * FROM partners
+         WHERE email_verification_token_hash = :hash
+           AND email_verification_expires_at IS NOT NULL
+           AND email_verification_expires_at > NOW()
+           AND deleted_at IS NULL'
+    );
+    $stmt->execute(['hash' => hash('sha256', $token)]);
+    $partner = $stmt->fetch();
+    if (!$partner) {
+        return null;
+    }
+
+    db()->prepare(
+        'UPDATE partners SET email_verified_at = NOW(), email_verification_token_hash = NULL, email_verification_expires_at = NULL WHERE id = :id'
+    )->execute(['id' => $partner['id']]);
+
+    return $partner;
+}

@@ -3,8 +3,32 @@ declare(strict_types=1);
 
 $partner = current_partner();
 
+if ($partner['enrollment_completed_at'] === null) {
+    redirect(partner_enrollment_next_route($partner, current_partner_business_profile()));
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'resend_verification') {
+    csrf_require();
+    if ($partner['email_verified_at'] === null) {
+        $token = create_partner_email_verification_token((int) $partner['id']);
+        $verifyLink = APP_URL . '/partner/verify-email/?token=' . $token;
+        $sent = send_mail(
+            $partner['email'],
+            'Verify your email — Visagiri B2B Partner Program',
+            '<p>Hi ' . e($partner['contact_name']) . ',</p><p>Please confirm your email address:</p><p><a href="' . e($verifyLink) . '">' . e($verifyLink) . '</a></p><p>This link expires in 1 hour.</p>',
+            $partner['contact_name']
+        );
+        if (!$sent && APP_DEBUG) {
+            flash_set('partner_dev_verify_link', $verifyLink);
+        }
+        flash_set('notice', $sent ? 'Verification email sent.' : 'Verification link generated.');
+    }
+    redirect('/partner/dashboard/');
+}
+
 if (!is_partner_active()) {
     render_partner_start('dashboard', 'Dashboard');
+    render_partner_email_verification_banner($partner);
     ?>
     <div class="card" style="max-width:520px">
         <?php if ($partner['status'] === 'suspended'): ?>
@@ -52,6 +76,7 @@ foreach ($commissions as $c) {
 $referralLink = APP_URL . '/register/?ref=' . $partner['partner_reference_no'];
 
 render_partner_start('dashboard', 'Welcome, ' . $partner['company_name']);
+render_partner_email_verification_banner($partner);
 ?>
 <div class="card" style="margin-bottom:var(--space-6)">
     <div class="card-title">Your Referral Link</div>

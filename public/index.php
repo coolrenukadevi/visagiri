@@ -47,6 +47,8 @@ require_once "$root/includes/documents.php";
 require_once "$root/includes/hrms.php";
 require_once "$root/includes/forex.php";
 require_once "$root/includes/currency-rate.php";
+require_once "$root/includes/mail.php";
+require_once "$root/includes/partner-enrollment.php";
 
 start_secure_session();
 send_security_headers();

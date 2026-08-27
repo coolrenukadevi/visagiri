@@ -31,6 +31,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($remember) {
                 remember_partner((int) $partner['id']);
             }
+
+            // An incomplete enrollment always goes back into the
+            // wizard, ignoring any stored post-login redirect — that
+            // redirect was most likely set trying to reach the
+            // dashboard before finishing registration.
+            if ($partner['enrollment_completed_at'] === null) {
+                unset($_SESSION['partner_redirect_after_login']);
+                redirect(partner_enrollment_next_route($partner, current_partner_business_profile()));
+            }
+
             $redirectTo = $_SESSION['partner_redirect_after_login'] ?? '/partner/dashboard/';
             unset($_SESSION['partner_redirect_after_login']);
             redirect($redirectTo);

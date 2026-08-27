@@ -711,3 +711,99 @@
 .visa-search-widget__result.is-active {
   background: var(--surface);
 }
+
+/* ---------- B2B Partner enrollment wizard step indicator ---------- */
+
+.enrollment-steps {
+  display: flex;
+  list-style: none;
+  margin: 0 0 var(--space-6);
+  padding: 0;
+  gap: var(--space-2);
+}
+
+.enrollment-steps__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  text-align: center;
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+.enrollment-steps__num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: var(--surface);
+  border: 2px solid var(--border);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-muted);
+}
+
+.enrollment-steps__item.is-current .enrollment-steps__num {
+  background: var(--visa-blue);
+  border-color: var(--visa-blue);
+  color: var(--white);
+}
+
+.enrollment-steps__item.is-current .enrollment-steps__label {
+  color: var(--visa-blue);
+  font-weight: var(--font-weight-semibold);
+}
+
+.enrollment-steps__item.is-done .enrollment-steps__num {
+  background: var(--visa-gold);
+  border-color: var(--visa-gold);
+  color: var(--text-dark);
+}
+
+/* ---------- B2B Partner enrollment form pieces ---------- */
+
+.enrollment-checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-2) var(--space-4);
+  margin-top: var(--space-2);
+}
+
+.enrollment-checkbox-grid label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+}
+
+.enrollment-document-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.enrollment-document-row:last-child {
+  border-bottom: none;
+}
+
+.enrollment-document-row__meta {
+  flex: 1;
+}
+
+.enrollment-document-row__filename {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}
+
+@media (max-width: 640px) {
+  .enrollment-steps__label {
+    display: none;
+  }
+}

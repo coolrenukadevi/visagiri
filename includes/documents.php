@@ -171,3 +171,49 @@ function store_customer_document_upload(
 
     return (int) db()->lastInsertId();
 }
+
+/**
+ * Same storage/validation path again, for the B2B partner enrollment
+ * wizard's document upload step — stores into the dedicated
+ * partner_documents table (not the shared `documents` table; see
+ * AUDIT.md for why partner documents get their own table, same
+ * reasoning forex_documents did: expiry tracking and a different
+ * verification lifecycle). uploaded_by_partner_id is always the
+ * partner's own id in this phase (no team sub-users yet).
+ */
+function store_partner_document_upload(array $file, string $documentType, int $partnerId): int
+{
+    if (!is_dir(DOCUMENTS_STORAGE_DIR)) {
+        mkdir(DOCUMENTS_STORAGE_DIR, 0755, true);
+    }
+
+    $originalName = (string) $file['name'];
+    $extension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+    $storedFilename = bin2hex(random_bytes(24)) . '.' . $extension;
+    $destination = DOCUMENTS_STORAGE_DIR . '/' . $storedFilename;
+
+    if (!move_uploaded_file($file['tmp_name'], $destination)) {
+        throw new RuntimeException('Failed to store uploaded file.');
+    }
+
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    $mimeType = finfo_file($finfo, $destination) ?: 'application/octet-stream';
+    finfo_close($finfo);
+
+    $stmt = db()->prepare(
+        'INSERT INTO partner_documents (partner_id, document_type, original_filename, stored_filename, storage_path, mime_type, file_size, uploaded_by_partner_id)
+         VALUES (:partner_id, :doc_type, :original_name, :stored_name, :storage_path, :mime, :size, :uploaded_by)'
+    );
+    $stmt->execute([
+        'partner_id' => $partnerId,
+        'doc_type' => $documentType,
+        'original_name' => basename($originalName),
+        'stored_name' => $storedFilename,
+        'storage_path' => 'storage/documents/' . $storedFilename,
+        'mime' => $mimeType,
+        'size' => $file['size'],
+        'uploaded_by' => $partnerId,
+    ]);
+
+    return (int) db()->lastInsertId();
+}
