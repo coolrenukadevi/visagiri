@@ -11,6 +11,9 @@ RewriteCond %1 !^enquiry-handler$ [NC]
 RewriteCond %1 !^newsletter-subscribe$ [NC]
 RewriteCond %1 !^quick-enquiry-handler$ [NC]
 RewriteCond %1 !^analytics-event$ [NC]
+RewriteCond %1 !^b2b-otp-send$ [NC]
+RewriteCond %1 !^b2b-otp-verify$ [NC]
+RewriteCond %1 !^b2b-partner-register-handler$ [NC]
 RewriteCond %1 !^index$ [NC]
 RewriteRule ^ /%1 [R=301,L]
 
@@ -46,4 +49,4 @@ ErrorDocument 404 /404.php
 # some hosts don't have mod_version enabled, and an unsupported directive in
 # .htaccess causes a 500 Internal Server Error for every request on the site.)
 RewriteCond %{REQUEST_METHOD} =GET
-RewriteRule ^(mail-handler|enquiry-handler|newsletter-subscribe|quick-enquiry-handler|analytics-event)\.php$ - [F,L]
+RewriteRule ^(mail-handler|enquiry-handler|newsletter-subscribe|quick-enquiry-handler|analytics-event|b2b-otp-send|b2b-otp-verify|b2b-partner-register-handler)\.php$ - [F,L]

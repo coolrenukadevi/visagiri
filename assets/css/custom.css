@@ -4649,3 +4649,163 @@ html.va-qe-modal-open {
 .visa-fee-row:last-child { border-bottom: none; }
 .visa-fee-row span { color: var(--text); }
 .visa-fee-row strong { color: var(--header); }
+
+/* ============================================================
+   B2B Partner Enrollment (b2b-partner-register.php) — multi-step
+   public registration form. Reuses the qe-modal's step/progress
+   pattern sized for a full page instead of a dialog.
+   ============================================================ */
+.b2b-reg-section { background: var(--bg); }
+.b2b-reg-card {
+    max-width: 760px;
+    margin: 0 auto;
+    background: var(--white);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(11, 18, 32, 0.08);
+    padding: 40px 44px 44px;
+}
+.b2b-reg-honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+.b2b-reg-progress { margin-bottom: 28px; }
+.b2b-reg-progress-label {
+    font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em;
+    color: var(--text); margin-bottom: 10px;
+}
+.b2b-reg-progress-track { height: 5px; border-radius: 4px; background: var(--bg); overflow: hidden; margin-bottom: 12px; }
+.b2b-reg-progress-fill { height: 100%; background: linear-gradient(90deg, var(--theme) 0%, var(--gold) 100%); border-radius: 4px; transition: width 0.3s ease; }
+.b2b-reg-progress-steps { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; }
+.b2b-reg-progress-steps span { font-size: 11.5px; font-weight: 600; color: var(--border); }
+.b2b-reg-progress-steps span.is-active { color: var(--theme); }
+
+.b2b-reg-step h2 { font-size: 22px; color: var(--header); margin-bottom: 6px; outline: none; }
+.b2b-reg-sub { font-size: 13.5px; color: var(--text); margin-bottom: 24px; }
+.b2b-back-btn {
+    display: inline-flex; align-items: center; gap: 6px; border: none; background: none;
+    color: var(--text); font-size: 13px; font-weight: 600; cursor: pointer; padding: 0; margin-bottom: 16px;
+}
+.b2b-back-btn:hover { color: var(--theme); }
+
+.b2b-reg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 20px; margin-bottom: 8px; }
+.b2b-field-full { grid-column: 1 / -1; }
+.b2b-field label, .b2b-radio-label, .b2b-group-label {
+    display: block; font-size: 13px; font-weight: 600; color: var(--header); margin-bottom: 7px;
+}
+.b2b-group-label { margin-top: 22px; }
+.b2b-field input, .b2b-field select {
+    width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: 10px;
+    font-size: 14px; color: var(--text); background: var(--white); outline: none; transition: border-color 0.2s ease;
+}
+.b2b-field input:focus, .b2b-field select:focus { border-color: var(--theme); }
+.b2b-field select {
+    appearance: none; -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%2355607A' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 14px center; padding-right: 34px;
+}
+.b2b-select-wide { width: 100%; max-width: 320px; margin-bottom: 8px; }
+.b2b-field input.is-invalid, .b2b-field select.is-invalid, .is-invalid { border-color: #C0392B !important; }
+.b2b-error { display: block; color: #C0392B; font-size: 12.5px; margin-top: 6px; min-height: 0; }
+
+.b2b-radio-row { display: flex; gap: 10px; }
+.b2b-radio-pill {
+    display: inline-flex; align-items: center; gap: 6px; border: 1.5px solid var(--border);
+    border-radius: 30px; padding: 8px 18px; font-size: 13.5px; font-weight: 600; color: var(--header); cursor: pointer;
+}
+.b2b-radio-pill input { accent-color: var(--theme); }
+
+.b2b-phone-input { display: flex; align-items: center; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.b2b-phone-prefix { padding: 11px 12px; background: var(--bg); color: var(--header); font-weight: 600; font-size: 14px; border-right: 1px solid var(--border); }
+.b2b-phone-input input { border: none !important; border-radius: 0; }
+.b2b-phone-input input:focus { border: none !important; }
+.b2b-phone-input.is-invalid { border-color: #C0392B; }
+
+.b2b-chip-grid { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 8px; }
+.b2b-chip { position: relative; }
+.b2b-chip input { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; margin: 0; }
+.b2b-chip span {
+    display: inline-block; border: 1.5px solid var(--border); border-radius: 30px; padding: 9px 16px;
+    font-size: 13px; font-weight: 600; color: var(--header); transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+.b2b-chip input:checked ~ span { background: var(--theme); border-color: var(--theme); color: var(--white); }
+.b2b-chip input:focus-visible ~ span { border-color: var(--theme); }
+
+.b2b-continue-btn, .b2b-submit-btn {
+    width: 100%; border: none; border-radius: 30px; background: var(--theme); color: var(--white);
+    font-size: 14.5px; font-weight: 700; padding: 15px 20px; margin-top: 20px; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+.b2b-continue-btn:hover, .b2b-submit-btn:hover { background: var(--theme-2); transform: translateY(-1px); }
+.b2b-submit-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+.b2b-btn-spinner {
+    width: 15px; height: 15px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: var(--white); animation: b2bSpin 0.7s linear infinite;
+}
+@keyframes b2bSpin { to { transform: rotate(360deg); } }
+
+.b2b-otp-box { background: var(--bg); border-radius: 14px; padding: 20px; margin-top: 8px; }
+.b2b-otp-box.is-verified { background: #E7F6EC; }
+.b2b-otp-head { display: flex; gap: 12px; margin-bottom: 14px; }
+.b2b-otp-head i { color: var(--theme); font-size: 20px; margin-top: 2px; }
+.b2b-otp-head strong { display: block; color: var(--header); font-size: 14px; margin-bottom: 3px; }
+.b2b-otp-head p { font-size: 12.5px; color: var(--text); margin: 0; }
+.b2b-otp-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.b2b-otp-row input {
+    flex: 1; min-width: 140px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 10px;
+    font-size: 15px; letter-spacing: 0.15em; text-align: center;
+}
+.b2b-otp-btn {
+    border: none; border-radius: 30px; background: var(--theme); color: var(--white); font-weight: 700;
+    font-size: 13px; padding: 10px 20px; cursor: pointer; white-space: nowrap;
+}
+.b2b-otp-btn:hover { background: var(--theme-2); }
+.b2b-otp-resend { border: none; background: none; color: var(--text); font-size: 12.5px; text-decoration: underline; cursor: pointer; }
+.b2b-otp-status { font-size: 12.5px; margin-top: 10px; color: var(--text); }
+.b2b-otp-status.is-ok { color: #16A34A; font-weight: 600; }
+.b2b-otp-status.is-error { color: #C0392B; font-weight: 600; }
+
+.b2b-terms-list { display: flex; flex-direction: column; gap: 10px; margin: 16px 0 20px; }
+.b2b-terms-item { display: flex; align-items: flex-start; gap: 10px; font-size: 13.5px; color: var(--text); cursor: pointer; }
+.b2b-terms-item input { margin-top: 3px; accent-color: var(--theme); flex-shrink: 0; }
+.b2b-terms-item a { color: var(--theme); text-decoration: underline; }
+.b2b-declaration-box { background: var(--bg); border-radius: 12px; padding: 16px 18px; margin-bottom: 8px; }
+.b2b-form-error { background: #FDEDEC; color: #C0392B; font-size: 13px; border-radius: 10px; padding: 10px 14px; margin: 12px 0; }
+
+.b2b-reg-success { text-align: center; padding: 20px 10px; }
+.b2b-success-icon { font-size: 50px; color: #16A34A; margin-bottom: 14px; }
+.b2b-reg-success h2 { font-size: 24px; color: var(--header); margin-bottom: 8px; }
+.b2b-reg-success p { font-size: 14px; color: var(--text); margin: 0 auto 16px; line-height: 1.6; }
+.b2b-ref-box {
+    background: linear-gradient(135deg, var(--theme-2) 0%, var(--theme-2-dark) 100%); border-radius: 12px;
+    padding: 16px 24px; display: inline-flex; flex-direction: column; gap: 4px; margin-bottom: 20px;
+}
+.b2b-ref-box span { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.75); }
+.b2b-ref-box strong { font-size: 22px; font-weight: 700; color: var(--white); letter-spacing: 0.03em; }
+.b2b-success-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; max-width: 400px; margin: 0 auto 24px;
+    text-align: left; background: var(--bg); border-radius: 12px; padding: 16px 20px;
+}
+.b2b-success-grid label { display: block; font-size: 10.5px; text-transform: uppercase; color: var(--text); opacity: 0.75; margin-bottom: 2px; }
+.b2b-success-grid span { font-size: 13.5px; color: var(--header); font-weight: 600; }
+.b2b-success-note { font-size: 13px; color: var(--text); max-width: 480px; margin: 0 auto 24px; }
+.b2b-success-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.b2b-btn-secondary, .b2b-btn-ghost {
+    border: none; border-radius: 30px; padding: 12px 24px; font-size: 13.5px; font-weight: 600;
+    cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    transition: transform 0.15s ease, background 0.2s ease;
+}
+.b2b-btn-secondary { background: var(--theme); color: var(--white); }
+.b2b-btn-secondary:hover { background: var(--theme-2); color: var(--white); transform: translateY(-1px); }
+.b2b-btn-ghost { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+.b2b-btn-ghost:hover { background: #EDEFF4; }
+
+@media (max-width: 767px) {
+    .b2b-reg-card { padding: 28px 20px 32px; border-radius: 16px; }
+    .b2b-reg-grid { grid-template-columns: 1fr; }
+    .b2b-success-grid { grid-template-columns: 1fr; }
+    .b2b-success-actions { flex-direction: column; }
+    .b2b-btn-secondary, .b2b-btn-ghost { width: 100%; }
+    .b2b-reg-progress-steps span { font-size: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .b2b-continue-btn, .b2b-submit-btn, .b2b-chip span, .b2b-reg-progress-fill { transition: none !important; }
+}

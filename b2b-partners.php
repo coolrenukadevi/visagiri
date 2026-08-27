@@ -25,7 +25,7 @@ include __DIR__ . '/includes/header.php';
                 <div class="console-tag"><span class="blink"></span> partners.status() &middot; b2b &middot; Patna, Bihar</div>
                 <p class="lede">If you run a travel agency, corporate travel desk, education consultancy or HR/mobility function and regularly need visa, apostille or forex support for your clients or employees, we'd like to work with you directly &mdash; a single point of contact instead of a different vendor for every case.</p>
                 <div class="console-cta-row">
-                    <a class="console-btn console-btn-primary" href="b2b-partners#apply">Register Interest</a>
+                    <a class="console-btn console-btn-primary" href="b2b-partner-register">Become a B2B Partner</a>
                     <a class="console-btn console-btn-outline-dark" href="<?php echo htmlspecialchars($site_whatsapp_url); ?>?text=<?php echo rawurlencode('Hello VisaAgency.in, I would like to discuss a B2B partnership.'); ?>" target="_blank" rel="noopener">WhatsApp Our Team</a>
                 </div>
             </div>
