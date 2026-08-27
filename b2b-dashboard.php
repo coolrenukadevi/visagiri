@@ -63,7 +63,9 @@ if ($ppPartner['assigned_manager_id']) {
     </div>
     <div class="pp-card">
         <h3>Quick Actions</h3>
-        <p class="pp-empty-note">Submitting new visa applications, quotations, invoices and team management are coming in the next phases of the B2B Partner Portal. Your Relationship Manager can assist with these in the meantime.</p>
+        <a href="b2b-new-application.php" class="b2b-submit-btn" style="text-decoration:none;margin-bottom:10px;">Submit New Visa Application</a>
+        <a href="b2b-applications.php" class="pp-filter-btn is-ghost" style="width:100%;justify-content:center;">View My Applications</a>
+        <p class="pp-empty-note" style="margin-top:16px;">Quotations, invoices and team management are coming in the next phases of the B2B Partner Portal. Your Relationship Manager can assist with these in the meantime.</p>
     </div>
 </div>
 

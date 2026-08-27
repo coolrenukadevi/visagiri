@@ -28,7 +28,7 @@ $PP_PAGE_TITLE = $PP_PAGE_TITLE ?? 'Partner Dashboard';
 
 $ppNavItems = [
     ['key' => 'dashboard', 'label' => 'Dashboard', 'icon' => 'gauge-high', 'href' => 'b2b-dashboard.php'],
-    ['key' => 'applications', 'label' => 'Visa Applications', 'icon' => 'passport', 'href' => 'b2b-applications.php', 'soon' => true],
+    ['key' => 'applications', 'label' => 'Visa Applications', 'icon' => 'passport', 'href' => 'b2b-applications.php'],
     ['key' => 'quotations', 'label' => 'Quotations', 'icon' => 'file-invoice-dollar', 'href' => 'b2b-quotations.php', 'soon' => true],
     ['key' => 'invoices', 'label' => 'Invoices &amp; Payments', 'icon' => 'file-invoice', 'href' => 'b2b-invoices.php', 'soon' => true],
     ['key' => 'wallet', 'label' => 'Wallet &amp; Credit', 'icon' => 'wallet', 'href' => 'b2b-wallet.php', 'soon' => true],

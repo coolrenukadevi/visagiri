@@ -4947,3 +4947,66 @@ html.va-qe-modal-open {
     .pp-content { padding: 20px 16px 32px; }
     .pp-topbar { padding: 14px 16px 14px 60px; }
 }
+
+/* ---- Partner portal: filters, tables, status badges, success panel
+   (b2b-applications.php, b2b-application.php, b2b-new-application.php) ---- */
+.pp-filter-bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 16px; }
+.pp-filter-bar input[type="text"], .pp-filter-bar select {
+    border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px; font-size: 13px; min-width: 220px;
+}
+.pp-filter-btn {
+    border: 1px solid var(--theme); background: var(--theme); color: #fff; border-radius: 8px; padding: 9px 18px;
+    font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center;
+}
+.pp-filter-btn.is-ghost { background: var(--white); color: var(--text); border-color: var(--border); }
+.pp-filter-btn.is-ghost:hover { background: var(--bg); }
+
+.pp-table-wrap { overflow-x: auto; }
+table.pp-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+table.pp-table thead th {
+    text-align: left; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--text);
+    opacity: 0.7; padding: 12px 16px; border-bottom: 1px solid var(--border); white-space: nowrap;
+}
+table.pp-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+table.pp-table tr:hover td { background: var(--bg); }
+.pp-cell-name { font-weight: 600; }
+.pp-cell-name a { color: var(--theme-2); text-decoration: none; }
+.pp-cell-name a:hover { text-decoration: underline; }
+.pp-cell-sub { color: var(--text); opacity: 0.85; }
+.pp-empty { text-align: center; padding: 40px; color: var(--text); opacity: 0.7; font-size: 13px; }
+
+.pp-status-badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 11px; border-radius: 20px; white-space: nowrap; }
+.pp-status-badge.status-new-enquiry,
+.pp-status-badge.status-contacted { background: #E7F1FC; color: #1B6FC9; }
+.pp-status-badge.status-documents-pending,
+.pp-status-badge.status-documents-under-review,
+.pp-status-badge.status-additional-documents-required,
+.pp-status-badge.status-payment-pending { background: #FDF1DF; color: #A9720F; }
+.pp-status-badge.status-documents-approved,
+.pp-status-badge.status-application-preparation,
+.pp-status-badge.status-application-submitted,
+.pp-status-badge.status-under-embassy-processing,
+.pp-status-badge.status-decision-received { background: #EAF0FF; color: #3355CC; }
+.pp-status-badge.status-visa-approved,
+.pp-status-badge.status-passport-ready,
+.pp-status-badge.status-completed { background: #E7F6EC; color: #16A34A; }
+.pp-status-badge.status-visa-refused,
+.pp-status-badge.status-cancelled { background: #FCE8E6; color: #C0392B; }
+
+.pp-success { text-align: center; padding: 20px 10px; }
+.pp-success i { font-size: 48px; color: #16A34A; margin-bottom: 14px; }
+.pp-success h3 { font-size: 22px; color: var(--header); margin-bottom: 8px; }
+.pp-success p { font-size: 14px; color: var(--text); margin: 0 auto 20px; }
+
+.pp-updates-list { display: flex; flex-direction: column; gap: 14px; }
+.pp-update-item { border-left: 3px solid var(--theme); padding: 4px 0 4px 14px; }
+.pp-update-status { font-size: 13.5px; font-weight: 700; color: var(--header); }
+.pp-update-message { font-size: 13px; color: var(--text); margin-top: 3px; }
+.pp-update-meta { font-size: 11px; color: var(--text); opacity: 0.7; margin-top: 4px; }
+
+@media (max-width: 700px) {
+    table.pp-table thead { display: none; }
+    table.pp-table, table.pp-table tbody, table.pp-table tr, table.pp-table td { display: block; width: 100%; }
+    table.pp-table tr { border-bottom: 1px solid var(--border); padding: 10px 16px; }
+    table.pp-table td { border-bottom: none; padding: 3px 0; white-space: normal; }
+}
