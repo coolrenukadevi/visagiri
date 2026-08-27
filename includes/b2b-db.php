@@ -46,6 +46,8 @@ const B2B_DOC_TYPES = [
 const B2B_DOC_STATUSES = ['Pending', 'Verified', 'Rejected', 'Expired'];
 /** Document types whose expiry is worth monitoring — see Phase 9. */
 const B2B_DOC_TYPES_WITH_EXPIRY = ['GST', 'TradeLicense', 'IATA', 'CompanyRegistration', 'SignatoryID'];
+/** Days-before-expiry thresholds that trigger a one-time alert each (see b2b_check_document_expiries()). */
+const B2B_EXPIRY_ALERT_DAYS = [30, 15, 7];
 
 const B2B_PARTNER_USER_ROLES = ['Owner', 'Manager', 'Visa Executive', 'Accounts Executive'];
 const B2B_PARTNER_USER_STATUSES = ['Active', 'Suspended'];
@@ -369,6 +371,11 @@ function b2b_seed_default_settings(PDO $pdo): void
         'sms_gateway_status' => 'not_connected',
         'whatsapp_gateway_status' => 'not_connected',
         'email_notifications_enabled' => '1',
+        // Shared secret for triggering b2b-cron-expiry-check.php over HTTP on
+        // hosts (typical shared cPanel) that only offer "cron via URL", not a
+        // real CLI cron. Auto-generated once at first seed, admin-rotatable
+        // afterward from B2B Settings (Phase 15 pass).
+        'cron_secret_token' => bin2hex(random_bytes(20)),
     ];
     $stmt = $pdo->prepare('INSERT OR IGNORE INTO b2b_settings (key, value) VALUES (?, ?)');
     foreach ($defaults as $k => $v) {
@@ -606,6 +613,95 @@ function b2b_invoice_recalc_status(PDO $pdo, int $invoiceId): string
 
     $pdo->prepare('UPDATE b2b_invoices SET status = ? WHERE id = ?')->execute([$status, $invoiceId]);
     return $status;
+}
+
+/**
+ * Scans every Verified document of a type in B2B_DOC_TYPES_WITH_EXPIRY that
+ * has an expiry_date set, and:
+ *  - past its expiry_date: flips status to 'Expired' and notifies once (the
+ *    status change itself is the dedup guard — an already-Expired document
+ *    is skipped).
+ *  - within B2B_EXPIRY_ALERT_DAYS (30/15/7) of expiring: sends one alert per
+ *    threshold, ever. Dedup is a b2b_audit_logs lookup for an existing
+ *    "Document expiry alert: N-day" entry for that document id — no new
+ *    schema needed, and it's naturally visible in the partner's own
+ *    Activities timeline as a record of what was already sent.
+ *
+ * Callable both from the admin-triggered "Run Now" button
+ * (admin/b2b-documents.php) and from b2b-cron-expiry-check.php (the
+ * documented cron entry point) — same function, same guarantees either way.
+ *
+ * @return array{expired:int,alerted:int,checked:int}
+ */
+function b2b_check_document_expiries(PDO $pdo): array
+{
+    $placeholders = implode(',', array_fill(0, count(B2B_DOC_TYPES_WITH_EXPIRY), '?'));
+    $stmt = $pdo->prepare("SELECT d.*, p.company_name, p.contact_name, p.contact_email, p.application_ref, p.assigned_manager_id
+        FROM b2b_partner_documents d JOIN b2b_partners p ON p.id = d.partner_id
+        WHERE d.status = 'Verified' AND d.doc_type IN ($placeholders) AND d.expiry_date IS NOT NULL AND d.expiry_date != ''");
+    $stmt->execute(B2B_DOC_TYPES_WITH_EXPIRY);
+    $documents = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $today = new DateTimeImmutable('today', new DateTimeZone('UTC'));
+    $expiredCount = 0;
+    $alertedCount = 0;
+
+    foreach ($documents as $doc) {
+        $expiry = DateTimeImmutable::createFromFormat('Y-m-d', substr($doc['expiry_date'], 0, 10), new DateTimeZone('UTC'));
+        if (!$expiry) {
+            continue;
+        }
+        $daysLeft = (int) $today->diff($expiry)->format('%r%a');
+        $docLabel = B2B_DOC_TYPES[$doc['doc_type']] ?? $doc['doc_type'];
+        // b2b_notify_partner() audit-logs against (int) $partner['id'] — $doc
+        // itself has its *own* `id` (the document row's), not the partner's,
+        // so a small explicit array is passed instead of $doc directly.
+        $notifyPartner = [
+            'id' => (int) $doc['partner_id'],
+            'contact_name' => $doc['contact_name'],
+            'contact_email' => $doc['contact_email'],
+        ];
+
+        if ($daysLeft < 0) {
+            $pdo->prepare("UPDATE b2b_partner_documents SET status = 'Expired' WHERE id = ?")->execute([$doc['id']]);
+            b2b_log_audit($pdo, 'document', (int) $doc['id'], 'System', 'System', 'Document expired', 'Verified', 'Expired');
+            b2b_notify($pdo, $doc['assigned_manager_id'] ? (int) $doc['assigned_manager_id'] : null, 'b2b_document_expired', "$docLabel for {$doc['company_name']} ({$doc['application_ref']}) has expired.", (int) $doc['partner_id']);
+            b2b_notify_partner(
+                $pdo, $notifyPartner, "Document Expired — {$doc['application_ref']}",
+                "Dear {$doc['contact_name']},\n\nYour $docLabel on file with us has expired (expiry date: " . date('d M Y', strtotime($doc['expiry_date'])) . ").\n\nPlease upload a renewed copy at your earliest convenience to keep your partner account in good standing.\n\nRegards,\nVisaAgency.in B2B Partner Team"
+            );
+            $expiredCount++;
+            continue;
+        }
+
+        // Checks every threshold the document has crossed (not just the
+        // nearest one) so a cron gap that skips straight past 30 days to,
+        // say, 12 days left still fires the missed 15-day alert as well as
+        // the newly-crossed one — each threshold is independently deduped
+        // via its own audit-log entry, so re-checking an already-alerted
+        // threshold on a later run is a harmless no-op, not a re-send.
+        foreach (B2B_EXPIRY_ALERT_DAYS as $threshold) {
+            if ($daysLeft > $threshold) {
+                continue;
+            }
+            $alertAction = "Document expiry alert: {$threshold}-day";
+            $existsStmt = $pdo->prepare("SELECT COUNT(*) FROM b2b_audit_logs WHERE entity_type = 'document' AND entity_id = ? AND action = ?");
+            $existsStmt->execute([$doc['id'], $alertAction]);
+            if ((int) $existsStmt->fetchColumn() > 0) {
+                continue;
+            }
+
+            b2b_log_audit($pdo, 'document', (int) $doc['id'], 'System', 'System', $alertAction, '', "Expires " . date('d M Y', strtotime($doc['expiry_date'])));
+            b2b_notify($pdo, $doc['assigned_manager_id'] ? (int) $doc['assigned_manager_id'] : null, 'b2b_document_expiring', "$docLabel for {$doc['company_name']} ({$doc['application_ref']}) expires in $daysLeft day(s).", (int) $doc['partner_id']);
+            b2b_notify_partner(
+                $pdo, $notifyPartner, "Document Expiring Soon — {$doc['application_ref']}",
+                "Dear {$doc['contact_name']},\n\nYour $docLabel is due to expire on " . date('d M Y', strtotime($doc['expiry_date'])) . " ($daysLeft day(s) from now).\n\nPlease upload a renewed copy before it expires to avoid any disruption to your partner account.\n\nRegards,\nVisaAgency.in B2B Partner Team"
+            );
+            $alertedCount++;
+        }
+    }
+
+    return ['expired' => $expiredCount, 'alerted' => $alertedCount, 'checked' => count($documents)];
 }
 
 /** Same UTF-8-to-CP1252 transliteration FPDF needs, as forex_pdf_safe() — duplicated rather than cross-required so this module has no hard dependency on includes/forex-db.php. */

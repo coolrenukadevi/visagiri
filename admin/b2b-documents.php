@@ -12,6 +12,12 @@ if (!b2b_can_verify_documents()) {
     exit;
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'run_expiry_check' && b2b_can_verify_documents()) {
+    $expiryResult = b2b_check_document_expiries($pdo);
+    header('Location: b2b-documents.php?expiry_ran=1' . (isset($_GET['status']) ? '&status=' . urlencode($_GET['status']) : ''));
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
     $docId = (int) ($_POST['doc_id'] ?? 0);
@@ -25,9 +31,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $now = gmdate('c');
             if ($action === 'verify') {
                 $remarks = trim($_POST['remarks'] ?? '');
-                $pdo->prepare("UPDATE b2b_partner_documents SET status = 'Verified', verification_remarks = ?, rejection_reason = NULL, verified_by = ?, verified_at = ? WHERE id = ?")
-                    ->execute([$remarks, admin_name(), $now, $docId]);
-                b2b_log_audit($pdo, 'document', $docId, admin_name(), admin_role(), 'Verified document: ' . B2B_DOC_TYPES[$doc['doc_type']], '', $remarks);
+                $expiryDate = trim($_POST['expiry_date'] ?? '');
+                $expiryDate = (in_array($doc['doc_type'], B2B_DOC_TYPES_WITH_EXPIRY, true) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $expiryDate)) ? $expiryDate : null;
+                $pdo->prepare("UPDATE b2b_partner_documents SET status = 'Verified', verification_remarks = ?, rejection_reason = NULL, expiry_date = ?, verified_by = ?, verified_at = ? WHERE id = ?")
+                    ->execute([$remarks, $expiryDate, admin_name(), $now, $docId]);
+                b2b_log_audit($pdo, 'document', $docId, admin_name(), admin_role(), 'Verified document: ' . B2B_DOC_TYPES[$doc['doc_type']], '', $remarks . ($expiryDate ? " (expires $expiryDate)" : ''));
             } elseif ($action === 'reject') {
                 $reason = trim($_POST['reason'] ?? '');
                 $pdo->prepare("UPDATE b2b_partner_documents SET status = 'Rejected', rejection_reason = ?, verified_by = ?, verified_at = ? WHERE id = ?")
@@ -73,19 +81,57 @@ $documents = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $pendingCount = (int) $pdo->query("SELECT COUNT(*) FROM b2b_partner_documents WHERE status = 'Pending' AND stored_filename IS NOT NULL")->fetchColumn();
 $verifiedCount = (int) $pdo->query("SELECT COUNT(*) FROM b2b_partner_documents WHERE status = 'Verified'")->fetchColumn();
 $rejectedCount = (int) $pdo->query("SELECT COUNT(*) FROM b2b_partner_documents WHERE status = 'Rejected'")->fetchColumn();
+
+$expiringPlaceholders = implode(',', array_fill(0, count(B2B_DOC_TYPES_WITH_EXPIRY), '?'));
+$expiringStmt = $pdo->prepare("SELECT d.*, p.application_ref, p.company_name FROM b2b_partner_documents d JOIN b2b_partners p ON p.id = d.partner_id
+    WHERE d.status = 'Verified' AND d.doc_type IN ($expiringPlaceholders) AND d.expiry_date IS NOT NULL AND d.expiry_date != ''
+    AND d.expiry_date <= ? ORDER BY d.expiry_date ASC");
+$expiringStmt->execute(array_merge(B2B_DOC_TYPES_WITH_EXPIRY, [gmdate('Y-m-d', strtotime('+30 days'))]));
+$expiringDocuments = $expiringStmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <div class="crm-page-header">
     <div>
         <h1 class="crm-page-title">Document Verification</h1>
         <p class="crm-page-subtitle">Review documents uploaded with B2B partner applications.</p>
     </div>
+    <form method="post">
+        <input type="hidden" name="action" value="run_expiry_check">
+        <button type="submit" class="crm-btn crm-btn-ghost crm-btn-sm"><i class="fa-solid fa-clock-rotate-left"></i> Run Expiry Check Now</button>
+    </form>
 </div>
 
-<div class="crm-kpi-grid" style="grid-template-columns:repeat(3,1fr);">
+<?php if (isset($_GET['expiry_ran'])): ?>
+<div class="crm-alert crm-alert-success">Expiry check complete — expired and expiring-soon documents have been flagged and notified.</div>
+<?php endif; ?>
+
+<div class="crm-kpi-grid" style="grid-template-columns:repeat(4,1fr);">
     <div class="crm-kpi"><div class="crm-kpi-value"><?php echo $pendingCount; ?></div><div class="crm-kpi-label">Awaiting Verification</div></div>
     <div class="crm-kpi"><div class="crm-kpi-value"><?php echo $verifiedCount; ?></div><div class="crm-kpi-label">Verified</div></div>
     <div class="crm-kpi"><div class="crm-kpi-value"><?php echo $rejectedCount; ?></div><div class="crm-kpi-label">Rejected</div></div>
+    <div class="crm-kpi"><div class="crm-kpi-value"><?php echo count($expiringDocuments); ?></div><div class="crm-kpi-label">Expiring Within 30 Days</div></div>
 </div>
+
+<?php if ($expiringDocuments): ?>
+<div class="crm-card">
+    <h3 style="margin:0 0 14px;font-size:14px;">Documents Expiring Soon</h3>
+    <div class="crm-table-wrap">
+    <table class="crm-table">
+        <thead><tr><th>Application</th><th>Company</th><th>Document</th><th>Expiry Date</th><th>Days Left</th></tr></thead>
+        <tbody>
+        <?php foreach ($expiringDocuments as $ed): $daysLeft = (int) floor((strtotime($ed['expiry_date']) - strtotime(gmdate('Y-m-d'))) / 86400); ?>
+        <tr>
+            <td class="crm-cell-name"><a href="b2b-partner.php?ref=<?php echo urlencode($ed['application_ref']); ?>#documents"><?php echo htmlspecialchars($ed['application_ref']); ?></a></td>
+            <td><?php echo htmlspecialchars($ed['company_name']); ?></td>
+            <td class="crm-cell-sub"><?php echo htmlspecialchars(B2B_DOC_TYPES[$ed['doc_type']] ?? $ed['doc_type']); ?></td>
+            <td class="crm-cell-sub"><?php echo htmlspecialchars(substr($ed['expiry_date'], 0, 10)); ?></td>
+            <td><span class="crm-status-badge" style="background:<?php echo $daysLeft < 0 ? 'var(--c-red-bg);color:var(--c-red)' : ($daysLeft <= 7 ? 'var(--c-red-bg);color:var(--c-red)' : ($daysLeft <= 15 ? 'var(--c-amber-bg);color:var(--c-amber)' : 'var(--c-blue-dim);color:var(--c-blue)')); ?>;"><?php echo $daysLeft < 0 ? 'Expired' : "$daysLeft days"; ?></span></td>
+        </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+    </div>
+</div>
+<?php endif; ?>
 
 <div class="crm-filter-bar" style="margin-bottom:16px;">
     <?php foreach (['' => 'All', 'Pending' => 'Pending', 'Verified' => 'Verified', 'Rejected' => 'Rejected', 'Expired' => 'Expired'] as $val => $label): ?>
@@ -118,6 +164,9 @@ $rejectedCount = (int) $pdo->query("SELECT COUNT(*) FROM b2b_partner_documents W
                         <input type="hidden" name="action" value="verify">
                         <input type="hidden" name="doc_id" value="<?php echo (int) $d['id']; ?>">
                         <input type="text" name="remarks" placeholder="Verification remarks..." style="font-size:11.5px;padding:5px 8px;border:1px solid var(--c-border);border-radius:6px;width:150px;">
+                        <?php if (in_array($d['doc_type'], B2B_DOC_TYPES_WITH_EXPIRY, true)): ?>
+                        <input type="date" name="expiry_date" title="Expiry date (for monitoring)" style="font-size:11.5px;padding:5px 8px;border:1px solid var(--c-border);border-radius:6px;">
+                        <?php endif; ?>
                         <button type="submit" class="crm-btn crm-btn-primary crm-btn-sm">Verify</button>
                     </form>
                     <form method="post" style="display:flex;gap:6px;align-items:center;">

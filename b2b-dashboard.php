@@ -26,6 +26,13 @@ if ($ppPartner['assigned_manager_id']) {
     $mstmt->execute([$ppPartner['assigned_manager_id']]);
     $managerName = (string) $mstmt->fetchColumn();
 }
+
+$docExpiryPlaceholders = implode(',', array_fill(0, count(B2B_DOC_TYPES_WITH_EXPIRY), '?'));
+$docExpiryStmt = $pdo->prepare("SELECT doc_type, expiry_date, status FROM b2b_partner_documents
+    WHERE partner_id = ? AND doc_type IN ($docExpiryPlaceholders) AND expiry_date IS NOT NULL AND expiry_date != ''
+    AND (status = 'Expired' OR (status = 'Verified' AND expiry_date <= ?)) ORDER BY expiry_date ASC");
+$docExpiryStmt->execute(array_merge([$pid], B2B_DOC_TYPES_WITH_EXPIRY, [gmdate('Y-m-d', strtotime('+30 days'))]));
+$expiringDocs = $docExpiryStmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <div class="pp-page-header">
     <div>
@@ -33,6 +40,22 @@ if ($ppPartner['assigned_manager_id']) {
         <p class="pp-page-subtitle"><?php echo htmlspecialchars($ppPartner['company_name']); ?> &middot; <span class="pp-status-chip"><?php echo htmlspecialchars($ppPartner['status']); ?></span></p>
     </div>
 </div>
+
+<?php if ($expiringDocs): ?>
+<div class="pp-doc-alert">
+    <i class="fa-solid fa-triangle-exclamation"></i>
+    <div>
+        <strong>Document action needed</strong>
+        <ul>
+        <?php foreach ($expiringDocs as $ed): ?>
+            <li><?php echo htmlspecialchars(B2B_DOC_TYPES[$ed['doc_type']] ?? $ed['doc_type']); ?> —
+                <?php echo $ed['status'] === 'Expired' ? 'expired' : 'expires'; ?> on <?php echo htmlspecialchars(substr($ed['expiry_date'], 0, 10)); ?></li>
+        <?php endforeach; ?>
+        </ul>
+        <p>Please contact your Relationship Manager to arrange a renewed copy.</p>
+    </div>
+</div>
+<?php endif; ?>
 
 <div class="pp-kpi-grid">
     <div class="pp-kpi">
