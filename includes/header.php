@@ -36,6 +36,14 @@ if (!$noindex) {
 
 $currentPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
 
+// Indicative USD->INR rate for the header utility bar — see
+// includes/currency-rate.php for the fetch/cache/fallback logic. This
+// intentionally never throws and never blocks rendering; $usdInrRate['rate']
+// is simply null if no rate (live or cached) is available at all.
+$usdInrRate = get_usd_inr_rate();
+$supportPhoneDial = setting('contact_phone_dial', '+917065819819');
+$supportPhoneDisplay = setting('contact_phone_display', '+91 7065 819 819');
+
 $navLinks = [
     ['label' => 'Visa Process', 'href' => '/visa-process/', 'icon' => 'visa-process'],
     ['label' => 'Visa Updates', 'href' => '/blog/', 'icon' => 'visa-updates'],
@@ -171,10 +179,32 @@ foreach ([
 <a class="skip-link" href="#main">Skip to content</a>
 
 <header class="site-header" id="site-header">
+    <div class="site-header__utility">
+        <div class="container site-header__utility-bar">
+            <?php if ($usdInrRate['rate'] !== null): ?>
+            <span class="site-header__rate" id="site-header-rate" data-rate-value="<?= e(number_format($usdInrRate['rate'], 2)) ?>" data-rate-stale="<?= $usdInrRate['stale'] ? '1' : '0' ?>">
+                <strong>USD &rarr; INR &#8377;<span id="site-header-rate-value"><?= e(number_format($usdInrRate['rate'], 2)) ?></span></strong>
+                <span class="site-header__rate-label" id="site-header-rate-label"><?= $usdInrRate['stale'] ? 'Last known rate' : 'Indicative Rate' ?></span>
+            </span>
+            <?php else: ?>
+            <span class="site-header__rate site-header__rate--unavailable">Rate unavailable</span>
+            <?php endif; ?>
+            <div class="site-header__utility-contact">
+                <a href="tel:<?= e($supportPhoneDial) ?>" class="site-header__utility-link">
+                    <svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 3h3l1.5 4L6.5 8.5a11 11 0 0 0 5 5l1.5-2L17 13v3c0 1-1 2-2 2C9 18 2 11 2 5c0-1 1-2 2-2z"/></svg>
+                    24&times;7 Support
+                </a>
+                <a href="<?= e(whatsapp_enquiry_href('Hello Visagiri, I would like assistance with my travel/visa-related enquiry.')) ?>" class="site-header__utility-link" target="_blank" rel="noopener noreferrer">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 20z"/><path d="M16.7 13.9c-.3-.1-1.6-.8-1.8-.9-.2-.1-.4-.1-.6.1-.2.3-.7.9-.8 1-.2.2-.3.2-.5.1-.3-.1-1.2-.4-2.2-1.4-.8-.7-1.4-1.6-1.5-1.9-.2-.3 0-.4.1-.6l.4-.4c.1-.1.2-.3.2-.4.1-.2 0-.3 0-.5-.1-.1-.6-1.5-.8-2-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.1 0 1.2.9 2.4 1 2.6.1.2 1.8 2.8 4.4 3.8.6.3 1.1.4 1.5.5.6.2 1.2.2 1.6.1.5-.1 1.6-.6 1.8-1.3.2-.6.2-1.1.1-1.3 0-.1-.2-.2-.5-.3z"/></svg>
+                    WhatsApp
+                </a>
+            </div>
+        </div>
+    </div>
     <div class="container site-header__bar">
         <a href="/" class="site-header__logo" aria-label="Visagiri home">
             <span class="site-header__logo-mark">VISA<span>GIRI</span></span>
-            <span class="site-header__logo-sub">Visa Management</span>
+            <span class="site-header__logo-sub">Technology Meets Travel &amp; Visa</span>
         </a>
 
         <nav class="site-header__nav" aria-label="Primary">
@@ -395,7 +425,16 @@ foreach ([
             <a href="/countries/" class="site-header__icon-btn" aria-label="Search visas">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="6.5" stroke="currentColor" stroke-width="1.6"/><path d="M17 17L13.6 13.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
             </a>
-            <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to know more about your visa services.")) ?>" class="btn btn-gold btn-sm site-header__cta" target="_blank" rel="noopener noreferrer">Enquire Now</a>
+            <div class="site-header__login has-dropdown">
+                <button type="button" class="btn btn-outline btn-sm site-header__login-trigger" id="login-menu-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="login-menu">
+                    Login <?= nav_chevron_icon() ?>
+                </button>
+                <ul class="dropdown-menu site-header__login-menu" id="login-menu" aria-labelledby="login-menu-trigger">
+                    <li><a href="/login/">Customer Login</a></li>
+                    <li><a href="/hrms/login/">Employee Login</a></li>
+                    <li><a href="/partner/login/">B2B Partner Login</a></li>
+                </ul>
+            </div>
         </div>
 
         <button type="button" class="site-header__burger" id="site-header-burger" aria-expanded="false" aria-controls="site-header-mobile" aria-label="Open menu">
@@ -527,7 +566,20 @@ foreach ([
             </ul>
         </nav>
         <div class="site-header__mobile-actions">
-            <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to know more about your visa services.")) ?>" class="btn btn-gold" target="_blank" rel="noopener noreferrer">Enquire Now</a>
+            <?php if ($usdInrRate['rate'] !== null): ?>
+            <div class="site-header__mobile-rate">
+                <strong>USD &rarr; INR &#8377;<?= e(number_format($usdInrRate['rate'], 2)) ?></strong>
+                <span><?= $usdInrRate['stale'] ? 'Last known rate' : 'Indicative Rate' ?></span>
+            </div>
+            <?php endif; ?>
+            <a href="tel:<?= e($supportPhoneDial) ?>" class="btn btn-outline">24&times;7 Support</a>
+            <a href="<?= e(whatsapp_enquiry_href('Hello Visagiri, I would like assistance with my travel/visa-related enquiry.')) ?>" class="btn btn-gold" target="_blank" rel="noopener noreferrer">WhatsApp Us</a>
+            <div class="site-header__mobile-login">
+                <span class="site-header__mobile-subheading">Login</span>
+                <a href="/login/">Customer Login</a>
+                <a href="/hrms/login/">Employee Login</a>
+                <a href="/partner/login/">B2B Partner Login</a>
+            </div>
         </div>
     </div>
 </header>

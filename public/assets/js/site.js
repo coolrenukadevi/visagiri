@@ -139,6 +139,65 @@
     });
   }
 
+  // Login dropdown (Customer / Employee / B2B Partner). A <button>
+  // trigger rather than a link, so unlike the plain-link dropdowns
+  // elsewhere it needs real click handling — hover/:focus-within alone
+  // covers desktop mouse and keyboard-tab, but touch devices have
+  // neither. Deliberately its own small handler rather than reusing
+  // initMegaMenu(): that function locates its wrapper via
+  // .closest('.has-mega-menu'), which carries mega-panel-specific CSS
+  // (position: static on the wrapper) this simple right-aligned
+  // dropdown doesn't want.
+  var loginTrigger = document.getElementById('login-menu-trigger');
+  var loginMenu = document.getElementById('login-menu');
+  if (loginTrigger && loginMenu) {
+    var loginWrap = loginTrigger.parentElement;
+    var setLoginOpen = function (open) {
+      loginMenu.classList.toggle('is-open', open);
+      loginTrigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
+    loginTrigger.addEventListener('click', function (event) {
+      event.stopPropagation();
+      setLoginOpen(!loginMenu.classList.contains('is-open'));
+    });
+    document.addEventListener('click', function (event) {
+      if (loginMenu.classList.contains('is-open') && !loginWrap.contains(event.target)) {
+        setLoginOpen(false);
+      }
+    });
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && loginMenu.classList.contains('is-open')) {
+        setLoginOpen(false);
+        loginTrigger.focus();
+      }
+    });
+  }
+
+  // Header USD->INR rate: re-fetches every 5 minutes so the number
+  // can move while a visitor's tab stays open, without a full page
+  // reload. The server-rendered value (includes/currency-rate.php,
+  // cached ~1hr) already covers "not hardcoded" and "updates
+  // automatically across page loads" on its own — this only adds
+  // same-session freshness on top. Silently does nothing on failure;
+  // the last good value just stays on screen.
+  var rateValueEl = document.getElementById('site-header-rate-value');
+  var rateLabelEl = document.getElementById('site-header-rate-label');
+  if (rateValueEl) {
+    setInterval(function () {
+      fetch('/api-usd-inr-rate/', { cache: 'no-store' })
+        .then(function (res) { return res.ok ? res.json() : null; })
+        .then(function (data) {
+          if (data && typeof data.rate === 'number') {
+            rateValueEl.textContent = data.rate.toFixed(2);
+            if (rateLabelEl) {
+              rateLabelEl.textContent = data.stale ? 'Last known rate' : 'Indicative Rate';
+            }
+          }
+        })
+        .catch(function () { /* leave the last known value on screen */ });
+    }, 5 * 60 * 1000);
+  }
+
   // Mobile Attestation accordion — closes any other open <details> in
   // the mobile nav when one is opened, so only one panel is expanded
   // at a time and the menu stays easy to scroll (native <details>

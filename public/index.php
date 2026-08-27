@@ -46,6 +46,7 @@ require_once "$root/includes/reference-numbers.php";
 require_once "$root/includes/documents.php";
 require_once "$root/includes/hrms.php";
 require_once "$root/includes/forex.php";
+require_once "$root/includes/currency-rate.php";
 
 start_secure_session();
 send_security_headers();
@@ -112,6 +113,9 @@ switch ($segments[0] ?? '') {
 
     case 'visa-search':
         $dispatch("$root/pages/visa-search.php");
+
+    case 'api-usd-inr-rate':
+        $dispatch("$root/pages/api-usd-inr-rate.php");
 
     case 'attestation':
         $dispatch("$root/attestation/index.php");
