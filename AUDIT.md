@@ -906,3 +906,9 @@ Client follow-up on the header spec above, refining element placement rather tha
 `public/assets/css/layout.css`: `.site-header__login-trigger` got button-reset styling since it now sits inline in the utility bar's link row rather than as a standalone nav dropdown trigger; added `.site-header__tagline` and `.site-header__mobile-tagline` rules. No JS changes — the existing login-dropdown open/close/outside-click/Escape handler and the rate-refresh poll are untouched, since only their container moved.
 
 **Verified end-to-end** (Playwright, 1440×900 and 390×844): 24×7 Support's href resolves to the correct `wa.me` URL with the pre-filled enquiry message; zero remaining "WhatsApp"-labeled elements anywhere in the utility bar; Login dropdown opens/closes correctly from its new position with the chevron rotating as before; logo subtitle confirmed back to "VISA MANAGEMENT"; mobile menu screenshot confirms the tagline, single WhatsApp-linked 24×7 Support button, and Login section render correctly with no duplicate WhatsApp entry. Zero console errors. `php -l` clean on both changed files.
+
+## Header follow-up: "Enquire Now" restored on the right
+
+Client asked to add "Enquire Now" back into the header's right side after the utility-bar rework replaced the old CTA slot with the Login dropdown. Added as a gold `btn-gold btn-sm` link to the existing `/enquire/` CRM form, placed in `.site-header__actions` next to the search icon (both already flex/gapped, so no new CSS was needed). Mobile menu gets the same link as an outline button directly under 24×7 Support. No JS or CSS changes — reuses existing button classes and the existing route.
+
+**Verified**: Playwright confirms the button renders once, links to `/enquire/`, and the mobile equivalent does too; zero console errors; `php -l` clean.

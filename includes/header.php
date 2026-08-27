@@ -432,6 +432,7 @@ foreach ([
             <a href="/countries/" class="site-header__icon-btn" aria-label="Search visas">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="6.5" stroke="currentColor" stroke-width="1.6"/><path d="M17 17L13.6 13.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
             </a>
+            <a href="/enquire/" class="btn btn-gold btn-sm site-header__enquire-btn">Enquire Now</a>
         </div>
 
         <button type="button" class="site-header__burger" id="site-header-burger" aria-expanded="false" aria-controls="site-header-mobile" aria-label="Open menu">
@@ -571,6 +572,7 @@ foreach ([
             </div>
             <?php endif; ?>
             <a href="<?= e(whatsapp_enquiry_href('Hello Visagiri, I would like assistance with my travel/visa-related enquiry.')) ?>" class="btn btn-gold" target="_blank" rel="noopener noreferrer">24&times;7 Support</a>
+            <a href="/enquire/" class="btn btn-outline">Enquire Now</a>
             <div class="site-header__mobile-login">
                 <span class="site-header__mobile-subheading">Login</span>
                 <a href="/login/">Customer Login</a>
