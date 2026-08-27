@@ -3,6 +3,7 @@ ob_start();
 $PP_PAGE_TITLE = 'Application Detail';
 $PP_ACTIVE_NAV = 'applications';
 require __DIR__ . '/includes/partner-layout-top.php';
+partner_require_permission('view_applications');
 
 $ref = trim($_GET['ref'] ?? '');
 

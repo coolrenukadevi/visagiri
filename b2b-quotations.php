@@ -1,7 +1,9 @@
 <?php
+ob_start();
 $PP_PAGE_TITLE = 'Quotations';
 $PP_ACTIVE_NAV = 'quotations';
 require __DIR__ . '/includes/partner-layout-top.php';
+partner_require_permission('view_quotations');
 
 $pid = partner_id();
 

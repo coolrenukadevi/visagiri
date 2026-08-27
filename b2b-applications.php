@@ -1,7 +1,9 @@
 <?php
+ob_start();
 $PP_PAGE_TITLE = 'Visa Applications';
 $PP_ACTIVE_NAV = 'applications';
 require __DIR__ . '/includes/partner-layout-top.php';
+partner_require_permission('view_applications');
 
 // Tenant isolation: every row is scoped to the logged-in partner's own id.
 $pid = partner_id();

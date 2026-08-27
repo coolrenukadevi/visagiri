@@ -1,7 +1,9 @@
 <?php
+ob_start();
 $PP_PAGE_TITLE = 'Wallet & Credit';
 $PP_ACTIVE_NAV = 'wallet';
 require __DIR__ . '/includes/partner-layout-top.php';
+partner_require_permission('view_payments');
 
 $pid = partner_id();
 $stmt = $pdo->prepare('SELECT * FROM b2b_wallet_transactions WHERE partner_id = ? ORDER BY created_at DESC LIMIT 200');

@@ -3,6 +3,7 @@ ob_start();
 $PP_PAGE_TITLE = 'Invoice Detail';
 $PP_ACTIVE_NAV = 'invoices';
 require __DIR__ . '/includes/partner-layout-top.php';
+partner_require_permission('view_invoices');
 
 $invoiceId = (int) ($_GET['id'] ?? 0);
 $pid = partner_id();
@@ -25,7 +26,7 @@ if (!$invoice) {
 $actionMessage = '';
 $actionError = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'pay_from_wallet') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'pay_from_wallet' && partner_has_permission('view_payments')) {
     $paidStmt = $pdo->prepare('SELECT COALESCE(SUM(amount), 0) FROM b2b_invoice_payments WHERE invoice_id = ?');
     $paidStmt->execute([$invoiceId]);
     $paidToDate = (float) $paidStmt->fetchColumn();

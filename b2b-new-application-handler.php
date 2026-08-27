@@ -29,6 +29,10 @@ function b2b_app_fail(string $message, array $fieldErrors = [], int $code = 422)
     exit;
 }
 
+if (!partner_has_permission('create_application')) {
+    b2b_app_fail('Your account does not have permission to submit visa applications. Contact your account Owner.', [], 403);
+}
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     b2b_app_fail('Method not allowed.', [], 405);
 }

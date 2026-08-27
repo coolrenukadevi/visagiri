@@ -9,6 +9,11 @@ require_once __DIR__ . '/includes/partner-auth.php';
 require_once __DIR__ . '/includes/site-contact.php';
 partner_require_login();
 
+if (!partner_has_permission('view_invoices')) {
+    http_response_code(403);
+    exit('You do not have permission to view invoices.');
+}
+
 $invoiceId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 if (!$invoiceId) {
     http_response_code(400);

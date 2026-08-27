@@ -3,6 +3,7 @@ ob_start();
 $PP_PAGE_TITLE = 'Quotation Detail';
 $PP_ACTIVE_NAV = 'quotations';
 require __DIR__ . '/includes/partner-layout-top.php';
+partner_require_permission('view_quotations');
 
 $ref = trim($_GET['ref'] ?? '');
 $pid = partner_id();

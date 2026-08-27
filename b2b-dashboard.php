@@ -94,9 +94,16 @@ $expiringDocs = $docExpiryStmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
     <div class="pp-card">
         <h3>Quick Actions</h3>
+        <?php if (partner_has_permission('create_application')): ?>
         <a href="b2b-new-application.php" class="b2b-submit-btn" style="text-decoration:none;margin-bottom:10px;">Submit New Visa Application</a>
+        <?php endif; ?>
+        <?php if (partner_has_permission('view_applications')): ?>
         <a href="b2b-applications.php" class="pp-filter-btn is-ghost" style="width:100%;justify-content:center;">View My Applications</a>
-        <p class="pp-empty-note" style="margin-top:16px;">Team management and messaging are coming in the next phases of the B2B Partner Portal. Your Relationship Manager can assist with these in the meantime.</p>
+        <?php endif; ?>
+        <?php if (!partner_has_permission('create_application') && !partner_has_permission('view_applications')): ?>
+        <p class="pp-empty-note">Your account does not currently have access to visa applications. Contact your account Owner to request access.</p>
+        <?php endif; ?>
+        <p class="pp-empty-note" style="margin-top:16px;">Messaging is coming in a later phase of the B2B Partner Portal.</p>
     </div>
 </div>
 

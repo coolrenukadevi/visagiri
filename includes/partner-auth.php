@@ -113,7 +113,7 @@ function partner_application_ref(): string
     return $_SESSION['partner_application_ref'] ?? '';
 }
 
-/** Owner always has every permission; sub-users are gated by their stored permissions JSON (enforced fully from Phase 11 onward). */
+/** Owner always has every permission; sub-users are gated by their stored permissions JSON. */
 function partner_has_permission(string $key): bool
 {
     if (partner_role() === 'Owner') {
@@ -124,4 +124,37 @@ function partner_has_permission(string $key): bool
     $stmt->execute([partner_user_id()]);
     $perms = json_decode((string) $stmt->fetchColumn(), true) ?: [];
     return in_array($key, $perms, true);
+}
+
+/**
+ * Gate for every partner-portal page whose content is permission-scoped
+ * (Phase 11 §35: "Sub-users must never access information outside their
+ * partner organization" — this is the per-page-capability half of that;
+ * tenant isolation via partner_id() is the per-row half, enforced
+ * separately on every query). Call right after requiring
+ * includes/partner-layout-top.php (which has already run
+ * partner_require_login() and started printing the page shell by that
+ * point). A sub-user without the permission is shown a 403, not
+ * silently redirected — they're a legitimate logged-in user of the
+ * right company, just not authorized for this particular page.
+ *
+ * Because the shell's HTML is already flushing by the time this runs,
+ * the calling page MUST start with `ob_start();` as its very first
+ * line (before setting $PP_PAGE_TITLE etc.) for the 403 status code to
+ * actually take effect — same requirement as b2b-application.php's own
+ * 404 case. Without it PHP silently ignores http_response_code() once
+ * headers are sent, and the page serves the 403 message with a 200
+ * status instead.
+ */
+function partner_require_permission(string $key): void
+{
+    if (partner_has_permission($key)) {
+        return;
+    }
+    http_response_code(403);
+    ?>
+    <div class="pp-card">You do not have permission to view this page. Contact your account Owner to request access.</div>
+    <?php
+    require __DIR__ . '/partner-layout-bottom.php';
+    exit;
 }

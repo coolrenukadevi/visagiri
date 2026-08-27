@@ -28,13 +28,13 @@ $PP_PAGE_TITLE = $PP_PAGE_TITLE ?? 'Partner Dashboard';
 
 $ppNavItems = [
     ['key' => 'dashboard', 'label' => 'Dashboard', 'icon' => 'gauge-high', 'href' => 'b2b-dashboard.php'],
-    ['key' => 'applications', 'label' => 'Visa Applications', 'icon' => 'passport', 'href' => 'b2b-applications.php'],
-    ['key' => 'quotations', 'label' => 'Quotations', 'icon' => 'file-invoice-dollar', 'href' => 'b2b-quotations.php'],
-    ['key' => 'invoices', 'label' => 'Invoices &amp; Payments', 'icon' => 'file-invoice', 'href' => 'b2b-invoices.php'],
-    ['key' => 'wallet', 'label' => 'Wallet &amp; Credit', 'icon' => 'wallet', 'href' => 'b2b-wallet.php'],
+    ['key' => 'applications', 'label' => 'Visa Applications', 'icon' => 'passport', 'href' => 'b2b-applications.php', 'permission' => 'view_applications'],
+    ['key' => 'quotations', 'label' => 'Quotations', 'icon' => 'file-invoice-dollar', 'href' => 'b2b-quotations.php', 'permission' => 'view_quotations'],
+    ['key' => 'invoices', 'label' => 'Invoices &amp; Payments', 'icon' => 'file-invoice', 'href' => 'b2b-invoices.php', 'permission' => 'view_invoices'],
+    ['key' => 'wallet', 'label' => 'Wallet &amp; Credit', 'icon' => 'wallet', 'href' => 'b2b-wallet.php', 'permission' => 'view_payments'],
     ['key' => 'documents', 'label' => 'Documents', 'icon' => 'folder-open', 'href' => 'b2b-documents-partner.php', 'soon' => true],
     ['key' => 'messages', 'label' => 'Messages', 'icon' => 'comments', 'href' => 'b2b-messages.php', 'soon' => true],
-    ['key' => 'team', 'label' => 'Team Management', 'icon' => 'people-group', 'href' => 'b2b-team.php', 'soon' => true],
+    ['key' => 'team', 'label' => 'Team Management', 'icon' => 'people-group', 'href' => 'b2b-team.php', 'permission' => 'manage_users'],
     ['key' => 'reports', 'label' => 'Reports', 'icon' => 'chart-line', 'href' => 'b2b-reports-partner.php', 'soon' => true],
     ['key' => 'profile', 'label' => 'Company Profile', 'icon' => 'building', 'href' => 'b2b-profile.php', 'soon' => true],
     ['key' => 'support', 'label' => 'Support', 'icon' => 'headset', 'href' => 'b2b-support.php', 'soon' => true],
@@ -61,6 +61,7 @@ $ppNavItems = [
         </div>
         <nav class="pp-nav">
             <?php foreach ($ppNavItems as $item): ?>
+                <?php if (!empty($item['permission']) && !partner_has_permission($item['permission'])) continue; ?>
                 <?php if (!empty($item['soon'])): ?>
                 <span class="pp-nav-item is-soon" title="Coming in a later phase">
                     <i class="fa-solid fa-<?php echo $item['icon']; ?>"></i> <?php echo $item['label']; ?>

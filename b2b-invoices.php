@@ -1,7 +1,9 @@
 <?php
+ob_start();
 $PP_PAGE_TITLE = 'Invoices & Payments';
 $PP_ACTIVE_NAV = 'invoices';
 require __DIR__ . '/includes/partner-layout-top.php';
+partner_require_permission('view_invoices');
 
 $pid = partner_id();
 

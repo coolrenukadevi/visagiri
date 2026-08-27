@@ -1,7 +1,9 @@
 <?php
+ob_start();
 $PP_PAGE_TITLE = 'New Visa Application';
 $PP_ACTIVE_NAV = 'applications';
 require __DIR__ . '/includes/partner-layout-top.php';
+partner_require_permission('create_application');
 require_once __DIR__ . '/includes/countries-data.php';
 ?>
 <div class="pp-page-header">
