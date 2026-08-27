@@ -5,3 +5,5 @@ storage/*
 *.log
 .DS_Store
 *.zip
+
+.claude/

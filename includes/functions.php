@@ -64,6 +64,21 @@ function format_money(float $amount, string $currency = 'INR'): string
     return $currency . ' ' . number_format($amount, 2);
 }
 
+/**
+ * Renders a status value as a "badge badge-{class}" string, given a
+ * map of status => badge class (e.g. ['active' => 'success', 'suspended'
+ * => 'danger']). A status missing from the map falls back to
+ * 'badge-neutral' rather than an unstyled bare span. Introduced to
+ * replace the inline ternary chains repeated at nearly every admin
+ * list/detail page in this codebase (customers, partners, visa
+ * applications, ...) with one shared helper.
+ */
+function status_badge(string $status, array $map): string
+{
+    $class = $map[$status] ?? 'neutral';
+    return '<span class="badge badge-' . e($class) . '">' . e(ucfirst(str_replace('_', ' ', $status))) . '</span>';
+}
+
 /** Renders a country's flag as a Unicode emoji from its ISO2 code (no image assets needed). */
 function flag_emoji(?string $iso2): string
 {

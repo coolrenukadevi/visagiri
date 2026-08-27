@@ -17,15 +17,24 @@ function log_action(
     ?int $recordId = null,
     ?string $oldValue = null,
     ?string $newValue = null,
-    ?int $actorId = null
+    ?int $actorId = null,
+    ?int $partnerActorId = null
 ): void {
-    $actorId ??= current_admin_id();
+    // Every action logged so far has an admin actor (staff performing
+    // the action) — $partnerActorId exists for a future phase where a
+    // partner acts on their own account (e.g. submits a document) and
+    // there is no admin actor at all. Callers set at most one of the
+    // two; both null falls back to the current admin, same as before.
+    if ($partnerActorId === null) {
+        $actorId ??= current_admin_id();
+    }
 
     db()->prepare(
-        'INSERT INTO audit_logs (admin_user_id, action, module, record_id, ip_address, user_agent, old_value, new_value)
-         VALUES (:admin_id, :action, :module, :record_id, :ip, :ua, :old_value, :new_value)'
+        'INSERT INTO audit_logs (admin_user_id, partner_id, action, module, record_id, ip_address, user_agent, old_value, new_value)
+         VALUES (:admin_id, :partner_id, :action, :module, :record_id, :ip, :ua, :old_value, :new_value)'
     )->execute([
         'admin_id' => $actorId,
+        'partner_id' => $partnerActorId,
         'action' => $action,
         'module' => $module,
         'record_id' => $recordId,

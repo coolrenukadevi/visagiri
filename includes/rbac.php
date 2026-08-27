@@ -81,3 +81,15 @@ function current_admin_forex_scoped_to_assigned(): bool
 {
     return !has_permission('forex.requests.view_all');
 }
+
+/**
+ * B2B Partner CRM scoping — a B2B Relationship Manager only sees
+ * partners.assigned_admin_id = their own id; every other partners.view
+ * role (B2B Admin, Visa/Accounts/Sales Manager, Support Executive)
+ * holds partners.view_all and sees every partner. Checked at the query
+ * level by admin/pages/partners.php, not just used to hide rows.
+ */
+function current_admin_b2b_scoped_to_assigned(): bool
+{
+    return !has_permission('partners.view_all');
+}
