@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     document.addEventListener('click', function (e) {
-        var trigger = e.target.closest('a.theme-btn[href="contact"], [data-open-enquiry]');
+        var trigger = e.target.closest('a.theme-btn[href="contact"]:not([data-open-quick-enquiry]), [data-open-enquiry]');
         if (trigger) {
             e.preventDefault();
             openModal(trigger);

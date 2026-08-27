@@ -159,7 +159,7 @@ $utmCampaign = substr(trim($_POST['utm_campaign'] ?? ''), 0, 100);
 $utmTerm = substr(trim($_POST['utm_term'] ?? ''), 0, 100);
 $utmContent = substr(trim($_POST['utm_content'] ?? ''), 0, 100);
 
-$enquiryRef = enquiry_generate_ref($pdo);
+$enquiryRef = enquiry_generate_ref($pdo, $serviceRequired);
 $trackingCode = crm_generate_tracking_code($pdo);
 $now = gmdate('c');
 

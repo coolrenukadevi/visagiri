@@ -255,6 +255,36 @@ function enquiry_db(): PDO
         created_at TEXT NOT NULL
     )");
 
+    /**
+     * Sequential per-service-per-year reference number counters, e.g.
+     * VG-VISA-2026-000125. Same safe transactional-increment pattern as
+     * forex_ref_counters — a real counter, not a random suffix, so refs
+     * are gap-free and predictable within a service+year.
+     */
+    $pdo->exec("CREATE TABLE IF NOT EXISTS enquiry_ref_counters (
+        prefix TEXT NOT NULL,
+        year TEXT NOT NULL,
+        next_number INTEGER NOT NULL DEFAULT 1,
+        PRIMARY KEY (prefix, year)
+    )");
+
+    /**
+     * Lightweight first-party analytics events for the Quick Enquiry
+     * widget and floating contact button — no third-party analytics
+     * platform exists in this codebase, so this is a real, minimal,
+     * self-hosted event log rather than a fake tracking claim. Only
+     * event/service/page context is stored, never personal details.
+     */
+    $pdo->exec("CREATE TABLE IF NOT EXISTS enquiry_analytics_events (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        event_type TEXT NOT NULL,
+        service TEXT,
+        purpose TEXT,
+        page_url TEXT,
+        session_id TEXT,
+        created_at TEXT NOT NULL
+    )");
+
     $userCount = (int) $pdo->query('SELECT COUNT(*) FROM users')->fetchColumn();
     if ($userCount === 0) {
         // Bcrypt hash of the admin password chosen at setup time. The plaintext
@@ -267,21 +297,96 @@ function enquiry_db(): PDO
     return $pdo;
 }
 
-function enquiry_generate_ref(PDO $pdo): string
+/**
+ * Maps a service_required/visa_category value to the short prefix used in
+ * reference numbers and, indirectly, auto-assignment. Centralised here so
+ * ref generation and routing never drift apart.
+ */
+function enquiry_service_prefix(string $serviceRequired): string
 {
-    $chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    do {
-        $suffix = '';
-        for ($i = 0; $i < 5; $i++) {
-            $suffix .= $chars[random_int(0, strlen($chars) - 1)];
-        }
-        $ref = 'VA-' . gmdate('Ymd') . '-' . $suffix;
-        $stmt = $pdo->prepare('SELECT COUNT(*) FROM enquiries WHERE enquiry_ref = ?');
-        $stmt->execute([$ref]);
-        $exists = (int) $stmt->fetchColumn() > 0;
-    } while ($exists);
+    if ($serviceRequired === 'Apostille & Attestation') return 'APOS';
+    if ($serviceRequired === 'Forex Assistance') return 'FOREX';
+    if (in_array($serviceRequired, ['Travel Insurance', 'Flight & Hotel Assistance'], true)) return 'TRAVEL';
+    if (in_array($serviceRequired, ['General Enquiry', 'Other Services'], true)) return 'GEN';
+    return 'VISA';
+}
 
-    return $ref;
+/**
+ * Sequential, gap-free, per-service-per-year reference number:
+ * VG-VISA-2026-000125. Replaces the old random-suffix VA-YYYYMMDD-XXXXX
+ * scheme sitewide (same safe transactional-increment pattern already
+ * proven by forex_generate_ref()) — existing enquiries keep their old
+ * refs untouched, only new ones use this format. $serviceRequired may be
+ * '' for legacy call sites that haven't been updated yet, which falls
+ * back to the VISA prefix.
+ */
+function enquiry_generate_ref(PDO $pdo, string $serviceRequired = ''): string
+{
+    $prefix = enquiry_service_prefix($serviceRequired);
+    $year = gmdate('Y');
+
+    $alreadyInTransaction = $pdo->inTransaction();
+    if (!$alreadyInTransaction) {
+        $pdo->beginTransaction();
+    }
+    try {
+        $pdo->prepare('INSERT OR IGNORE INTO enquiry_ref_counters (prefix, year, next_number) VALUES (?, ?, 1)')->execute([$prefix, $year]);
+        $stmt = $pdo->prepare('SELECT next_number FROM enquiry_ref_counters WHERE prefix = ? AND year = ?');
+        $stmt->execute([$prefix, $year]);
+        $number = (int) $stmt->fetchColumn();
+        $pdo->prepare('UPDATE enquiry_ref_counters SET next_number = ? WHERE prefix = ? AND year = ?')->execute([$number + 1, $prefix, $year]);
+        if (!$alreadyInTransaction) {
+            $pdo->commit();
+        }
+    } catch (Throwable $e) {
+        if (!$alreadyInTransaction && $pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        throw $e;
+    }
+
+    return sprintf('VG-%s-%s-%06d', $prefix, $year, $number);
+}
+
+/**
+ * Real (if simple) auto-assignment: routes a new enquiry to the
+ * least-loaded staff member holding the role responsible for that
+ * service, so leads don't all pile onto one person. Falls back to the
+ * first Super Admin if no one holds the target role yet. Returns null
+ * only if there are no users at all (never happens once the default
+ * admin account exists).
+ */
+function enquiry_auto_assign(PDO $pdo, string $serviceRequired): ?array
+{
+    $roleMap = [
+        'Forex Assistance' => 'Forex Executive',
+        'Travel Insurance' => 'Travel Consultant',
+        'Flight & Hotel Assistance' => 'Travel Consultant',
+        'General Enquiry' => 'Sales Manager',
+        'Other Services' => 'Sales Manager',
+    ];
+    $role = $roleMap[$serviceRequired] ?? 'Visa Consultant';
+
+    $placeholders = implode(',', array_fill(0, count(CRM_OPEN_STATUSES), '?'));
+    $stmt = $pdo->prepare("
+        SELECT u.id, u.name,
+            (SELECT COUNT(*) FROM enquiries e WHERE e.assigned_to = u.name AND e.archived_at IS NULL AND e.status IN ($placeholders)) AS open_count
+        FROM users u
+        WHERE u.role = ?
+        ORDER BY open_count ASC, u.id ASC
+        LIMIT 1
+    ");
+    $stmt->execute(array_merge(CRM_OPEN_STATUSES, [$role]));
+    $pick = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($pick) {
+        return ['name' => $pick['name'], 'role' => $role];
+    }
+
+    $fallback = $pdo->query("SELECT name FROM users WHERE role = 'Super Admin' ORDER BY id ASC LIMIT 1")->fetch(PDO::FETCH_ASSOC);
+    if ($fallback) {
+        return ['name' => $fallback['name'], 'role' => 'Super Admin (fallback — no ' . $role . ' on staff yet)'];
+    }
+    return null;
 }
 
 function crm_log_activity(PDO $pdo, int $enquiryId, string $userName, string $action, string $notes = ''): void

@@ -27,7 +27,7 @@ if ($fullName === '' || !filter_var($email, FILTER_VALIDATE_EMAIL) || $mobile ==
 }
 
 $pdo = enquiry_db();
-$enquiryRef = enquiry_generate_ref($pdo);
+$enquiryRef = enquiry_generate_ref($pdo, $visaCategory);
 $trackingCode = crm_generate_tracking_code($pdo);
 $now = gmdate('c');
 

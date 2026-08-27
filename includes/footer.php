@@ -18,24 +18,31 @@ require_once __DIR__ . '/site-contact.php';
             </div>
         </footer>
 
-        <div class="floating-fab" id="floatingFab">
-            <div class="floating-fab-options" role="menu" aria-hidden="true">
-                <a href="<?php echo $site_whatsapp_url; ?>" target="_blank" rel="noopener" class="floating-fab-option" role="menuitem">
-                    <span class="floating-fab-label">WhatsApp Me</span>
-                    <span class="floating-fab-icon fab-icon-whatsapp"><i class="fa-brands fa-whatsapp"></i></span>
+        <?php
+        $qeWhatsappMsg = rawurlencode('Hello VisaGiri, I would like assistance with a travel/visa-related enquiry.');
+        ?>
+        <div class="qhelp-fab" id="qhelpFab">
+            <div class="qhelp-panel" id="qhelpPanel" role="menu" aria-hidden="true">
+                <button type="button" class="qhelp-option qhelp-option-primary" data-open-quick-enquiry role="menuitem">
+                    <span class="qhelp-option-icon"><i class="fa-solid fa-headset" aria-hidden="true"></i></span>
+                    <span class="qhelp-option-text"><strong>Get Assistance</strong><span>Start a quick enquiry</span></span>
+                </button>
+                <a href="<?php echo $site_whatsapp_url; ?>?text=<?php echo $qeWhatsappMsg; ?>" target="_blank" rel="noopener" class="qhelp-option" role="menuitem" data-track-click="whatsapp_click">
+                    <span class="qhelp-option-icon qhelp-icon-whatsapp"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i></span>
+                    <span class="qhelp-option-text"><strong>WhatsApp Us</strong><span><?php echo $site_phone_display; ?></span></span>
                 </a>
-                <a href="mailto:<?php echo $site_email; ?>" class="floating-fab-option" role="menuitem">
-                    <span class="floating-fab-label">Email Me</span>
-                    <span class="floating-fab-icon fab-icon-email"><i class="fa-solid fa-envelope"></i></span>
+                <a href="tel:<?php echo $site_phone_e164; ?>" class="qhelp-option" role="menuitem" data-track-click="call_click">
+                    <span class="qhelp-option-icon qhelp-icon-call"><i class="fa-solid fa-phone" aria-hidden="true"></i></span>
+                    <span class="qhelp-option-text"><strong>Call Us</strong><span><?php echo $site_phone_display; ?></span></span>
                 </a>
-                <a href="contact" class="floating-fab-option" role="menuitem">
-                    <span class="floating-fab-label">Fill Enquiry Form</span>
-                    <span class="floating-fab-icon fab-icon-form"><i class="fa-solid fa-file-pen"></i></span>
+                <a href="mailto:info@tripgation.com" class="qhelp-option" role="menuitem" data-track-click="email_click">
+                    <span class="qhelp-option-icon qhelp-icon-email"><i class="fa-solid fa-envelope" aria-hidden="true"></i></span>
+                    <span class="qhelp-option-text"><strong>Email Us</strong><span>info@tripgation.com</span></span>
                 </a>
             </div>
-            <button type="button" class="floating-fab-toggle" id="floatingFabToggle" aria-expanded="false" aria-label="Contact us">
-                <i class="fa-solid fa-comment-dots floating-fab-icon-open"></i>
-                <i class="fa-solid fa-xmark floating-fab-icon-close"></i>
+            <button type="button" class="qhelp-toggle" id="qhelpToggle" aria-expanded="false" aria-controls="qhelpPanel">
+                <span class="qhelp-toggle-icon"><i class="fa-solid fa-comment-dots qhelp-icon-open" aria-hidden="true"></i><i class="fa-solid fa-xmark qhelp-icon-close" aria-hidden="true"></i></span>
+                <span class="qhelp-toggle-label">Need Help?</span>
             </button>
         </div>
 
@@ -44,11 +51,12 @@ require_once __DIR__ . '/site-contact.php';
         </button>
 
         <?php include __DIR__ . '/enquiry-modal.php'; ?>
+        <?php include __DIR__ . '/quick-enquiry-modal.php'; ?>
 
         <div class="mobile-sticky-cta">
-            <a href="tel:<?php echo $site_phone_e164; ?>"><i class="fa-solid fa-phone"></i> Call</a>
-            <a href="<?php echo $site_whatsapp_url; ?>" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
-            <a href="contact"><i class="fa-solid fa-paper-plane"></i> Enquire</a>
+            <a href="tel:<?php echo $site_phone_e164; ?>" data-track-click="call_click"><i class="fa-solid fa-phone"></i> Call</a>
+            <a href="<?php echo $site_whatsapp_url; ?>?text=<?php echo $qeWhatsappMsg; ?>" target="_blank" rel="noopener" data-track-click="whatsapp_click"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+            <a href="contact" data-open-quick-enquiry><i class="fa-solid fa-paper-plane"></i> Get Assistance</a>
         </div>
 
 
@@ -86,5 +94,6 @@ require_once __DIR__ . '/site-contact.php';
         <script src="assets/js/main.js"></script>
         <script src="assets/js/custom.js"></script>
         <script src="assets/js/enquiry-modal.js"></script>
+        <script src="assets/js/quick-enquiry-modal.js"></script>
     </body>
 </html>

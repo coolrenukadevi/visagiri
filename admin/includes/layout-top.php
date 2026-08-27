@@ -51,6 +51,7 @@ $navItems = [
 
     ['section' => 'Marketing'],
     ['key' => 'newsletter', 'label' => 'Newsletter Subscribers', 'icon' => 'envelope-open-text', 'href' => 'newsletter.php', 'roles' => ['Super Admin', 'Admin', 'Sales Manager']],
+    ['key' => 'enquiry-analytics', 'label' => 'Get Assistance Analytics', 'icon' => 'chart-line', 'href' => 'enquiry-analytics.php', 'roles' => ['Super Admin', 'Admin', 'Sales Manager']],
 
     ['key' => 'settings', 'label' => 'Settings', 'icon' => 'gear', 'href' => 'settings.php'],
 ];

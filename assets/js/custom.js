@@ -233,30 +233,43 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    /* ---- Floating contact FAB ---- */
-    var fab = document.getElementById('floatingFab');
-    var fabToggle = document.getElementById('floatingFabToggle');
-    if (fab && fabToggle) {
-        var fabOptions = fab.querySelector('.floating-fab-options');
-        var closeFab = function () {
-            fab.classList.remove('is-open');
-            fabToggle.setAttribute('aria-expanded', 'false');
-            if (fabOptions) { fabOptions.setAttribute('aria-hidden', 'true'); }
+    /* ---- Floating "Need Help?" contact widget ---- */
+    var qhelpFab = document.getElementById('qhelpFab');
+    var qhelpToggle = document.getElementById('qhelpToggle');
+    if (qhelpFab && qhelpToggle) {
+        var qhelpPanel = qhelpFab.querySelector('.qhelp-panel');
+        var closeQhelp = function () {
+            qhelpFab.classList.remove('is-open');
+            qhelpToggle.setAttribute('aria-expanded', 'false');
+            if (qhelpPanel) { qhelpPanel.setAttribute('aria-hidden', 'true'); }
         };
-        fabToggle.addEventListener('click', function () {
-            var isOpen = fab.classList.toggle('is-open');
-            fabToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-            if (fabOptions) { fabOptions.setAttribute('aria-hidden', isOpen ? 'false' : 'true'); }
+        qhelpToggle.addEventListener('click', function () {
+            var isOpen = qhelpFab.classList.toggle('is-open');
+            qhelpToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            if (qhelpPanel) { qhelpPanel.setAttribute('aria-hidden', isOpen ? 'false' : 'true'); }
         });
         document.addEventListener('click', function (e) {
-            if (fab.classList.contains('is-open') && !fab.contains(e.target)) {
-                closeFab();
+            if (qhelpFab.classList.contains('is-open') && !qhelpFab.contains(e.target)) {
+                closeQhelp();
             }
         });
         document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') { closeFab(); }
+            if (e.key === 'Escape') { closeQhelp(); }
         });
     }
+
+    /* ---- Lightweight click analytics: WhatsApp / Call / Email ---- */
+    document.addEventListener('click', function (e) {
+        var el = e.target.closest('[data-track-click]');
+        if (!el) { return; }
+        var eventType = el.getAttribute('data-track-click');
+        var payload = new URLSearchParams({ event_type: eventType, page_url: window.location.pathname });
+        if (navigator.sendBeacon) {
+            navigator.sendBeacon('analytics-event.php', payload);
+        } else {
+            fetch('analytics-event.php', { method: 'POST', body: payload, keepalive: true }).catch(function () {});
+        }
+    });
 
     /* ---- Footer newsletter subscribe form ---- */
     var newsletterForm = document.getElementById('footerNewsletterForm');

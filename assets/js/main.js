@@ -102,7 +102,7 @@
       new WOW().init();
   
        //>> Nice Select Start <<//
-        $('select').not('#enquiryForm select').niceSelect();
+        $('select').not('#enquiryForm select, #qeForm select').niceSelect();
 
       // circle-progress
         if ($(".circle-bar").length) {
