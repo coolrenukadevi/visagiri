@@ -248,6 +248,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $partner['credit_limit'] = $creditLimit;
             $actionMessage = 'Credit limit updated to ₹' . number_format($creditLimit, 2) . '.';
         }
+    } elseif ($action === 'send_message' && b2b_can_communicate()) {
+        $body = trim($_POST['body'] ?? '');
+        if ($body === '') {
+            $actionError = 'Message cannot be empty.';
+        } else {
+            $pdo->prepare('INSERT INTO b2b_messages (partner_id, sender_type, sender_id, sender_name, subject, body, is_read, created_at) VALUES (?, ?, ?, ?, ?, ?, 0, ?)')
+                ->execute([$partnerId, 'Staff', admin_user_id(), admin_name(), 'Message from your Relationship Manager', $body, gmdate('c')]);
+            b2b_notify_partner($pdo, $partner, 'New Message from VisaAgency.in B2B Team', "Dear {$partner['contact_name']},\n\nYou have a new message from your Relationship Manager:\n\n\"$body\"\n\nPlease log in to your Partner Portal to reply.\n\nRegards,\nVisaAgency.in B2B Partner Team");
+            $actionMessage = 'Message sent to the partner.';
+        }
     }
 }
 
@@ -292,6 +302,14 @@ $walletStmt = $pdo->prepare('SELECT * FROM b2b_wallet_transactions WHERE partner
 $walletStmt->execute([$partnerId]);
 $walletTransactions = $walletStmt->fetchAll(PDO::FETCH_ASSOC);
 
+$messagesStmt = $pdo->prepare('SELECT * FROM b2b_messages WHERE partner_id = ? ORDER BY created_at ASC');
+$messagesStmt->execute([$partnerId]);
+$partnerMessages = $messagesStmt->fetchAll(PDO::FETCH_ASSOC);
+// A staff member viewing this thread has, by definition, just seen the
+// partner's unread messages — mark them read the same way opening a chat
+// thread would. Never touches the partner's own is_read flag on their side.
+$pdo->prepare("UPDATE b2b_messages SET is_read = 1 WHERE partner_id = ? AND sender_type = 'Partner' AND is_read = 0")->execute([$partnerId]);
+
 $servicesOffered = json_decode($partner['services_offered'] ?? '[]', true) ?: [];
 $visaSpecialization = json_decode($partner['visa_specialization'] ?? '[]', true) ?: [];
 
@@ -301,7 +319,7 @@ $tabs = [
     'applications' => 'Visa Applications', 'quotations' => 'Quotations', 'invoices' => 'Invoices',
     'payments' => 'Payments', 'communications' => 'Communications', 'activities' => 'Activities',
 ];
-$builtTabs = ['overview', 'company', 'documents', 'applications', 'quotations', 'invoices', 'payments', 'activities'];
+$builtTabs = ['overview', 'company', 'documents', 'applications', 'quotations', 'invoices', 'payments', 'communications', 'activities'];
 ?>
 <div class="crm-page-header">
     <div>
@@ -723,6 +741,27 @@ document.querySelectorAll('.b2b-admin-action-form[data-needs-reason="1"]').forEa
             </tbody>
         </table>
         </div>
+    </div>
+
+<?php elseif ($tab === 'communications'): ?>
+    <div class="crm-card">
+        <h3 style="margin:0 0 14px;font-size:14px;">Messages with <?php echo htmlspecialchars($partner['company_name']); ?></h3>
+        <div class="crm-chat-thread">
+            <?php foreach ($partnerMessages as $m): ?>
+            <div class="crm-chat-bubble <?php echo $m['sender_type'] === 'Staff' ? 'is-staff' : 'is-partner'; ?>">
+                <div class="crm-chat-meta"><?php echo htmlspecialchars($m['sender_name']); ?> &middot; <?php echo htmlspecialchars(substr($m['created_at'], 0, 16)); ?></div>
+                <div class="crm-chat-body"><?php echo nl2br(htmlspecialchars($m['body'])); ?></div>
+            </div>
+            <?php endforeach; ?>
+            <?php if (!$partnerMessages): ?><p class="crm-empty">No messages yet.</p><?php endif; ?>
+        </div>
+        <?php if (b2b_can_communicate()): ?>
+        <form method="post" class="crm-chat-form">
+            <input type="hidden" name="action" value="send_message">
+            <textarea name="body" rows="3" placeholder="Write a message to this partner..." required style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:9px 12px;font-family:inherit;font-size:13px;"></textarea>
+            <button type="submit" class="crm-btn crm-btn-primary crm-btn-sm" style="margin-top:8px;">Send Message</button>
+        </form>
+        <?php endif; ?>
     </div>
 
 <?php elseif ($tab === 'activities'): ?>

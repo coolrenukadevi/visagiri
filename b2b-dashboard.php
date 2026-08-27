@@ -33,6 +33,16 @@ $docExpiryStmt = $pdo->prepare("SELECT doc_type, expiry_date, status FROM b2b_pa
     AND (status = 'Expired' OR (status = 'Verified' AND expiry_date <= ?)) ORDER BY expiry_date ASC");
 $docExpiryStmt->execute(array_merge([$pid], B2B_DOC_TYPES_WITH_EXPIRY, [gmdate('Y-m-d', strtotime('+30 days'))]));
 $expiringDocs = $docExpiryStmt->fetchAll(PDO::FETCH_ASSOC);
+
+$announceStmt = $pdo->prepare("SELECT * FROM b2b_announcements
+    WHERE (expires_at IS NULL OR expires_at > ?)
+    AND (target_type = 'All'
+        OR (target_type = 'Tier' AND target_value = ?)
+        OR (target_type = 'Country' AND target_value = ?)
+        OR (target_type = 'Partner' AND target_value = ?))
+    ORDER BY published_at DESC");
+$announceStmt->execute([gmdate('c'), (string) $ppPartner['tier'], (string) $ppPartner['country'], (string) $pid]);
+$announcements = $announceStmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <div class="pp-page-header">
     <div>
@@ -40,6 +50,20 @@ $expiringDocs = $docExpiryStmt->fetchAll(PDO::FETCH_ASSOC);
         <p class="pp-page-subtitle"><?php echo htmlspecialchars($ppPartner['company_name']); ?> &middot; <span class="pp-status-chip"><?php echo htmlspecialchars($ppPartner['status']); ?></span></p>
     </div>
 </div>
+
+<?php if ($announcements): ?>
+<div class="pp-announce-list">
+    <?php foreach ($announcements as $an): ?>
+    <div class="pp-announce">
+        <i class="fa-solid fa-bullhorn"></i>
+        <div>
+            <strong><?php echo htmlspecialchars($an['title']); ?></strong>
+            <p><?php echo nl2br(htmlspecialchars($an['body'])); ?></p>
+        </div>
+    </div>
+    <?php endforeach; ?>
+</div>
+<?php endif; ?>
 
 <?php if ($expiringDocs): ?>
 <div class="pp-doc-alert">
@@ -103,7 +127,7 @@ $expiringDocs = $docExpiryStmt->fetchAll(PDO::FETCH_ASSOC);
         <?php if (!partner_has_permission('create_application') && !partner_has_permission('view_applications')): ?>
         <p class="pp-empty-note">Your account does not currently have access to visa applications. Contact your account Owner to request access.</p>
         <?php endif; ?>
-        <p class="pp-empty-note" style="margin-top:16px;">Messaging is coming in a later phase of the B2B Partner Portal.</p>
+        <a href="b2b-messages.php" class="pp-filter-btn is-ghost" style="width:100%;justify-content:center;margin-top:10px;">Messages</a>
     </div>
 </div>
 

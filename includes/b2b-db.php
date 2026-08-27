@@ -286,6 +286,23 @@ function b2b_db(): PDO
         created_at TEXT NOT NULL
     )");
 
+    // Deliberately its own table rather than reusing the shared `notifications`
+    // table (which the staff CRM bell already reads with a `user_id IS NULL OR
+    // user_id = ?` filter — partner-facing rows would either leak into every
+    // staff member's bell, or need a fragile type-prefix filter retrofitted
+    // onto admin/notifications.php and admin/includes/layout-top.php's "mark
+    // all read" query, which could accidentally start marking a partner's
+    // unread notifications as read too). Populated automatically by
+    // b2b_notify_partner() using its already partner-safe $subject text, so
+    // every existing and future call site gets an in-app alert for free.
+    $pdo->exec("CREATE TABLE IF NOT EXISTS b2b_partner_notifications (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        partner_id INTEGER NOT NULL REFERENCES b2b_partners(id),
+        message TEXT NOT NULL,
+        is_read INTEGER NOT NULL DEFAULT 0,
+        created_at TEXT NOT NULL
+    )");
+
     $pdo->exec("CREATE TABLE IF NOT EXISTS b2b_announcements (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT NOT NULL,
@@ -470,6 +487,14 @@ function b2b_notify(PDO $pdo, ?int $userId, string $type, string $message, ?int 
 
 function b2b_notify_partner(PDO $pdo, array $partner, string $subject, string $bodyText): void
 {
+    $partnerId = (int) $partner['id'];
+
+    // In-app bell entry first (always, regardless of email deliverability) —
+    // $subject is already written to be partner-safe at every call site, so
+    // it doubles as the short in-app message with no per-call-site changes.
+    $pdo->prepare('INSERT INTO b2b_partner_notifications (partner_id, message, is_read, created_at) VALUES (?, ?, 0, ?)')
+        ->execute([$partnerId, $subject, gmdate('c')]);
+
     $email = trim((string) ($partner['contact_email'] ?? ''));
     if ($email === '') {
         return;
@@ -478,7 +503,7 @@ function b2b_notify_partner(PDO $pdo, array $partner, string $subject, string $b
     b2b_log_audit(
         $pdo,
         'partner',
-        (int) $partner['id'],
+        $partnerId,
         'System',
         'System',
         'partner_email_' . ($sent ? 'sent' : 'failed'),

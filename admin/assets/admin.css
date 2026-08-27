@@ -388,6 +388,14 @@ button { font-family: inherit; }
 
 .crm-content { padding: 24px 28px 60px; flex: 1; }
 
+.crm-chat-thread { display: flex; flex-direction: column; gap: 12px; max-height: 420px; overflow-y: auto; margin-bottom: 16px; padding-right: 4px; }
+.crm-chat-bubble { max-width: 70%; padding: 10px 14px; border-radius: 12px; background: var(--c-bg); }
+.crm-chat-bubble.is-staff { align-self: flex-end; background: var(--c-blue-dim); }
+.crm-chat-bubble.is-partner { align-self: flex-start; }
+.crm-chat-meta { font-size: 10.5px; color: var(--c-muted); margin-bottom: 3px; }
+.crm-chat-body { font-size: 13px; color: var(--c-heading); line-height: 1.5; white-space: pre-wrap; }
+.crm-chat-form textarea { resize: vertical; }
+
 /* ---- Page header ---- */
 .crm-page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
 .crm-page-title { font-size: 22px; font-weight: 700; color: var(--c-heading); margin: 0 0 4px; }

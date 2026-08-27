@@ -26,6 +26,10 @@ if (!$ppPartner) {
 $PP_ACTIVE_NAV = $PP_ACTIVE_NAV ?? '';
 $PP_PAGE_TITLE = $PP_PAGE_TITLE ?? 'Partner Dashboard';
 
+$ppUnreadStmt = $pdo->prepare('SELECT COUNT(*) FROM b2b_partner_notifications WHERE partner_id = ? AND is_read = 0');
+$ppUnreadStmt->execute([partner_id()]);
+$ppUnreadCount = (int) $ppUnreadStmt->fetchColumn();
+
 $ppNavItems = [
     ['key' => 'dashboard', 'label' => 'Dashboard', 'icon' => 'gauge-high', 'href' => 'b2b-dashboard.php'],
     ['key' => 'applications', 'label' => 'Visa Applications', 'icon' => 'passport', 'href' => 'b2b-applications.php', 'permission' => 'view_applications'],
@@ -33,7 +37,7 @@ $ppNavItems = [
     ['key' => 'invoices', 'label' => 'Invoices &amp; Payments', 'icon' => 'file-invoice', 'href' => 'b2b-invoices.php', 'permission' => 'view_invoices'],
     ['key' => 'wallet', 'label' => 'Wallet &amp; Credit', 'icon' => 'wallet', 'href' => 'b2b-wallet.php', 'permission' => 'view_payments'],
     ['key' => 'documents', 'label' => 'Documents', 'icon' => 'folder-open', 'href' => 'b2b-documents-partner.php', 'soon' => true],
-    ['key' => 'messages', 'label' => 'Messages', 'icon' => 'comments', 'href' => 'b2b-messages.php', 'soon' => true],
+    ['key' => 'messages', 'label' => 'Messages', 'icon' => 'comments', 'href' => 'b2b-messages.php'],
     ['key' => 'team', 'label' => 'Team Management', 'icon' => 'people-group', 'href' => 'b2b-team.php', 'permission' => 'manage_users'],
     ['key' => 'reports', 'label' => 'Reports', 'icon' => 'chart-line', 'href' => 'b2b-reports-partner.php', 'soon' => true],
     ['key' => 'profile', 'label' => 'Company Profile', 'icon' => 'building', 'href' => 'b2b-profile.php', 'soon' => true],
@@ -89,6 +93,11 @@ $ppNavItems = [
             <div class="pp-topbar-title"><?php echo htmlspecialchars($PP_PAGE_TITLE); ?></div>
             <div class="pp-topbar-meta">
                 <span class="pp-ref-chip"><?php echo htmlspecialchars($ppPartner['application_ref']); ?></span>
+                <button type="button" class="pp-icon-btn" id="ppNotifBtn" title="Notifications">
+                    <i class="fa-solid fa-bell"></i>
+                    <?php if ($ppUnreadCount > 0): ?><span class="pp-badge"><?php echo min($ppUnreadCount, 99); ?></span><?php endif; ?>
+                </button>
+                <div class="pp-notif-panel" id="ppNotifPanel" hidden></div>
                 <div class="pp-user-avatar small"><?php echo strtoupper(substr(partner_name(), 0, 1)); ?></div>
             </div>
         </div>
