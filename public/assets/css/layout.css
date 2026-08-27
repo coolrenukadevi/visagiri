@@ -37,14 +37,20 @@
 .site-header__utility {
   background: var(--visa-blue-dark);
   color: rgba(255, 255, 255, 0.92);
-  overflow: hidden;
   max-height: 40px;
   transition: max-height var(--transition-base), opacity var(--transition-base);
 }
 
+/* overflow: hidden only while collapsing on scroll — it has to stay
+   off at rest, or it clips the Login dropdown menu, which is a
+   position: absolute popup meant to extend below this bar's own
+   40px height. (Caught via a real screenshot, not just the "is-open"
+   class check: the menu was toggling correctly but rendering
+   invisible, clipped by this ancestor.) */
 .site-header.is-scrolled .site-header__utility {
   max-height: 0;
   opacity: 0;
+  overflow: hidden;
 }
 
 .site-header__utility-bar {
