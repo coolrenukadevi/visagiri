@@ -7,8 +7,9 @@
  * staff see B2B-submitted cases in their normal Enquiries/Applications
  * pipeline exactly like any other channel.
  *
- * Reference numbers use b2b_generate_ref() with an 'ENQ-B2B' prefix rather
- * than enquiry_generate_ref() — the latter only accepts a $serviceRequired
+ * Reference numbers use b2b_generate_ref() with the admin-configurable
+ * 'enquiry_ref_prefix' setting (defaults to 'ENQ-B2B') rather than
+ * enquiry_generate_ref() — the latter only accepts a $serviceRequired
  * string and maps it through a fixed 4-prefix ladder (APOS/FOREX/TRAVEL/
  * GEN/VISA) with no way to inject a custom prefix, so it can't produce the
  * visibly-distinct ENQ-B2B-... refs the spec asks for. b2b_generate_ref()
@@ -75,7 +76,7 @@ if (!$partner) {
     b2b_app_fail('Your partner account could not be found.', [], 403);
 }
 
-$enquiryRef = b2b_generate_ref($pdo, 'ENQ-B2B');
+$enquiryRef = b2b_generate_ref($pdo, b2b_setting($pdo, 'enquiry_ref_prefix', 'ENQ-B2B'));
 $trackingCode = crm_generate_tracking_code($pdo);
 $assignment = enquiry_auto_assign($pdo, $visaCategory);
 $now = gmdate('c');
