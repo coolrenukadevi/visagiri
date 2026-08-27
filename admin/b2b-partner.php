@@ -71,6 +71,76 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         b2b_log_audit($pdo, 'partner', $partnerId, admin_name(), admin_role(), 'Assigned Relationship Manager', $partner['assigned_manager_id'] ?? '', $mgrName ?: 'Unassigned');
         $partner['assigned_manager_id'] = $managerId;
         $actionMessage = 'Relationship Manager updated.';
+    } elseif ($action === 'create_quotation' && b2b_can_manage_quotations()) {
+        $serviceCategory = trim($_POST['service_category'] ?? '');
+        $country = trim($_POST['country'] ?? '');
+        $visaType = trim($_POST['visa_type'] ?? '');
+        $applicantsCount = max(1, (int) ($_POST['applicants_count'] ?? 1));
+        $enquiryId = filter_var($_POST['enquiry_id'] ?? '', FILTER_VALIDATE_INT) ?: null;
+
+        $fees = [];
+        foreach (['visa_fee', 'service_fee', 'embassy_fee', 'appointment_fee', 'courier_fee', 'other_charges', 'discount', 'gst'] as $f) {
+            $fees[$f] = filter_var($_POST[$f] ?? '0', FILTER_VALIDATE_FLOAT) ?: 0;
+        }
+
+        if (!in_array($serviceCategory, B2B_SERVICES_OFFERED, true) || $country === '' || $visaType === '') {
+            $actionError = 'Please provide a valid service category, country and visa type for the quotation.';
+        } elseif ($enquiryId) {
+            $eqStmt = $pdo->prepare('SELECT id FROM enquiries WHERE id = ? AND partner_id = ?');
+            $eqStmt->execute([$enquiryId, $partnerId]);
+            if (!$eqStmt->fetchColumn()) {
+                $actionError = 'That application does not belong to this partner.';
+                $enquiryId = null;
+            }
+        }
+
+        if ($actionError === '') {
+            $total = round($fees['visa_fee'] + $fees['service_fee'] + $fees['embassy_fee'] + $fees['appointment_fee'] + $fees['courier_fee'] + $fees['other_charges'] - $fees['discount'] + $fees['gst'], 2);
+            $validityDays = (int) b2b_setting($pdo, 'quotation_validity_days', '15');
+            $threshold = (float) b2b_setting($pdo, 'quotation_approval_threshold_inr', '100000');
+            $needsApproval = $total > $threshold;
+            $quoteRef = b2b_generate_ref($pdo, b2b_setting($pdo, 'quotation_ref_prefix', 'B2B-QT'));
+            $now = gmdate('c');
+
+            $insQ = $pdo->prepare('INSERT INTO b2b_quotations (
+                quotation_ref, partner_id, enquiry_id, service_category, country, visa_type, applicants_count,
+                visa_fee, service_fee, embassy_fee, appointment_fee, courier_fee, other_charges, discount, gst, total,
+                valid_until, status, created_by, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+            $insQ->execute([
+                $quoteRef, $partnerId, $enquiryId, $serviceCategory, $country, $visaType, $applicantsCount,
+                $fees['visa_fee'], $fees['service_fee'], $fees['embassy_fee'], $fees['appointment_fee'], $fees['courier_fee'], $fees['other_charges'], $fees['discount'], $fees['gst'], $total,
+                gmdate('c', strtotime("+$validityDays days")), $needsApproval ? 'Draft' : 'Sent', admin_name(), $now,
+            ]);
+            $quotationId = (int) $pdo->lastInsertId();
+
+            b2b_log_audit($pdo, 'quotation', $quotationId, admin_name(), admin_role(), 'Created quotation', '', "$quoteRef — $serviceCategory — ₹$total" . ($needsApproval ? ' (requires approval)' : ''));
+
+            if ($needsApproval) {
+                b2b_notify($pdo, null, 'b2b_quotation_approval', "Quotation $quoteRef for {$partner['company_name']} (₹" . number_format($total, 2) . ') exceeds the approval threshold and needs sign-off.', $partnerId);
+            } else {
+                b2b_notify($pdo, null, 'b2b_quotation_sent', "Quotation $quoteRef sent to {$partner['company_name']}: ₹" . number_format($total, 2) . '.', $partnerId);
+                b2b_notify_partner(
+                    $pdo, $partner, "New Quotation Ready — $quoteRef",
+                    "Dear {$partner['contact_name']},\n\nA new quotation is ready for your review.\n\nReference: $quoteRef\nService: $serviceCategory\nDestination: $country\nTotal: ₹" . number_format($total, 2) . "\n\nPlease log in to your Partner Portal to accept, reject or request a revision.\n\nRegards,\nVisaAgency.in B2B Partner Team"
+                );
+            }
+            $actionMessage = "Quotation $quoteRef created" . ($needsApproval ? ' and is awaiting internal approval.' : ' and sent to the partner.');
+        }
+    } elseif ($action === 'send_quotation' && b2b_can_approve_quotation()) {
+        $quotationId = (int) ($_POST['quotation_id'] ?? 0);
+        $qStmt = $pdo->prepare('SELECT * FROM b2b_quotations WHERE id = ? AND partner_id = ?');
+        $qStmt->execute([$quotationId, $partnerId]);
+        $quotation = $qStmt->fetch(PDO::FETCH_ASSOC);
+        if ($quotation && $quotation['status'] === 'Draft') {
+            $pdo->prepare("UPDATE b2b_quotations SET status = 'Sent' WHERE id = ?")->execute([$quotationId]);
+            b2b_log_audit($pdo, 'quotation', $quotationId, admin_name(), admin_role(), 'Approved and sent quotation', 'Draft', 'Sent');
+            b2b_notify_partner(
+                $pdo, $partner, "New Quotation Ready — {$quotation['quotation_ref']}",
+                "Dear {$partner['contact_name']},\n\nA new quotation is ready for your review.\n\nReference: {$quotation['quotation_ref']}\nService: {$quotation['service_category']}\nDestination: {$quotation['country']}\nTotal: ₹" . number_format((float) $quotation['total'], 2) . "\n\nPlease log in to your Partner Portal to accept, reject or request a revision.\n\nRegards,\nVisaAgency.in B2B Partner Team"
+            );
+            $actionMessage = "Quotation {$quotation['quotation_ref']} approved and sent to the partner.";
+        }
     }
 }
 
@@ -86,9 +156,14 @@ $auditStmt = $pdo->prepare("SELECT * FROM b2b_audit_logs WHERE entity_type = 'pa
 $auditStmt->execute([$partnerId]);
 $auditLog = $auditStmt->fetchAll(PDO::FETCH_ASSOC);
 
-$visaCasesStmt = $pdo->prepare('SELECT COUNT(*) FROM enquiries WHERE partner_id = ?');
+$visaCasesStmt = $pdo->prepare('SELECT * FROM enquiries WHERE partner_id = ? AND archived_at IS NULL ORDER BY created_at DESC');
 $visaCasesStmt->execute([$partnerId]);
-$visaCaseCount = (int) $visaCasesStmt->fetchColumn();
+$visaCases = $visaCasesStmt->fetchAll(PDO::FETCH_ASSOC);
+$visaCaseCount = count($visaCases);
+
+$quotationsStmt = $pdo->prepare('SELECT * FROM b2b_quotations WHERE partner_id = ? ORDER BY created_at DESC');
+$quotationsStmt->execute([$partnerId]);
+$quotations = $quotationsStmt->fetchAll(PDO::FETCH_ASSOC);
 
 $servicesOffered = json_decode($partner['services_offered'] ?? '[]', true) ?: [];
 $visaSpecialization = json_decode($partner['visa_specialization'] ?? '[]', true) ?: [];
@@ -99,7 +174,7 @@ $tabs = [
     'applications' => 'Visa Applications', 'quotations' => 'Quotations', 'invoices' => 'Invoices',
     'payments' => 'Payments', 'communications' => 'Communications', 'activities' => 'Activities',
 ];
-$builtTabs = ['overview', 'company', 'documents', 'activities'];
+$builtTabs = ['overview', 'company', 'documents', 'applications', 'quotations', 'activities'];
 ?>
 <div class="crm-page-header">
     <div>
@@ -243,6 +318,99 @@ document.querySelectorAll('.b2b-admin-action-form[data-needs-reason="1"]').forEa
                 <?php endif; ?>
             </div>
             <?php endforeach; ?>
+        </div>
+    </div>
+
+<?php elseif ($tab === 'applications'): ?>
+    <div class="crm-card" style="padding:0;">
+        <div class="crm-table-wrap">
+        <table class="crm-table">
+            <thead><tr><th>Reference</th><th>Traveller</th><th>Destination</th><th>Visa Type</th><th>Travel Date</th><th>Status</th><th>Submitted</th></tr></thead>
+            <tbody>
+            <?php foreach ($visaCases as $vc): ?>
+            <tr>
+                <td class="crm-cell-name"><a href="enquiry.php?ref=<?php echo urlencode($vc['enquiry_ref']); ?>"><?php echo htmlspecialchars($vc['enquiry_ref']); ?></a></td>
+                <td><?php echo htmlspecialchars($vc['full_name']); ?></td>
+                <td><?php echo htmlspecialchars($vc['destination_country']); ?></td>
+                <td class="crm-cell-sub"><?php echo htmlspecialchars($vc['visa_type']); ?></td>
+                <td class="crm-cell-sub"><?php echo htmlspecialchars(substr((string) $vc['travel_date'], 0, 10)); ?></td>
+                <td><span class="crm-status-badge <?php echo crm_status_class($vc['status']); ?>"><?php echo htmlspecialchars($vc['status']); ?></span></td>
+                <td class="crm-cell-sub"><?php echo htmlspecialchars(substr($vc['created_at'], 0, 10)); ?></td>
+            </tr>
+            <?php endforeach; ?>
+            <?php if (!$visaCases): ?>
+            <tr><td colspan="7" class="crm-empty">This partner has not submitted any visa applications yet.</td></tr>
+            <?php endif; ?>
+            </tbody>
+        </table>
+        </div>
+    </div>
+
+<?php elseif ($tab === 'quotations'): ?>
+    <?php if (b2b_can_manage_quotations()): ?>
+    <div class="crm-card">
+        <h3 style="margin:0 0 14px;font-size:14px;">New Quotation</h3>
+        <form method="post">
+            <input type="hidden" name="action" value="create_quotation">
+            <div class="crm-panel-grid">
+                <div class="crm-panel-item">
+                    <label>Service Category</label>
+                    <select name="service_category" required style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;">
+                        <option value="">Select service</option>
+                        <?php foreach (B2B_SERVICES_OFFERED as $svc): ?><option value="<?php echo htmlspecialchars($svc); ?>"><?php echo htmlspecialchars($svc); ?></option><?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="crm-panel-item">
+                    <label>Link to Application (optional)</label>
+                    <select name="enquiry_id" style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;">
+                        <option value="">— Not linked —</option>
+                        <?php foreach ($visaCases as $vc): ?><option value="<?php echo (int) $vc['id']; ?>"><?php echo htmlspecialchars($vc['enquiry_ref'] . ' — ' . $vc['full_name']); ?></option><?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="crm-panel-item"><label>Destination Country</label><input type="text" name="country" required style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;"></div>
+                <div class="crm-panel-item"><label>Visa Type</label><input type="text" name="visa_type" required style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;"></div>
+                <div class="crm-panel-item"><label>Applicants</label><input type="number" name="applicants_count" value="1" min="1" style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;"></div>
+                <div class="crm-panel-item"><label>Visa Fee (₹)</label><input type="number" name="visa_fee" value="0" step="0.01" min="0" style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;"></div>
+                <div class="crm-panel-item"><label>Service Fee (₹)</label><input type="number" name="service_fee" value="0" step="0.01" min="0" style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;"></div>
+                <div class="crm-panel-item"><label>Embassy Fee (₹)</label><input type="number" name="embassy_fee" value="0" step="0.01" min="0" style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;"></div>
+                <div class="crm-panel-item"><label>Appointment Fee (₹)</label><input type="number" name="appointment_fee" value="0" step="0.01" min="0" style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;"></div>
+                <div class="crm-panel-item"><label>Courier Fee (₹)</label><input type="number" name="courier_fee" value="0" step="0.01" min="0" style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;"></div>
+                <div class="crm-panel-item"><label>Other Charges (₹)</label><input type="number" name="other_charges" value="0" step="0.01" min="0" style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;"></div>
+                <div class="crm-panel-item"><label>Discount (₹)</label><input type="number" name="discount" value="0" step="0.01" min="0" style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;"></div>
+                <div class="crm-panel-item"><label>GST (₹)</label><input type="number" name="gst" value="0" step="0.01" min="0" style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;"></div>
+            </div>
+            <button type="submit" class="crm-btn crm-btn-primary crm-btn-sm" style="margin-top:16px;">Create Quotation</button>
+        </form>
+    </div>
+    <?php endif; ?>
+
+    <div class="crm-card" style="padding:0;">
+        <div class="crm-table-wrap">
+        <table class="crm-table">
+            <thead><tr><th>Reference</th><th>Service</th><th>Destination</th><th>Total</th><th>Valid Until</th><th>Status</th><th>Created</th><th></th></tr></thead>
+            <tbody>
+            <?php foreach ($quotations as $q): ?>
+            <tr>
+                <td class="crm-cell-name"><?php echo htmlspecialchars($q['quotation_ref']); ?></td>
+                <td><?php echo htmlspecialchars($q['service_category']); ?></td>
+                <td class="crm-cell-sub"><?php echo htmlspecialchars($q['country']); ?> — <?php echo htmlspecialchars($q['visa_type']); ?></td>
+                <td>₹<?php echo number_format((float) $q['total'], 2); ?></td>
+                <td class="crm-cell-sub"><?php echo $q['valid_until'] ? htmlspecialchars(substr($q['valid_until'], 0, 10)) : '—'; ?></td>
+                <td><span class="crm-status-badge <?php echo b2b_quote_status_class($q['status']); ?>"><?php echo htmlspecialchars($q['status']); ?></span></td>
+                <td class="crm-cell-sub"><?php echo htmlspecialchars(substr($q['created_at'], 0, 10)); ?></td>
+                <td style="display:flex;gap:6px;">
+                    <a href="b2b-quotation-pdf.php?id=<?php echo (int) $q['id']; ?>" target="_blank" class="crm-btn crm-btn-ghost crm-btn-sm"><i class="fa-solid fa-file-pdf"></i></a>
+                    <?php if ($q['status'] === 'Draft' && b2b_can_approve_quotation()): ?>
+                    <form method="post"><input type="hidden" name="action" value="send_quotation"><input type="hidden" name="quotation_id" value="<?php echo (int) $q['id']; ?>"><button type="submit" class="crm-btn crm-btn-primary crm-btn-sm">Approve &amp; Send</button></form>
+                    <?php endif; ?>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+            <?php if (!$quotations): ?>
+            <tr><td colspan="8" class="crm-empty">No quotations created yet.</td></tr>
+            <?php endif; ?>
+            </tbody>
+        </table>
         </div>
     </div>
 

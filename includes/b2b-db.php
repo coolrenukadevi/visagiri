@@ -361,6 +361,9 @@ function b2b_seed_default_settings(PDO $pdo): void
         'allowed_file_types' => json_encode(['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx']),
         'application_ref_prefix' => 'B2B',
         'enquiry_ref_prefix' => 'ENQ-B2B',
+        'quotation_ref_prefix' => 'B2B-QT',
+        'quotation_validity_days' => '15',
+        'quotation_approval_threshold_inr' => '100000',
         'sms_gateway_status' => 'not_connected',
         'whatsapp_gateway_status' => 'not_connected',
         'email_notifications_enabled' => '1',
@@ -540,4 +543,17 @@ function b2b_status_class(string $status): string
 function b2b_doc_status_class(string $status): string
 {
     return 'b2b-doc-' . strtolower(str_replace(' ', '-', $status));
+}
+
+function b2b_quote_status_class(string $status): string
+{
+    return 'b2b-quote-' . strtolower(str_replace(' ', '-', $status));
+}
+
+/** Same UTF-8-to-CP1252 transliteration FPDF needs, as forex_pdf_safe() — duplicated rather than cross-required so this module has no hard dependency on includes/forex-db.php. */
+function b2b_pdf_safe(?string $text): string
+{
+    $text = (string) $text;
+    $converted = @iconv('UTF-8', 'CP1252//TRANSLIT//IGNORE', $text);
+    return $converted !== false ? $converted : preg_replace('/[^\x20-\x7E]/', '', $text);
 }

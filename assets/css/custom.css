@@ -4993,6 +4993,27 @@ table.pp-table tr:hover td { background: var(--bg); }
 .pp-status-badge.status-visa-refused,
 .pp-status-badge.status-cancelled { background: #FCE8E6; color: #C0392B; }
 
+.pp-status-badge.b2b-quote-draft { background: var(--bg); color: var(--text); }
+.pp-status-badge.b2b-quote-sent { background: #EAF0FF; color: #3355CC; }
+.pp-status-badge.b2b-quote-accepted { background: #E7F6EC; color: #16A34A; }
+.pp-status-badge.b2b-quote-rejected { background: #FCE8E6; color: #C0392B; }
+.pp-status-badge.b2b-quote-revision-requested { background: #FDF1DF; color: #A9720F; }
+.pp-status-badge.b2b-quote-expired { background: #FCE8E6; color: #C0392B; }
+
+.pp-quote-total {
+    margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border);
+    font-size: 19px; font-weight: 700; color: #16A34A;
+}
+.pp-quote-response-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 18px; }
+.pp-quote-response-form { display: flex; flex-direction: column; gap: 8px; }
+.pp-quote-response-form label { font-size: 12.5px; font-weight: 600; color: var(--header); }
+.pp-quote-response-form textarea {
+    width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; font-size: 13px; resize: vertical;
+}
+@media (max-width: 700px) {
+    .pp-quote-response-grid { grid-template-columns: 1fr; }
+}
+
 .pp-success { text-align: center; padding: 20px 10px; }
 .pp-success i { font-size: 48px; color: #16A34A; margin-bottom: 14px; }
 .pp-success h3 { font-size: 22px; color: var(--header); margin-bottom: 8px; }
