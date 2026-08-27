@@ -18,7 +18,15 @@ $action = $_GET['action'] ?? 'list';
 $id = isset($_GET['id']) ? (int) $_GET['id'] : (isset($_POST['id']) ? (int) $_POST['id'] : null);
 $scopedToAssigned = current_admin_b2b_scoped_to_assigned();
 
-$partnerStatusBadgeMap = ['pending' => 'warning', 'active' => 'success', 'suspended' => 'danger'];
+$partnerStatusBadgeMap = [
+    'pending' => 'warning',
+    'documents_required' => 'warning',
+    'active' => 'success',
+    'suspended' => 'danger',
+    'rejected' => 'danger',
+    'deactivated' => 'danger',
+];
+$partnerAllStatuses = ['pending', 'documents_required', 'active', 'suspended', 'rejected', 'deactivated'];
 
 // Active admins eligible to be assigned as a partner's Relationship
 // Manager — same unfiltered-by-role approach customers.php already
@@ -33,24 +41,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $postAction = $_POST['action'] ?? '';
     $targetId = (int) ($_POST['id'] ?? 0);
 
-    // Shared by approve/suspend/reactivate: updates partners.status,
-    // records the transition in partner_status_history, and audits it
-    // — each caller supplies the SQL + params for its own extra
-    // columns (approve also sets approved_by/approved_at). PDO's
-    // non-emulated prepares reject an execute() array containing a
-    // key with no matching placeholder in the query, so $updateParams
-    // must exactly match $updateSql's own placeholders — no shared
-    // "always pass :admin" shortcut.
-    $transitionStatus = static function (int $partnerId, string $toStatus, string $updateSql, array $updateParams, string $logAction) use ($pdo): void {
+    // Shared by every status transition below: updates partners.status,
+    // records the transition (with an optional reason) in
+    // partner_status_history, audits it, and notifies the partner.
+    // Each caller supplies the SQL + params for its own extra columns
+    // (approve also sets approved_by/approved_at). PDO's non-emulated
+    // prepares reject an execute() array containing a key with no
+    // matching placeholder in the query, so $updateParams must exactly
+    // match $updateSql's own placeholders — no shared "always pass
+    // :admin" shortcut.
+    $transitionStatus = static function (int $partnerId, string $toStatus, string $updateSql, array $updateParams, string $logAction, ?string $remarks, string $notifyTitle, string $notifyBody) use ($pdo): void {
         $fromStmt = $pdo->prepare('SELECT status FROM partners WHERE id = :id');
         $fromStmt->execute(['id' => $partnerId]);
         $from = $fromStmt->fetchColumn() ?: null;
 
         $pdo->prepare($updateSql)->execute($updateParams);
-        $pdo->prepare('INSERT INTO partner_status_history (partner_id, from_status, to_status, changed_by) VALUES (:id, :from, :to, :admin)')
-            ->execute(['id' => $partnerId, 'from' => $from, 'to' => $toStatus, 'admin' => current_admin_id()]);
+        $pdo->prepare('INSERT INTO partner_status_history (partner_id, from_status, to_status, changed_by, remarks) VALUES (:id, :from, :to, :admin, :remarks)')
+            ->execute(['id' => $partnerId, 'from' => $from, 'to' => $toStatus, 'admin' => current_admin_id(), 'remarks' => $remarks]);
         log_action($logAction, 'partners', $partnerId, $from, $toStatus);
+        notify_partner($partnerId, 'status_change', $notifyTitle, $notifyBody, '/partner/dashboard/');
     };
+
+    // reject / documents_required / deactivate all require a non-empty
+    // reason — these are consequential, partner-visible decisions, not
+    // a one-click toggle. Approve/suspend/reactivate keep the reason
+    // field optional (suspend already existed as a no-reason action;
+    // narrowing it now would be an unrelated behavior change).
+    $reasonRequiredActions = ['reject', 'documents_required', 'deactivate'];
+    $remarks = trim((string) ($_POST['remarks'] ?? '')) ?: null;
+    if (in_array($postAction, $reasonRequiredActions, true) && $remarks === null) {
+        flash_set('admin_error', 'A reason is required for this action.');
+        redirect('/admin/partners/?action=view&id=' . $targetId);
+    }
 
     if ($postAction === 'approve' && $targetId) {
         // Client spec: "Do not activate the partner account until
@@ -69,19 +91,78 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'active',
             "UPDATE partners SET status = 'active', approved_by = :admin, approved_at = NOW() WHERE id = :id",
             ['admin' => current_admin_id(), 'id' => $targetId],
-            'approve'
+            'approve',
+            $remarks,
+            'Your partner account has been approved',
+            'Congratulations — your Visagiri partner account is now active.'
         );
         flash_set('admin_notice', 'Partner approved.');
     }
 
+    if ($postAction === 'documents_required' && $targetId) {
+        $transitionStatus(
+            $targetId, 'documents_required', "UPDATE partners SET status = 'documents_required' WHERE id = :id", ['id' => $targetId],
+            'request_documents', $remarks,
+            'Additional documents required', 'Our team needs more information before approving your application: ' . $remarks
+        );
+        flash_set('admin_notice', 'Partner moved to Documents Required.');
+    }
+
+    if ($postAction === 'reject' && $targetId) {
+        $transitionStatus(
+            $targetId, 'rejected', "UPDATE partners SET status = 'rejected' WHERE id = :id", ['id' => $targetId],
+            'reject', $remarks,
+            'Your partner application was not approved', 'Reason: ' . $remarks
+        );
+        flash_set('admin_notice', 'Partner rejected.');
+    }
+
     if ($postAction === 'suspend' && $targetId) {
-        $transitionStatus($targetId, 'suspended', "UPDATE partners SET status = 'suspended' WHERE id = :id", ['id' => $targetId], 'suspend');
+        $transitionStatus(
+            $targetId, 'suspended', "UPDATE partners SET status = 'suspended' WHERE id = :id", ['id' => $targetId],
+            'suspend', $remarks,
+            'Your partner account has been suspended', $remarks ?? 'Contact Visagiri support for details.'
+        );
         flash_set('admin_notice', 'Partner suspended.');
     }
 
     if ($postAction === 'reactivate' && $targetId) {
-        $transitionStatus($targetId, 'active', "UPDATE partners SET status = 'active' WHERE id = :id", ['id' => $targetId], 'reactivate');
+        $transitionStatus(
+            $targetId, 'active', "UPDATE partners SET status = 'active' WHERE id = :id", ['id' => $targetId],
+            'reactivate', $remarks,
+            'Your partner account has been reactivated', 'Your account access has been restored.'
+        );
         flash_set('admin_notice', 'Partner reactivated.');
+    }
+
+    if ($postAction === 'deactivate' && $targetId) {
+        $transitionStatus(
+            $targetId, 'deactivated', "UPDATE partners SET status = 'deactivated' WHERE id = :id", ['id' => $targetId],
+            'deactivate', $remarks,
+            'Your partner account has been deactivated', 'Reason: ' . $remarks
+        );
+        flash_set('admin_notice', 'Partner deactivated.');
+    }
+
+    if ($postAction === 'verify_document' && $targetId) {
+        $docId = (int) ($_POST['document_id'] ?? 0);
+        $verifyStatus = $_POST['verify_status'] ?? '';
+        if ($docId && in_array($verifyStatus, ['verified', 'rejected'], true)) {
+            $docRemarks = trim((string) ($_POST['verification_remarks'] ?? '')) ?: null;
+            $pdo->prepare(
+                'UPDATE partner_documents SET verification_status = :status, verification_remarks = :remarks, verified_by = :admin, verified_at = NOW()
+                 WHERE id = :id AND partner_id = :partner_id'
+            )->execute(['status' => $verifyStatus, 'remarks' => $docRemarks, 'admin' => current_admin_id(), 'id' => $docId, 'partner_id' => $targetId]);
+            log_action('document_verification', 'partner_documents', $docId, null, $verifyStatus);
+            notify_partner(
+                $targetId, 'document_' . $verifyStatus,
+                $verifyStatus === 'verified' ? 'A document was verified' : 'A document was rejected',
+                $docRemarks,
+                '/partner/dashboard/'
+            );
+            flash_set('admin_notice', 'Document ' . $verifyStatus . '.');
+        }
+        redirect('/admin/partners/?action=view&id=' . $targetId);
     }
 
     if ($postAction === 'assign_manager' && $targetId) {
@@ -163,32 +244,45 @@ if ($action === 'view' && $id) {
         <p><strong>Enrollment:</strong> <?= $partner['enrollment_completed_at'] !== null ? '<span class="badge badge-success">Completed</span> (' . e(date('d M Y', strtotime((string) $partner['enrollment_completed_at']))) . ')' : '<span class="badge badge-warning">Incomplete — still in the registration wizard</span>' ?></p>
 
         <?php if (has_permission('partners.manage')): ?>
-        <div style="display:flex;gap:var(--space-4);flex-wrap:wrap;margin-top:var(--space-4)">
-            <form method="post" action="/admin/partners/">
-                <?= csrf_field() ?><input type="hidden" name="id" value="<?= $id ?>">
-                <?php if ($partner['status'] === 'pending'): ?>
-                    <?php if ($partner['email_verified_at'] !== null): ?>
-                <button type="submit" name="action" value="approve" class="btn btn-primary btn-sm">Approve</button>
+        <?php $canApprove = $partner['email_verified_at'] !== null; ?>
+        <form method="post" action="/admin/partners/" style="margin-top:var(--space-4)">
+            <?= csrf_field() ?><input type="hidden" name="id" value="<?= $id ?>">
+            <div class="form-group">
+                <label class="form-label" for="remarks">Reason / Remarks <span style="color:var(--text-muted);font-weight:normal">(required for Reject, Request Documents, Deactivate)</span></label>
+                <textarea class="form-textarea" id="remarks" name="remarks" rows="2" style="width:100%;max-width:520px"></textarea>
+            </div>
+            <div style="display:flex;gap:var(--space-2);flex-wrap:wrap;margin-top:var(--space-2)">
+                <?php if ($partner['status'] === 'pending' || $partner['status'] === 'documents_required'): ?>
+                    <?php if ($canApprove): ?>
+                    <button type="submit" name="action" value="approve" class="btn btn-primary btn-sm">Approve</button>
                     <?php else: ?>
-                <button type="button" class="btn btn-primary btn-sm" disabled title="Email not verified yet">Approve</button>
+                    <button type="button" class="btn btn-primary btn-sm" disabled title="Email not verified yet">Approve</button>
                     <?php endif; ?>
+                    <?php if ($partner['status'] === 'pending'): ?>
+                    <button type="submit" name="action" value="documents_required" class="btn btn-outline btn-sm">Request More Info</button>
+                    <?php endif; ?>
+                    <button type="submit" name="action" value="reject" class="btn btn-outline btn-sm">Reject</button>
                 <?php elseif ($partner['status'] === 'active'): ?>
-                <button type="submit" name="action" value="suspend" class="btn btn-outline btn-sm">Suspend</button>
+                    <button type="submit" name="action" value="suspend" class="btn btn-outline btn-sm">Suspend</button>
+                    <button type="submit" name="action" value="deactivate" class="btn btn-outline btn-sm">Deactivate</button>
+                <?php elseif ($partner['status'] === 'suspended'): ?>
+                    <button type="submit" name="action" value="reactivate" class="btn btn-outline btn-sm">Reactivate</button>
+                    <button type="submit" name="action" value="deactivate" class="btn btn-outline btn-sm">Deactivate</button>
                 <?php else: ?>
-                <button type="submit" name="action" value="reactivate" class="btn btn-outline btn-sm">Reactivate</button>
+                    <p style="color:var(--text-muted);font-size:var(--font-size-sm)">This status is terminal — no further actions available.</p>
                 <?php endif; ?>
-            </form>
-            <form method="post" action="/admin/partners/" style="display:flex;gap:var(--space-2);align-items:center">
-                <?= csrf_field() ?><input type="hidden" name="id" value="<?= $id ?>"><input type="hidden" name="action" value="assign_manager">
-                <select name="assigned_admin_id" class="form-select">
-                    <option value="">Unassigned</option>
-                    <?php foreach ($admins as $a): ?>
-                    <option value="<?= (int) $a['id'] ?>"<?= (int) $a['id'] === (int) ($partner['assigned_admin_id'] ?? 0) ? ' selected' : '' ?>><?= e($a['full_name']) ?></option>
-                    <?php endforeach; ?>
-                </select>
-                <button type="submit" class="btn btn-outline btn-sm">Set Manager</button>
-            </form>
-        </div>
+            </div>
+        </form>
+        <form method="post" action="/admin/partners/" style="display:flex;gap:var(--space-2);align-items:center;margin-top:var(--space-4)">
+            <?= csrf_field() ?><input type="hidden" name="id" value="<?= $id ?>"><input type="hidden" name="action" value="assign_manager">
+            <select name="assigned_admin_id" class="form-select">
+                <option value="">Unassigned</option>
+                <?php foreach ($admins as $a): ?>
+                <option value="<?= (int) $a['id'] ?>"<?= (int) $a['id'] === (int) ($partner['assigned_admin_id'] ?? 0) ? ' selected' : '' ?>><?= e($a['full_name']) ?></option>
+                <?php endforeach; ?>
+            </select>
+            <button type="submit" class="btn btn-outline btn-sm">Set Manager</button>
+        </form>
         <?php endif; ?>
     </div>
 
@@ -215,18 +309,31 @@ if ($action === 'view' && $id) {
     <?php if (!$partnerDocuments): ?>
     <p class="empty-state">No documents uploaded yet.</p>
     <?php else: ?>
-    <table class="admin-table"><thead><tr><th>Type</th><th>File</th><th>Verification</th><th>Uploaded</th><th></th></tr></thead><tbody>
+    <table class="admin-table"><thead><tr><th>Type</th><th>File</th><th>Verification</th><th>Remarks</th><th>Uploaded</th><th></th></tr></thead><tbody>
         <?php foreach ($partnerDocuments as $doc): ?>
         <tr>
             <td><?= e(PARTNER_DOCUMENT_TYPES[$doc['document_type']] ?? $doc['document_type']) ?></td>
             <td><?= e($doc['original_filename']) ?></td>
             <td><span class="badge <?= $doc['verification_status'] === 'verified' ? 'badge-success' : ($doc['verification_status'] === 'rejected' ? 'badge-danger' : 'badge-warning') ?>"><?= e($doc['verification_status']) ?></span></td>
+            <td><?= e($doc['verification_remarks'] ?? '—') ?></td>
             <td><?= e(date('d M Y', strtotime((string) $doc['uploaded_at']))) ?></td>
-            <td class="actions"><a href="/admin/partner-document-download/?id=<?= (int) $doc['id'] ?>" class="btn btn-outline btn-sm">Download</a></td>
+            <td class="actions">
+                <a href="/admin/partner-document-download/?id=<?= (int) $doc['id'] ?>" class="btn btn-outline btn-sm">Download</a>
+                <?php if (has_permission('partners.manage') && $doc['verification_status'] === 'pending'): ?>
+                <form method="post" action="/admin/partners/" style="display:inline-flex;gap:var(--space-1);align-items:center">
+                    <?= csrf_field() ?>
+                    <input type="hidden" name="action" value="verify_document">
+                    <input type="hidden" name="id" value="<?= $id ?>">
+                    <input type="hidden" name="document_id" value="<?= (int) $doc['id'] ?>">
+                    <input type="text" name="verification_remarks" placeholder="Remarks" style="width:120px">
+                    <button type="submit" name="verify_status" value="verified" class="btn btn-outline btn-sm">Verify</button>
+                    <button type="submit" name="verify_status" value="rejected" class="btn btn-outline btn-sm">Reject</button>
+                </form>
+                <?php endif; ?>
+            </td>
         </tr>
         <?php endforeach; ?>
     </tbody></table>
-    <p style="color:var(--text-muted);font-size:var(--font-size-sm);margin-top:var(--space-2)">Verification actions (verify/reject) aren't available yet — every document ships "pending" until that's built.</p>
     <?php endif; ?>
 
     <h2 class="country-directory__subheading">Referred Customers &amp; Applications (<?= count($referred) ?>)</h2>
@@ -264,11 +371,12 @@ if ($action === 'view' && $id) {
     <?php if (!$history): ?>
     <p class="empty-state">No status changes recorded yet.</p>
     <?php else: ?>
-    <table class="admin-table"><thead><tr><th>From</th><th>To</th><th>Changed By</th><th>When</th></tr></thead><tbody>
+    <table class="admin-table"><thead><tr><th>From</th><th>To</th><th>Reason</th><th>Changed By</th><th>When</th></tr></thead><tbody>
         <?php foreach ($history as $h): ?>
         <tr>
-            <td><?= e($h['from_status'] !== null ? ucfirst((string) $h['from_status']) : '—') ?></td>
-            <td><?= e(ucfirst((string) $h['to_status'])) ?></td>
+            <td><?= e($h['from_status'] !== null ? ucfirst(str_replace('_', ' ', (string) $h['from_status'])) : '—') ?></td>
+            <td><?= e(ucfirst(str_replace('_', ' ', (string) $h['to_status']))) ?></td>
+            <td><?= e($h['remarks'] ?? '—') ?></td>
             <td><?= e($h['changed_by_name'] ?? '—') ?></td>
             <td><?= e(date('d M Y H:i', strtotime((string) $h['created_at']))) ?></td>
         </tr>
@@ -284,7 +392,7 @@ if ($action === 'view' && $id) {
 
 // --- List ---
 $search = trim((string) ($_GET['q'] ?? ''));
-$statusFilter = in_array($_GET['status'] ?? '', ['pending', 'active', 'suspended'], true) ? $_GET['status'] : null;
+$statusFilter = in_array($_GET['status'] ?? '', $partnerAllStatuses, true) ? $_GET['status'] : null;
 $page = max(1, (int) ($_GET['page'] ?? 1));
 $perPage = 25;
 $offset = ($page - 1) * $perPage;
@@ -332,8 +440,8 @@ admin_header_start('Partners', 'partners');
         <input class="form-input" type="search" name="q" value="<?= e($search) ?>" placeholder="Search company, contact, email, reference, mobile…">
         <select class="form-select" name="status">
             <option value="">All statuses</option>
-            <?php foreach (['pending', 'active', 'suspended'] as $s): ?>
-            <option value="<?= $s ?>"<?= $statusFilter === $s ? ' selected' : '' ?>><?= ucfirst($s) ?></option>
+            <?php foreach ($partnerAllStatuses as $s): ?>
+            <option value="<?= $s ?>"<?= $statusFilter === $s ? ' selected' : '' ?>><?= ucfirst(str_replace('_', ' ', $s)) ?></option>
             <?php endforeach; ?>
         </select>
         <button type="submit" class="btn btn-outline">Search</button>

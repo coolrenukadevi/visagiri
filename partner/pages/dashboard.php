@@ -29,10 +29,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'resen
 if (!is_partner_active()) {
     render_partner_start('dashboard', 'Dashboard');
     render_partner_email_verification_banner($partner);
+
+    // Latest reason recorded for the current status (if any) — the
+    // admin-supplied remarks for reject/documents_required/suspend/
+    // deactivate transitions, so the partner sees why, not just what.
+    $latestRemarksStmt = db()->prepare(
+        "SELECT remarks FROM partner_status_history WHERE partner_id = :id AND to_status = :status AND remarks IS NOT NULL ORDER BY created_at DESC LIMIT 1"
+    );
+    $latestRemarksStmt->execute(['id' => $partner['id'], 'status' => $partner['status']]);
+    $latestRemarks = $latestRemarksStmt->fetchColumn() ?: null;
     ?>
     <div class="card" style="max-width:520px">
-        <?php if ($partner['status'] === 'suspended'): ?>
-        <p>Your partner account has been suspended. Contact Visagiri support if you believe this is a mistake.</p>
+        <?php if ($partner['status'] === 'documents_required'): ?>
+        <p><strong>Additional documents required.</strong> Our team needs more information before approving your application.</p>
+        <?php if ($latestRemarks): ?><p style="color:var(--text-muted)"><?= e($latestRemarks) ?></p><?php endif; ?>
+        <p>Contact Visagiri support to submit the requested documents.</p>
+        <?php elseif ($partner['status'] === 'rejected'): ?>
+        <p><strong>Your partner application was not approved.</strong></p>
+        <?php if ($latestRemarks): ?><p style="color:var(--text-muted)"><?= e($latestRemarks) ?></p><?php endif; ?>
+        <p>Contact Visagiri support if you'd like to discuss this decision.</p>
+        <?php elseif ($partner['status'] === 'deactivated'): ?>
+        <p><strong>Your partner account has been deactivated.</strong></p>
+        <?php if ($latestRemarks): ?><p style="color:var(--text-muted)"><?= e($latestRemarks) ?></p><?php endif; ?>
+        <p>Contact Visagiri support if you believe this is a mistake.</p>
+        <?php elseif ($partner['status'] === 'suspended'): ?>
+        <p>Your partner account has been suspended.</p>
+        <?php if ($latestRemarks): ?><p style="color:var(--text-muted)"><?= e($latestRemarks) ?></p><?php endif; ?>
+        <p>Contact Visagiri support if you believe this is a mistake.</p>
         <?php else: ?>
         <p><strong>Your registration is pending review.</strong> Our team verifies every new partner before activating referral tracking and commission data. This usually doesn't take long — check back soon.</p>
         <?php endif; ?>

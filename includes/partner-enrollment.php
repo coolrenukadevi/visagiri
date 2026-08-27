@@ -216,6 +216,18 @@ function render_partner_email_verification_banner(array $partner): void
     }
 }
 
+/**
+ * Records an in-app notification for a partner (badge-only for now —
+ * no email; the wider communication centre is a later phase). Used by
+ * the admin approval/document-verification workflow whenever a
+ * partner-visible status changes.
+ */
+function notify_partner(int $partnerId, string $type, string $title, ?string $body = null, ?string $link = null): void
+{
+    db()->prepare('INSERT INTO partner_notifications (partner_id, type, title, body, link) VALUES (:pid, :type, :title, :body, :link)')
+        ->execute(['pid' => $partnerId, 'type' => $type, 'title' => $title, 'body' => $body, 'link' => $link]);
+}
+
 /** Renders the 1-5 step indicator shown at the top of every wizard page. */
 function render_partner_enrollment_steps(int $currentStep): void
 {
