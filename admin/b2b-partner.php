@@ -71,6 +71,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         b2b_log_audit($pdo, 'partner', $partnerId, admin_name(), admin_role(), 'Assigned Relationship Manager', $partner['assigned_manager_id'] ?? '', $mgrName ?: 'Unassigned');
         $partner['assigned_manager_id'] = $managerId;
         $actionMessage = 'Relationship Manager updated.';
+    } elseif ($action === 'assign_tier' && b2b_can_manage_tiers_pricing()) {
+        $tierName = trim($_POST['tier'] ?? '');
+        $applyCreditLimit = !empty($_POST['apply_credit_limit']);
+        if ($tierName !== '' && !in_array($tierName, B2B_TIER_NAMES, true)) {
+            $actionError = 'Invalid tier.';
+        } else {
+            $fields = ['tier' => $tierName ?: null, 'updated_at' => gmdate('c')];
+            if ($applyCreditLimit && $tierName !== '') {
+                $tierStmt = $pdo->prepare('SELECT default_credit_limit FROM b2b_tiers WHERE name = ?');
+                $tierStmt->execute([$tierName]);
+                $defaultLimit = $tierStmt->fetchColumn();
+                if ($defaultLimit !== false) {
+                    $fields['credit_limit'] = (float) $defaultLimit;
+                }
+            }
+            $setSql = implode(', ', array_map(fn($k) => "$k = :$k", array_keys($fields)));
+            $pdo->prepare("UPDATE b2b_partners SET $setSql WHERE id = :id")->execute($fields + ['id' => $partnerId]);
+            b2b_log_audit($pdo, 'partner', $partnerId, admin_name(), admin_role(), 'Assigned tier', $partner['tier'] ?? '', $tierName ?: 'Unassigned');
+            $partner = array_merge($partner, $fields);
+            $actionMessage = $tierName !== '' ? "Tier set to $tierName." : 'Tier unassigned.';
+        }
     } elseif ($action === 'create_quotation' && b2b_can_manage_quotations()) {
         $serviceCategory = trim($_POST['service_category'] ?? '');
         $country = trim($_POST['country'] ?? '');
@@ -238,6 +259,7 @@ $documents = [];
 foreach ($docsStmt->fetchAll(PDO::FETCH_ASSOC) as $d) { $documents[$d['doc_type']] = $d; }
 
 $managers = $pdo->query("SELECT id, name, role FROM users WHERE role IN ('Super Admin','B2B Admin','B2B Relationship Manager') ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
+$tiersList = $pdo->query("SELECT * FROM b2b_tiers WHERE is_active = 1 ORDER BY default_credit_limit ASC")->fetchAll(PDO::FETCH_ASSOC);
 $auditStmt = $pdo->prepare("SELECT * FROM b2b_audit_logs WHERE entity_type = 'partner' AND entity_id = ? ORDER BY id DESC LIMIT 50");
 $auditStmt->execute([$partnerId]);
 $auditLog = $auditStmt->fetchAll(PDO::FETCH_ASSOC);
@@ -357,6 +379,8 @@ document.querySelectorAll('.b2b-admin-action-form[data-needs-reason="1"]').forEa
             <div class="crm-panel-item"><label>Mobile</label><div class="val"><?php echo htmlspecialchars($partner['contact_mobile']); ?></div></div>
             <div class="crm-panel-item"><label>Registration Date</label><div class="val"><?php echo htmlspecialchars(substr($partner['created_at'], 0, 10)); ?></div></div>
             <div class="crm-panel-item"><label>Status</label><div class="val"><span class="crm-status-badge <?php echo b2b_status_class($partner['status']); ?>"><?php echo htmlspecialchars($partner['status']); ?></span></div></div>
+            <div class="crm-panel-item"><label>Tier</label><div class="val"><?php echo htmlspecialchars($partner['tier'] ?: 'Not yet assigned'); ?></div></div>
+            <div class="crm-panel-item"><label>Credit Limit</label><div class="val">₹<?php echo number_format((float) $partner['credit_limit'], 2); ?></div></div>
         </div>
 
         <?php if (b2b_can_assign_manager()): ?>
@@ -369,6 +393,21 @@ document.querySelectorAll('.b2b-admin-action-form[data-needs-reason="1"]').forEa
                 <option value="<?php echo (int) $m['id']; ?>" <?php echo (int) $partner['assigned_manager_id'] === (int) $m['id'] ? 'selected' : ''; ?>><?php echo htmlspecialchars($m['name']); ?> (<?php echo htmlspecialchars($m['role']); ?>)</option>
                 <?php endforeach; ?>
             </select>
+            <button type="submit" class="crm-btn crm-btn-ghost crm-btn-sm">Save</button>
+        </form>
+        <?php endif; ?>
+
+        <?php if (b2b_can_manage_tiers_pricing()): ?>
+        <form method="post" style="margin-top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+            <input type="hidden" name="action" value="assign_tier">
+            <label style="font-size:13px;font-weight:600;color:var(--c-heading);">Tier</label>
+            <select name="tier" style="border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;">
+                <option value="">Unassigned</option>
+                <?php foreach ($tiersList as $t): ?>
+                <option value="<?php echo htmlspecialchars($t['name']); ?>" <?php echo $partner['tier'] === $t['name'] ? 'selected' : ''; ?>><?php echo htmlspecialchars($t['name']); ?> (₹<?php echo number_format((float) $t['default_credit_limit'], 0); ?> limit, <?php echo (float) $t['default_discount_percent']; ?>% discount)</option>
+                <?php endforeach; ?>
+            </select>
+            <label style="font-size:12px;color:var(--c-muted);display:flex;align-items:center;gap:5px;"><input type="checkbox" name="apply_credit_limit" value="1"> Apply tier's default credit limit</label>
             <button type="submit" class="crm-btn crm-btn-ghost crm-btn-sm">Save</button>
         </form>
         <?php endif; ?>
@@ -460,10 +499,11 @@ document.querySelectorAll('.b2b-admin-action-form[data-needs-reason="1"]').forEa
             <div class="crm-panel-grid">
                 <div class="crm-panel-item">
                     <label>Service Category</label>
-                    <select name="service_category" required style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;">
+                    <select name="service_category" id="crmQuoteServiceCategory" required style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;">
                         <option value="">Select service</option>
                         <?php foreach (B2B_SERVICES_OFFERED as $svc): ?><option value="<?php echo htmlspecialchars($svc); ?>"><?php echo htmlspecialchars($svc); ?></option><?php endforeach; ?>
                     </select>
+                    <span id="crmQuotePriceHint" class="crm-cell-sub" style="display:block;margin-top:4px;"></span>
                 </div>
                 <div class="crm-panel-item">
                     <label>Link to Application (optional)</label>
@@ -475,7 +515,7 @@ document.querySelectorAll('.b2b-admin-action-form[data-needs-reason="1"]').forEa
                 <div class="crm-panel-item"><label>Destination Country</label><input type="text" name="country" required style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;"></div>
                 <div class="crm-panel-item"><label>Visa Type</label><input type="text" name="visa_type" required style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;"></div>
                 <div class="crm-panel-item"><label>Applicants</label><input type="number" name="applicants_count" value="1" min="1" style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;"></div>
-                <div class="crm-panel-item"><label>Visa Fee (₹)</label><input type="number" name="visa_fee" value="0" step="0.01" min="0" style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;"></div>
+                <div class="crm-panel-item"><label>Visa Fee (₹)</label><input type="number" name="visa_fee" id="crmQuoteVisaFee" value="0" step="0.01" min="0" style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;"></div>
                 <div class="crm-panel-item"><label>Service Fee (₹)</label><input type="number" name="service_fee" value="0" step="0.01" min="0" style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;"></div>
                 <div class="crm-panel-item"><label>Embassy Fee (₹)</label><input type="number" name="embassy_fee" value="0" step="0.01" min="0" style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;"></div>
                 <div class="crm-panel-item"><label>Appointment Fee (₹)</label><input type="number" name="appointment_fee" value="0" step="0.01" min="0" style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;"></div>
@@ -487,6 +527,29 @@ document.querySelectorAll('.b2b-admin-action-form[data-needs-reason="1"]').forEa
             <button type="submit" class="crm-btn crm-btn-primary crm-btn-sm" style="margin-top:16px;">Create Quotation</button>
         </form>
     </div>
+    <script>
+    (function () {
+        var categorySelect = document.getElementById('crmQuoteServiceCategory');
+        var visaFeeInput = document.getElementById('crmQuoteVisaFee');
+        var hint = document.getElementById('crmQuotePriceHint');
+        if (!categorySelect) { return; }
+        categorySelect.addEventListener('change', function () {
+            hint.textContent = '';
+            if (!categorySelect.value) { return; }
+            fetch('b2b-pricing-lookup.php?partner_id=<?php echo $partnerId; ?>&service_category=' + encodeURIComponent(categorySelect.value))
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    if (data.found) {
+                        visaFeeInput.value = data.partner_price.toFixed(2);
+                        hint.textContent = 'Suggested from this partner\'s pricing rule: ₹' + data.partner_price.toFixed(2) + ' — pre-filled into Visa Fee, adjust as needed.';
+                    } else {
+                        hint.textContent = 'No pricing rule found for this service/tier — enter fees manually.';
+                    }
+                })
+                .catch(function () { hint.textContent = ''; });
+        });
+    })();
+    </script>
     <?php endif; ?>
 
     <div class="crm-card" style="padding:0;">
