@@ -364,6 +364,8 @@ function b2b_seed_default_settings(PDO $pdo): void
         'quotation_ref_prefix' => 'B2B-QT',
         'quotation_validity_days' => '15',
         'quotation_approval_threshold_inr' => '100000',
+        'invoice_number_prefix' => 'B2B-INV',
+        'invoice_due_days' => '15',
         'sms_gateway_status' => 'not_connected',
         'whatsapp_gateway_status' => 'not_connected',
         'email_notifications_enabled' => '1',
@@ -548,6 +550,62 @@ function b2b_doc_status_class(string $status): string
 function b2b_quote_status_class(string $status): string
 {
     return 'b2b-quote-' . strtolower(str_replace(' ', '-', $status));
+}
+
+function b2b_invoice_status_class(string $status): string
+{
+    return 'b2b-inv-' . strtolower(str_replace(' ', '-', $status));
+}
+
+/**
+ * Appends one row to the append-only b2b_wallet_transactions ledger and
+ * updates the cached b2b_partners.wallet_balance to match — the single
+ * place every wallet-affecting action (admin credit/debit/adjustment,
+ * applying wallet credit to an invoice) goes through, so the cached
+ * balance and the ledger's running total can never drift apart.
+ */
+function b2b_wallet_record(PDO $pdo, int $partnerId, string $type, float $amount, string $reason, string $recordedBy): float
+{
+    $stmt = $pdo->prepare('SELECT wallet_balance FROM b2b_partners WHERE id = ?');
+    $stmt->execute([$partnerId]);
+    $currentBalance = (float) $stmt->fetchColumn();
+
+    $isDebit = in_array($type, ['Debit', 'Payment Applied'], true);
+    $newBalance = round($isDebit ? $currentBalance - $amount : $currentBalance + $amount, 2);
+
+    $ref = b2b_generate_ref($pdo, 'B2B-WLT');
+    $pdo->prepare('INSERT INTO b2b_wallet_transactions (partner_id, transaction_ref, type, amount, balance_after, reason, recorded_by, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
+        ->execute([$partnerId, $ref, $type, $amount, $newBalance, $reason, $recordedBy, gmdate('c')]);
+    $pdo->prepare('UPDATE b2b_partners SET wallet_balance = ?, updated_at = ? WHERE id = ?')->execute([$newBalance, gmdate('c'), $partnerId]);
+
+    return $newBalance;
+}
+
+/** Recomputes and persists an invoice's status from its total vs. sum of recorded payments — Issued/Partially Paid/Paid, never touching Draft/Cancelled which are set explicitly elsewhere. */
+function b2b_invoice_recalc_status(PDO $pdo, int $invoiceId): string
+{
+    $invStmt = $pdo->prepare('SELECT total, status FROM b2b_invoices WHERE id = ?');
+    $invStmt->execute([$invoiceId]);
+    $invoice = $invStmt->fetch(PDO::FETCH_ASSOC);
+    if (!$invoice || in_array($invoice['status'], ['Draft', 'Cancelled'], true)) {
+        return $invoice['status'] ?? '';
+    }
+
+    $paidStmt = $pdo->prepare('SELECT COALESCE(SUM(amount), 0) FROM b2b_invoice_payments WHERE invoice_id = ?');
+    $paidStmt->execute([$invoiceId]);
+    $paid = (float) $paidStmt->fetchColumn();
+    $total = (float) $invoice['total'];
+
+    if ($paid <= 0) {
+        $status = 'Issued';
+    } elseif ($paid + 0.01 >= $total) {
+        $status = 'Paid';
+    } else {
+        $status = 'Partially Paid';
+    }
+
+    $pdo->prepare('UPDATE b2b_invoices SET status = ? WHERE id = ?')->execute([$status, $invoiceId]);
+    return $status;
 }
 
 /** Same UTF-8-to-CP1252 transliteration FPDF needs, as forex_pdf_safe() — duplicated rather than cross-required so this module has no hard dependency on includes/forex-db.php. */

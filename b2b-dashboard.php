@@ -12,6 +12,14 @@ $visaCaseStmt = $pdo->prepare('SELECT COUNT(*) FROM enquiries WHERE partner_id =
 $visaCaseStmt->execute([$pid]);
 $visaCaseCount = (int) $visaCaseStmt->fetchColumn();
 
+$pendingQuoteStmt = $pdo->prepare("SELECT COUNT(*) FROM b2b_quotations WHERE partner_id = ? AND status = 'Sent'");
+$pendingQuoteStmt->execute([$pid]);
+$pendingQuoteCount = (int) $pendingQuoteStmt->fetchColumn();
+
+$outstandingInvStmt = $pdo->prepare("SELECT COUNT(*) FROM b2b_invoices i WHERE i.partner_id = ? AND i.status IN ('Issued','Partially Paid','Overdue')");
+$outstandingInvStmt->execute([$pid]);
+$outstandingInvCount = (int) $outstandingInvStmt->fetchColumn();
+
 $managerName = '';
 if ($ppPartner['assigned_manager_id']) {
     $mstmt = $pdo->prepare('SELECT name FROM users WHERE id = ?');
@@ -34,12 +42,12 @@ if ($ppPartner['assigned_manager_id']) {
     </div>
     <div class="pp-kpi">
         <div class="pp-kpi-icon"><i class="fa-solid fa-file-invoice-dollar"></i></div>
-        <div class="pp-kpi-value">0</div>
+        <div class="pp-kpi-value"><?php echo $pendingQuoteCount; ?></div>
         <div class="pp-kpi-label">Pending Quotations</div>
     </div>
     <div class="pp-kpi">
         <div class="pp-kpi-icon"><i class="fa-solid fa-file-invoice"></i></div>
-        <div class="pp-kpi-value">0</div>
+        <div class="pp-kpi-value"><?php echo $outstandingInvCount; ?></div>
         <div class="pp-kpi-label">Outstanding Invoices</div>
     </div>
     <div class="pp-kpi">
@@ -65,7 +73,7 @@ if ($ppPartner['assigned_manager_id']) {
         <h3>Quick Actions</h3>
         <a href="b2b-new-application.php" class="b2b-submit-btn" style="text-decoration:none;margin-bottom:10px;">Submit New Visa Application</a>
         <a href="b2b-applications.php" class="pp-filter-btn is-ghost" style="width:100%;justify-content:center;">View My Applications</a>
-        <p class="pp-empty-note" style="margin-top:16px;">Quotations, invoices and team management are coming in the next phases of the B2B Partner Portal. Your Relationship Manager can assist with these in the meantime.</p>
+        <p class="pp-empty-note" style="margin-top:16px;">Team management and messaging are coming in the next phases of the B2B Partner Portal. Your Relationship Manager can assist with these in the meantime.</p>
     </div>
 </div>
 

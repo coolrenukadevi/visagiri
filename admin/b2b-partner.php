@@ -141,6 +141,92 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             );
             $actionMessage = "Quotation {$quotation['quotation_ref']} approved and sent to the partner.";
         }
+    } elseif ($action === 'generate_invoice' && b2b_can_manage_finance()) {
+        $quotationId = (int) ($_POST['quotation_id'] ?? 0);
+        $qStmt = $pdo->prepare("SELECT * FROM b2b_quotations WHERE id = ? AND partner_id = ? AND status = 'Accepted'");
+        $qStmt->execute([$quotationId, $partnerId]);
+        $quotation = $qStmt->fetch(PDO::FETCH_ASSOC);
+        if (!$quotation) {
+            $actionError = 'Only an accepted quotation can be invoiced.';
+        } else {
+            $existingStmt = $pdo->prepare('SELECT COUNT(*) FROM b2b_invoices WHERE quotation_id = ?');
+            $existingStmt->execute([$quotationId]);
+            if ((int) $existingStmt->fetchColumn() > 0) {
+                $actionError = 'This quotation has already been invoiced.';
+            } else {
+                $taxableAmount = round((float) $quotation['total'] - (float) $quotation['gst'], 2);
+                $invoiceNumber = b2b_generate_ref($pdo, b2b_setting($pdo, 'invoice_number_prefix', 'B2B-INV'));
+                $dueDays = (int) b2b_setting($pdo, 'invoice_due_days', '15');
+                $now = gmdate('c');
+
+                $pdo->prepare('INSERT INTO b2b_invoices (
+                    invoice_number, partner_id, quotation_id, enquiry_id, taxable_amount, gst, discount, total, status, due_date, created_by, created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')->execute([
+                    $invoiceNumber, $partnerId, $quotationId, $quotation['enquiry_id'],
+                    $taxableAmount, $quotation['gst'], $quotation['discount'], $quotation['total'],
+                    'Issued', gmdate('c', strtotime("+$dueDays days")), admin_name(), $now,
+                ]);
+                $invoiceId = (int) $pdo->lastInsertId();
+
+                b2b_log_audit($pdo, 'invoice', $invoiceId, admin_name(), admin_role(), 'Generated invoice from quotation', $quotation['quotation_ref'], "$invoiceNumber — ₹{$quotation['total']}");
+                b2b_notify($pdo, null, 'b2b_invoice_issued', "Invoice $invoiceNumber issued to {$partner['company_name']}: ₹" . number_format((float) $quotation['total'], 2) . '.', $partnerId);
+                b2b_notify_partner(
+                    $pdo, $partner, "New Invoice — $invoiceNumber",
+                    "Dear {$partner['contact_name']},\n\nAn invoice has been issued against your accepted quotation {$quotation['quotation_ref']}.\n\nInvoice Number: $invoiceNumber\nTotal: ₹" . number_format((float) $quotation['total'], 2) . "\nDue Date: " . date('d M Y', strtotime("+$dueDays days")) . "\n\nPlease log in to your Partner Portal to view the full breakdown.\n\nRegards,\nVisaAgency.in B2B Partner Team"
+                );
+                $actionMessage = "Invoice $invoiceNumber generated.";
+            }
+        }
+    } elseif ($action === 'record_payment' && b2b_can_manage_finance()) {
+        $invoiceId = (int) ($_POST['invoice_id'] ?? 0);
+        $amount = filter_var($_POST['amount'] ?? '', FILTER_VALIDATE_FLOAT);
+        $method = trim($_POST['method'] ?? '');
+        $invStmt = $pdo->prepare('SELECT * FROM b2b_invoices WHERE id = ? AND partner_id = ?');
+        $invStmt->execute([$invoiceId, $partnerId]);
+        $invoice = $invStmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$invoice || $amount === false || $amount <= 0 || !in_array($method, CRM_PAYMENT_METHODS, true)) {
+            $actionError = 'Please provide a valid invoice, amount and payment method.';
+        } else {
+            $now = gmdate('c');
+            $pdo->prepare('INSERT INTO b2b_invoice_payments (invoice_id, amount, method, transaction_id, reference, remarks, recorded_by, payment_date, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
+                ->execute([
+                    $invoiceId, $amount, $method,
+                    trim($_POST['transaction_id'] ?? '') ?: null,
+                    trim($_POST['reference'] ?? '') ?: null,
+                    trim($_POST['remarks'] ?? '') ?: null,
+                    admin_name(), trim($_POST['payment_date'] ?? '') ?: gmdate('Y-m-d'), $now,
+                ]);
+            $newStatus = b2b_invoice_recalc_status($pdo, $invoiceId);
+            b2b_log_audit($pdo, 'invoice', $invoiceId, admin_name(), admin_role(), 'Recorded payment', '', "$method: ₹" . number_format($amount, 2) . " ($newStatus)");
+            b2b_notify_partner(
+                $pdo, $partner, "Payment Received — {$invoice['invoice_number']}",
+                "Dear {$partner['contact_name']},\n\nWe have recorded a payment of ₹" . number_format($amount, 2) . " against invoice {$invoice['invoice_number']}.\n\nCurrent Status: $newStatus\n\nRegards,\nVisaAgency.in B2B Partner Team"
+            );
+            $actionMessage = 'Payment of ₹' . number_format($amount, 2) . " recorded. Invoice is now $newStatus.";
+        }
+    } elseif ($action === 'wallet_transaction' && b2b_can_manage_finance()) {
+        $type = trim($_POST['type'] ?? '');
+        $amount = filter_var($_POST['amount'] ?? '', FILTER_VALIDATE_FLOAT);
+        $reason = trim($_POST['reason'] ?? '');
+        if (!in_array($type, ['Credit Added', 'Debit', 'Adjustment'], true) || $amount === false || $amount <= 0 || $reason === '') {
+            $actionError = 'Please provide a valid transaction type, amount and reason.';
+        } else {
+            $newBalance = b2b_wallet_record($pdo, $partnerId, $type, $amount, $reason, admin_name());
+            b2b_log_audit($pdo, 'partner', $partnerId, admin_name(), admin_role(), "Wallet: $type", '', '₹' . number_format($amount, 2) . " — $reason (balance now ₹" . number_format($newBalance, 2) . ')');
+            $partner['wallet_balance'] = $newBalance;
+            $actionMessage = "Wallet updated. New balance: ₹" . number_format($newBalance, 2) . '.';
+        }
+    } elseif ($action === 'update_credit_limit' && b2b_can_manage_finance()) {
+        $creditLimit = filter_var($_POST['credit_limit'] ?? '', FILTER_VALIDATE_FLOAT);
+        if ($creditLimit === false || $creditLimit < 0) {
+            $actionError = 'Please provide a valid credit limit.';
+        } else {
+            $pdo->prepare('UPDATE b2b_partners SET credit_limit = ?, updated_at = ? WHERE id = ?')->execute([$creditLimit, gmdate('c'), $partnerId]);
+            b2b_log_audit($pdo, 'partner', $partnerId, admin_name(), admin_role(), 'Updated credit limit', $partner['credit_limit'] ?? '0', (string) $creditLimit);
+            $partner['credit_limit'] = $creditLimit;
+            $actionMessage = 'Credit limit updated to ₹' . number_format($creditLimit, 2) . '.';
+        }
     }
 }
 
@@ -165,6 +251,25 @@ $quotationsStmt = $pdo->prepare('SELECT * FROM b2b_quotations WHERE partner_id =
 $quotationsStmt->execute([$partnerId]);
 $quotations = $quotationsStmt->fetchAll(PDO::FETCH_ASSOC);
 
+$invoicesStmt = $pdo->prepare('SELECT * FROM b2b_invoices WHERE partner_id = ? ORDER BY created_at DESC');
+$invoicesStmt->execute([$partnerId]);
+$invoices = $invoicesStmt->fetchAll(PDO::FETCH_ASSOC);
+
+$invoiceableQuotationsStmt = $pdo->prepare("SELECT q.* FROM b2b_quotations q
+    WHERE q.partner_id = ? AND q.status = 'Accepted' AND NOT EXISTS (SELECT 1 FROM b2b_invoices i WHERE i.quotation_id = q.id)
+    ORDER BY q.created_at DESC");
+$invoiceableQuotationsStmt->execute([$partnerId]);
+$invoiceableQuotations = $invoiceableQuotationsStmt->fetchAll(PDO::FETCH_ASSOC);
+
+$paymentsStmt = $pdo->prepare('SELECT ip.*, i.invoice_number FROM b2b_invoice_payments ip
+    JOIN b2b_invoices i ON i.id = ip.invoice_id WHERE i.partner_id = ? ORDER BY ip.created_at DESC');
+$paymentsStmt->execute([$partnerId]);
+$invoicePayments = $paymentsStmt->fetchAll(PDO::FETCH_ASSOC);
+
+$walletStmt = $pdo->prepare('SELECT * FROM b2b_wallet_transactions WHERE partner_id = ? ORDER BY created_at DESC LIMIT 100');
+$walletStmt->execute([$partnerId]);
+$walletTransactions = $walletStmt->fetchAll(PDO::FETCH_ASSOC);
+
 $servicesOffered = json_decode($partner['services_offered'] ?? '[]', true) ?: [];
 $visaSpecialization = json_decode($partner['visa_specialization'] ?? '[]', true) ?: [];
 
@@ -174,7 +279,7 @@ $tabs = [
     'applications' => 'Visa Applications', 'quotations' => 'Quotations', 'invoices' => 'Invoices',
     'payments' => 'Payments', 'communications' => 'Communications', 'activities' => 'Activities',
 ];
-$builtTabs = ['overview', 'company', 'documents', 'applications', 'quotations', 'activities'];
+$builtTabs = ['overview', 'company', 'documents', 'applications', 'quotations', 'invoices', 'payments', 'activities'];
 ?>
 <div class="crm-page-header">
     <div>
@@ -408,6 +513,149 @@ document.querySelectorAll('.b2b-admin-action-form[data-needs-reason="1"]').forEa
             <?php endforeach; ?>
             <?php if (!$quotations): ?>
             <tr><td colspan="8" class="crm-empty">No quotations created yet.</td></tr>
+            <?php endif; ?>
+            </tbody>
+        </table>
+        </div>
+    </div>
+
+<?php elseif ($tab === 'invoices'): ?>
+    <?php if ($invoiceableQuotations && b2b_can_manage_finance()): ?>
+    <div class="crm-card">
+        <h3 style="margin:0 0 14px;font-size:14px;">Generate Invoice from Accepted Quotation</h3>
+        <?php foreach ($invoiceableQuotations as $iq): ?>
+        <form method="post" style="display:flex;gap:10px;align-items:center;margin-bottom:8px;">
+            <input type="hidden" name="action" value="generate_invoice">
+            <input type="hidden" name="quotation_id" value="<?php echo (int) $iq['id']; ?>">
+            <span class="crm-cell-sub" style="flex:1;"><?php echo htmlspecialchars($iq['quotation_ref']); ?> — <?php echo htmlspecialchars($iq['service_category']); ?> — ₹<?php echo number_format((float) $iq['total'], 2); ?></span>
+            <button type="submit" class="crm-btn crm-btn-primary crm-btn-sm">Generate Invoice</button>
+        </form>
+        <?php endforeach; ?>
+    </div>
+    <?php endif; ?>
+
+    <div class="crm-card" style="padding:0;">
+        <div class="crm-table-wrap">
+        <table class="crm-table">
+            <thead><tr><th>Invoice #</th><th>Total</th><th>Due Date</th><th>Status</th><th>Created</th><th></th></tr></thead>
+            <tbody>
+            <?php foreach ($invoices as $inv): ?>
+            <tr>
+                <td class="crm-cell-name"><?php echo htmlspecialchars($inv['invoice_number']); ?></td>
+                <td>₹<?php echo number_format((float) $inv['total'], 2); ?></td>
+                <td class="crm-cell-sub"><?php echo $inv['due_date'] ? htmlspecialchars(substr($inv['due_date'], 0, 10)) : '—'; ?></td>
+                <td><span class="crm-status-badge <?php echo b2b_invoice_status_class($inv['status']); ?>"><?php echo htmlspecialchars($inv['status']); ?></span></td>
+                <td class="crm-cell-sub"><?php echo htmlspecialchars(substr($inv['created_at'], 0, 10)); ?></td>
+                <td><a href="b2b-invoice-pdf.php?id=<?php echo (int) $inv['id']; ?>" target="_blank" class="crm-btn crm-btn-ghost crm-btn-sm"><i class="fa-solid fa-file-pdf"></i></a></td>
+            </tr>
+            <?php endforeach; ?>
+            <?php if (!$invoices): ?>
+            <tr><td colspan="6" class="crm-empty">No invoices generated yet.</td></tr>
+            <?php endif; ?>
+            </tbody>
+        </table>
+        </div>
+    </div>
+
+<?php elseif ($tab === 'payments'): ?>
+    <div class="crm-kpi-grid" style="grid-template-columns:repeat(2,1fr); margin-bottom:16px;">
+        <div class="crm-kpi"><div class="crm-kpi-value">₹<?php echo number_format((float) $partner['wallet_balance'], 2); ?></div><div class="crm-kpi-label">Wallet Balance</div></div>
+        <div class="crm-kpi"><div class="crm-kpi-value">₹<?php echo number_format((float) $partner['credit_limit'], 2); ?></div><div class="crm-kpi-label">Credit Limit</div></div>
+    </div>
+
+    <?php if (b2b_can_manage_finance()): ?>
+    <div class="crm-card">
+        <h3 style="margin:0 0 14px;font-size:14px;">Record Payment Against an Invoice</h3>
+        <?php if ($invoices): ?>
+        <form method="post" class="crm-panel-grid">
+            <input type="hidden" name="action" value="record_payment">
+            <div class="crm-panel-item">
+                <label>Invoice</label>
+                <select name="invoice_id" required style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;">
+                    <?php foreach ($invoices as $inv): ?><option value="<?php echo (int) $inv['id']; ?>"><?php echo htmlspecialchars($inv['invoice_number'] . ' — ₹' . number_format((float) $inv['total'], 2) . ' (' . $inv['status'] . ')'); ?></option><?php endforeach; ?>
+                </select>
+            </div>
+            <div class="crm-panel-item"><label>Amount (₹)</label><input type="number" name="amount" step="0.01" min="0.01" required style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;"></div>
+            <div class="crm-panel-item">
+                <label>Method</label>
+                <select name="method" required style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;">
+                    <?php foreach (CRM_PAYMENT_METHODS as $m): ?><option value="<?php echo htmlspecialchars($m); ?>"><?php echo htmlspecialchars($m); ?></option><?php endforeach; ?>
+                </select>
+            </div>
+            <div class="crm-panel-item"><label>Transaction ID</label><input type="text" name="transaction_id" style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;"></div>
+            <div class="crm-panel-item"><label>Payment Date</label><input type="date" name="payment_date" value="<?php echo gmdate('Y-m-d'); ?>" style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;"></div>
+            <div class="crm-panel-item full"><label>Remarks</label><input type="text" name="remarks" style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;"></div>
+            <div class="crm-panel-item full"><button type="submit" class="crm-btn crm-btn-primary crm-btn-sm">Record Payment</button></div>
+        </form>
+        <?php else: ?>
+        <p class="crm-empty">Generate an invoice first before recording a payment.</p>
+        <?php endif; ?>
+    </div>
+
+    <div class="crm-card">
+        <h3 style="margin:0 0 14px;font-size:14px;">Wallet &amp; Credit</h3>
+        <form method="post" style="display:flex;gap:10px;align-items:flex-end;margin-bottom:16px;flex-wrap:wrap;">
+            <input type="hidden" name="action" value="wallet_transaction">
+            <div><label style="display:block;font-size:11px;color:var(--c-muted);margin-bottom:3px;">Type</label>
+                <select name="type" style="border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;">
+                    <option value="Credit Added">Credit Added</option>
+                    <option value="Debit">Debit</option>
+                    <option value="Adjustment">Adjustment</option>
+                </select>
+            </div>
+            <div><label style="display:block;font-size:11px;color:var(--c-muted);margin-bottom:3px;">Amount (₹)</label><input type="number" name="amount" step="0.01" min="0.01" required style="border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;width:130px;"></div>
+            <div style="flex:1;min-width:180px;"><label style="display:block;font-size:11px;color:var(--c-muted);margin-bottom:3px;">Reason</label><input type="text" name="reason" required style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;"></div>
+            <button type="submit" class="crm-btn crm-btn-ghost crm-btn-sm">Apply</button>
+        </form>
+        <form method="post" style="display:flex;gap:10px;align-items:flex-end;">
+            <input type="hidden" name="action" value="update_credit_limit">
+            <div><label style="display:block;font-size:11px;color:var(--c-muted);margin-bottom:3px;">Credit Limit (₹)</label><input type="number" name="credit_limit" step="0.01" min="0" value="<?php echo (float) $partner['credit_limit']; ?>" style="border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;width:160px;"></div>
+            <button type="submit" class="crm-btn crm-btn-ghost crm-btn-sm">Update Limit</button>
+        </form>
+    </div>
+    <?php endif; ?>
+
+    <div class="crm-card">
+        <h3 style="margin:0 0 14px;font-size:14px;">Invoice Payments</h3>
+        <div class="crm-table-wrap">
+        <table class="crm-table">
+            <thead><tr><th>Invoice</th><th>Amount</th><th>Method</th><th>Date</th><th>Recorded By</th></tr></thead>
+            <tbody>
+            <?php foreach ($invoicePayments as $p): ?>
+            <tr>
+                <td class="crm-cell-name"><?php echo htmlspecialchars($p['invoice_number']); ?></td>
+                <td>₹<?php echo number_format((float) $p['amount'], 2); ?></td>
+                <td class="crm-cell-sub"><?php echo htmlspecialchars($p['method'] ?: '—'); ?></td>
+                <td class="crm-cell-sub"><?php echo htmlspecialchars(substr((string) $p['payment_date'], 0, 10)); ?></td>
+                <td class="crm-cell-sub"><?php echo htmlspecialchars($p['recorded_by'] ?: '—'); ?></td>
+            </tr>
+            <?php endforeach; ?>
+            <?php if (!$invoicePayments): ?>
+            <tr><td colspan="5" class="crm-empty">No payments recorded yet.</td></tr>
+            <?php endif; ?>
+            </tbody>
+        </table>
+        </div>
+    </div>
+
+    <div class="crm-card">
+        <h3 style="margin:0 0 14px;font-size:14px;">Wallet Ledger</h3>
+        <div class="crm-table-wrap">
+        <table class="crm-table">
+            <thead><tr><th>Reference</th><th>Type</th><th>Amount</th><th>Balance After</th><th>Reason</th><th>Date</th></tr></thead>
+            <tbody>
+            <?php foreach ($walletTransactions as $w): ?>
+            <tr>
+                <td class="crm-cell-name"><?php echo htmlspecialchars($w['transaction_ref']); ?></td>
+                <td class="crm-cell-sub"><?php echo htmlspecialchars($w['type']); ?></td>
+                <td>₹<?php echo number_format((float) $w['amount'], 2); ?></td>
+                <td class="crm-cell-sub">₹<?php echo number_format((float) $w['balance_after'], 2); ?></td>
+                <td class="crm-cell-sub"><?php echo htmlspecialchars($w['reason'] ?: '—'); ?></td>
+                <td class="crm-cell-sub"><?php echo htmlspecialchars(substr($w['created_at'], 0, 10)); ?></td>
+            </tr>
+            <?php endforeach; ?>
+            <?php if (!$walletTransactions): ?>
+            <tr><td colspan="6" class="crm-empty">No wallet activity yet.</td></tr>
             <?php endif; ?>
             </tbody>
         </table>

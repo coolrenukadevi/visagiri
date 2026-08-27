@@ -5000,6 +5000,13 @@ table.pp-table tr:hover td { background: var(--bg); }
 .pp-status-badge.b2b-quote-revision-requested { background: #FDF1DF; color: #A9720F; }
 .pp-status-badge.b2b-quote-expired { background: #FCE8E6; color: #C0392B; }
 
+.pp-status-badge.b2b-inv-draft { background: var(--bg); color: var(--text); }
+.pp-status-badge.b2b-inv-issued { background: #EAF0FF; color: #3355CC; }
+.pp-status-badge.b2b-inv-paid { background: #E7F6EC; color: #16A34A; }
+.pp-status-badge.b2b-inv-cancelled { background: #FCE8E6; color: #C0392B; }
+.pp-status-badge.b2b-inv-partially-paid { background: #FDF1DF; color: #A9720F; }
+.pp-status-badge.b2b-inv-overdue { background: #FCE8E6; color: #C0392B; }
+
 .pp-quote-total {
     margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border);
     font-size: 19px; font-weight: 700; color: #16A34A;
