@@ -60,13 +60,18 @@
       megaMenu.classList.toggle('is-open', open);
       megaMenuTrigger.setAttribute('aria-expanded', open ? 'true' : 'false');
     };
+    // Always intercept the click, on every device. This used to only
+    // preventDefault for touch (matchMedia 'hover: none'), banking on
+    // desktop mouse users hovering before they click — but a real
+    // mouse click fires the plain <a href> navigation the instant it
+    // lands, whether or not the hover-opened panel was already
+    // visible, so anyone who just clicks "Countries" (most people, by
+    // habit) got sent straight to /countries/ and never saw the
+    // dropdown's own search box at all. The panel's own "View All" /
+    // "Explore" links still provide real navigation once it's open.
     megaMenuTrigger.addEventListener('click', function (event) {
-      // Only intercept on devices without real hover (touch/tablet);
-      // desktop mouse users get the plain link + hover-opened panel.
-      if (window.matchMedia('(hover: none)').matches) {
-        event.preventDefault();
-        setMegaMenuOpen(!megaMenu.classList.contains('is-open'));
-      }
+      event.preventDefault();
+      setMegaMenuOpen(!megaMenu.classList.contains('is-open'));
     });
     document.addEventListener('click', function (event) {
       if (megaMenu.classList.contains('is-open') && !megaMenuItem.contains(event.target)) {
