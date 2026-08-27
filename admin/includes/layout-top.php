@@ -53,8 +53,8 @@ $navItems = [
     ['key' => 'forex-settings', 'label' => 'Forex Settings', 'icon' => 'sliders', 'href' => 'forex-settings.php', 'roles' => ['Super Admin', 'Forex Manager']],
 
     ['section' => 'B2B Partners'],
-    ['key' => 'b2b-partners', 'label' => 'Partner Applications', 'icon' => 'building', 'href' => 'b2b-partners.php', 'soon' => true],
-    ['key' => 'b2b-documents', 'label' => 'Document Verification', 'icon' => 'file-check', 'href' => 'b2b-documents.php', 'soon' => true],
+    ['key' => 'b2b-partners', 'label' => 'Partner Applications', 'icon' => 'building', 'href' => 'b2b-partners.php'],
+    ['key' => 'b2b-documents', 'label' => 'Document Verification', 'icon' => 'file-check', 'href' => 'b2b-documents.php', 'roles' => ['Super Admin', 'B2B Admin', 'B2B Relationship Manager']],
     ['key' => 'b2b-quotations', 'label' => 'Quotations', 'icon' => 'file-invoice-dollar', 'href' => 'b2b-quotations.php', 'soon' => true],
     ['key' => 'b2b-invoices', 'label' => 'Invoices &amp; Payments', 'icon' => 'file-invoice', 'href' => 'b2b-invoices.php', 'soon' => true, 'roles' => ['Super Admin', 'B2B Admin', 'Accounts']],
     ['key' => 'b2b-tiers', 'label' => 'Tiers &amp; Pricing', 'icon' => 'layer-group', 'href' => 'b2b-tiers.php', 'soon' => true, 'roles' => ['Super Admin', 'B2B Admin']],
