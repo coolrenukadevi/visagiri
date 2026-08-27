@@ -145,10 +145,8 @@ declare(strict_types=1);
 </footer>
 
 <?php require __DIR__ . '/enquiry-widget.php'; ?>
-<?php require __DIR__ . '/visa-assistant-widget.php'; ?>
 
 <script src="<?= e(asset_url('/assets/js/site.js')) ?>"></script>
 <script src="<?= e(asset_url('/assets/js/visa-search-widget.js')) ?>"></script>
-<script src="<?= e(asset_url('/assets/js/visa-assistant.js')) ?>"></script>
 </body>
 </html>
