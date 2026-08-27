@@ -4810,6 +4810,20 @@ html.va-qe-modal-open {
     .b2b-continue-btn, .b2b-submit-btn, .b2b-chip span, .b2b-reg-progress-fill { transition: none !important; }
 }
 
+/* ---- B2B partner login / forgot-password (b2b-login.php, b2b-forgot-password.php) ---- */
+.b2b-auth-card { max-width: 460px; }
+.b2b-auth-title { font-size: 24px; color: var(--header); margin-bottom: 6px; }
+.b2b-auth-links { text-align: right; margin: -8px 0 4px; }
+.b2b-auth-links a { font-size: 12.5px; color: var(--theme); font-weight: 600; text-decoration: none; }
+.b2b-auth-links a:hover { text-decoration: underline; }
+.b2b-auth-footer { text-align: center; font-size: 13px; color: var(--text); margin: 22px 0 0; }
+.b2b-auth-footer a { color: var(--theme); font-weight: 600; text-decoration: none; }
+.b2b-auth-footer a:hover { text-decoration: underline; }
+.b2b-auth-step[hidden] { display: none; }
+.b2b-auth-success { text-align: center; padding: 10px 4px 4px; }
+.b2b-auth-success i { font-size: 44px; color: #16A34A; margin-bottom: 12px; }
+.b2b-auth-success p { font-size: 13.5px; color: var(--text); margin: 0 0 18px; }
+
 /* ---- B2B partner document upload (b2b-partner-documents.php) ---- */
 .b2b-doc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 20px 0 6px; }
 .b2b-doc-box { border: 1.5px solid var(--border); border-radius: 14px; padding: 16px 18px; transition: border-color 0.2s ease; }
@@ -4838,4 +4852,98 @@ html.va-qe-modal-open {
 .b2b-doc-hint { font-size: 12px; color: var(--text); opacity: 0.8; margin-top: 4px; }
 @media (max-width: 600px) {
     .b2b-doc-grid { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   B2B Partner Portal app shell (includes/partner-layout-top.php,
+   b2b-dashboard.php, and every later logged-in partner page).
+   Mirrors admin/assets/admin.css's .crm-* shell structurally (sidebar +
+   topbar + content), but restyled with the public site's own teal/gold
+   brand tokens plus the same deep navy gradient already used for the
+   hero/topbar/footer/admin-login chrome, rather than introducing a new
+   unrelated color scheme just for this one app shell.
+   ============================================================ */
+.pp-shell { display: flex; min-height: 100vh; background: var(--bg); }
+.pp-sidebar {
+    width: 250px; flex-shrink: 0; background: linear-gradient(180deg, var(--theme-2-dark) 0%, var(--theme-2) 100%);
+    display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; overflow-y: auto;
+}
+.pp-brand { display: flex; flex-direction: column; gap: 6px; padding: 22px 20px 18px; }
+.pp-brand img { height: 30px; width: auto; }
+.pp-brand span { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gold); }
+.pp-nav { flex: 1; padding: 6px 12px; display: flex; flex-direction: column; gap: 2px; }
+.pp-nav-item {
+    display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px;
+    color: rgba(255,255,255,0.78); font-size: 13px; font-weight: 600; text-decoration: none;
+}
+.pp-nav-item i { width: 16px; text-align: center; }
+.pp-nav-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
+.pp-nav-item.active { background: rgba(255,255,255,0.14); color: #fff; }
+.pp-nav-item.is-soon { cursor: default; opacity: 0.55; }
+.pp-soon-pill {
+    margin-left: auto; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;
+    background: rgba(255,255,255,0.15); color: #fff; padding: 2px 7px; border-radius: 20px;
+}
+.pp-sidebar-user { display: flex; align-items: center; gap: 10px; padding: 16px 18px; border-top: 1px solid rgba(255,255,255,0.12); }
+.pp-user-avatar {
+    width: 36px; height: 36px; border-radius: 50%; background: var(--gold); color: var(--theme-2-dark);
+    display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0;
+}
+.pp-user-avatar.small { width: 30px; height: 30px; font-size: 12px; }
+.pp-user-meta { flex: 1; min-width: 0; }
+.pp-user-name { font-size: 12.5px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pp-user-role { font-size: 10.5px; color: rgba(255,255,255,0.65); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pp-user-logout { color: rgba(255,255,255,0.6); flex-shrink: 0; }
+.pp-user-logout:hover { color: #fff; }
+
+.pp-sidebar-toggle {
+    display: none; position: fixed; top: 14px; left: 14px; z-index: 200; width: 40px; height: 40px;
+    border-radius: 10px; border: none; background: var(--theme-2-dark); color: #fff; font-size: 16px;
+}
+
+.pp-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.pp-topbar {
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    background: var(--white); border-bottom: 1px solid var(--border); padding: 16px 28px;
+}
+.pp-topbar-title { font-size: 16px; font-weight: 700; color: var(--header); }
+.pp-topbar-meta { display: flex; align-items: center; gap: 14px; }
+.pp-ref-chip { font-size: 11.5px; font-weight: 700; color: var(--theme-2); background: var(--bg); padding: 5px 12px; border-radius: 20px; }
+.pp-content { padding: 26px 28px 40px; }
+
+.pp-page-header { margin-bottom: 20px; }
+.pp-page-title { font-size: 22px; font-weight: 700; color: var(--header); margin: 0 0 4px; }
+.pp-page-subtitle { font-size: 13px; color: var(--text); margin: 0; display: flex; align-items: center; gap: 8px; }
+.pp-status-chip { display: inline-block; font-size: 11px; font-weight: 700; background: #E7F6EC; color: #16A34A; padding: 3px 11px; border-radius: 20px; }
+
+.pp-kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 22px; }
+.pp-kpi { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; }
+.pp-kpi-icon {
+    width: 34px; height: 34px; border-radius: 9px; background: rgba(14,165,160,0.1); color: var(--theme);
+    display: flex; align-items: center; justify-content: center; font-size: 14px; margin-bottom: 12px;
+}
+.pp-kpi-value { font-size: 24px; font-weight: 700; color: var(--header); }
+.pp-kpi-label { font-size: 12px; color: var(--text); margin-top: 3px; }
+
+.pp-grid-2 { display: grid; grid-template-columns: 1.3fr 1fr; gap: 18px; }
+.pp-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 22px; }
+.pp-card h3 { font-size: 14.5px; color: var(--header); margin: 0 0 16px; }
+.pp-panel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 20px; }
+.pp-panel-item label { display: block; font-size: 11px; color: var(--text); opacity: 0.75; text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 3px; }
+.pp-panel-item .val { font-size: 13.5px; color: var(--header); font-weight: 600; }
+.pp-empty-note { font-size: 13px; color: var(--text); line-height: 1.6; margin: 0; }
+
+@media (max-width: 991px) {
+    .pp-sidebar-toggle { display: flex; align-items: center; justify-content: center; }
+    .pp-sidebar { position: fixed; left: -260px; top: 0; z-index: 199; transition: left 0.2s ease; box-shadow: 0 0 40px rgba(0,0,0,0.2); }
+    .pp-sidebar.is-open { left: 0; }
+    .pp-topbar { padding-left: 66px; }
+    .pp-kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .pp-grid-2 { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+    .pp-kpi-grid { grid-template-columns: 1fr; }
+    .pp-panel-grid { grid-template-columns: 1fr; }
+    .pp-content { padding: 20px 16px 32px; }
+    .pp-topbar { padding: 14px 16px 14px 60px; }
 }

@@ -55,6 +55,19 @@ if ($purpose === 'register') {
     }
 }
 
+// password_reset purpose: only ever email a real, active partner account, but
+// always return the same generic success response either way — otherwise the
+// response itself would let an attacker enumerate which emails have accounts.
+if ($purpose === 'password_reset') {
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM b2b_partner_users WHERE email = ? AND status = 'Active'");
+    $stmt->execute([$email]);
+    if ((int) $stmt->fetchColumn() > 0) {
+        b2b_send_otp($pdo, $email, $purpose);
+    }
+    echo json_encode(['success' => true, 'message' => 'If an account exists for ' . $email . ', a reset code has been sent to it.']);
+    exit;
+}
+
 $sent = b2b_send_otp($pdo, $email, $purpose);
 
 if (!$sent) {
