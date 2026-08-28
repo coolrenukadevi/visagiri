@@ -29,7 +29,10 @@ $initials = strtoupper(substr((string) ($auth_user['name'] ?? 'U'), 0, 1));
     <a href="/" class="brand"><img src="<?= asset('images/paynancial-logo.png') ?>" alt="Paynancial" class="brand-logo"></a>
     <div class="role-badge"><?= e(dashboard_area_label($dashboard_area)) ?></div>
     <nav class="side-nav">
-      <?php foreach ($navItems as $item): ?>
+      <?php $lastGroup = null; foreach ($navItems as $item): ?>
+        <?php if (($item['group'] ?? null) !== $lastGroup): $lastGroup = $item['group'] ?? null; ?>
+          <?php if ($lastGroup): ?><div class="side-nav-group"><?= e($lastGroup) ?></div><?php endif; ?>
+        <?php endif; ?>
         <a href="/<?= e($dashboard_area) ?>/<?= e($item['page']) ?>" class="<?= $dashboard_page === $item['page'] ? 'is-active' : '' ?>">
           <span class="dot"></span><?= e($item['label']) ?>
         </a>

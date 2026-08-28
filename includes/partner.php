@@ -121,6 +121,33 @@ function partner_can(string $module, string $capability = 'view'): bool
 }
 
 /**
+ * Record a partner-side action to the shared audit_logs table (reused
+ * as the partner activity log — see partner_hub_schema.sql). $context
+ * is the array returned by current_partner_context(); the acting user's
+ * id is what current_user() resolves to, and the partner_id + role are
+ * folded into meta_json so activity stays attributable per partner org.
+ */
+function log_partner_activity(PDO $pdo, ?array $context, string $action, ?string $entityType = null, ?int $entityId = null, array $meta = []): void
+{
+    $user = current_user();
+    $meta['partner_id'] = $context['partner_id'] ?? null;
+    $meta['role_slug'] = $context['role_slug'] ?? null;
+
+    $stmt = $pdo->prepare(
+        'INSERT INTO audit_logs (user_id, action, entity_type, entity_id, ip_address, meta_json)
+         VALUES (:user_id, :action, :entity_type, :entity_id, :ip_address, :meta_json)'
+    );
+    $stmt->execute([
+        'user_id'     => $user['id'] ?? null,
+        'action'      => $action,
+        'entity_type' => $entityType,
+        'entity_id'   => $entityId,
+        'ip_address'  => $_SERVER['REMOTE_ADDR'] ?? null,
+        'meta_json'   => json_encode($meta, JSON_UNESCAPED_SLASHES),
+    ]);
+}
+
+/**
  * Rules-based solution recommendation engine.
  *
  * $attributes:

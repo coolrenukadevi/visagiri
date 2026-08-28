@@ -9,8 +9,8 @@ $sql = "SELECT e.employee_code, u.full_name, u.email, e.department, e.designatio
         FROM employees e JOIN users u ON u.id = e.user_id WHERE 1=1";
 $params = [];
 if ($search !== '') {
-    $sql .= ' AND (u.full_name LIKE :q OR e.employee_code LIKE :q OR e.department LIKE :q)';
-    $params['q'] = '%' . $search . '%';
+    $sql .= ' AND (u.full_name LIKE :q1 OR e.employee_code LIKE :q2 OR e.department LIKE :q3)';
+    $params['q1'] = $params['q2'] = $params['q3'] = '%' . $search . '%';
 }
 $sql .= ' ORDER BY e.created_at DESC LIMIT 100';
 $stmt = $pdo->prepare($sql);

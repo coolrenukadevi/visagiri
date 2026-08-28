@@ -9,7 +9,7 @@ $roleFilter = sanitize_input((string) ($_GET['role'] ?? ''));
 $sql = "SELECT u.uuid, u.full_name, u.email, u.mobile, u.status, u.last_login_at, r.slug AS role_slug, r.name AS role_name
         FROM users u JOIN roles r ON r.id = u.role_id WHERE 1=1";
 $params = [];
-if ($search !== '') { $sql .= ' AND (u.full_name LIKE :q OR u.email LIKE :q)'; $params['q'] = '%' . $search . '%'; }
+if ($search !== '') { $sql .= ' AND (u.full_name LIKE :q1 OR u.email LIKE :q2)'; $params['q1'] = $params['q2'] = '%' . $search . '%'; }
 if ($roleFilter !== '') { $sql .= ' AND r.slug = :role'; $params['role'] = $roleFilter; }
 $sql .= ' ORDER BY u.created_at DESC LIMIT 100';
 

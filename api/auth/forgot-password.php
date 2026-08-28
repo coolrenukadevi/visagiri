@@ -26,8 +26,8 @@ if ($identifier === '') {
 }
 
 $pdo = db();
-$stmt = $pdo->prepare('SELECT id, email, full_name FROM users WHERE email = :i OR mobile = :i LIMIT 1');
-$stmt->execute(['i' => $identifier]);
+$stmt = $pdo->prepare('SELECT id, email, full_name FROM users WHERE email = :i1 OR mobile = :i2 LIMIT 1');
+$stmt->execute(['i1' => $identifier, 'i2' => $identifier]);
 $user = $stmt->fetch();
 
 if ($user) {

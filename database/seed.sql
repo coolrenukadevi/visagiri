@@ -57,7 +57,7 @@ FROM permissions p WHERE p.slug IN ('customers.view','transactions.view','suppor
 INSERT INTO users (uuid, role_id, full_name, email, password_hash, status, email_verified_at)
 SELECT UUID(), (SELECT id FROM roles WHERE slug = 'super_admin'),
        'Paynancial Super Admin', 'superadmin@paynancial.com',
-       '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', -- ChangeMe@2026
+       '$2y$12$6rXmbOAyZwIYeoTX55RZ1Ot9X3eKzOEz3NLMaFpaOMZDlgXEwgx66', -- ChangeMe@2026
        'active', NOW()
 WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = 'superadmin@paynancial.com');
 

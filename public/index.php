@@ -23,6 +23,8 @@ if (($segments[0] ?? '') === 'api') {
         'api/auth/logout'           => __DIR__ . '/../api/auth/logout.php',
         'api/auth/forgot-password'  => __DIR__ . '/../api/auth/forgot-password.php',
         'api/contact/submit'        => __DIR__ . '/../api/contact/submit.php',
+        'api/partner/recommend'     => __DIR__ . '/../api/partner/recommend.php',
+        'api/partner/assistant'     => __DIR__ . '/../api/partner/assistant.php',
     ];
     $file = $apiRoutes[$path] ?? null;
     if ($file && is_file($file)) {
@@ -107,6 +109,23 @@ if (isset($dashboardAreas[$segments[0] ?? ''])) {
 }
 
 // ---------------------------------------------------------------------
+// Public payment link viewer: /pay/{ref}
+// ---------------------------------------------------------------------
+if (($segments[0] ?? '') === 'pay' && isset($segments[1])) {
+    $pay_ref = $segments[1];
+    ob_start();
+    include __DIR__ . '/../pages/pay.php';
+    $page_body = ob_get_clean();
+
+    include __DIR__ . '/../includes/site-head.php';
+    include __DIR__ . '/../includes/header.php';
+    echo '<main id="main-content">' . $page_body . '</main>';
+    include __DIR__ . '/../includes/footer.php';
+    include __DIR__ . '/../includes/site-foot.php';
+    exit;
+}
+
+// ---------------------------------------------------------------------
 // Legal pages: /legal/{slug}
 // ---------------------------------------------------------------------
 if (($segments[0] ?? '') === 'legal') {
@@ -142,6 +161,7 @@ $publicRoutes = [
     'blog'             => 'blog',
     'login'            => 'home',
     'forgot-password'  => 'forgot-password',
+    'reset-password'   => 'reset-password',
 ];
 
 $pageSlug = $publicRoutes[$path] ?? null;

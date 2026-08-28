@@ -80,16 +80,6 @@
     if (e.key === 'Escape' && loginPanel && loginPanel.classList.contains('is-open')) closeLoginPanel();
   });
 
-  (function () {
-    var params = new URLSearchParams(window.location.search);
-    var loginParam = params.get('login');
-    if (loginParam === 'required') {
-      openLoginPanel(null);
-    } else if (loginParam && ['customer', 'partner', 'employee', 'hr'].indexOf(loginParam) !== -1) {
-      openLoginPanel(loginParam);
-    }
-  })();
-
   /* Role tab switching */
   var roleTabs = document.querySelectorAll('.role-tab');
   function setActiveRole(role) {
@@ -101,6 +91,16 @@
   roleTabs.forEach(function (tab) {
     tab.addEventListener('click', function () { setActiveRole(tab.getAttribute('data-role')); });
   });
+
+  (function () {
+    var params = new URLSearchParams(window.location.search);
+    var loginParam = params.get('login');
+    if (loginParam === 'required') {
+      openLoginPanel(null);
+    } else if (loginParam && ['customer', 'partner', 'employee', 'hr'].indexOf(loginParam) !== -1) {
+      openLoginPanel(loginParam);
+    }
+  })();
 
   /* AJAX login submit */
   document.querySelectorAll('.login-form').forEach(function (form) {

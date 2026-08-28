@@ -1,11 +1,21 @@
 <?php
-/** Partner: settlements + commission tracking. */
-$page_meta = ['title' => 'Settlements | Paynancial Partner Portal', 'heading' => 'Settlements & Commission'];
+/** Partner Hub — Settlements: payout periods and their status. */
+$context = require_partner_context();
+$partnerId = $context['partner_id'];
+$page_meta = ['title' => 'Settlements | Paynancial Partner Hub', 'heading' => 'Settlements'];
 
 $pdo = db();
-$stmt = $pdo->prepare('SELECT id FROM partners WHERE user_id = :uid');
-$stmt->execute(['uid' => $auth_user['id']]);
-$partnerId = (int) ($stmt->fetchColumn() ?: 0);
+
+$kpiStmt = $pdo->prepare(
+    "SELECT
+       COALESCE(SUM(CASE WHEN status = 'settled' THEN net_amount ELSE 0 END), 0) AS total_settled,
+       COALESCE(SUM(CASE WHEN status IN ('pending','processing') THEN net_amount ELSE 0 END), 0) AS pending_amount,
+       COALESCE(SUM(CASE WHEN status = 'on_hold' THEN net_amount ELSE 0 END), 0) AS on_hold_amount,
+       MAX(CASE WHEN status = 'settled' THEN settled_at ELSE NULL END) AS last_settled_at
+     FROM settlements WHERE partner_id = :pid"
+);
+$kpiStmt->execute(['pid' => $partnerId]);
+$kpi = $kpiStmt->fetch();
 
 $settlements = $pdo->prepare(
     'SELECT settlement_ref, period_start, period_end, gross_amount, fee_amount, net_amount, status, settled_at
@@ -13,15 +23,16 @@ $settlements = $pdo->prepare(
 );
 $settlements->execute(['pid' => $partnerId]);
 $settlementRows = $settlements->fetchAll();
-
-$commissions = $pdo->prepare(
-    'SELECT amount, rate_applied, status, created_at FROM commissions WHERE partner_id = :pid ORDER BY created_at DESC LIMIT 50'
-);
-$commissions->execute(['pid' => $partnerId]);
-$commissionRows = $commissions->fetchAll();
 ?>
+<div class="stat-grid">
+  <div class="stat-card"><span class="label">Total Settled</span><strong class="value"><?= e(format_amount((float) $kpi['total_settled'])) ?></strong></div>
+  <div class="stat-card"><span class="label">Pending Settlement</span><strong class="value"><?= e(format_amount((float) $kpi['pending_amount'])) ?></strong></div>
+  <div class="stat-card"><span class="label">On Hold</span><strong class="value"><?= e(format_amount((float) $kpi['on_hold_amount'])) ?></strong></div>
+  <div class="stat-card"><span class="label">Last Settled</span><strong class="value" style="font-size:1.1rem;"><?= $kpi['last_settled_at'] ? e(date('d M Y', strtotime((string) $kpi['last_settled_at']))) : '—' ?></strong></div>
+</div>
+
 <div class="panel">
-  <div class="panel-head"><h2>Settlements</h2></div>
+  <div class="panel-head"><h2>Settlement History</h2></div>
   <div class="data-table-wrap">
     <table class="data-table">
       <thead><tr><th>Reference</th><th>Period</th><th>Gross</th><th>Fee</th><th>Net</th><th>Status</th></tr></thead>
@@ -30,33 +41,12 @@ $commissionRows = $commissions->fetchAll();
           <tr><td colspan="6"><div class="empty-state">No settlements recorded yet.</div></td></tr>
         <?php else: foreach ($settlementRows as $row): ?>
           <tr>
-            <td><?= e($row['settlement_ref']) ?></td>
-            <td><?= e($row['period_start']) ?> – <?= e($row['period_end']) ?></td>
+            <td class="mono"><?= e($row['settlement_ref']) ?></td>
+            <td><?= e(date('d M', strtotime((string) $row['period_start']))) ?> &ndash; <?= e(date('d M Y', strtotime((string) $row['period_end']))) ?></td>
             <td><?= e(format_amount((float) $row['gross_amount'])) ?></td>
             <td><?= e(format_amount((float) $row['fee_amount'])) ?></td>
             <td><?= e(format_amount((float) $row['net_amount'])) ?></td>
-            <td><span class="badge <?= $row['status'] === 'settled' ? 'success' : 'pending' ?>"><?= e(ucfirst($row['status'])) ?></span></td>
-          </tr>
-        <?php endforeach; endif; ?>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<div class="panel">
-  <div class="panel-head"><h2>Commission History</h2></div>
-  <div class="data-table-wrap">
-    <table class="data-table">
-      <thead><tr><th>Amount</th><th>Rate</th><th>Status</th><th>Date</th></tr></thead>
-      <tbody>
-        <?php if (empty($commissionRows)): ?>
-          <tr><td colspan="4"><div class="empty-state">No commission activity yet.</div></td></tr>
-        <?php else: foreach ($commissionRows as $row): ?>
-          <tr>
-            <td><?= e(format_amount((float) $row['amount'])) ?></td>
-            <td><?= e($row['rate_applied']) ?>%</td>
-            <td><span class="badge <?= $row['status'] === 'paid' ? 'success' : 'info' ?>"><?= e(ucfirst($row['status'])) ?></span></td>
-            <td><?= e(date('d M Y', strtotime((string) $row['created_at']))) ?></td>
+            <td><span class="badge <?= $row['status'] === 'settled' ? 'success' : ($row['status'] === 'on_hold' ? 'failed' : 'pending') ?>"><?= e(ucfirst(str_replace('_', ' ', $row['status']))) ?></span></td>
           </tr>
         <?php endforeach; endif; ?>
       </tbody>
