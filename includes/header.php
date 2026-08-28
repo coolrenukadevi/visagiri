@@ -201,7 +201,7 @@ foreach ([
                     </button>
                     <ul class="dropdown-menu site-header__login-menu" id="login-menu" aria-labelledby="login-menu-trigger">
                         <li><a href="/login/">Customer Login</a></li>
-                        <li><a href="/hrms/login/">Employee Login</a></li>
+                        <li><a href="/admin/login/">Employee Login</a></li>
                         <li><a href="/partner/login/">B2B Partner Login</a></li>
                     </ul>
                 </div>
@@ -576,7 +576,7 @@ foreach ([
             <div class="site-header__mobile-login">
                 <span class="site-header__mobile-subheading">Login</span>
                 <a href="/login/">Customer Login</a>
-                <a href="/hrms/login/">Employee Login</a>
+                <a href="/admin/login/">Employee Login</a>
                 <a href="/partner/login/">B2B Partner Login</a>
             </div>
         </div>
