@@ -82,7 +82,7 @@ ON DUPLICATE KEY UPDATE title = VALUES(title);
 INSERT INTO settings (setting_key, setting_value) VALUES
   ('company_legal_name', 'Paynancial Technology Pvt. Ltd.'),
   ('company_cin', 'U66190BR2024PTC067929'),
-  ('support_email', 'hello@paynancial.in'),
+  ('support_email', 'hello@paynancial.com'),
   ('support_mobile', '+91 7066 820 820'),
   ('support_phone', '+91 612 2999 382'),
   ('pricing_mode', 'talk_to_sales')

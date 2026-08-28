@@ -30,6 +30,7 @@
         <h4>Company</h4>
         <ul>
           <li><a href="/about">About</a></li>
+          <li><a href="/leadership">Leadership</a></li>
           <li><a href="/careers">Careers</a></li>
           <li><a href="/partners">Partners</a></li>
           <li><a href="/contact">Contact</a></li>
@@ -56,9 +57,20 @@
         </ul>
       </div>
     </div>
+  </div>
 
+  <div class="footer-registry">
+    <div class="container">
+      <div class="footer-reg-row"><span>Legal Name</span><span>M/S Paynancial Technology Private Limited</span></div>
+      <div class="footer-reg-row"><span>Email</span><a href="mailto:hello@paynancial.com">hello@paynancial.com</a></div>
+      <div class="footer-reg-row"><span>GST No.</span><span class="mono">10AAOCP5173C1ZO</span></div>
+      <div class="footer-reg-row"><span>CIN</span><span class="mono">U66190BR2024PTC067929</span></div>
+    </div>
+  </div>
+
+  <div class="container">
     <div class="footer-bottom">
-      <span>&copy; <?= date('Y') ?> Paynancial Technology Pvt. Ltd. All Rights Reserved. CIN: U66190BR2024PTC067929</span>
+      <span>&copy; <?= date('Y') ?> Paynancial Technology Pvt. Ltd. All Rights Reserved.</span>
       <ul>
         <li><a href="/legal/privacy-policy">Privacy Policy</a></li>
         <li><a href="/legal/terms-conditions">Terms &amp; Conditions</a></li>

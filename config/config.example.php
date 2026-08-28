@@ -42,7 +42,7 @@ define('APP_SECRET', 'replace-with-a-64-character-random-hex-string');
 // ---------------------------------------------------------------------
 define('MAIL_FROM_ADDRESS', 'no-reply@paynancial.com');
 define('MAIL_FROM_NAME', 'Paynancial');
-define('MAIL_SALES_TO', 'hello@paynancial.in');
+define('MAIL_SALES_TO', 'hello@paynancial.com');
 
 // ---------------------------------------------------------------------
 // Uploads

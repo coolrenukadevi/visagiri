@@ -53,7 +53,7 @@ $page_meta = [
     <div class="section-head reveal">
       <span class="eyebrow">Report an Issue</span>
       <h2>Found a security concern?</h2>
-      <p>Email <a href="mailto:hello@paynancial.in">hello@paynancial.in</a> with details and our team will respond promptly.</p>
+      <p>Email <a href="mailto:hello@paynancial.com">hello@paynancial.com</a> with details and our team will respond promptly.</p>
     </div>
   </div>
 </section>

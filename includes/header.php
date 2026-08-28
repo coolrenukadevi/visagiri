@@ -93,7 +93,7 @@ $current_path = $current_path ?? ($_SERVER['REQUEST_URI'] ?? '/');
             <div>
               <div class="mega-col-title">About</div>
               <a class="mega-link" href="/about"><strong>About Paynancial</strong><span>Our mission &amp; story</span></a>
-              <a class="mega-link" href="/about#leadership"><strong>Leadership</strong><span>The team steering Paynancial</span></a>
+              <a class="mega-link" href="/leadership"><strong>Leadership</strong><span>The team steering Paynancial</span></a>
               <a class="mega-link" href="/careers"><strong>Careers</strong><span>Build the future of payments with us</span></a>
             </div>
             <div>
@@ -113,6 +113,17 @@ $current_path = $current_path ?? ($_SERVER['REQUEST_URI'] ?? '/');
     </div>
   </div>
 </header>
+
+<div class="tape" aria-hidden="true">
+  <div class="tape-track">
+    <?php
+      $tape_items = ["INITIATE → VERIFY → <strong>SETTLE</strong>", "BUILT FOR SPEED", "MADE IN INDIA", "AGENT-READY APIS", "INITIATE → VERIFY → <strong>SETTLE</strong>", "BUILT FOR SPEED", "MADE IN INDIA", "AGENT-READY APIS"];
+      foreach ($tape_items as $tape_item) {
+          echo '<span class="tape-item">' . $tape_item . '</span>';
+      }
+    ?>
+  </div>
+</div>
 
 <div class="mobile-nav" aria-hidden="true">
   <div class="mobile-nav-header">
@@ -168,6 +179,7 @@ $current_path = $current_path ?? ($_SERVER['REQUEST_URI'] ?? '/');
     <summary>Company <i class="chev" aria-hidden="true"></i></summary>
     <ul>
       <li><a href="/about">About Paynancial</a></li>
+      <li><a href="/leadership">Leadership</a></li>
       <li><a href="/careers">Careers</a></li>
       <li><a href="/contact">Contact Us</a></li>
       <li><a href="/partners">Partners</a></li>

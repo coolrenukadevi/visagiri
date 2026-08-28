@@ -5,59 +5,103 @@ $page_meta = [
     'schema' => organization_schema(),
 ];
 ?>
-<section style="padding-top:56px;">
+<section class="hero" style="padding-top:72px;">
   <div class="container">
-    <div class="section-head reveal">
+    <div class="hero-copy reveal">
       <span class="eyebrow">About Paynancial</span>
-      <h1>Payment technology built for how businesses actually work.</h1>
+      <h1>We build the plumbing that lets money move without friction.</h1>
       <p class="lead">Paynancial Technology Pvt. Ltd. is a technology-first FinTech company building secure, intelligent infrastructure that helps businesses accept, manage and understand their payments.</p>
     </div>
   </div>
 </section>
 
-<section class="section-subtle">
-  <div class="container grid grid-2">
-    <div class="reveal">
-      <h2>Our Mission</h2>
-      <p class="text-muted" style="margin-top:14px;">To make payment infrastructure simple, secure and accessible — so businesses of every size can focus on growth instead of transaction plumbing.</p>
-    </div>
-    <div class="reveal">
-      <h2>How We Work</h2>
-      <p class="text-muted" style="margin-top:14px;">We combine modern engineering practices with a security-first mindset, building products that are reliable at scale and straightforward to integrate.</p>
-    </div>
-  </div>
-</section>
-
-<section id="leadership" aria-labelledby="leadership-heading">
+<section>
   <div class="container">
     <div class="section-head reveal">
-      <span class="eyebrow">Leadership</span>
-      <h2 id="leadership-heading">Our Team</h2>
-      <p>Leadership profiles will appear here as they are published by Paynancial's communications team.</p>
+      <span class="eyebrow">Our Story</span>
+      <h2>Why we exist</h2>
     </div>
-    <div class="module-stub reveal">
-      <strong>Leadership profiles — coming soon</strong>
-      Configurable from the admin CMS once verified bios and photos are supplied.
+    <div class="story">
+      <p class="story-lead reveal">Payment processing has historically forced businesses to choose between security, speed and simplicity. We built Paynancial to remove that trade-off.</p>
+      <div class="reveal">
+        <p>Paynancial was founded to give businesses a payment gateway that treats security and usability as the same problem, not competing priorities — robust processing, encrypted by default, without the integration friction that slows teams down.</p>
+        <p>Today that means a platform that spans collecting payments, moving payouts, tracking settlements and understanding transaction data end to end — built by a team that treats reliability and data protection as the baseline, not a premium feature.</p>
+      </div>
     </div>
   </div>
 </section>
 
 <section class="section-subtle">
-  <div class="container grid grid-3">
-    <div class="card reveal"><h3>Company</h3><p>Paynancial Technology Pvt. Ltd.</p></div>
-    <div class="card reveal"><h3>CIN</h3><p>U66190BR2024PTC067929</p></div>
-    <div class="card reveal"><h3>Contact</h3><p>hello@paynancial.in</p></div>
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">What We Do</span>
+      <h2>Services</h2>
+    </div>
+    <div class="services reveal">
+      <div class="service">
+        <span class="mono">01 · PAYMENTS</span>
+        <h3>Payment Gateway &amp; Collection</h3>
+        <p>Accept cards, UPI, netbanking and wallets through a single integration, with payment links and pages for teams that need to collect without building a checkout.</p>
+      </div>
+      <div class="service">
+        <span class="mono">02 · INFRASTRUCTURE</span>
+        <h3>Payouts &amp; Analytics</h3>
+        <p>Move money out to vendors and partners, and see every transaction, settlement and refund in one dashboard with real-time reporting.</p>
+      </div>
+      <div class="service">
+        <span class="mono">03 · SUPPORT</span>
+        <h3>Dedicated Support</h3>
+        <p>A support team that stays with you from integration through go-live and beyond — because a payment gateway is only as good as the help behind it.</p>
+      </div>
+    </div>
   </div>
 </section>
 
 <section>
   <div class="container">
-    <div class="cta-band reveal">
-      <h2>Want to know more about Paynancial?</h2>
-      <div class="hero-actions" style="justify-content:center;margin-top:24px;">
+    <div class="section-head reveal">
+      <span class="eyebrow">How We Work</span>
+      <h2>Principles</h2>
+    </div>
+    <div class="ledger reveal">
+      <div class="ledger-row">
+        <span class="ledger-tag">Clarity</span>
+        <h3>No hidden fine print</h3>
+        <p>Transaction status, fees and settlement timing are visible in the dashboard, not buried in a statement at month's end.</p>
+      </div>
+      <div class="ledger-row">
+        <span class="ledger-tag">Speed</span>
+        <h3>Built to move fast</h3>
+        <p>Real-time processing and status updates, so businesses and their customers aren't left waiting on a payment to confirm.</p>
+      </div>
+      <div class="ledger-row">
+        <span class="ledger-tag">Trust</span>
+        <h3>Security first</h3>
+        <p>Encryption, access control and monitoring are part of how the platform is built, not something bolted on after launch.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="leadership-heading">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Leadership</span>
+      <h2 id="leadership-heading">The people accountable for how Paynancial is run</h2>
+      <p><a href="/leadership" class="card-link">Meet the leadership team →</a></p>
+    </div>
+  </div>
+</section>
+
+<div class="registry-strip cta-only">
+  <div class="container">
+    <div class="reveal">
+      <h2>Get in touch</h2>
+      <p>Questions about our products, partnerships, or anything else — reach out and someone from the team will get back to you.</p>
+      <div class="hero-actions" style="margin-top:24px;">
         <a href="/contact" class="btn btn-primary">Contact Us</a>
         <a href="/careers" class="btn btn-outline">View Careers</a>
       </div>
     </div>
   </div>
-</section>
+</div>

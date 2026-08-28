@@ -7,7 +7,7 @@ $faqs = [
     ['How do I get started with Paynancial?', 'Reach out through our contact form or create an account, and our team will guide you through onboarding and KYC.'],
     ['Which payment methods are supported?', 'Cards, UPI, netbanking and wallets are supported through the Payment Gateway product.'],
     ['How do refunds work?', 'Refunds can be initiated from your dashboard and are tracked through to settlement.'],
-    ['How do I report a security concern?', 'Email hello@paynancial.in with details and our team will respond promptly.'],
+    ['How do I report a security concern?', 'Email hello@paynancial.com with details and our team will respond promptly.'],
     ['How can partners track commission?', 'Commission and settlement tracking are available in the Partner Portal.'],
 ];
 ?>

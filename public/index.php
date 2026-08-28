@@ -99,6 +99,7 @@ if (($segments[0] ?? '') === 'legal') {
 $publicRoutes = [
     ''                 => 'home',
     'about'            => 'about',
+    'leadership'       => 'leadership',
     'solutions'        => 'solutions',
     'products'         => 'products',
     'pricing'          => 'pricing',

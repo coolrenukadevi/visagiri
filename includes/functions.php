@@ -82,7 +82,7 @@ function organization_schema(): array
         'legalName'=> 'Paynancial Technology Pvt. Ltd.',
         'url'      => APP_URL,
         'logo'     => site_url('/assets/images/paynancial-icon.png'),
-        'email'    => 'hello@paynancial.in',
+        'email'    => 'hello@paynancial.com',
     ];
 }
 

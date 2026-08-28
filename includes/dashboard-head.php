@@ -19,7 +19,7 @@ $initials = strtoupper(substr((string) ($auth_user['name'] ?? 'U'), 0, 1));
 <link rel="icon" type="image/png" href="<?= asset('images/paynancial-icon.png') ?>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,340;9..144,460;9..144,560&family=Inter:wght@400;500;600;650;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="<?= asset('css/main.css') ?>">
 <link rel="stylesheet" href="<?= asset('css/dashboard.css') ?>">
 </head>

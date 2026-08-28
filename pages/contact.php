@@ -51,7 +51,7 @@ $activeIntent = $intentMap[$intent] ?? 'general';
 
 <section>
   <div class="container grid grid-3">
-    <div class="card reveal"><h3>Email</h3><p><a href="mailto:hello@paynancial.in">hello@paynancial.in</a></p></div>
+    <div class="card reveal"><h3>Email</h3><p><a href="mailto:hello@paynancial.com">hello@paynancial.com</a></p></div>
     <div class="card reveal"><h3>Mobile</h3><p><a href="tel:+917066820820">+91 7066 820 820</a></p></div>
     <div class="card reveal"><h3>Phone</h3><p><a href="tel:+916122999382">+91 612 2999 382</a></p></div>
   </div>
