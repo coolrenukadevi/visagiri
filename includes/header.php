@@ -9,8 +9,7 @@ $current_path = $current_path ?? ($_SERVER['REQUEST_URI'] ?? '/');
 <header class="site-header">
   <div class="container">
     <a href="/" class="brand" aria-label="Paynancial home">
-      <span class="brand-mark" aria-hidden="true">P</span>
-      <span>PAYNANCIAL<small>TECHNOLOGY PVT. LTD.</small></span>
+      <img src="<?= asset('images/paynancial-logo.png') ?>" alt="Paynancial" class="brand-logo">
     </a>
 
     <nav aria-label="Primary">
@@ -117,7 +116,7 @@ $current_path = $current_path ?? ($_SERVER['REQUEST_URI'] ?? '/');
 
 <div class="mobile-nav" aria-hidden="true">
   <div class="mobile-nav-header">
-    <span class="brand"><span class="brand-mark">P</span> PAYNANCIAL</span>
+    <span class="brand"><img src="<?= asset('images/paynancial-logo.png') ?>" alt="Paynancial" class="brand-logo"></span>
     <button class="login-close mobile-nav-close" aria-label="Close menu">&times;</button>
   </div>
   <details>

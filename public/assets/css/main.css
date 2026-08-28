@@ -4,17 +4,17 @@
    ===================================================================== */
 
 :root {
-  /* Brand */
-  --teal-50:  #eafbfb;
-  --teal-100: #cdf3f2;
-  --teal-300: #6fd6d4;
-  --teal-500: #00a6a6;
-  --teal-600: #018e8e;
-  --teal-700: #017272;
-  --teal-900: #063c3c;
+  /* Brand — sampled directly from the Paynancial logo file */
+  --teal-50:  #eafbfa;
+  --teal-100: #cdf2ef;
+  --teal-300: #6dd5cd;
+  --teal-500: #00a69d;
+  --teal-600: #00928a;
+  --teal-700: #007771;
+  --teal-900: #003f3b;
 
-  --orange-500: #ff5a00;
-  --orange-600: #e04e00;
+  --orange-500: #ff5500;
+  --orange-600: #e04a00;
   --orange-50:  #fff1e8;
 
   --navy-900: #0a121f;
@@ -142,13 +142,8 @@ h3, .h3 { font-size: 1.4rem; font-weight: 650; letter-spacing: -0.01em; }
 }
 .site-header .container { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 
-.brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.2rem; color: var(--navy-900); }
-.brand-mark {
-  width: 38px; height: 38px; border-radius: 10px; background: var(--accent);
-  color: var(--white); display: flex; align-items: center; justify-content: center;
-  font-weight: 800; font-size: 1.05rem; flex-shrink: 0;
-}
-.brand small { display: block; font-size: 0.62rem; font-weight: 600; letter-spacing: 0.1em; color: var(--text-muted); }
+.brand { display: flex; align-items: center; }
+.brand-logo { height: 32px; width: auto; display: block; }
 
 .main-nav { display: none; }
 @media (min-width: 1080px) { .main-nav { display: flex; align-items: center; gap: 4px; } }

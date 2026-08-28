@@ -2,7 +2,7 @@
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <a href="/" class="brand" style="color:var(--white)"><span class="brand-mark">P</span> PAYNANCIAL</a>
+        <a href="/" class="brand"><img src="<?= asset('images/paynancial-logo.png') ?>" alt="Paynancial" class="brand-logo"></a>
         <p>Smart Solutions. Simplified Payments.</p>
       </div>
       <div>

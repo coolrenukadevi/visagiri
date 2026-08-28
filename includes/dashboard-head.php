@@ -26,7 +26,7 @@ $initials = strtoupper(substr((string) ($auth_user['name'] ?? 'U'), 0, 1));
 <body>
 <div class="app-shell">
   <aside class="app-sidebar">
-    <a href="/" class="brand"><span class="brand-mark">P</span> PAYNANCIAL</a>
+    <a href="/" class="brand"><img src="<?= asset('images/paynancial-logo.png') ?>" alt="Paynancial" class="brand-logo"></a>
     <div class="role-badge"><?= e(dashboard_area_label($dashboard_area)) ?></div>
     <nav class="side-nav">
       <?php foreach ($navItems as $item): ?>
