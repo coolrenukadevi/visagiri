@@ -107,19 +107,36 @@
 
 /* ---- Unified topbar layout: brand tagline (left) — currency ticker
    (center) — support + login (right). Shared by both header variants
-   via header-topbar.php. ---- */
+   via header-topbar.php.
+   Compact pass: shorter bar (tighter padding/min-height replacing the
+   base theme's 10px-0 wrapper padding and this file's own old 44px) and
+   narrower content width (the homepage variant's .header-top-section-2
+   .container-fluid ran up to 100px of horizontal padding at very wide
+   screens — normalized here to the same, more moderate scale the
+   non-homepage variant already used, so both look consistently tight
+   rather than one ballooning outward on large displays). ---- */
 .header-top-wrapper-unified {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
+    gap: 12px;
     flex-wrap: wrap;
-    min-height: 44px;
+    min-height: 34px;
+    padding: 7px 0 !important;
+}
+.header-top-section-2 .container-fluid {
+    padding: 0 40px !important;
+}
+@media (max-width: 1399px) {
+    .header-top-section-2 .container-fluid { padding: 0 30px !important; }
+}
+@media (max-width: 575px) {
+    .header-top-section-2 .container-fluid { padding: 0 15px !important; }
 }
 
 /* ---- Brand tagline: left end of the topbar ---- */
 .header-topbar-tagline {
-    font-size: 12.5px;
+    font-size: 12px;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.88);
     letter-spacing: 0.01em;
@@ -133,8 +150,8 @@
 .header-fx-widget {
     display: flex;
     align-items: center;
-    gap: 7px;
-    font-size: 12.5px;
+    gap: 6px;
+    font-size: 12px;
     color: rgba(255, 255, 255, 0.9);
 }
 .header-fx-widget .fx-pair {
@@ -228,22 +245,22 @@
 .header-support-login {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 2px;
 }
 .header-support-link {
     display: inline-flex;
     align-items: center;
-    gap: 7px;
+    gap: 6px;
     color: rgba(255, 255, 255, 0.92) !important;
-    font-size: 13px;
+    font-size: 12.5px;
     font-weight: 600;
-    padding: 6px 12px;
+    padding: 5px 10px;
     border-radius: 100px;
     transition: background 0.2s ease, color 0.2s ease;
 }
 .header-support-link i {
     color: #3DDC7A;
-    font-size: 14px;
+    font-size: 13px;
 }
 .header-support-link:hover {
     background: rgba(255, 255, 255, 0.12);
@@ -251,10 +268,10 @@
 }
 .header-topbar-divider {
     width: 1px;
-    height: 14px;
+    height: 12px;
     background: rgba(255, 255, 255, 0.25);
     display: inline-block;
-    margin: 0 2px;
+    margin: 0 1px;
 }
 .header-login-dropdown {
     position: relative;
@@ -262,13 +279,13 @@
 .header-login-toggle {
     display: inline-flex;
     align-items: center;
-    gap: 7px;
+    gap: 6px;
     border: none;
     background: none;
     color: rgba(255, 255, 255, 0.92);
-    font-size: 13px;
+    font-size: 12.5px;
     font-weight: 600;
-    padding: 6px 12px;
+    padding: 5px 10px;
     border-radius: 100px;
     cursor: pointer;
     transition: background 0.2s ease, color 0.2s ease;
@@ -339,25 +356,6 @@
     color: var(--theme) !important;
 }
 
-/* ---- Topbar "Enquire Now" CTA: opens the same Quick Enquiry dialogue
-   as the header's Get Assistance button ---- */
-.header-enquire-btn {
-    display: inline-flex;
-    align-items: center;
-    color: var(--header) !important;
-    background: var(--gold, #F0A93E);
-    font-size: 12.5px;
-    font-weight: 700;
-    padding: 6px 16px;
-    border-radius: 100px;
-    margin-left: 6px;
-    transition: background 0.2s ease, transform 0.15s ease;
-}
-.header-enquire-btn:hover {
-    background: var(--white);
-    color: var(--theme) !important;
-    transform: translateY(-1px);
-}
 
 @media (min-width: 1200px) {
     .header__hamburger {
@@ -370,21 +368,19 @@
 @media (max-width: 767px) {
     .header-top-wrapper-unified {
         justify-content: space-between;
-        gap: 10px;
-        min-height: 40px;
+        gap: 8px;
+        min-height: 30px;
     }
-    .header-fx-widget { font-size: 11.5px; gap: 5px; }
+    .header-fx-widget { font-size: 11px; gap: 4px; }
     .header-fx-widget .fx-pair { display: none; }
     .fx-live-label { display: none; }
     .header-support-link span { display: none; }
-    .header-support-link { padding: 6px 8px; }
-    .header-enquire-btn { padding: 6px 12px; font-size: 11.5px; }
+    .header-support-link { padding: 5px 7px; }
 }
 @media (max-width: 400px) {
     .header-topbar-divider { display: none; }
     .header-login-toggle span { display: none; }
     .header-login-panel { right: -8px; }
-    .header-enquire-btn { display: none; }
 }
 
 /* ---- Main header: refined shadow + sticky-scroll polish ---- */
