@@ -49,7 +49,11 @@ $headerWhatsappMsg = rawurlencode('Hello VisaAgency.in, I need assistance with m
         <div class="header-login-panel" id="headerLoginPanel" role="menu" aria-label="Login options">
             <a href="customer-login" role="menuitem"><i class="fa-solid fa-user" aria-hidden="true"></i> Customer Login</a>
             <a href="employee-login" role="menuitem"><i class="fa-solid fa-briefcase" aria-hidden="true"></i> Employee Login</a>
+            <?php if (!empty($b2bPartnerLoggedIn)): ?>
+            <a href="b2b-dashboard" role="menuitem"><i class="fa-solid fa-handshake" aria-hidden="true"></i> Partner Dashboard</a>
+            <?php else: ?>
             <a href="b2b-partners" role="menuitem"><i class="fa-solid fa-handshake" aria-hidden="true"></i> B2B Partners</a>
+            <?php endif; ?>
         </div>
     </div>
     <a href="contact" class="header-enquire-btn" data-open-quick-enquiry>Enquire Now</a>
