@@ -181,30 +181,35 @@ foreach ([
 <header class="site-header" id="site-header">
     <div class="site-header__utility">
         <div class="container site-header__utility-bar">
-            <span class="site-header__tagline">Technology Meets Travel &amp; Visa</span>
-            <div class="site-header__utility-contact">
+            <div class="site-header__rate-widget has-dropdown">
                 <?php if ($usdInrRate['rate'] !== null): ?>
-                <span class="site-header__rate" id="site-header-rate" data-rate-value="<?= e(number_format($usdInrRate['rate'], 2)) ?>" data-rate-stale="<?= $usdInrRate['stale'] ? '1' : '0' ?>">
-                    <strong>USD &rarr; INR &#8377;<span id="site-header-rate-value"><?= e(number_format($usdInrRate['rate'], 2)) ?></span></strong>
-                    <span class="site-header__rate-label" id="site-header-rate-label"><?= $usdInrRate['stale'] ? 'Last known rate' : 'Indicative Rate' ?></span>
-                </span>
+                <button type="button" class="site-header__rate-trigger" id="rate-menu-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="rate-menu">
+                    <span class="site-header__rate" id="site-header-rate" data-rate-value="<?= e(number_format($usdInrRate['rate'], 2)) ?>" data-rate-stale="<?= $usdInrRate['stale'] ? '1' : '0' ?>">
+                        <strong>USD &rarr; INR &#8377;<span id="site-header-rate-value"><?= e(number_format($usdInrRate['rate'], 2)) ?></span></strong>
+                        <span class="site-header__rate-label" id="site-header-rate-label"><?= $usdInrRate['stale'] ? 'Last known rate' : 'Indicative Rate' ?></span>
+                    </span>
+                </button>
+                <div class="dropdown-menu site-header__rate-menu" id="rate-menu" role="group" aria-labelledby="rate-menu-trigger">
+                    <p class="site-header__rate-menu-title">USD &rarr; INR</p>
+                    <p class="site-header__rate-menu-value">$1 = &#8377;<span id="rate-menu-value"><?= e(number_format($usdInrRate['rate'], 2)) ?></span></p>
+                    <p class="site-header__rate-menu-meta">Indicative exchange rate</p>
+                    <p class="site-header__rate-menu-meta">Last updated: <span id="rate-menu-updated"><?= $usdInrRate['as_of'] ? e(date('d M Y, h:i A', $usdInrRate['as_of'])) : 'Unavailable' ?></span></p>
+                    <p class="site-header__rate-menu-disclaimer">Rates may vary from actual bank/provider rates.</p>
+                    <a href="/contact/?topic=forex" class="btn btn-sm btn-primary site-header__rate-menu-cta">Get Forex Assistance</a>
+                </div>
                 <?php else: ?>
                 <span class="site-header__rate site-header__rate--unavailable">Rate unavailable</span>
                 <?php endif; ?>
-                <a href="<?= e(whatsapp_enquiry_href('Hello Visagiri, I would like assistance with my travel/visa-related enquiry.')) ?>" class="site-header__utility-link" target="_blank" rel="noopener noreferrer">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 20z"/><path d="M16.7 13.9c-.3-.1-1.6-.8-1.8-.9-.2-.1-.4-.1-.6.1-.2.3-.7.9-.8 1-.2.2-.3.2-.5.1-.3-.1-1.2-.4-2.2-1.4-.8-.7-1.4-1.6-1.5-1.9-.2-.3 0-.4.1-.6l.4-.4c.1-.1.2-.3.2-.4.1-.2 0-.3 0-.5-.1-.1-.6-1.5-.8-2-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.1 0 1.2.9 2.4 1 2.6.1.2 1.8 2.8 4.4 3.8.6.3 1.1.4 1.5.5.6.2 1.2.2 1.6.1.5-.1 1.6-.6 1.8-1.3.2-.6.2-1.1.1-1.3 0-.1-.2-.2-.5-.3z"/></svg>
-                    24&times;7 Support
-                </a>
-                <div class="site-header__login has-dropdown">
-                    <button type="button" class="site-header__login-trigger site-header__utility-link" id="login-menu-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="login-menu">
-                        Login <?= nav_chevron_icon() ?>
-                    </button>
-                    <ul class="dropdown-menu site-header__login-menu" id="login-menu" aria-labelledby="login-menu-trigger">
-                        <li><a href="/login/">Customer Login</a></li>
-                        <li><a href="/admin/login/">Employee Login</a></li>
-                        <li><a href="/partner/login/">B2B Partner Login</a></li>
-                    </ul>
-                </div>
+            </div>
+            <div class="site-header__login has-dropdown">
+                <button type="button" class="site-header__login-trigger site-header__utility-link" id="login-menu-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="login-menu">
+                    Login <?= nav_chevron_icon() ?>
+                </button>
+                <ul class="dropdown-menu site-header__login-menu" id="login-menu" aria-labelledby="login-menu-trigger">
+                    <li><a href="/login/">Customer Login</a></li>
+                    <li><a href="/admin/login/">Employee Login</a></li>
+                    <li><a href="/partner/login/">B2B Partner Login</a></li>
+                </ul>
             </div>
         </div>
     </div>

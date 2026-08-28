@@ -13,10 +13,22 @@ declare(strict_types=1);
 
 require __DIR__ . '/../includes/google-sheets.php';
 
+// The header utility bar's "Get Forex Assistance" popover CTA links
+// here with ?topic=forex — reusing this existing general-enquiry
+// pipeline rather than standing up a separate forex landing page,
+// same "check before building" discipline as the rest of this
+// project. service_type is a free-text column (schema-crm.sql), so
+// tagging it 'forex' here is a real, queryable distinction for staff,
+// not just cosmetic prefill text.
+$isForexTopic = trim((string) ($_GET['topic'] ?? $_POST['topic'] ?? '')) === 'forex';
+
 $submitted = false;
 $success = false;
 $errors = [];
-$values = ['name' => '', 'email' => '', 'phone' => '', 'destination' => '', 'message' => ''];
+$values = [
+    'name' => '', 'email' => '', 'phone' => '', 'destination' => '',
+    'message' => $isForexTopic ? 'I saw the indicative USD to INR rate on your website and would like help with a forex/currency exchange requirement.' : '',
+];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_require();
@@ -63,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     );
                     $stmt->execute([
                         'ref' => $referenceNumber,
-                        'service_type' => 'general',
+                        'service_type' => $isForexTopic ? 'forex' : 'general',
                         'name' => $values['name'],
                         'email' => $values['email'],
                         'phone' => $values['phone'] !== '' ? $values['phone'] : null,
@@ -103,17 +115,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$pageTitle = 'Contact Us - Visagiri';
-$pageDescription = "Get in touch with Visagiri for visa consultancy and document attestation assistance — enquiry form, WhatsApp, call, or email.";
+$pageTitle = $isForexTopic ? 'Get Forex Assistance - Visagiri' : 'Contact Us - Visagiri';
+$pageDescription = $isForexTopic
+    ? 'Get in touch with Visagiri for forex and currency exchange assistance.'
+    : "Get in touch with Visagiri for visa consultancy and document attestation assistance — enquiry form, WhatsApp, call, or email.";
 $canonicalUrl = APP_URL . '/contact/';
 require __DIR__ . '/../includes/header.php';
 ?>
 <section class="section" style="padding-top:var(--space-8)">
     <div class="container" style="max-width:640px">
         <div class="section-heading" style="text-align:left;margin-left:0;max-width:none">
-            <span class="section-eyebrow">Get In Touch</span>
+            <span class="section-eyebrow"><?= $isForexTopic ? 'Forex Assistance' : 'Get In Touch' ?></span>
             <h1>Contact Us</h1>
-            <p>Tell us about your visa or document attestation needs and our team will get back to you.</p>
+            <p><?= $isForexTopic
+                ? 'Tell us about your forex or currency exchange requirement and our team will get back to you.'
+                : 'Tell us about your visa or document attestation needs and our team will get back to you.' ?></p>
         </div>
 
         <?php if ($submitted && $success): ?>
@@ -136,6 +152,7 @@ require __DIR__ . '/../includes/header.php';
         <div class="card">
             <form method="post" action="/contact/" novalidate>
                 <?= csrf_field() ?>
+                <?php if ($isForexTopic): ?><input type="hidden" name="topic" value="forex"><?php endif; ?>
                 <div class="form-group" style="position:absolute;left:-9999px" aria-hidden="true">
                     <label for="website">Leave this field blank</label>
                     <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">

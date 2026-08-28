@@ -144,39 +144,61 @@
     });
   }
 
-  // Login dropdown (Customer / Employee / B2B Partner). A <button>
-  // trigger rather than a link, so unlike the plain-link dropdowns
-  // elsewhere it needs real click handling — hover/:focus-within alone
-  // covers desktop mouse and keyboard-tab, but touch devices have
-  // neither. Deliberately its own small handler rather than reusing
-  // initMegaMenu(): that function locates its wrapper via
+  // Small right-aligned <button>-triggered dropdowns (Login; the rate
+  // widget below). Deliberately their own small handler rather than
+  // reusing initMegaMenu(): that function locates its wrapper via
   // .closest('.has-mega-menu'), which carries mega-panel-specific CSS
-  // (position: static on the wrapper) this simple right-aligned
-  // dropdown doesn't want.
-  var loginTrigger = document.getElementById('login-menu-trigger');
-  var loginMenu = document.getElementById('login-menu');
-  if (loginTrigger && loginMenu) {
-    var loginWrap = loginTrigger.parentElement;
-    var setLoginOpen = function (open) {
-      loginMenu.classList.toggle('is-open', open);
-      loginTrigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+  // (position: static on the wrapper) these simple dropdowns don't
+  // want. Click handling is still needed (not just hover/:focus-within)
+  // for touch devices, which have neither.
+  var initSimpleDropdown = function (triggerId, menuId) {
+    var trigger = document.getElementById(triggerId);
+    var menu = document.getElementById(menuId);
+    if (!trigger || !menu) {
+      return;
+    }
+    var wrap = trigger.parentElement;
+    var setOpen = function (open) {
+      menu.classList.toggle('is-open', open);
+      trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
     };
-    loginTrigger.addEventListener('click', function (event) {
+    trigger.addEventListener('click', function (event) {
       event.stopPropagation();
-      setLoginOpen(!loginMenu.classList.contains('is-open'));
+      setOpen(!menu.classList.contains('is-open'));
     });
     document.addEventListener('click', function (event) {
-      if (loginMenu.classList.contains('is-open') && !loginWrap.contains(event.target)) {
-        setLoginOpen(false);
+      if (menu.classList.contains('is-open') && !wrap.contains(event.target)) {
+        setOpen(false);
       }
     });
     document.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape' && loginMenu.classList.contains('is-open')) {
-        setLoginOpen(false);
-        loginTrigger.focus();
+      if (event.key === 'Escape' && menu.classList.contains('is-open')) {
+        setOpen(false);
+        // :hover/:focus-within (layout.css's .has-dropdown rule) would
+        // otherwise keep the CSS-only menu visible even after the
+        // class above is removed, since Escape doesn't move the mouse
+        // and this refocuses the trigger on purpose (so keyboard focus
+        // isn't lost) — force it closed until the pointer/focus
+        // actually leaves the wrapper, the same fix initMegaMenu()
+        // already uses for the mega-menus above.
+        menu.classList.add('is-force-closed');
+        trigger.focus();
       }
     });
-  }
+    wrap.addEventListener('mouseleave', function () {
+      menu.classList.remove('is-force-closed');
+    });
+    wrap.addEventListener('mouseenter', function () {
+      menu.classList.remove('is-force-closed');
+    });
+    wrap.addEventListener('focusout', function (event) {
+      if (!wrap.contains(event.relatedTarget)) {
+        menu.classList.remove('is-force-closed');
+      }
+    });
+  };
+  initSimpleDropdown('login-menu-trigger', 'login-menu');
+  initSimpleDropdown('rate-menu-trigger', 'rate-menu');
 
   // Header USD->INR rate: re-fetches every 5 minutes so the number
   // can move while a visitor's tab stays open, without a full page
@@ -187,6 +209,17 @@
   // the last good value just stays on screen.
   var rateValueEl = document.getElementById('site-header-rate-value');
   var rateLabelEl = document.getElementById('site-header-rate-label');
+  var rateMenuValueEl = document.getElementById('rate-menu-value');
+  var rateMenuUpdatedEl = document.getElementById('rate-menu-updated');
+  var formatRateTimestamp = function (unixSeconds) {
+    var d = new Date(unixSeconds * 1000);
+    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var pad = function (n) { return n < 10 ? '0' + n : String(n); };
+    var hours = d.getHours();
+    var ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12 || 12;
+    return pad(d.getDate()) + ' ' + months[d.getMonth()] + ' ' + d.getFullYear() + ', ' + pad(hours) + ':' + pad(d.getMinutes()) + ' ' + ampm;
+  };
   if (rateValueEl) {
     setInterval(function () {
       fetch('/api-usd-inr-rate/', { cache: 'no-store' })
@@ -196,6 +229,12 @@
             rateValueEl.textContent = data.rate.toFixed(2);
             if (rateLabelEl) {
               rateLabelEl.textContent = data.stale ? 'Last known rate' : 'Indicative Rate';
+            }
+            if (rateMenuValueEl) {
+              rateMenuValueEl.textContent = data.rate.toFixed(2);
+            }
+            if (rateMenuUpdatedEl && typeof data.as_of === 'number') {
+              rateMenuUpdatedEl.textContent = formatRateTimestamp(data.as_of);
             }
           }
         })

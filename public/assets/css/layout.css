@@ -32,7 +32,13 @@
   }
 }
 
-/* ---------- Utility bar: live rate + 24x7 support + WhatsApp ---------- */
+/* ---------- Utility bar: indicative USD->INR rate + existing Login panel ---------- */
+/* Deliberately minimal by design — two things only, per the client's
+   utility-bar redesign brief: the rate on the left, the pre-existing
+   Login dropdown (unchanged) on the right. The tagline and the
+   WhatsApp "24x7 Support" link that used to live here were dropped,
+   not lost — WhatsApp/email/enquire are still one tap away sitewide
+   via the floating enquiry-widget (includes/enquiry-widget.php). */
 
 .site-header__utility {
   background: var(--visa-blue-dark);
@@ -62,12 +68,6 @@
   font-size: var(--font-size-xs);
 }
 
-.site-header__tagline {
-  color: rgba(255, 255, 255, 0.75);
-  white-space: nowrap;
-  letter-spacing: 0.02em;
-}
-
 .site-header__rate {
   display: flex;
   align-items: baseline;
@@ -92,12 +92,6 @@
   color: rgba(255, 255, 255, 0.5);
 }
 
-.site-header__utility-contact {
-  display: flex;
-  align-items: center;
-  gap: var(--space-5);
-}
-
 .site-header__utility-link {
   display: inline-flex;
   align-items: center;
@@ -111,8 +105,86 @@
   color: var(--visa-gold);
 }
 
+/* Rate widget trigger — an unstyled <button> wrapping the same
+   .site-header__rate markup so the whole thing is one accessible,
+   keyboard-focusable hit target that opens the details popover
+   below, matching the Login trigger's own button+dropdown shape. */
+.site-header__rate-trigger {
+  display: inline-flex;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  color: inherit;
+  border-radius: var(--radius-sm);
+}
+
+.site-header__rate-trigger:focus-visible {
+  outline: 2px solid var(--visa-gold);
+  outline-offset: 3px;
+}
+
+/* Popover content is dark-on-light (unlike the dark utility bar it
+   opens from) since it's a substantial block of explanatory text —
+   reusing .dropdown-menu's existing light surface/shadow keeps it
+   consistent with every other dropdown on the site rather than
+   inventing a second popover style. */
+.site-header__rate-menu {
+  width: max(260px, min(320px, calc(100vw - var(--space-6))));
+  padding: var(--space-4);
+}
+
+.site-header__rate-menu-title {
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin: 0 0 var(--space-1);
+}
+
+.site-header__rate-menu-value {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-dark);
+  margin: 0 0 var(--space-2);
+}
+
+.site-header__rate-menu-meta {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  margin: 0 0 var(--space-1);
+}
+
+.site-header__rate-menu-disclaimer {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  margin: var(--space-2) 0 var(--space-4);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--border);
+}
+
+.site-header__rate-menu-cta {
+  display: block;
+  text-align: center;
+}
+
 @media (max-width: 768px) {
-  .site-header__utility { display: none; }
+  .site-header__utility-bar {
+    padding: 6px 0;
+  }
+
+  /* Compact mobile utility bar: the rate only, on one line — Login
+     stays reachable via the hamburger menu's own Login section
+     (.site-header__mobile-login) rather than duplicating the trigger
+     here, which is what keeps this from wrapping onto a second line. */
+  .site-header__login { display: none; }
+}
+
+@media (max-width: 420px) {
+  .site-header__rate-label { display: none; }
 }
 
 .site-header__bar {
