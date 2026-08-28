@@ -164,6 +164,9 @@ switch ($segments[0] ?? '') {
     case 'enquire':
         $dispatch("$root/pages/enquire.php");
 
+    case 'partner-program':
+        $dispatch("$root/pages/partner-program.php");
+
     case 'visa-status':
         $dispatch("$root/pages/visa-status.php");
 

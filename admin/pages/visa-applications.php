@@ -5,7 +5,7 @@ require_permission('visa.view');
 
 $pdo = db();
 $action = $_GET['action'] ?? 'list';
-$id = isset($_GET['id']) ? (int) $_GET['id'] : null;
+$id = isset($_GET['id']) ? (int) $_GET['id'] : (isset($_POST['id']) ? (int) $_POST['id'] : null);
 $scopedToAssigned = current_admin_scoped_to_assigned();
 $employees = $pdo->query('SELECT id, full_name FROM admin_users WHERE status = "active" ORDER BY full_name')->fetchAll();
 $statuses = ['draft', 'documents_pending', 'submitted', 'under_review', 'approved', 'rejected', 'completed', 'cancelled'];

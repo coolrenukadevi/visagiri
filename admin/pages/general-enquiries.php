@@ -4,7 +4,7 @@ declare(strict_types=1);
 require_permission('general_enquiries.view');
 
 $pdo = db();
-$id = isset($_GET['id']) ? (int) $_GET['id'] : null;
+$id = isset($_GET['id']) ? (int) $_GET['id'] : (isset($_POST['id']) ? (int) $_POST['id'] : null);
 $employees = $pdo->query('SELECT id, full_name FROM admin_users WHERE status = "active" ORDER BY full_name')->fetchAll();
 $statuses = ['new', 'in_progress', 'resolved', 'closed'];
 
