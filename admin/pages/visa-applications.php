@@ -162,9 +162,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($postAction === 'set_commission' && $id) {
-        $appStmt = $pdo->prepare('SELECT cust.referred_by_partner_id FROM visa_applications va JOIN customers cust ON cust.id = va.customer_id WHERE va.id = :id');
+        $appStmt = $pdo->prepare('SELECT cust.referred_by_partner_id, va.application_reference_no FROM visa_applications va JOIN customers cust ON cust.id = va.customer_id WHERE va.id = :id');
         $appStmt->execute(['id' => $id]);
-        $partnerId = $appStmt->fetchColumn();
+        $appRow = $appStmt->fetch();
+        $partnerId = $appRow ? $appRow['referred_by_partner_id'] : null;
         if ($partnerId) {
             $amount = ($_POST['commission_amount'] ?? '') !== '' ? (float) $_POST['commission_amount'] : null;
             $status = in_array($_POST['commission_status'] ?? '', ['pending', 'approved', 'paid'], true) ? $_POST['commission_status'] : 'pending';
@@ -181,6 +182,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'paid_at' => $status === 'paid' ? date('Y-m-d H:i:s') : null,
             ]);
             log_action('update', 'partner_commissions', $id, null, 'Commission set: ' . ($amount ?? 'null') . ' (' . $status . ')');
+
+            // Approving (or marking paid) a commission credits the
+            // partner's wallet exactly once — guarded by checking for
+            // an existing wallet transaction referencing this
+            // application, since set_commission can be called again
+            // later (e.g. status pending -> approved -> paid) without
+            // re-crediting the same money twice.
+            if ($amount !== null && in_array($status, ['approved', 'paid'], true)) {
+                $alreadyCredited = $pdo->prepare(
+                    "SELECT COUNT(*) FROM partner_wallet_transactions WHERE reference_type = 'visa_application' AND reference_id = :id"
+                );
+                $alreadyCredited->execute(['id' => $id]);
+                if ((int) $alreadyCredited->fetchColumn() === 0) {
+                    $pdo->prepare(
+                        "INSERT INTO partner_wallet_transactions (partner_id, type, amount, reason, reference_type, reference_id, created_by)
+                         VALUES (:partner_id, 'credit', :amount, :reason, 'visa_application', :app_id, :admin)"
+                    )->execute([
+                        'partner_id' => $partnerId,
+                        'amount' => $amount,
+                        'reason' => 'Commission — ' . $appRow['application_reference_no'],
+                        'app_id' => $id,
+                        'admin' => current_admin_id(),
+                    ]);
+                    log_action('wallet_credit', 'partner_wallet_transactions', $id, null, (string) $amount);
+                }
+            }
+
             flash_set('admin_notice', 'Commission updated.');
         }
         redirect('/admin/visa-applications/?action=view&id=' . $id);

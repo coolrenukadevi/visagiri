@@ -55,6 +55,7 @@ function admin_header_start(string $pageTitle, string $activeNav): void
             <?php endif; ?>
             <?php if (has_permission('partners.manage')): ?>
             <a href="/admin/partner-tiers/" class="<?= $activeNav === 'partner-tiers' ? 'is-active' : '' ?>">Partner Tiers</a>
+            <a href="/admin/partner-invoices/" class="<?= $activeNav === 'partner-invoices' ? 'is-active' : '' ?>">Partner Invoices</a>
             <?php endif; ?>
             <?php if (has_permission('visa.view')): ?>
             <a href="/admin/visa-enquiries/" class="<?= $activeNav === 'visa-enquiries' ? 'is-active' : '' ?>">Visa Enquiries</a>

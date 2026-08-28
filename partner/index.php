@@ -79,6 +79,11 @@ switch ($segments[1] ?? null) {
         require __DIR__ . '/pages/application-create.php';
         exit;
 
+    case 'wallet':
+        require_partner_login();
+        require __DIR__ . '/pages/wallet.php';
+        exit;
+
     default:
         require __DIR__ . '/../pages/404.php';
         exit;

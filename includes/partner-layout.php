@@ -13,6 +13,7 @@ declare(strict_types=1);
 const PARTNER_NAV = [
     'dashboard' => ['label' => 'Dashboard', 'href' => '/partner/dashboard/'],
     'applications' => ['label' => 'My Applications', 'href' => '/partner/applications/'],
+    'wallet' => ['label' => 'Wallet', 'href' => '/partner/wallet/'],
     'notifications' => ['label' => 'Notifications', 'href' => '/partner/notifications/'],
     'profile' => ['label' => 'Profile', 'href' => '/partner/profile/'],
 ];

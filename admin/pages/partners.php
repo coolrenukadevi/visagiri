@@ -182,6 +182,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         flash_set('admin_notice', 'Commission tier updated.');
     }
 
+    if ($postAction === 'add_wallet_transaction' && $targetId) {
+        $walletType = in_array($_POST['wallet_type'] ?? '', ['credit', 'debit'], true) ? $_POST['wallet_type'] : null;
+        $walletAmount = (float) ($_POST['wallet_amount'] ?? 0);
+        $walletReason = trim((string) ($_POST['wallet_reason'] ?? ''));
+        if ($walletType && $walletAmount > 0 && $walletReason !== '') {
+            $pdo->prepare(
+                "INSERT INTO partner_wallet_transactions (partner_id, type, amount, reason, created_by)
+                 VALUES (:partner_id, :type, :amount, :reason, :admin)"
+            )->execute([
+                'partner_id' => $targetId,
+                'type' => $walletType,
+                'amount' => $walletAmount,
+                'reason' => $walletReason,
+                'admin' => current_admin_id(),
+            ]);
+            log_action('wallet_' . $walletType, 'partner_wallet_transactions', $targetId, null, (string) $walletAmount);
+            flash_set('admin_notice', 'Wallet transaction recorded.');
+        } else {
+            flash_set('admin_error', 'Type, a positive amount, and a reason are all required for a wallet transaction.');
+        }
+        redirect('/admin/partners/?action=view&id=' . $targetId);
+    }
+
     redirect('/admin/partners/');
 }
 
@@ -234,6 +257,22 @@ if ($action === 'view' && $id) {
     );
     $historyStmt->execute(['id' => $id]);
     $history = $historyStmt->fetchAll();
+
+    $walletStmt = $pdo->prepare(
+        'SELECT w.*, a.full_name AS created_by_name FROM partner_wallet_transactions w
+         LEFT JOIN admin_users a ON a.id = w.created_by
+         WHERE w.partner_id = :id ORDER BY w.created_at DESC'
+    );
+    $walletStmt->execute(['id' => $id]);
+    $walletTransactions = $walletStmt->fetchAll();
+    $walletBalance = 0.0;
+    foreach ($walletTransactions as $wt) {
+        $walletBalance += $wt['type'] === 'credit' ? (float) $wt['amount'] : -(float) $wt['amount'];
+    }
+
+    $invoicesStmt = $pdo->prepare('SELECT * FROM partner_invoices WHERE partner_id = :id ORDER BY created_at DESC');
+    $invoicesStmt->execute(['id' => $id]);
+    $invoices = $invoicesStmt->fetchAll();
 
     $profileStmt = $pdo->prepare('SELECT * FROM partner_business_profiles WHERE partner_id = :id');
     $profileStmt->execute(['id' => $id]);
@@ -387,6 +426,54 @@ if ($action === 'view' && $id) {
         </tr>
         <?php endforeach; ?>
     </tbody></table>
+    <?php endif; ?>
+
+    <h2 class="country-directory__subheading">Wallet (Balance: <?= e(number_format($walletBalance, 2)) ?>)</h2>
+    <?php if (!$walletTransactions): ?>
+    <p class="empty-state">No wallet transactions yet.</p>
+    <?php else: ?>
+    <table class="admin-table" style="margin-bottom:var(--space-4)"><thead><tr><th>Type</th><th>Amount</th><th>Reason</th><th>By</th><th>When</th></tr></thead><tbody>
+        <?php foreach ($walletTransactions as $wt): ?>
+        <tr>
+            <td><span class="badge <?= $wt['type'] === 'credit' ? 'badge-success' : 'badge-danger' ?>"><?= e(ucfirst($wt['type'])) ?></span></td>
+            <td><?= e(number_format((float) $wt['amount'], 2)) ?></td>
+            <td><?= e($wt['reason']) ?></td>
+            <td><?= e($wt['created_by_name'] ?? '—') ?></td>
+            <td><?= e(date('d M Y', strtotime((string) $wt['created_at']))) ?></td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody></table>
+    <?php endif; ?>
+    <?php if (has_permission('partners.manage')): ?>
+    <form method="post" action="/admin/partners/" style="display:flex;gap:var(--space-2);align-items:center;flex-wrap:wrap;margin-bottom:var(--space-6)">
+        <?= csrf_field() ?><input type="hidden" name="id" value="<?= $id ?>"><input type="hidden" name="action" value="add_wallet_transaction">
+        <select name="wallet_type" class="form-select" style="width:auto">
+            <option value="credit">Credit</option>
+            <option value="debit">Debit</option>
+        </select>
+        <input class="form-input" type="number" step="0.01" name="wallet_amount" placeholder="Amount" style="width:120px" required>
+        <input class="form-input" type="text" name="wallet_reason" placeholder="Reason (e.g. Payout via bank transfer)" style="width:280px" required>
+        <button type="submit" class="btn btn-outline btn-sm">Add Transaction</button>
+    </form>
+    <?php endif; ?>
+
+    <h2 class="country-directory__subheading">Invoices</h2>
+    <?php if (!$invoices): ?>
+    <p class="empty-state">No invoices issued yet.</p>
+    <?php else: ?>
+    <table class="admin-table" style="margin-bottom:var(--space-4)"><thead><tr><th>Reference</th><th>Period</th><th>Amount</th><th>Status</th></tr></thead><tbody>
+        <?php foreach ($invoices as $inv): ?>
+        <tr>
+            <td><a href="/admin/partner-invoices/?action=view&id=<?= (int) $inv['id'] ?>"><?= e($inv['invoice_reference_no']) ?></a></td>
+            <td><?= $inv['period_start'] ? e(date('d M Y', strtotime((string) $inv['period_start']))) . ' – ' . e(date('d M Y', strtotime((string) $inv['period_end']))) : '—' ?></td>
+            <td><?= e(number_format((float) $inv['total_amount'], 2)) ?></td>
+            <td><span class="badge <?= $inv['status'] === 'paid' ? 'badge-success' : ($inv['status'] === 'issued' ? 'badge-info' : 'badge-neutral') ?>"><?= e(ucfirst($inv['status'])) ?></span></td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody></table>
+    <?php endif; ?>
+    <?php if (has_permission('partners.manage')): ?>
+    <p style="margin-bottom:var(--space-6)"><a href="/admin/partner-invoices/?action=create&partner_id=<?= $id ?>" class="btn btn-outline btn-sm">+ New Invoice</a></p>
     <?php endif; ?>
 
     <h2 class="country-directory__subheading">Status History</h2>
