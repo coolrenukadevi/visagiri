@@ -1,3 +1,9 @@
+# Never let Apache fall back to a raw directory listing (e.g. if this
+# document root is ever pointed at by mistake with no matching
+# DirectoryIndex, or a subfolder has no index file) — config/,
+# database/, includes/ etc. must never be browsable even as a listing.
+Options -Indexes
+
 RewriteEngine On
 
 # Force HTTPS (matches the redirect the legacy site already relied on).
