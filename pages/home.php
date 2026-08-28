@@ -216,6 +216,35 @@ console.log(payment.id);</code></pre>
   </div>
 </section>
 
+<section class="section-dark" aria-labelledby="agentic-heading">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">The Agentic Era</span>
+      <h2 id="agentic-heading">Infrastructure Built for Agents, Not Just Applications.</h2>
+      <p>As more of how businesses operate shifts to autonomous AI agents, Paynancial's APIs are designed to be called as reliably by an agent as by a person.</p>
+    </div>
+    <div class="grid grid-4">
+      <?php
+      $agentic = [
+          ['Agent-Ready APIs', 'Predictable, structured endpoints for payments, payouts and refunds that AI agents can call directly.'],
+          ['Autonomous Monitoring', 'Always-on systems that watch transaction activity without waiting on manual review.'],
+          ['Automated Reconciliation', 'Match payments, settlements and refunds programmatically to cut manual finance work.'],
+          ['Machine-Readable Webhooks', 'Structured, real-time event data built to be consumed by software and AI agents alike.'],
+      ];
+      foreach ($agentic as [$title, $desc]): ?>
+        <div class="card dark reveal">
+          <span class="card-icon">⚙</span>
+          <h3><?= e($title) ?></h3>
+          <p><?= e($desc) ?></p>
+        </div>
+      <?php endforeach; ?>
+    </div>
+    <div class="text-center reveal" style="margin-top:32px;">
+      <a href="/developers" class="btn btn-primary">Explore Developer APIs</a>
+    </div>
+  </div>
+</section>
+
 <section aria-labelledby="security-heading">
   <div class="container">
     <div class="section-head reveal">

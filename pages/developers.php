@@ -9,7 +9,7 @@ $page_meta = [
     <div class="section-head reveal">
       <span class="eyebrow">Developers</span>
       <h1>Build with the Paynancial API.</h1>
-      <p class="lead">A REST API, webhooks and SDKs designed to get payments into your product quickly and securely.</p>
+      <p class="lead">A REST API, webhooks and SDKs designed to get payments into your product quickly and securely — built to be called just as reliably by an AI agent as by a person.</p>
     </div>
   </div>
 </section>
