@@ -40,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'name' => $name,
             'commission_type' => $commissionType,
             'commission_value' => (float) ($_POST['commission_value'] ?? 0),
+            'min_referred_customers' => ($_POST['min_referred_customers'] ?? '') !== '' ? (int) $_POST['min_referred_customers'] : null,
             'description' => trim((string) ($_POST['description'] ?? '')) ?: null,
             'sort_order' => (int) ($_POST['sort_order'] ?? 0),
             'is_active' => isset($_POST['is_active']) ? 1 : 0,
@@ -54,13 +55,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data['id'] = $id;
             $pdo->prepare(
                 'UPDATE partner_tiers SET name=:name, commission_type=:commission_type, commission_value=:commission_value,
-                 description=:description, sort_order=:sort_order, is_active=:is_active WHERE id=:id'
+                 min_referred_customers=:min_referred_customers, description=:description, sort_order=:sort_order, is_active=:is_active WHERE id=:id'
             )->execute($data);
             flash_set('admin_notice', 'Tier updated.');
         } else {
             $pdo->prepare(
-                'INSERT INTO partner_tiers (name, commission_type, commission_value, description, sort_order, is_active)
-                 VALUES (:name, :commission_type, :commission_value, :description, :sort_order, :is_active)'
+                'INSERT INTO partner_tiers (name, commission_type, commission_value, min_referred_customers, description, sort_order, is_active)
+                 VALUES (:name, :commission_type, :commission_value, :min_referred_customers, :description, :sort_order, :is_active)'
             )->execute($data);
             flash_set('admin_notice', 'Tier added.');
         }
@@ -69,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 if ($action === 'create' || $action === 'edit') {
-    $tier = ['name' => '', 'commission_type' => 'percentage', 'commission_value' => '', 'description' => '', 'sort_order' => 0, 'is_active' => 1];
+    $tier = ['name' => '', 'commission_type' => 'percentage', 'commission_value' => '', 'min_referred_customers' => '', 'description' => '', 'sort_order' => 0, 'is_active' => 1];
     if ($action === 'edit' && $id) {
         $stmt = $pdo->prepare('SELECT * FROM partner_tiers WHERE id = :id');
         $stmt->execute(['id' => $id]);
@@ -109,6 +110,11 @@ if ($action === 'create' || $action === 'edit') {
                     <label class="form-label" for="sort_order">Sort order</label>
                     <input class="form-input" type="number" id="sort_order" name="sort_order" value="<?= (int) $tier['sort_order'] ?>">
                 </div>
+                <div class="form-group">
+                    <label class="form-label" for="min_referred_customers">Min. Referred Customers</label>
+                    <input class="form-input" type="number" id="min_referred_customers" name="min_referred_customers" value="<?= e((string) ($tier['min_referred_customers'] ?? '')) ?>" placeholder="No automatic qualification">
+                    <small style="color:var(--text-muted)">Used by "Recalculate Tier" on a partner's profile. Leave blank if this tier should only ever be assigned manually.</small>
+                </div>
             </div>
             <div class="form-group">
                 <label class="form-label" for="description">Description</label>
@@ -136,12 +142,13 @@ admin_header_start('Partner Tiers', 'partner-tiers');
     <a href="/admin/partner-tiers/?action=create" class="btn btn-primary">+ Add Tier</a>
 </div>
 <table class="admin-table">
-    <thead><tr><th>Name</th><th>Commission</th><th>Partners</th><th>Order</th><th>Active</th><th></th></tr></thead>
+    <thead><tr><th>Name</th><th>Commission</th><th>Qualification</th><th>Partners</th><th>Order</th><th>Active</th><th></th></tr></thead>
     <tbody>
     <?php foreach ($tiers as $t): ?>
         <tr>
             <td><?= e($t['name']) ?></td>
             <td><?= $t['commission_type'] === 'percentage' ? e(rtrim(rtrim(number_format((float) $t['commission_value'], 2), '0'), '.')) . '%' : '₹' . e(number_format((float) $t['commission_value'], 2)) . ' flat' ?></td>
+            <td><?= $t['min_referred_customers'] !== null ? (int) $t['min_referred_customers'] . '+ referred customers' : '<span style="color:var(--text-muted)">Manual only</span>' ?></td>
             <td><?= (int) $t['partner_count'] ?></td>
             <td><?= (int) $t['sort_order'] ?></td>
             <td>
@@ -158,7 +165,7 @@ admin_header_start('Partner Tiers', 'partner-tiers');
         </tr>
     <?php endforeach; ?>
     <?php if (!$tiers): ?>
-        <tr><td colspan="6"><p class="empty-state">No tiers defined yet.</p></td></tr>
+        <tr><td colspan="7"><p class="empty-state">No tiers defined yet.</p></td></tr>
     <?php endif; ?>
     </tbody>
 </table>

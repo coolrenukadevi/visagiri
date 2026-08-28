@@ -52,6 +52,11 @@ switch ($adminSegment) {
         require __DIR__ . '/pages/partner-invoices.php';
         exit;
 
+    case 'partner-document-expiry':
+        require_admin_login();
+        require __DIR__ . '/pages/partner-document-expiry.php';
+        exit;
+
     case 'visa-enquiries':
         require_admin_login();
         require __DIR__ . '/pages/visa-enquiries.php';

@@ -57,6 +57,9 @@ function admin_header_start(string $pageTitle, string $activeNav): void
             <a href="/admin/partner-tiers/" class="<?= $activeNav === 'partner-tiers' ? 'is-active' : '' ?>">Partner Tiers</a>
             <a href="/admin/partner-invoices/" class="<?= $activeNav === 'partner-invoices' ? 'is-active' : '' ?>">Partner Invoices</a>
             <?php endif; ?>
+            <?php if (has_permission('partners.view')): ?>
+            <a href="/admin/partner-document-expiry/" class="<?= $activeNav === 'partner-document-expiry' ? 'is-active' : '' ?>">Document Expiry</a>
+            <?php endif; ?>
             <?php if (has_permission('visa.view')): ?>
             <a href="/admin/visa-enquiries/" class="<?= $activeNav === 'visa-enquiries' ? 'is-active' : '' ?>">Visa Enquiries</a>
             <a href="/admin/visa-applications/" class="<?= $activeNav === 'visa-applications' ? 'is-active' : '' ?>">Visa Applications</a>

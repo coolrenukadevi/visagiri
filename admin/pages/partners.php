@@ -182,6 +182,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         flash_set('admin_notice', 'Commission tier updated.');
     }
 
+    if ($postAction === 'recalculate_tier' && $targetId) {
+        $referredCountStmt = $pdo->prepare('SELECT COUNT(*) FROM customers WHERE referred_by_partner_id = :id');
+        $referredCountStmt->execute(['id' => $targetId]);
+        $referredCount = (int) $referredCountStmt->fetchColumn();
+
+        // The best-qualifying tier is the active one with the highest
+        // sort_order among those whose threshold this partner meets —
+        // sort_order is this codebase's existing "display order"
+        // convention everywhere else (visa types, countries), reused
+        // here as "rank," so admins express tier progression the same
+        // way they already express any other ordered list: put the
+        // better tier further down.
+        $bestTierStmt = $pdo->prepare(
+            'SELECT id FROM partner_tiers
+             WHERE is_active = 1 AND min_referred_customers IS NOT NULL AND min_referred_customers <= :count
+             ORDER BY sort_order DESC LIMIT 1'
+        );
+        $bestTierStmt->execute(['count' => $referredCount]);
+        $bestTierId = $bestTierStmt->fetchColumn();
+        $bestTierId = $bestTierId !== false ? (int) $bestTierId : null;
+
+        $currentTierStmt = $pdo->prepare('SELECT tier_id FROM partners WHERE id = :id');
+        $currentTierStmt->execute(['id' => $targetId]);
+        $currentTierId = $currentTierStmt->fetchColumn();
+        $currentTierId = $currentTierId !== null ? (int) $currentTierId : null;
+
+        if ($bestTierId === null) {
+            flash_set('admin_notice', "No tier's qualification threshold is met by $referredCount referred customer(s) — no change made.");
+        } elseif ($bestTierId === $currentTierId) {
+            flash_set('admin_notice', "Already on the correct tier for $referredCount referred customer(s) — no change needed.");
+        } else {
+            $pdo->prepare('UPDATE partners SET tier_id = :tier WHERE id = :id')->execute(['tier' => $bestTierId, 'id' => $targetId]);
+            $newTierNameStmt = $pdo->prepare('SELECT name FROM partner_tiers WHERE id = :id');
+            $newTierNameStmt->execute(['id' => $bestTierId]);
+            $newTierName = $newTierNameStmt->fetchColumn();
+            log_action('recalculate_tier', 'partners', $targetId, $currentTierId !== null ? (string) $currentTierId : 'unassigned', (string) $bestTierId);
+            notify_partner((int) $targetId, 'tier_change', 'Your commission tier has changed', "Based on your referral activity, you've been moved to the $newTierName tier.", '/partner/dashboard/');
+            flash_set('admin_notice', "Recalculated: moved to $newTierName based on $referredCount referred customer(s).");
+        }
+        redirect('/admin/partners/?action=view&id=' . $targetId);
+    }
+
     if ($postAction === 'add_wallet_transaction' && $targetId) {
         $walletType = in_array($_POST['wallet_type'] ?? '', ['credit', 'debit'], true) ? $_POST['wallet_type'] : null;
         $walletAmount = (float) ($_POST['wallet_amount'] ?? 0);
@@ -206,6 +248,63 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     redirect('/admin/partners/');
+}
+
+// --- Per-partner CSV exports ---
+if (($action === 'export_wallet' || $action === 'export_commissions') && $id) {
+    $scopeWhere = 'id = :id AND deleted_at IS NULL';
+    $scopeParams = ['id' => $id];
+    if ($scopedToAssigned) {
+        $scopeWhere .= ' AND assigned_admin_id = :current_admin';
+        $scopeParams['current_admin'] = current_admin_id();
+    }
+    $scopeStmt = $pdo->prepare("SELECT company_name FROM partners WHERE $scopeWhere");
+    $scopeStmt->execute($scopeParams);
+    $exportCompanyName = $scopeStmt->fetchColumn();
+    if ($exportCompanyName === false) {
+        flash_set('admin_error', 'Partner not found.');
+        redirect('/admin/partners/');
+    }
+
+    if ($action === 'export_wallet') {
+        $exportStmt = $pdo->prepare('SELECT * FROM partner_wallet_transactions WHERE partner_id = :id ORDER BY created_at ASC');
+        $exportStmt->execute(['id' => $id]);
+        export_csv_response(
+            'wallet-' . slugify($exportCompanyName) . '-' . date('Y-m-d') . '.csv',
+            ['Date', 'Type', 'Amount', 'Reason'],
+            (static function () use ($exportStmt) {
+                while ($t = $exportStmt->fetch()) {
+                    yield [date('Y-m-d', strtotime((string) $t['created_at'])), $t['type'], $t['amount'], $t['reason']];
+                }
+            })()
+        );
+    }
+
+    if ($action === 'export_commissions') {
+        $exportStmt = $pdo->prepare(
+            "SELECT pc.*, va.application_reference_no, c.first_name, c.last_name
+             FROM partner_commissions pc
+             JOIN visa_applications va ON va.id = pc.visa_application_id
+             JOIN customers c ON c.id = va.customer_id
+             WHERE pc.partner_id = :id ORDER BY pc.created_at ASC"
+        );
+        $exportStmt->execute(['id' => $id]);
+        export_csv_response(
+            'commissions-' . slugify($exportCompanyName) . '-' . date('Y-m-d') . '.csv',
+            ['Application', 'Customer', 'Amount', 'Status', 'Date'],
+            (static function () use ($exportStmt) {
+                while ($c = $exportStmt->fetch()) {
+                    yield [
+                        $c['application_reference_no'],
+                        trim($c['first_name'] . ' ' . ($c['last_name'] ?? '')),
+                        $c['amount_due'] ?? '',
+                        $c['status'],
+                        date('Y-m-d', strtotime((string) $c['created_at'])),
+                    ];
+                }
+            })()
+        );
+    }
 }
 
 // --- Detail view ---
@@ -344,6 +443,10 @@ if ($action === 'view' && $id) {
             </select>
             <button type="submit" class="btn btn-outline btn-sm">Set Tier</button>
         </form>
+        <form method="post" action="/admin/partners/" style="margin-top:var(--space-2)">
+            <?= csrf_field() ?><input type="hidden" name="id" value="<?= $id ?>"><input type="hidden" name="action" value="recalculate_tier">
+            <button type="submit" class="btn btn-outline btn-sm">Recalculate Tier</button>
+        </form>
         <?php endif; ?>
     </div>
 
@@ -412,7 +515,7 @@ if ($action === 'view' && $id) {
     </tbody></table>
     <?php endif; ?>
 
-    <h2 class="country-directory__subheading">Commissions</h2>
+    <h2 class="country-directory__subheading">Commissions <?php if ($commissions): ?><a href="/admin/partners/?action=export_commissions&id=<?= $id ?>" class="btn btn-outline btn-sm" style="font-weight:normal;text-transform:none">Export CSV</a><?php endif; ?></h2>
     <?php if (!$commissions): ?>
     <p class="empty-state">No commissions recorded yet.</p>
     <?php else: ?>
@@ -428,7 +531,7 @@ if ($action === 'view' && $id) {
     </tbody></table>
     <?php endif; ?>
 
-    <h2 class="country-directory__subheading">Wallet (Balance: <?= e(number_format($walletBalance, 2)) ?>)</h2>
+    <h2 class="country-directory__subheading">Wallet (Balance: <?= e(number_format($walletBalance, 2)) ?>) <?php if ($walletTransactions): ?><a href="/admin/partners/?action=export_wallet&id=<?= $id ?>" class="btn btn-outline btn-sm" style="font-weight:normal;text-transform:none">Export CSV</a><?php endif; ?></h2>
     <?php if (!$walletTransactions): ?>
     <p class="empty-state">No wallet transactions yet.</p>
     <?php else: ?>
@@ -523,6 +626,35 @@ if ($scopedToAssigned) {
 }
 $whereSql = implode(' AND ', $where);
 
+if ($action === 'export') {
+    $exportStmt = $pdo->prepare(
+        "SELECT p.*, m.full_name AS manager_name, t.name AS tier_name FROM partners p
+         LEFT JOIN admin_users m ON m.id = p.assigned_admin_id
+         LEFT JOIN partner_tiers t ON t.id = p.tier_id
+         WHERE $whereSql ORDER BY p.created_at DESC"
+    );
+    $exportStmt->execute($params);
+    export_csv_response(
+        'partners-' . date('Y-m-d') . '.csv',
+        ['Reference', 'Company', 'Contact', 'Email', 'Mobile', 'Status', 'Tier', 'Relationship Manager', 'Registered'],
+        (static function () use ($exportStmt) {
+            while ($p = $exportStmt->fetch()) {
+                yield [
+                    $p['partner_reference_no'],
+                    $p['company_name'],
+                    $p['contact_name'],
+                    $p['email'],
+                    $p['mobile'],
+                    $p['status'],
+                    $p['tier_name'] ?? '',
+                    $p['manager_name'] ?? '',
+                    date('Y-m-d', strtotime((string) $p['created_at'])),
+                ];
+            }
+        })()
+    );
+}
+
 $countStmt = $pdo->prepare("SELECT COUNT(*) FROM partners p WHERE $whereSql");
 $countStmt->execute($params);
 $total = (int) $countStmt->fetchColumn();
@@ -555,6 +687,7 @@ admin_header_start('Partners', 'partners');
         </select>
         <button type="submit" class="btn btn-outline">Search</button>
     </form>
+    <a href="/admin/partners/?action=export<?= $search !== '' ? '&q=' . urlencode($search) : '' ?><?= $statusFilter ? '&status=' . urlencode($statusFilter) : '' ?>" class="btn btn-outline">Export CSV</a>
 </div>
 <table class="admin-table">
     <thead><tr><th>Company</th><th>Contact</th><th>Reference</th><th>Manager</th><th>Status</th><th>Registered</th></tr></thead>
