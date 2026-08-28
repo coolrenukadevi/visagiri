@@ -4,10 +4,17 @@
  */
 header('Content-Type: application/json');
 require_once __DIR__ . '/includes/b2b-otp.php';
+require_once __DIR__ . '/includes/b2b-csrf.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['success' => false, 'message' => 'Method not allowed.']);
+    exit;
+}
+
+if (!b2b_csrf_valid()) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'message' => 'Security check failed. Please refresh the page and try again.']);
     exit;
 }
 

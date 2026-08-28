@@ -8,6 +8,7 @@ require_once __DIR__ . '/../../includes/forex-db.php';
 require_once __DIR__ . '/forex-permissions.php';
 require_once __DIR__ . '/../../includes/b2b-db.php';
 require_once __DIR__ . '/b2b-permissions.php';
+require_once __DIR__ . '/../../includes/b2b-csrf.php';
 admin_require_login();
 
 $pdo = enquiry_db();
@@ -76,6 +77,7 @@ $navItems = [
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
+<meta name="b2b-csrf-token" content="<?php echo htmlspecialchars(b2b_csrf_token()); ?>">
 <title><?php echo htmlspecialchars($ADMIN_PAGE_TITLE); ?> &ndash; Visa Agency CRM</title>
 <link rel="stylesheet" href="../assets/css/all.min.css">
 <link rel="stylesheet" href="assets/admin.css">

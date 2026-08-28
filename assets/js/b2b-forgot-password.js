@@ -29,7 +29,7 @@
         }
         step1Error.hidden = true;
         setBtnBusy(sendBtn, true, 'Sending...', 'Send Reset Code');
-        var fd = new URLSearchParams({ email: email, purpose: 'password_reset' });
+        var fd = new URLSearchParams({ email: email, purpose: 'password_reset', b2b_csrf: form.b2b_csrf.value });
         fetch('b2b-otp-send.php', { method: 'POST', body: fd })
             .then(function (r) { return r.json(); })
             .then(function (data) {
@@ -81,7 +81,8 @@
             email: emailInput.value.trim(),
             code: code,
             new_password: password,
-            new_password_confirm: confirm
+            new_password_confirm: confirm,
+            b2b_csrf: form.b2b_csrf.value
         });
         fetch('b2b-reset-password.php', { method: 'POST', body: fd })
             .then(function (r) { return r.json(); })

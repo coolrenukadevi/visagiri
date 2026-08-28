@@ -2,6 +2,7 @@
 $page_title = "Become a B2B Partner &ndash; Visa Agency";
 $page_description = "Register as a B2B visa partner with VisaAgency.in &ndash; travel agencies, tour operators, visa consultants and corporate travel desks.";
 require_once __DIR__ . '/includes/b2b-db.php';
+require_once __DIR__ . '/includes/b2b-csrf.php';
 require_once __DIR__ . '/includes/countries-data.php';
 include __DIR__ . '/includes/header.php';
 ?>
@@ -38,6 +39,7 @@ include __DIR__ . '/includes/header.php';
                     </div>
 
                     <form id="b2bRegForm" novalidate>
+                        <input type="hidden" name="b2b_csrf" value="<?php echo htmlspecialchars(b2b_csrf_token()); ?>">
                         <div class="b2b-reg-honeypot" aria-hidden="true">
                             <label for="b2bWebsite">Leave this field empty</label>
                             <input type="text" id="b2bWebsiteHp" name="website_hp" tabindex="-1" autocomplete="off">

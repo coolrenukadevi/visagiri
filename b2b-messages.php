@@ -8,6 +8,7 @@ $pid = partner_id();
 $actionError = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'send_message') {
+    b2b_csrf_require_or_403();
     $body = trim($_POST['body'] ?? '');
     if ($body === '') {
         $actionError = 'Message cannot be empty.';

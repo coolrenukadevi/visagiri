@@ -1,4 +1,5 @@
 <?php
+ob_start();
 $ADMIN_PAGE_TITLE = 'Tiers & Pricing';
 $ADMIN_ACTIVE_NAV = 'b2b-tiers';
 $ADMIN_BREADCRUMB = ['CRM', 'B2B Partners', 'Tiers & Pricing'];
@@ -15,6 +16,7 @@ $actionMessage = '';
 $actionError = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    b2b_csrf_require_or_403();
     $action = $_POST['action'] ?? '';
 
     if ($action === 'save_tier') {

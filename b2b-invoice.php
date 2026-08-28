@@ -27,6 +27,7 @@ $actionMessage = '';
 $actionError = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'pay_from_wallet' && partner_has_permission('view_payments')) {
+    b2b_csrf_require_or_403();
     $paidStmt = $pdo->prepare('SELECT COALESCE(SUM(amount), 0) FROM b2b_invoice_payments WHERE invoice_id = ?');
     $paidStmt->execute([$invoiceId]);
     $paidToDate = (float) $paidStmt->fetchColumn();

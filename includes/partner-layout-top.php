@@ -11,6 +11,7 @@
  * close with partner-layout-bottom.php.
  */
 require_once __DIR__ . '/partner-auth.php';
+require_once __DIR__ . '/b2b-csrf.php';
 partner_require_login();
 
 $pdo = b2b_db();
@@ -50,6 +51,7 @@ $ppNavItems = [
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
+<meta name="b2b-csrf-token" content="<?php echo htmlspecialchars(b2b_csrf_token()); ?>">
 <title><?php echo htmlspecialchars($PP_PAGE_TITLE); ?> &ndash; VisaAgency.in B2B Partner Portal</title>
 <link rel="shortcut icon" href="assets/img/favicon.png">
 <link rel="stylesheet" href="assets/css/all.min.css">

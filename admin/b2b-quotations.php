@@ -6,6 +6,7 @@ $ADMIN_BREADCRUMB = ['CRM', 'B2B Partners', 'Quotations'];
 require __DIR__ . '/includes/layout-top.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    b2b_csrf_require_or_403();
     $action = $_POST['action'] ?? '';
     $quotationId = (int) ($_POST['quotation_id'] ?? 0);
 

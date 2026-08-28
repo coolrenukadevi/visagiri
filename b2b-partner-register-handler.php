@@ -8,6 +8,7 @@
  */
 header('Content-Type: application/json');
 require_once __DIR__ . '/includes/b2b-otp.php';
+require_once __DIR__ . '/includes/b2b-csrf.php';
 
 function b2b_reg_fail(string $message, array $fieldErrors = [], int $code = 422): void
 {
@@ -18,6 +19,10 @@ function b2b_reg_fail(string $message, array $fieldErrors = [], int $code = 422)
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     b2b_reg_fail('Method not allowed.', [], 405);
+}
+
+if (!b2b_csrf_valid()) {
+    b2b_reg_fail('Security check failed. Please refresh the page and try again.', [], 403);
 }
 
 if (!empty($_POST['website_hp'])) {

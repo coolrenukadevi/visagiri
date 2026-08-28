@@ -1,4 +1,5 @@
 <?php
+ob_start();
 $ADMIN_PAGE_TITLE = 'Partner Profile';
 $ADMIN_ACTIVE_NAV = 'b2b-partners';
 require __DIR__ . '/includes/layout-top.php';
@@ -20,6 +21,7 @@ $actionMessage = '';
 $actionError = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    b2b_csrf_require_or_403();
     $action = $_POST['action'] ?? '';
 
     if ($action === 'change_status' && b2b_can_manage_enrollment()) {

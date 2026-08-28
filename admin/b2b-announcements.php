@@ -16,6 +16,7 @@ $actionMessage = '';
 $actionError = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    b2b_csrf_require_or_403();
     $action = $_POST['action'] ?? '';
 
     if ($action === 'publish') {

@@ -3,6 +3,23 @@
 </div>
 <script>
 (function () {
+    // CSRF: inject the per-session B2B token into every POST form on the
+    // page — see admin/includes/layout-bottom.php for the matching
+    // staff-side copy of this comment.
+    var csrfMeta = document.querySelector('meta[name="b2b-csrf-token"]');
+    if (csrfMeta) {
+        var csrfToken = csrfMeta.content;
+        document.querySelectorAll('form').forEach(function (f) {
+            if ((f.method || '').toLowerCase() !== 'post') { return; }
+            if (f.querySelector('input[name="b2b_csrf"]')) { return; }
+            var inp = document.createElement('input');
+            inp.type = 'hidden'; inp.name = 'b2b_csrf'; inp.value = csrfToken;
+            f.appendChild(inp);
+        });
+    }
+})();
+
+(function () {
     var toggle = document.getElementById('ppSidebarToggle');
     var sidebar = document.getElementById('ppSidebar');
     if (toggle && sidebar) {

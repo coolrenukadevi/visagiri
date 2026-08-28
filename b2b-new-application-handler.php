@@ -19,6 +19,7 @@
  */
 header('Content-Type: application/json');
 require_once __DIR__ . '/includes/partner-auth.php';
+require_once __DIR__ . '/includes/b2b-csrf.php';
 require_once __DIR__ . '/includes/countries-data.php';
 partner_require_login();
 
@@ -35,6 +36,10 @@ if (!partner_has_permission('create_application')) {
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     b2b_app_fail('Method not allowed.', [], 405);
+}
+
+if (!b2b_csrf_valid()) {
+    b2b_app_fail('Security check failed. Please refresh the page and try again.', [], 403);
 }
 
 $pdo = b2b_db();

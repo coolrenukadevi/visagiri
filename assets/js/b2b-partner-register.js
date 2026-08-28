@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         otpStatus.textContent = 'Sending code...';
         otpStatus.className = 'b2b-otp-status';
-        var fd = new URLSearchParams({ email: email, purpose: 'register' });
+        var fd = new URLSearchParams({ email: email, purpose: 'register', b2b_csrf: form.b2b_csrf.value });
         fetch('b2b-otp-send.php', { method: 'POST', body: fd })
             .then(function (r) { return r.json(); })
             .then(function (data) {
@@ -168,7 +168,7 @@ document.addEventListener('DOMContentLoaded', function () {
             otpStatus.className = 'b2b-otp-status is-error';
             return;
         }
-        var fd = new URLSearchParams({ email: email, purpose: 'register', code: code });
+        var fd = new URLSearchParams({ email: email, purpose: 'register', code: code, b2b_csrf: form.b2b_csrf.value });
         fetch('b2b-otp-verify.php', { method: 'POST', body: fd })
             .then(function (r) { return r.json(); })
             .then(function (data) {

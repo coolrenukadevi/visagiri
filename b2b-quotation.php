@@ -26,6 +26,7 @@ $actionMessage = '';
 $actionError = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $quotation['status'] === 'Sent') {
+    b2b_csrf_require_or_403();
     $action = $_POST['action'] ?? '';
     $now = gmdate('c');
 

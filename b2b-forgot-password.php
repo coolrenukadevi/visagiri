@@ -2,6 +2,7 @@
 $page_title = "Forgot Password &ndash; B2B Partner Portal &ndash; Visa Agency";
 $page_description = "Reset the password for your VisaAgency.in B2B Partner Portal account.";
 require_once __DIR__ . '/includes/partner-auth.php';
+require_once __DIR__ . '/includes/b2b-csrf.php';
 if (!empty($_SESSION['partner_user'])) {
     header('Location: b2b-dashboard.php');
     exit;
@@ -32,6 +33,7 @@ include __DIR__ . '/includes/header.php';
                     <h2 class="b2b-auth-title">Forgot Password</h2>
 
                     <form id="b2bForgotForm" novalidate>
+                        <input type="hidden" name="b2b_csrf" value="<?php echo htmlspecialchars(b2b_csrf_token()); ?>">
                         <!-- Step A: request a code -->
                         <div class="b2b-auth-step" data-fp-step="1">
                             <p class="b2b-reg-sub">Enter the email address registered with your partner account. If it matches an account, we'll email you a 6-digit reset code.</p>

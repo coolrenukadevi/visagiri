@@ -15,6 +15,25 @@
 
 <script>
 (function () {
+    // CSRF: inject the per-session B2B token into every POST form on the
+    // page, so b2b_csrf_require_or_403() has something to check without
+    // every individual admin/b2b-*.php form needing its own hidden field.
+    // Non-B2B admin forms silently carry an unused extra field — harmless,
+    // since only B2B handlers call the verify function.
+    var csrfMeta = document.querySelector('meta[name="b2b-csrf-token"]');
+    if (csrfMeta) {
+        var csrfToken = csrfMeta.content;
+        document.querySelectorAll('form').forEach(function (f) {
+            if ((f.method || '').toLowerCase() !== 'post') { return; }
+            if (f.querySelector('input[name="b2b_csrf"]')) { return; }
+            var inp = document.createElement('input');
+            inp.type = 'hidden'; inp.name = 'b2b_csrf'; inp.value = csrfToken;
+            f.appendChild(inp);
+        });
+    }
+})();
+
+(function () {
     var toggle = document.getElementById('crmSidebarToggle');
     var sidebar = document.getElementById('crmSidebar');
     if (toggle && sidebar) {

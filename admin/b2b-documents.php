@@ -13,12 +13,14 @@ if (!b2b_can_verify_documents()) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'run_expiry_check' && b2b_can_verify_documents()) {
+    b2b_csrf_require_or_403();
     $expiryResult = b2b_check_document_expiries($pdo);
     header('Location: b2b-documents.php?expiry_ran=1' . (isset($_GET['status']) ? '&status=' . urlencode($_GET['status']) : ''));
     exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    b2b_csrf_require_or_403();
     $action = $_POST['action'] ?? '';
     $docId = (int) ($_POST['doc_id'] ?? 0);
 

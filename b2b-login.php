@@ -2,6 +2,7 @@
 $page_title = "B2B Partner Login &ndash; Visa Agency";
 $page_description = "Log in to your VisaAgency.in B2B Partner Portal to manage visa applications, quotations, invoices and documents.";
 require_once __DIR__ . '/includes/partner-auth.php';
+require_once __DIR__ . '/includes/b2b-csrf.php';
 if (!empty($_SESSION['partner_user'])) {
     header('Location: b2b-dashboard.php');
     exit;
@@ -35,6 +36,7 @@ include __DIR__ . '/includes/header.php';
                     <div class="b2b-form-error" id="b2bLoginAlert" role="alert" hidden></div>
 
                     <form id="b2bLoginForm" novalidate>
+                        <input type="hidden" name="b2b_csrf" value="<?php echo htmlspecialchars(b2b_csrf_token()); ?>">
                         <div class="b2b-field b2b-field-full">
                             <label for="loginIdentifier">Username or Email *</label>
                             <input type="text" id="loginIdentifier" name="identifier" required autocomplete="username">

@@ -124,6 +124,25 @@ $addedThisMonth = b2bKpi($pdo, "SELECT COUNT(*) FROM b2b_partners WHERE created_
         </tbody>
     </table>
     </div>
+    <div style="padding:16px;">
+    <?php foreach ($partners as $p): ?>
+    <div class="crm-row-card">
+        <div class="rc-top">
+            <div><div class="rc-name"><?php echo htmlspecialchars($p['company_name']); ?></div><div class="rc-ref"><?php echo htmlspecialchars($p['application_ref']); ?></div></div>
+            <span class="crm-status-badge <?php echo b2b_status_class($p['status']); ?>"><?php echo htmlspecialchars($p['status']); ?></span>
+        </div>
+        <div class="rc-meta"><?php echo htmlspecialchars($p['contact_name']); ?> &middot; <?php echo htmlspecialchars($p['city'] ?: '—'); ?> &middot; <?php echo (int) $p['visa_case_count']; ?> visa case<?php echo (int) $p['visa_case_count'] === 1 ? '' : 's'; ?></div>
+        <div class="rc-actions">
+            <a href="tel:<?php echo htmlspecialchars($p['contact_mobile']); ?>"><i class="fa-solid fa-phone"></i></a>
+            <a href="mailto:<?php echo htmlspecialchars($p['contact_email']); ?>"><i class="fa-solid fa-envelope"></i></a>
+            <a href="b2b-partner.php?ref=<?php echo urlencode($p['application_ref']); ?>"><i class="fa-solid fa-eye"></i> View</a>
+        </div>
+    </div>
+    <?php endforeach; ?>
+    <?php if (!$partners): ?>
+    <div class="crm-empty">No B2B partner applications match this filter.</div>
+    <?php endif; ?>
+    </div>
 </div>
 
 <?php require __DIR__ . '/includes/layout-bottom.php'; ?>
