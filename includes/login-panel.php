@@ -69,7 +69,7 @@
         <a href="/forgot-password?type=partner">Forgot Password?</a>
       </div>
       <button type="submit" class="btn btn-primary btn-block">Partner Login</button>
-      <p class="form-note">Want to become a partner? <a href="/partners">Apply here</a></p>
+      <p class="form-note">Want to become a partner? <a href="/partner/register">Apply here</a></p>
     </form>
 
     <!-- Employee -->

@@ -43,7 +43,7 @@ $enquiries = $pdo->query(
               <form method="post" class="flex gap-2">
                 <?= csrf_field() ?>
                 <input type="hidden" name="ticket_id" value="<?= (int) $t['id'] ?>">
-                <select name="status" onchange="this.form.submit()">
+                <select name="status" class="js-auto-submit">
                   <?php foreach (['open', 'in_progress', 'resolved', 'closed'] as $s): ?>
                     <option value="<?= e($s) ?>" <?= $t['status'] === $s ? 'selected' : '' ?>><?= e(ucfirst(str_replace('_', ' ', $s))) ?></option>
                   <?php endforeach; ?>

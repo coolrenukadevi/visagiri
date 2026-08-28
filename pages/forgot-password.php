@@ -28,7 +28,7 @@ $label = $typeLabels[$type] ?? 'Account';
     </div>
   </div>
 </section>
-<script>
+<script nonce="<?= csp_nonce() ?>">
 document.getElementById('forgot-password-form').addEventListener('submit', function (e) {
   e.preventDefault();
   var form = e.target;

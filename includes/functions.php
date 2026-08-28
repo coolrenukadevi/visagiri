@@ -34,6 +34,45 @@ function generate_reference(string $prefix): string
     return sprintf('%s-%s-%s', $prefix, $year, $random);
 }
 
+/**
+ * Generic sequential code generator: PREFIX-YEAR-NNNNNN.
+ * $table/$column must NEVER be derived from user input — callers always
+ * pass internal literals, so this is not a SQL-injection surface.
+ */
+function generate_sequential_code(PDO $pdo, string $table, string $column, string $prefix): string
+{
+    $year = date('Y');
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM {$table} WHERE {$column} LIKE :pattern");
+    $stmt->execute(['pattern' => "{$prefix}-{$year}-%"]);
+    $count = (int) $stmt->fetchColumn() + 1;
+    return sprintf('%s-%s-%06d', $prefix, $year, $count);
+}
+
+function generate_partner_application_code(PDO $pdo): string
+{
+    return generate_sequential_code($pdo, 'partner_applications', 'application_code', 'PYN-PARTNER');
+}
+
+function generate_customer_application_code(PDO $pdo): string
+{
+    return generate_sequential_code($pdo, 'customer_applications', 'application_code', 'PYN-CUST');
+}
+
+function generate_proposal_code(PDO $pdo): string
+{
+    return generate_sequential_code($pdo, 'proposals', 'proposal_code', 'PYN-PROP');
+}
+
+function generate_ticket_code(PDO $pdo): string
+{
+    return generate_sequential_code($pdo, 'support_tickets', 'ticket_code', 'PYN-TKT');
+}
+
+function generate_payment_link_ref(PDO $pdo): string
+{
+    return generate_sequential_code($pdo, 'payment_links', 'link_ref', 'PYN-LINK');
+}
+
 /** Next sequential enquiry code: PAY-ENQ-2026-000001 */
 function generate_enquiry_code(PDO $pdo): string
 {

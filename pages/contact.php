@@ -57,7 +57,7 @@ $activeIntent = $intentMap[$intent] ?? 'general';
   </div>
 </section>
 
-<script>
+<script nonce="<?= csp_nonce() ?>">
 document.querySelectorAll('.contact-tab').forEach(function (tab) {
   tab.addEventListener('click', function () {
     document.querySelectorAll('.contact-tab').forEach(function (t) { t.classList.remove('is-active'); });

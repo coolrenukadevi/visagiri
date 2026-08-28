@@ -20,6 +20,7 @@ require_once __DIR__ . '/database.php';
 require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/security.php';
 require_once __DIR__ . '/auth.php';
+require_once __DIR__ . '/partner.php';
 
 /**
  * Any exception that escapes a page (most commonly a database outage) ends

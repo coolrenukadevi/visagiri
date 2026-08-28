@@ -5,6 +5,22 @@
 
 declare(strict_types=1);
 
+/**
+ * Per-request CSP nonce. Generated once and cached for the life of the
+ * request; every inline <script> in the codebase must carry
+ * nonce="<?= csp_nonce() ?>" or the browser silently drops it — there is
+ * no 'unsafe-inline' fallback, so an inline script missing the nonce is a
+ * bug, not a style choice.
+ */
+function csp_nonce(): string
+{
+    static $nonce = null;
+    if ($nonce === null) {
+        $nonce = base64_encode(random_bytes(16));
+    }
+    return $nonce;
+}
+
 /** Send hardened security headers. Call once, early. */
 function security_headers(): void
 {
@@ -12,7 +28,13 @@ function security_headers(): void
     header('X-Frame-Options: DENY');
     header('Referrer-Policy: strict-origin-when-cross-origin');
     header('Permissions-Policy: geolocation=(), microphone=(), camera=()');
-    header("Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self' data:; frame-ancestors 'none'");
+    $nonce = csp_nonce();
+    header(
+        "Content-Security-Policy: default-src 'self'; img-src 'self' data:; "
+        . "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+        . "font-src 'self' data: https://fonts.gstatic.com; "
+        . "script-src 'self' 'nonce-{$nonce}'; frame-ancestors 'none'"
+    );
     if (SESSION_COOKIE_SECURE) {
         header('Strict-Transport-Security: max-age=63072000; includeSubDomains');
     }
@@ -178,4 +200,74 @@ function store_upload(array $file, string $subdir): string
     $destination = $dir . '/' . $filename;
     move_uploaded_file($file['tmp_name'], $destination);
     return $destination;
+}
+
+/**
+ * Validate a KYC/business document upload (partner onboarding, customer
+ * enrollment). Wider format allowlist than CVs: PDF plus common photo
+ * formats, since mobile partners frequently camera-capture ID/address
+ * proof documents rather than scan them.
+ *
+ * Antivirus scanning integration point: if a scanning service/daemon is
+ * available on the host (e.g. ClamAV via a local socket), call it here
+ * before returning null — this function is the single choke point every
+ * document upload passes through, so wiring a scanner in later requires
+ * touching only this one place.
+ */
+function validate_document_upload(array $file): ?string
+{
+    if (!isset($file['error']) || $file['error'] !== UPLOAD_ERR_OK) {
+        return 'Upload failed. Please try again.';
+    }
+    if ($file['size'] > UPLOAD_MAX_BYTES) {
+        return 'File exceeds the maximum allowed size of 5MB.';
+    }
+
+    $allowedExt = ['pdf', 'jpg', 'jpeg', 'png'];
+    $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    if (!in_array($ext, $allowedExt, true)) {
+        return 'Only PDF, JPG and PNG files are accepted.';
+    }
+
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    $mime = finfo_file($finfo, $file['tmp_name']);
+    finfo_close($finfo);
+
+    $allowedMime = ['application/pdf', 'image/jpeg', 'image/png'];
+    if (!in_array($mime, $allowedMime, true)) {
+        return 'The uploaded file does not appear to be a valid PDF, JPG or PNG.';
+    }
+
+    return null;
+}
+
+/**
+ * Encrypt a sensitive value (e.g. a bank account number) at rest using
+ * AES-256-GCM, keyed from APP_SECRET. Returns raw binary suitable for a
+ * VARBINARY column. Never render the decrypted value in full in the UI —
+ * pair with a masked last-4 display column instead.
+ */
+function encrypt_sensitive(string $plaintext): string
+{
+    $key = hash('sha256', APP_SECRET, true);
+    $iv = random_bytes(12);
+    $tag = '';
+    $ciphertext = openssl_encrypt($plaintext, 'aes-256-gcm', $key, OPENSSL_RAW_DATA, $iv, $tag);
+    return $iv . $tag . $ciphertext;
+}
+
+function decrypt_sensitive(string $encoded): ?string
+{
+    $key = hash('sha256', APP_SECRET, true);
+    $iv = substr($encoded, 0, 12);
+    $tag = substr($encoded, 12, 16);
+    $ciphertext = substr($encoded, 28);
+    $plaintext = openssl_decrypt($ciphertext, 'aes-256-gcm', $key, OPENSSL_RAW_DATA, $iv, $tag);
+    return $plaintext === false ? null : $plaintext;
+}
+
+/** Mask an account/card-style number for display, keeping only the last 4 digits. */
+function mask_account_number(string $last4): string
+{
+    return '•••• •••• •••• ' . $last4;
 }

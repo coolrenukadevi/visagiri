@@ -80,9 +80,15 @@
     if (e.key === 'Escape' && loginPanel && loginPanel.classList.contains('is-open')) closeLoginPanel();
   });
 
-  if (window.location.search.indexOf('login=required') !== -1) {
-    openLoginPanel(null);
-  }
+  (function () {
+    var params = new URLSearchParams(window.location.search);
+    var loginParam = params.get('login');
+    if (loginParam === 'required') {
+      openLoginPanel(null);
+    } else if (loginParam && ['customer', 'partner', 'employee', 'hr'].indexOf(loginParam) !== -1) {
+      openLoginPanel(loginParam);
+    }
+  })();
 
   /* Role tab switching */
   var roleTabs = document.querySelectorAll('.role-tab');

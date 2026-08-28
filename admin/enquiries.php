@@ -52,7 +52,7 @@ $rows = $stmt->fetchAll();
               <form method="post" class="flex gap-2">
                 <?= csrf_field() ?>
                 <input type="hidden" name="enquiry_id" value="<?= (int) $row['id'] ?>">
-                <select name="status" onchange="this.form.submit()">
+                <select name="status" class="js-auto-submit">
                   <?php foreach (['new', 'in_progress', 'responded', 'closed'] as $s): ?>
                     <option value="<?= e($s) ?>" <?= $row['status'] === $s ? 'selected' : '' ?>><?= e(ucfirst(str_replace('_', ' ', $s))) ?></option>
                   <?php endforeach; ?>

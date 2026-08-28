@@ -107,7 +107,7 @@ foreach ($jobs as $job) {
 </div>
 
 <?php if (!empty($jobs)): ?>
-<script>
+<script nonce="<?= csp_nonce() ?>">
 (function () {
   var buttons = document.querySelectorAll('.filter-btn');
   var rows = document.querySelectorAll('.job-row');

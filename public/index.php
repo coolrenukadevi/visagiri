@@ -33,14 +33,43 @@ if (($segments[0] ?? '') === 'api') {
 }
 
 // ---------------------------------------------------------------------
-// Authenticated dashboard routes: /{area}/{page}
+// Public partner entry points — these sit under /partner/... but are
+// NOT authenticated, so they're handled before the dashboard-area gate
+// below (which would otherwise treat any /partner/* path as protected).
+// ---------------------------------------------------------------------
+if (($segments[0] ?? '') === 'partner' && ($segments[1] ?? '') === 'register') {
+    ob_start();
+    include __DIR__ . '/../pages/partner-register.php';
+    $page_body = ob_get_clean();
+
+    include __DIR__ . '/../includes/site-head.php';
+    include __DIR__ . '/../includes/header.php';
+    echo '<main id="main-content">' . $page_body . '</main>';
+    include __DIR__ . '/../includes/footer.php';
+    include __DIR__ . '/../includes/site-foot.php';
+    exit;
+}
+if (($segments[0] ?? '') === 'partner' && ($segments[1] ?? '') === 'login') {
+    header('Location: /?login=partner');
+    exit;
+}
+
+// ---------------------------------------------------------------------
+// Authenticated dashboard routes: /{area}/{page}[/{id}]
 // ---------------------------------------------------------------------
 $dashboardAreas = [
     'customer'    => ['roles' => ['customer'],                         'dir' => 'customer', 'pages' => ['dashboard', 'transactions', 'profile']],
-    'partner'     => ['roles' => ['partner'],                          'dir' => 'partner',  'pages' => ['dashboard', 'transactions', 'settlements']],
+    'partner'     => ['roles' => ['partner'],                          'dir' => 'partner',  'pages' => [
+        'dashboard', 'onboarding', 'customers', 'enroll-customer', 'products', 'transactions',
+        'settlements', 'commissions', 'proposals', 'payment-links', 'performance', 'support',
+        'resources', 'marketing', 'profile', 'team',
+    ]],
     'employee'    => ['roles' => ['employee', 'admin', 'super_admin'], 'dir' => 'employee', 'pages' => ['dashboard', 'tasks']],
     'hrms'        => ['roles' => ['hr', 'admin', 'super_admin'],       'dir' => 'hrms',     'pages' => ['dashboard', 'employees', 'recruitment', 'attendance']],
-    'admin'       => ['roles' => ['admin', 'super_admin'],             'dir' => 'admin',    'pages' => ['dashboard', 'users', 'transactions', 'cms', 'enquiries']],
+    'admin'       => ['roles' => ['admin', 'super_admin'],             'dir' => 'admin',    'pages' => [
+        'dashboard', 'users', 'transactions', 'cms', 'enquiries',
+        'partner-applications', 'products', 'commission-rules', 'customer-applications',
+    ]],
     'super-admin' => ['roles' => ['super_admin'],                      'dir' => 'admin',    'pages' => ['dashboard']],
 ];
 
@@ -58,6 +87,7 @@ if (isset($dashboardAreas[$segments[0] ?? ''])) {
     $auth_user = require_role($area['roles']);
     $dashboard_area = $areaSlug;
     $dashboard_page = $page;
+    $route_param = $segments[2] ?? null; // e.g. the {id} in /partner/customers/{id}
     $file = __DIR__ . '/../' . $area['dir'] . '/' . $page . '.php';
 
     if (!is_file($file)) {

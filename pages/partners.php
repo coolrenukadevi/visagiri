@@ -11,8 +11,8 @@ $page_meta = [
       <h1>Grow your business with the Paynancial Partner Program.</h1>
       <p class="lead">Partner with us as a reseller, referral or technology partner and unlock commission on every business you bring onboard.</p>
       <div class="hero-actions">
-        <button type="button" class="btn btn-primary" data-login-open="partner">Partner Login</button>
-        <a href="/contact?intent=partner" class="btn btn-outline">Become a Partner</a>
+        <a href="/partner/register" class="btn btn-primary">Join Paynancial Partner Network</a>
+        <button type="button" class="btn btn-outline" data-login-open="partner">Partner Login</button>
       </div>
     </div>
   </div>
@@ -29,13 +29,13 @@ $page_meta = [
 <section>
   <div class="container">
     <div class="section-head reveal">
-      <span class="eyebrow">Partner Portal</span>
-      <h2>Everything a partner needs, in one dashboard.</h2>
-      <p>Track customers, transactions, settlements and commission from your dedicated Partner Portal.</p>
+      <span class="eyebrow">Paynancial Partner Hub</span>
+      <h2>Discover, enroll, recommend and grow — in one platform.</h2>
+      <p>Enroll customers, get solution recommendations, submit KYC, track approvals, monitor transactions and manage commission without leaving the Partner Hub.</p>
     </div>
-    <div class="pill-list reveal">
-      <?php foreach (['KYC onboarding', 'Commission tracking', 'Settlement tracking', 'API keys & webhooks', 'Downloadable reports'] as $f): ?>
-        <span class="pill"><?= e($f) ?></span>
+    <div class="journey reveal">
+      <?php foreach (['Discover', 'Enroll', 'Recommend', 'Submit', 'Activate', 'Manage', 'Grow', 'Earn'] as $i => $step): ?>
+        <div class="journey-step"><div class="num"><?= $i + 1 ?></div><strong><?= e($step) ?></strong></div>
       <?php endforeach; ?>
     </div>
   </div>
@@ -43,10 +43,10 @@ $page_meta = [
 
 <section class="section-subtle">
   <div class="container">
-    <div class="cta-band reveal" style="background:linear-gradient(120deg, var(--orange-600), var(--navy-900));">
+    <div class="cta-band reveal">
       <h2>Ready to become a Paynancial partner?</h2>
       <div class="hero-actions" style="justify-content:center;margin-top:24px;">
-        <a href="/contact?intent=partner" class="btn btn-primary">Apply Now</a>
+        <a href="/partner/register" class="btn btn-primary">Apply Now</a>
       </div>
     </div>
   </div>
