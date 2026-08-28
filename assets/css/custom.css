@@ -623,9 +623,11 @@
     border-radius: 8px;
     font-size: 14px;
     outline: none;
+    color: var(--header);
 }
 .country-explorer-search input:focus {
     border-color: var(--theme);
+    color: var(--header);
 }
 .country-explorer-filters {
     display: flex;
