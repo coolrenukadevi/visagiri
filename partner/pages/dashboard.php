@@ -107,6 +107,8 @@ render_partner_email_verification_banner($partner);
     <input class="form-input" type="text" readonly value="<?= e($referralLink) ?>" onclick="this.select()">
 </div>
 
+<p style="margin-bottom:var(--space-6)"><a href="/partner/application-create/" class="btn btn-primary">+ New Application</a> <a href="/partner/applications/" class="btn btn-outline">My Applications</a></p>
+
 <div class="stats-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:var(--space-4);margin-bottom:var(--space-6)">
     <div class="card"><div class="card-title" style="font-size:var(--font-size-2xl)"><?= count($referredCustomers) ?></div><p>Referred Customers</p></div>
     <div class="card"><div class="card-title" style="font-size:var(--font-size-2xl)">₹<?= number_format($totalPaid, 2) ?></div><p>Commission Paid</p></div>
@@ -124,7 +126,7 @@ render_partner_email_verification_banner($partner);
         <?php foreach ($referredCustomers as $c): ?>
         <tr>
             <td><?= e($c['first_name'] . ' ' . ($c['last_name'] ?? '')) ?> (<?= e($c['customer_reference_no']) ?>)</td>
-            <td><?= (int) $c['application_count'] ?></td>
+            <td><?= $c['application_count'] > 0 ? '<a href="/partner/applications/">' . (int) $c['application_count'] . '</a>' : '0' ?></td>
             <td><?= e(date('d M Y', strtotime((string) $c['created_at']))) ?></td>
         </tr>
         <?php endforeach; ?>

@@ -69,6 +69,16 @@ switch ($segments[1] ?? null) {
         require __DIR__ . '/pages/notifications.php';
         exit;
 
+    case 'applications':
+        require_partner_login();
+        require __DIR__ . '/pages/applications.php';
+        exit;
+
+    case 'application-create':
+        require_partner_login();
+        require __DIR__ . '/pages/application-create.php';
+        exit;
+
     default:
         require __DIR__ . '/../pages/404.php';
         exit;
