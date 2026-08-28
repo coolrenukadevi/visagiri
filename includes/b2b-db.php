@@ -44,6 +44,12 @@ const B2B_DOC_TYPES = [
     'Other' => 'Other Supporting Document',
 ];
 const B2B_DOC_STATUSES = ['Pending', 'Verified', 'Rejected', 'Expired'];
+const B2B_CORRECTION_FIELD_TYPES = [
+    'company_name' => 'Company Name',
+    'contact_name' => 'Contact Person Name',
+    'document_name' => 'Document Name',
+];
+const B2B_CORRECTION_STATUSES = ['Pending', 'Approved', 'Rejected'];
 /** Document types whose expiry is worth monitoring — see Phase 9. */
 const B2B_DOC_TYPES_WITH_EXPIRY = ['GST', 'TradeLicense', 'IATA', 'CompanyRegistration', 'SignatoryID'];
 /** Days-before-expiry thresholds that trigger a one-time alert each (see b2b_check_document_expiries()). */
@@ -178,7 +184,31 @@ function b2b_db(): PDO
         replaces_document_id INTEGER REFERENCES b2b_partner_documents(id),
         verified_by TEXT,
         verified_at TEXT,
-        uploaded_at TEXT NOT NULL
+        uploaded_at TEXT NOT NULL,
+        deleted_at TEXT,
+        deleted_by TEXT
+    )");
+
+    // Typo/name-correction requests — a partner requests a fix (their
+    // company name, primary contact name, or a document's display label)
+    // but the change never applies itself; a Super Admin/B2B Admin has to
+    // review and approve it first (spec: "change the name approval will
+    // be from us"). Staff can also skip the request entirely and edit the
+    // same fields directly — both paths write to b2b_audit_logs.
+    $pdo->exec("CREATE TABLE IF NOT EXISTS b2b_correction_requests (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        partner_id INTEGER NOT NULL REFERENCES b2b_partners(id),
+        field_type TEXT NOT NULL,
+        target_document_id INTEGER REFERENCES b2b_partner_documents(id),
+        old_value TEXT NOT NULL,
+        new_value TEXT NOT NULL,
+        reason TEXT,
+        status TEXT NOT NULL DEFAULT 'Pending',
+        requested_by TEXT NOT NULL,
+        requested_at TEXT NOT NULL,
+        reviewed_by TEXT,
+        reviewed_at TEXT,
+        review_note TEXT
     )");
 
     $pdo->exec("CREATE TABLE IF NOT EXISTS b2b_tiers (
@@ -351,6 +381,12 @@ function b2b_db(): PDO
     // before Phase 5's partner login exists — without exposing documents
     // via the sequential, guessable application_ref alone.
     b2b_ensure_column($pdo, 'b2b_partners', 'upload_token', 'TEXT');
+    // Recycle bin: who archived/deleted a partner or document, alongside the
+    // existing archived_at/deleted_at timestamps, so a restore action has
+    // someone to attribute the original removal to in the audit trail.
+    b2b_ensure_column($pdo, 'b2b_partners', 'archived_by', 'TEXT');
+    b2b_ensure_column($pdo, 'b2b_partner_documents', 'deleted_at', 'TEXT');
+    b2b_ensure_column($pdo, 'b2b_partner_documents', 'deleted_by', 'TEXT');
 
     b2b_seed_default_settings($pdo);
     b2b_seed_default_tiers($pdo);
@@ -510,6 +546,28 @@ function b2b_notify_partner(PDO $pdo, array $partner, string $subject, string $b
         '',
         $subject
     );
+}
+
+/**
+ * Applies an APPROVED correction request to its target row — the one place
+ * that actually mutates company_name / contact_name / a document's display
+ * filename, so the request table and the live data can never drift apart.
+ * Caller is responsible for checking $request['status'] before calling this.
+ */
+function b2b_apply_correction(PDO $pdo, array $request): void
+{
+    $partnerId = (int) $request['partner_id'];
+    $now = gmdate('c');
+    if ($request['field_type'] === 'company_name') {
+        $pdo->prepare('UPDATE b2b_partners SET company_name = ?, updated_at = ? WHERE id = ?')
+            ->execute([$request['new_value'], $now, $partnerId]);
+    } elseif ($request['field_type'] === 'contact_name') {
+        $pdo->prepare('UPDATE b2b_partners SET contact_name = ?, updated_at = ? WHERE id = ?')
+            ->execute([$request['new_value'], $now, $partnerId]);
+    } elseif ($request['field_type'] === 'document_name' && $request['target_document_id']) {
+        $pdo->prepare('UPDATE b2b_partner_documents SET original_filename = ? WHERE id = ? AND partner_id = ?')
+            ->execute([$request['new_value'], (int) $request['target_document_id'], $partnerId]);
+    }
 }
 
 /**

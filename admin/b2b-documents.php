@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $statusFilter = trim($_GET['status'] ?? 'Pending');
-$where = "d.stored_filename IS NOT NULL";
+$where = "d.stored_filename IS NOT NULL AND d.deleted_at IS NULL";
 $params = [];
 if ($statusFilter !== '' && in_array($statusFilter, B2B_DOC_STATUSES, true)) {
     $where .= ' AND d.status = :status';
@@ -74,19 +74,19 @@ if ($statusFilter !== '' && in_array($statusFilter, B2B_DOC_STATUSES, true)) {
 $sql = "SELECT d.*, p.application_ref, p.company_name, p.city
     FROM b2b_partner_documents d
     JOIN b2b_partners p ON p.id = d.partner_id
-    WHERE $where AND d.id = (SELECT MAX(id) FROM b2b_partner_documents d2 WHERE d2.partner_id = d.partner_id AND d2.doc_type = d.doc_type)
+    WHERE $where AND d.id = (SELECT MAX(id) FROM b2b_partner_documents d2 WHERE d2.partner_id = d.partner_id AND d2.doc_type = d.doc_type AND d2.deleted_at IS NULL)
     ORDER BY d.uploaded_at ASC";
 $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $documents = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-$pendingCount = (int) $pdo->query("SELECT COUNT(*) FROM b2b_partner_documents WHERE status = 'Pending' AND stored_filename IS NOT NULL")->fetchColumn();
-$verifiedCount = (int) $pdo->query("SELECT COUNT(*) FROM b2b_partner_documents WHERE status = 'Verified'")->fetchColumn();
-$rejectedCount = (int) $pdo->query("SELECT COUNT(*) FROM b2b_partner_documents WHERE status = 'Rejected'")->fetchColumn();
+$pendingCount = (int) $pdo->query("SELECT COUNT(*) FROM b2b_partner_documents WHERE status = 'Pending' AND stored_filename IS NOT NULL AND deleted_at IS NULL")->fetchColumn();
+$verifiedCount = (int) $pdo->query("SELECT COUNT(*) FROM b2b_partner_documents WHERE status = 'Verified' AND deleted_at IS NULL")->fetchColumn();
+$rejectedCount = (int) $pdo->query("SELECT COUNT(*) FROM b2b_partner_documents WHERE status = 'Rejected' AND deleted_at IS NULL")->fetchColumn();
 
 $expiringPlaceholders = implode(',', array_fill(0, count(B2B_DOC_TYPES_WITH_EXPIRY), '?'));
 $expiringStmt = $pdo->prepare("SELECT d.*, p.application_ref, p.company_name FROM b2b_partner_documents d JOIN b2b_partners p ON p.id = d.partner_id
-    WHERE d.status = 'Verified' AND d.doc_type IN ($expiringPlaceholders) AND d.expiry_date IS NOT NULL AND d.expiry_date != ''
+    WHERE d.deleted_at IS NULL AND d.status = 'Verified' AND d.doc_type IN ($expiringPlaceholders) AND d.expiry_date IS NOT NULL AND d.expiry_date != ''
     AND d.expiry_date <= ? ORDER BY d.expiry_date ASC");
 $expiringStmt->execute(array_merge(B2B_DOC_TYPES_WITH_EXPIRY, [gmdate('Y-m-d', strtotime('+30 days'))]));
 $expiringDocuments = $expiringStmt->fetchAll(PDO::FETCH_ASSOC);

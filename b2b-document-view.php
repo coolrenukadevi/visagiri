@@ -22,7 +22,7 @@ $stmt = $pdo->prepare('SELECT d.*, p.application_ref, p.upload_token FROM b2b_pa
 $stmt->execute([$id]);
 $doc = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if (!$doc || !$doc['stored_filename'] || !$doc['upload_token'] || !hash_equals($doc['upload_token'], $token)) {
+if (!$doc || !$doc['stored_filename'] || $doc['deleted_at'] || !$doc['upload_token'] || !hash_equals($doc['upload_token'], $token)) {
     http_response_code(404);
     exit('Document not found.');
 }

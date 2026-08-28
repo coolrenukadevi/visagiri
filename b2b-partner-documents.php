@@ -11,8 +11,8 @@ $partner = ($ref !== '' && $token !== '') ? b2b_partner_by_token($pdo, $ref, $to
 
 $existingDocs = [];
 if ($partner) {
-    $stmt = $pdo->prepare('SELECT * FROM b2b_partner_documents WHERE partner_id = ? AND id IN (
-        SELECT MAX(id) FROM b2b_partner_documents WHERE partner_id = ? GROUP BY doc_type
+    $stmt = $pdo->prepare('SELECT * FROM b2b_partner_documents WHERE partner_id = ? AND deleted_at IS NULL AND id IN (
+        SELECT MAX(id) FROM b2b_partner_documents WHERE partner_id = ? AND deleted_at IS NULL GROUP BY doc_type
     )');
     $stmt->execute([$partner['id'], $partner['id']]);
     foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $d) {

@@ -41,7 +41,7 @@ $ppNavItems = [
     ['key' => 'messages', 'label' => 'Messages', 'icon' => 'comments', 'href' => 'b2b-messages.php'],
     ['key' => 'team', 'label' => 'Team Management', 'icon' => 'people-group', 'href' => 'b2b-team.php', 'permission' => 'manage_users'],
     ['key' => 'reports', 'label' => 'Reports', 'icon' => 'chart-line', 'href' => 'b2b-reports-partner.php'],
-    ['key' => 'profile', 'label' => 'Company Profile', 'icon' => 'building', 'href' => 'b2b-profile.php', 'soon' => true],
+    ['key' => 'profile', 'label' => 'Company Profile', 'icon' => 'building', 'href' => 'b2b-profile.php'],
     ['key' => 'support', 'label' => 'Support', 'icon' => 'headset', 'href' => 'b2b-support.php', 'soon' => true],
 ];
 ?>

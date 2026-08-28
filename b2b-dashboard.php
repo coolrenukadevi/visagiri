@@ -29,7 +29,7 @@ if ($ppPartner['assigned_manager_id']) {
 
 $docExpiryPlaceholders = implode(',', array_fill(0, count(B2B_DOC_TYPES_WITH_EXPIRY), '?'));
 $docExpiryStmt = $pdo->prepare("SELECT doc_type, expiry_date, status FROM b2b_partner_documents
-    WHERE partner_id = ? AND doc_type IN ($docExpiryPlaceholders) AND expiry_date IS NOT NULL AND expiry_date != ''
+    WHERE partner_id = ? AND deleted_at IS NULL AND doc_type IN ($docExpiryPlaceholders) AND expiry_date IS NOT NULL AND expiry_date != ''
     AND (status = 'Expired' OR (status = 'Verified' AND expiry_date <= ?)) ORDER BY expiry_date ASC");
 $docExpiryStmt->execute(array_merge([$pid], B2B_DOC_TYPES_WITH_EXPIRY, [gmdate('Y-m-d', strtotime('+30 days'))]));
 $expiringDocs = $docExpiryStmt->fetchAll(PDO::FETCH_ASSOC);

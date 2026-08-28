@@ -274,12 +274,107 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $actionMessage = "Document \"{$result['filename']}\" added and marked Verified.";
         }
+    } elseif ($action === 'archive_partner' && b2b_can_manage_enrollment()) {
+        $now = gmdate('c');
+        $pdo->prepare('UPDATE b2b_partners SET archived_at = ?, archived_by = ? WHERE id = ?')->execute([$now, admin_name(), $partnerId]);
+        b2b_log_audit($pdo, 'partner', $partnerId, admin_name(), admin_role(), 'Moved partner to Recycle Bin', '', '');
+        $partner['archived_at'] = $now;
+        $partner['archived_by'] = admin_name();
+        $actionMessage = 'Partner moved to the Recycle Bin. It no longer appears in the Partners list.';
+    } elseif ($action === 'restore_partner' && b2b_can_manage_enrollment()) {
+        $pdo->prepare('UPDATE b2b_partners SET archived_at = NULL, archived_by = NULL WHERE id = ?')->execute([$partnerId]);
+        b2b_log_audit($pdo, 'partner', $partnerId, admin_name(), admin_role(), 'Restored partner from Recycle Bin', '', '');
+        $partner['archived_at'] = null;
+        $partner['archived_by'] = null;
+        $actionMessage = 'Partner restored.';
+    } elseif ($action === 'delete_document' && b2b_can_verify_documents()) {
+        $docId = (int) ($_POST['document_id'] ?? 0);
+        $dStmt = $pdo->prepare('SELECT * FROM b2b_partner_documents WHERE id = ? AND partner_id = ? AND deleted_at IS NULL');
+        $dStmt->execute([$docId, $partnerId]);
+        $doc = $dStmt->fetch(PDO::FETCH_ASSOC);
+        if (!$doc) {
+            $actionError = 'Document not found.';
+        } else {
+            $pdo->prepare('UPDATE b2b_partner_documents SET deleted_at = ?, deleted_by = ? WHERE id = ?')->execute([gmdate('c'), admin_name(), $docId]);
+            b2b_log_audit($pdo, 'partner', $partnerId, admin_name(), admin_role(), 'Moved document to Recycle Bin', $doc['doc_type'], $doc['original_filename']);
+            $actionMessage = "Document \"{$doc['original_filename']}\" moved to the Recycle Bin.";
+        }
+    } elseif ($action === 'restore_document' && b2b_can_verify_documents()) {
+        $docId = (int) ($_POST['document_id'] ?? 0);
+        $dStmt = $pdo->prepare('SELECT * FROM b2b_partner_documents WHERE id = ? AND partner_id = ? AND deleted_at IS NOT NULL');
+        $dStmt->execute([$docId, $partnerId]);
+        $doc = $dStmt->fetch(PDO::FETCH_ASSOC);
+        if (!$doc) {
+            $actionError = 'Document not found in the Recycle Bin.';
+        } else {
+            $pdo->prepare('UPDATE b2b_partner_documents SET deleted_at = NULL, deleted_by = NULL WHERE id = ?')->execute([$docId]);
+            b2b_log_audit($pdo, 'partner', $partnerId, admin_name(), admin_role(), 'Restored document from Recycle Bin', '', $doc['original_filename']);
+            $actionMessage = "Document \"{$doc['original_filename']}\" restored.";
+        }
+    } elseif ($action === 'edit_company_name' && b2b_can_manage_enrollment()) {
+        $newName = trim($_POST['new_value'] ?? '');
+        if ($newName === '') {
+            $actionError = 'Company name cannot be empty.';
+        } else {
+            $old = $partner['company_name'];
+            $pdo->prepare('UPDATE b2b_partners SET company_name = ?, updated_at = ? WHERE id = ?')->execute([$newName, gmdate('c'), $partnerId]);
+            b2b_log_audit($pdo, 'partner', $partnerId, admin_name(), admin_role(), 'Corrected company name (direct edit)', $old, $newName);
+            $partner['company_name'] = $newName;
+            $actionMessage = 'Company name updated.';
+        }
+    } elseif ($action === 'edit_contact_name' && b2b_can_manage_enrollment()) {
+        $newName = trim($_POST['new_value'] ?? '');
+        if ($newName === '') {
+            $actionError = 'Contact name cannot be empty.';
+        } else {
+            $old = $partner['contact_name'];
+            $pdo->prepare('UPDATE b2b_partners SET contact_name = ?, updated_at = ? WHERE id = ?')->execute([$newName, gmdate('c'), $partnerId]);
+            b2b_log_audit($pdo, 'partner', $partnerId, admin_name(), admin_role(), 'Corrected contact name (direct edit)', $old, $newName);
+            $partner['contact_name'] = $newName;
+            $actionMessage = 'Contact name updated.';
+        }
+    } elseif ($action === 'edit_document_name' && b2b_can_verify_documents()) {
+        $docId = (int) ($_POST['document_id'] ?? 0);
+        $newName = trim($_POST['new_value'] ?? '');
+        $dStmt = $pdo->prepare('SELECT * FROM b2b_partner_documents WHERE id = ? AND partner_id = ? AND deleted_at IS NULL');
+        $dStmt->execute([$docId, $partnerId]);
+        $doc = $dStmt->fetch(PDO::FETCH_ASSOC);
+        if (!$doc || $newName === '') {
+            $actionError = 'Please provide a valid document and new name.';
+        } else {
+            $pdo->prepare('UPDATE b2b_partner_documents SET original_filename = ? WHERE id = ?')->execute([$newName, $docId]);
+            b2b_log_audit($pdo, 'partner', $partnerId, admin_name(), admin_role(), 'Corrected document name (direct edit)', $doc['original_filename'], $newName);
+            $actionMessage = 'Document name updated.';
+        }
+    } elseif ($action === 'review_correction' && b2b_can_manage_enrollment()) {
+        $requestId = (int) ($_POST['request_id'] ?? 0);
+        $decision = trim($_POST['decision'] ?? '');
+        $reviewNote = trim($_POST['review_note'] ?? '');
+        $rStmt = $pdo->prepare("SELECT * FROM b2b_correction_requests WHERE id = ? AND partner_id = ? AND status = 'Pending'");
+        $rStmt->execute([$requestId, $partnerId]);
+        $request = $rStmt->fetch(PDO::FETCH_ASSOC);
+        if (!$request || !in_array($decision, ['Approved', 'Rejected'], true)) {
+            $actionError = 'That correction request could not be reviewed.';
+        } else {
+            $pdo->prepare('UPDATE b2b_correction_requests SET status = ?, reviewed_by = ?, reviewed_at = ?, review_note = ? WHERE id = ?')
+                ->execute([$decision, admin_name(), gmdate('c'), $reviewNote ?: null, $requestId]);
+            if ($decision === 'Approved') {
+                b2b_apply_correction($pdo, $request);
+            }
+            $fieldLabel = B2B_CORRECTION_FIELD_TYPES[$request['field_type']] ?? $request['field_type'];
+            b2b_log_audit($pdo, 'partner', $partnerId, admin_name(), admin_role(), "Correction request $decision", "$fieldLabel: {$request['old_value']}", "{$request['new_value']}" . ($reviewNote ? " ($reviewNote)" : ''));
+            b2b_notify_partner(
+                $pdo, $partner, "Correction Request $decision — $fieldLabel",
+                "Dear {$partner['contact_name']},\n\nYour request to change $fieldLabel from \"{$request['old_value']}\" to \"{$request['new_value']}\" has been $decision." . ($reviewNote ? "\n\nNote from our team: $reviewNote" : '') . "\n\nRegards,\nVisaAgency.in B2B Partner Team"
+            );
+            $actionMessage = "Correction request $decision.";
+        }
     }
 }
 
-$docsStmt = $pdo->prepare('SELECT * FROM b2b_partner_documents d WHERE partner_id = ? AND id = (
-    SELECT MAX(id) FROM b2b_partner_documents WHERE partner_id = ? AND doc_type = d.doc_type
-) ORDER BY doc_type');
+$docsStmt = $pdo->prepare("SELECT * FROM b2b_partner_documents d WHERE partner_id = ? AND deleted_at IS NULL AND id = (
+    SELECT MAX(id) FROM b2b_partner_documents WHERE partner_id = ? AND doc_type = d.doc_type AND deleted_at IS NULL
+) ORDER BY doc_type");
 $docsStmt->execute([$partnerId, $partnerId]);
 $documents = [];
 foreach ($docsStmt->fetchAll(PDO::FETCH_ASSOC) as $d) { $documents[$d['doc_type']] = $d; }
@@ -289,6 +384,14 @@ $tiersList = $pdo->query("SELECT * FROM b2b_tiers WHERE is_active = 1 ORDER BY d
 $auditStmt = $pdo->prepare("SELECT * FROM b2b_audit_logs WHERE entity_type = 'partner' AND entity_id = ? ORDER BY id DESC LIMIT 50");
 $auditStmt->execute([$partnerId]);
 $auditLog = $auditStmt->fetchAll(PDO::FETCH_ASSOC);
+
+$correctionsStmt = $pdo->prepare('SELECT * FROM b2b_correction_requests WHERE partner_id = ? ORDER BY requested_at DESC');
+$correctionsStmt->execute([$partnerId]);
+$correctionRequests = $correctionsStmt->fetchAll(PDO::FETCH_ASSOC);
+
+$deletedDocsStmt = $pdo->prepare("SELECT * FROM b2b_partner_documents WHERE partner_id = ? AND deleted_at IS NOT NULL ORDER BY deleted_at DESC");
+$deletedDocsStmt->execute([$partnerId]);
+$deletedDocuments = $deletedDocsStmt->fetchAll(PDO::FETCH_ASSOC);
 
 $visaCasesStmt = $pdo->prepare('SELECT * FROM enquiries WHERE partner_id = ? AND archived_at IS NULL ORDER BY created_at DESC');
 $visaCasesStmt->execute([$partnerId]);
@@ -333,21 +436,36 @@ $tab = $_GET['tab'] ?? 'overview';
 $tabs = [
     'overview' => 'Overview', 'company' => 'Company Information', 'documents' => 'Documents',
     'applications' => 'Visa Applications', 'quotations' => 'Quotations', 'invoices' => 'Invoices',
-    'payments' => 'Payments', 'communications' => 'Communications', 'activities' => 'Activities',
+    'payments' => 'Payments', 'communications' => 'Communications', 'corrections' => 'Corrections', 'activities' => 'Activities',
 ];
-$builtTabs = ['overview', 'company', 'documents', 'applications', 'quotations', 'invoices', 'payments', 'communications', 'activities'];
+$builtTabs = ['overview', 'company', 'documents', 'applications', 'quotations', 'invoices', 'payments', 'communications', 'corrections', 'activities'];
 ?>
 <div class="crm-page-header">
     <div>
         <h1 class="crm-page-title"><?php echo htmlspecialchars($partner['company_name']); ?></h1>
-        <p class="crm-page-subtitle"><?php echo htmlspecialchars($partner['application_ref']); ?> &middot; <span class="crm-status-badge <?php echo b2b_status_class($partner['status']); ?>"><?php echo htmlspecialchars($partner['status']); ?></span></p>
+        <p class="crm-page-subtitle"><?php echo htmlspecialchars($partner['application_ref']); ?> &middot; <span class="crm-status-badge <?php echo b2b_status_class($partner['status']); ?>"><?php echo htmlspecialchars($partner['status']); ?></span><?php if (!empty($partner['archived_at'])): ?> &middot; <span class="crm-status-badge status-cancelled"><i class="fa-solid fa-trash-can"></i> In Recycle Bin</span><?php endif; ?></p>
     </div>
+    <?php if (b2b_can_manage_enrollment()): ?>
+    <div>
+        <?php if (!empty($partner['archived_at'])): ?>
+        <form method="post" onsubmit="return confirm('Restore this partner? It will reappear in the Partners list.');">
+            <input type="hidden" name="action" value="restore_partner">
+            <button type="submit" class="crm-btn crm-btn-primary crm-btn-sm"><i class="fa-solid fa-trash-arrow-up"></i> Restore Partner</button>
+        </form>
+        <?php else: ?>
+        <form method="post" onsubmit="return confirm('Move this partner to the Recycle Bin? It will no longer appear in the Partners list until restored.');">
+            <input type="hidden" name="action" value="archive_partner">
+            <button type="submit" class="crm-btn crm-btn-ghost crm-btn-sm"><i class="fa-solid fa-trash-can"></i> Move to Recycle Bin</button>
+        </form>
+        <?php endif; ?>
+    </div>
+    <?php endif; ?>
 </div>
 
 <?php if ($actionMessage): ?><div class="crm-alert crm-alert-success"><i class="fa-solid fa-circle-check"></i> <?php echo htmlspecialchars($actionMessage); ?></div><?php endif; ?>
 <?php if ($actionError): ?><div class="crm-alert crm-alert-error"><i class="fa-solid fa-circle-exclamation"></i> <?php echo htmlspecialchars($actionError); ?></div><?php endif; ?>
 
-<?php if (b2b_can_manage_enrollment()): ?>
+<?php if (b2b_can_manage_enrollment() && !$partner['archived_at']): ?>
 <div class="crm-card" style="margin-bottom:16px;">
     <h3 style="margin:0 0 12px;font-size:14px;">Application Actions</h3>
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-start;">
@@ -384,6 +502,18 @@ document.querySelectorAll('.b2b-admin-action-form[data-needs-reason="1"]').forEa
 });
 </script>
 <?php endif; ?>
+<script>
+document.addEventListener('click', function (e) {
+    var a = e.target.closest('.crm-inline-edit-toggle');
+    if (!a) { return; }
+    e.preventDefault();
+    var target = document.getElementById(a.dataset.target);
+    if (!target) { return; }
+    target.hidden = !target.hidden;
+    target.style.display = target.hidden ? 'none' : 'flex';
+    if (!target.hidden) { target.querySelector('input[type=text]').focus(); }
+});
+</script>
 
 <div class="crm-tabs" style="margin-bottom:16px;">
     <?php foreach ($tabs as $key => $label): ?>
@@ -407,8 +537,28 @@ document.querySelectorAll('.b2b-admin-action-form[data-needs-reason="1"]').forEa
     <div class="crm-card">
         <h3 style="margin:0 0 14px;font-size:14px;">Overview</h3>
         <div class="crm-panel-grid">
-            <div class="crm-panel-item"><label>Company</label><div class="val"><?php echo htmlspecialchars($partner['company_name']); ?></div></div>
-            <div class="crm-panel-item"><label>Contact Person</label><div class="val"><?php echo htmlspecialchars($partner['contact_name']); ?> (<?php echo htmlspecialchars($partner['contact_designation'] ?: '—'); ?>)</div></div>
+            <div class="crm-panel-item">
+                <label>Company <?php if (b2b_can_manage_enrollment()): ?><a href="#" class="crm-inline-edit-toggle" data-target="editCompanyName" style="font-weight:400;font-size:11px;">(fix typo)</a><?php endif; ?></label>
+                <div class="val"><?php echo htmlspecialchars($partner['company_name']); ?></div>
+                <?php if (b2b_can_manage_enrollment()): ?>
+                <form method="post" id="editCompanyName" class="crm-inline-edit-form" hidden style="margin-top:6px;gap:6px;">
+                    <input type="hidden" name="action" value="edit_company_name">
+                    <input type="text" name="new_value" value="<?php echo htmlspecialchars($partner['company_name']); ?>" required style="flex:1;border:1px solid var(--c-border);border-radius:6px;padding:5px 8px;font-size:12.5px;">
+                    <button type="submit" class="crm-btn crm-btn-ghost crm-btn-sm">Save</button>
+                </form>
+                <?php endif; ?>
+            </div>
+            <div class="crm-panel-item">
+                <label>Contact Person <?php if (b2b_can_manage_enrollment()): ?><a href="#" class="crm-inline-edit-toggle" data-target="editContactName" style="font-weight:400;font-size:11px;">(fix typo)</a><?php endif; ?></label>
+                <div class="val"><?php echo htmlspecialchars($partner['contact_name']); ?> (<?php echo htmlspecialchars($partner['contact_designation'] ?: '—'); ?>)</div>
+                <?php if (b2b_can_manage_enrollment()): ?>
+                <form method="post" id="editContactName" class="crm-inline-edit-form" hidden style="margin-top:6px;gap:6px;">
+                    <input type="hidden" name="action" value="edit_contact_name">
+                    <input type="text" name="new_value" value="<?php echo htmlspecialchars($partner['contact_name']); ?>" required style="flex:1;border:1px solid var(--c-border);border-radius:6px;padding:5px 8px;font-size:12.5px;">
+                    <button type="submit" class="crm-btn crm-btn-ghost crm-btn-sm">Save</button>
+                </form>
+                <?php endif; ?>
+            </div>
             <div class="crm-panel-item"><label>Email</label><div class="val"><?php echo htmlspecialchars($partner['contact_email']); ?></div></div>
             <div class="crm-panel-item"><label>Mobile</label><div class="val"><?php echo htmlspecialchars($partner['contact_mobile']); ?></div></div>
             <div class="crm-panel-item"><label>Registration Date</label><div class="val"><?php echo htmlspecialchars(substr($partner['created_at'], 0, 10)); ?></div></div>
@@ -491,12 +641,52 @@ document.querySelectorAll('.b2b-admin-action-form[data-needs-reason="1"]').forEa
                 <?php if ($doc['rejection_reason']): ?><div class="crm-cell-sub" style="color:var(--c-red);">Rejected: <?php echo htmlspecialchars($doc['rejection_reason']); ?></div><?php endif; ?>
                 <?php if ($doc['verification_remarks']): ?><div class="crm-cell-sub" style="color:var(--c-green);">Remarks: <?php echo htmlspecialchars($doc['verification_remarks']); ?></div><?php endif; ?>
                 <?php if ($doc['verified_by']): ?><div class="crm-cell-sub">Verified by <?php echo htmlspecialchars($doc['verified_by']); ?> &middot; <?php echo htmlspecialchars(substr($doc['verified_at'], 0, 10)); ?></div><?php endif; ?>
+                <?php if (b2b_can_verify_documents()): ?>
+                <div style="display:flex;gap:10px;margin-top:8px;">
+                    <a href="#" class="crm-inline-edit-toggle" data-target="editDocName<?php echo (int) $doc['id']; ?>" style="font-size:11px;">Rename</a>
+                    <form method="post" onsubmit="return confirm('Move this document to the Recycle Bin?');">
+                        <input type="hidden" name="action" value="delete_document">
+                        <input type="hidden" name="document_id" value="<?php echo (int) $doc['id']; ?>">
+                        <button type="submit" style="background:none;border:none;padding:0;font-size:11px;color:var(--c-red);cursor:pointer;text-decoration:underline;">Delete</button>
+                    </form>
+                </div>
+                <form method="post" id="editDocName<?php echo (int) $doc['id']; ?>" class="crm-inline-edit-form" hidden style="margin-top:6px;gap:6px;">
+                    <input type="hidden" name="action" value="edit_document_name">
+                    <input type="hidden" name="document_id" value="<?php echo (int) $doc['id']; ?>">
+                    <input type="text" name="new_value" value="<?php echo htmlspecialchars($doc['original_filename']); ?>" required style="flex:1;border:1px solid var(--c-border);border-radius:6px;padding:5px 8px;font-size:12px;">
+                    <button type="submit" class="crm-btn crm-btn-ghost crm-btn-sm">Save</button>
+                </form>
+                <?php endif; ?>
                 <?php else: ?>
                 <div class="crm-cell-sub">Not uploaded yet.</div>
                 <?php endif; ?>
             </div>
             <?php endforeach; ?>
         </div>
+
+        <?php if ($deletedDocuments && b2b_can_verify_documents()): ?>
+        <details style="margin-top:16px;">
+            <summary style="cursor:pointer;font-size:12.5px;font-weight:600;color:var(--c-muted);"><i class="fa-solid fa-trash-can"></i> Recently deleted documents (<?php echo count($deletedDocuments); ?>)</summary>
+            <div class="crm-table-wrap" style="margin-top:10px;">
+            <table class="crm-table">
+                <thead><tr><th>Type</th><th>Filename</th><th>Deleted By</th><th>Deleted</th><th></th></tr></thead>
+                <tbody>
+                <?php foreach ($deletedDocuments as $dd): ?>
+                <tr>
+                    <td class="crm-cell-sub"><?php echo htmlspecialchars(B2B_DOC_TYPES[$dd['doc_type']] ?? $dd['doc_type']); ?></td>
+                    <td><?php echo htmlspecialchars($dd['original_filename']); ?></td>
+                    <td class="crm-cell-sub"><?php echo htmlspecialchars($dd['deleted_by'] ?: '—'); ?></td>
+                    <td class="crm-cell-sub"><?php echo htmlspecialchars(substr((string) $dd['deleted_at'], 0, 10)); ?></td>
+                    <td>
+                        <form method="post"><input type="hidden" name="action" value="restore_document"><input type="hidden" name="document_id" value="<?php echo (int) $dd['id']; ?>"><button type="submit" class="crm-btn crm-btn-ghost crm-btn-sm">Restore</button></form>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+            </div>
+        </details>
+        <?php endif; ?>
 
         <?php if (b2b_can_verify_documents()): ?>
         <details style="margin-top:16px;">
@@ -800,6 +990,51 @@ document.querySelectorAll('.b2b-admin-action-form[data-needs-reason="1"]').forEa
             <button type="submit" class="crm-btn crm-btn-primary crm-btn-sm" style="margin-top:8px;">Send Message</button>
         </form>
         <?php endif; ?>
+    </div>
+
+<?php elseif ($tab === 'corrections'): ?>
+    <div class="crm-card">
+        <h3 style="margin:0 0 6px;font-size:14px;">Correction Requests</h3>
+        <p class="crm-cell-sub" style="margin:0 0 14px;">When the partner reports a typo in their company name, contact name, or a document's label, they submit a request here for your review — nothing changes until you approve it. You can also use the "fix typo" links on the Overview and Documents tabs to edit these fields directly yourself, with no approval step.</p>
+        <div class="crm-table-wrap">
+        <table class="crm-table">
+            <thead><tr><th>Field</th><th>Current → Requested</th><th>Reason</th><th>Requested By</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+            <?php foreach ($correctionRequests as $cr): ?>
+            <tr>
+                <td class="crm-cell-name"><?php echo htmlspecialchars(B2B_CORRECTION_FIELD_TYPES[$cr['field_type']] ?? $cr['field_type']); ?></td>
+                <td class="crm-cell-sub"><?php echo htmlspecialchars($cr['old_value']); ?> &rarr; <strong><?php echo htmlspecialchars($cr['new_value']); ?></strong></td>
+                <td class="crm-cell-sub"><?php echo htmlspecialchars($cr['reason'] ?: '—'); ?></td>
+                <td class="crm-cell-sub"><?php echo htmlspecialchars($cr['requested_by']); ?> &middot; <?php echo htmlspecialchars(substr($cr['requested_at'], 0, 10)); ?></td>
+                <td>
+                    <span class="crm-status-badge <?php echo $cr['status'] === 'Approved' ? 'status-visa-approved' : ($cr['status'] === 'Rejected' ? 'status-cancelled' : 'status-documents-pending'); ?>"><?php echo htmlspecialchars($cr['status']); ?></span>
+                    <?php if ($cr['review_note']): ?><div class="crm-cell-sub">Note: <?php echo htmlspecialchars($cr['review_note']); ?></div><?php endif; ?>
+                    <?php if ($cr['reviewed_by']): ?><div class="crm-cell-sub">by <?php echo htmlspecialchars($cr['reviewed_by']); ?> &middot; <?php echo htmlspecialchars(substr((string) $cr['reviewed_at'], 0, 10)); ?></div><?php endif; ?>
+                </td>
+                <td>
+                    <?php if ($cr['status'] === 'Pending' && b2b_can_manage_enrollment()): ?>
+                    <details>
+                        <summary style="cursor:pointer;font-size:12px;color:var(--c-blue);">Review</summary>
+                        <form method="post" style="margin-top:8px;display:flex;flex-direction:column;gap:6px;min-width:180px;">
+                            <input type="hidden" name="action" value="review_correction">
+                            <input type="hidden" name="request_id" value="<?php echo (int) $cr['id']; ?>">
+                            <input type="text" name="review_note" placeholder="Note (optional)..." style="border:1px solid var(--c-border);border-radius:6px;padding:5px 8px;font-size:12px;">
+                            <div style="display:flex;gap:6px;">
+                                <button type="submit" name="decision" value="Approved" class="crm-btn crm-btn-primary crm-btn-sm">Approve</button>
+                                <button type="submit" name="decision" value="Rejected" class="crm-btn crm-btn-ghost crm-btn-sm">Reject</button>
+                            </div>
+                        </form>
+                    </details>
+                    <?php endif; ?>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+            <?php if (!$correctionRequests): ?>
+            <tr><td colspan="6" class="crm-empty">No correction requests from this partner yet.</td></tr>
+            <?php endif; ?>
+            </tbody>
+        </table>
+        </div>
     </div>
 
 <?php elseif ($tab === 'activities'): ?>

@@ -58,6 +58,7 @@ $navItems = [
     ['key' => 'b2b-documents', 'label' => 'Document Verification', 'icon' => 'file-check', 'href' => 'b2b-documents.php', 'roles' => ['Super Admin', 'B2B Admin', 'B2B Relationship Manager']],
     ['key' => 'b2b-quotations', 'label' => 'Quotations', 'icon' => 'file-invoice-dollar', 'href' => 'b2b-quotations.php', 'roles' => ['Super Admin', 'B2B Admin', 'B2B Relationship Manager', 'Visa Consultant']],
     ['key' => 'b2b-invoices', 'label' => 'Invoices &amp; Payments', 'icon' => 'file-invoice', 'href' => 'b2b-invoices.php', 'roles' => ['Super Admin', 'B2B Admin', 'Accounts']],
+    ['key' => 'b2b-recycle-bin', 'label' => 'Recycle Bin', 'icon' => 'trash-can', 'href' => 'b2b-recycle-bin.php', 'roles' => ['Super Admin', 'B2B Admin']],
     ['key' => 'b2b-tiers', 'label' => 'Tiers &amp; Pricing', 'icon' => 'layer-group', 'href' => 'b2b-tiers.php', 'roles' => ['Super Admin', 'B2B Admin']],
     ['key' => 'b2b-announcements', 'label' => 'Announcements', 'icon' => 'bullhorn', 'href' => 'b2b-announcements.php', 'roles' => ['Super Admin', 'B2B Admin']],
     ['key' => 'b2b-reports', 'label' => 'Partner Reports', 'icon' => 'chart-column', 'href' => 'b2b-reports.php'],
