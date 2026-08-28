@@ -42,6 +42,11 @@ switch ($adminSegment) {
         require __DIR__ . '/pages/partners.php';
         exit;
 
+    case 'partner-tiers':
+        require_admin_login();
+        require __DIR__ . '/pages/partner-tiers.php';
+        exit;
+
     case 'visa-enquiries':
         require_admin_login();
         require __DIR__ . '/pages/visa-enquiries.php';

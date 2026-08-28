@@ -56,6 +56,10 @@ if ($id !== null) {
     $documentsStmt->execute(['id' => $id]);
     $documents = $documentsStmt->fetchAll();
 
+    $quotesStmt = $pdo->prepare("SELECT * FROM visa_quotes WHERE visa_application_id = :id AND status != 'draft' ORDER BY created_at DESC");
+    $quotesStmt->execute(['id' => $id]);
+    $quotes = $quotesStmt->fetchAll();
+
     render_partner_start('applications', $app['visa_type_name'] . ' — ' . $app['country_name']);
     ?>
     <p><a href="/partner/applications/">&larr; All Applications</a></p>
@@ -78,6 +82,22 @@ if ($id !== null) {
             <td><?= e($doc['document_type'] ?? $doc['original_filename']) ?></td>
             <td><span class="badge <?= $doc['verification_status'] === 'verified' ? 'badge-success' : ($doc['verification_status'] === 'rejected' ? 'badge-danger' : 'badge-warning') ?>"><?= e($doc['verification_status']) ?></span></td>
             <td><?= e(date('d M Y', strtotime((string) $doc['uploaded_at']))) ?></td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody></table>
+    <?php endif; ?>
+
+    <h2 class="country-directory__subheading">Quotes (<?= count($quotes) ?>)</h2>
+    <?php if (!$quotes): ?>
+    <p class="empty-state">No quotes issued yet.</p>
+    <?php else: ?>
+    <table class="admin-table" style="margin-bottom:var(--space-6)"><thead><tr><th>Reference</th><th>Government Fee</th><th>Service Fee</th><th>Status</th></tr></thead><tbody>
+        <?php foreach ($quotes as $q): ?>
+        <tr>
+            <td><?= e($q['quote_reference_no']) ?></td>
+            <td><?= $q['government_fee'] !== null ? e($q['currency'] . ' ' . number_format((float) $q['government_fee'], 2)) : '—' ?></td>
+            <td><?= $q['service_fee'] !== null ? e($q['currency'] . ' ' . number_format((float) $q['service_fee'], 2)) : '—' ?></td>
+            <td><span class="badge <?= $q['status'] === 'accepted' ? 'badge-success' : ($q['status'] === 'rejected' ? 'badge-danger' : 'badge-info') ?>"><?= e($q['status']) ?></span></td>
         </tr>
         <?php endforeach; ?>
     </tbody></table>

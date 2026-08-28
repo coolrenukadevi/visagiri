@@ -98,6 +98,13 @@ foreach ($commissions as $c) {
 
 $referralLink = APP_URL . '/register/?ref=' . $partner['partner_reference_no'];
 
+$tier = null;
+if ($partner['tier_id']) {
+    $tierStmt = db()->prepare('SELECT name, commission_type, commission_value FROM partner_tiers WHERE id = :id');
+    $tierStmt->execute(['id' => $partner['tier_id']]);
+    $tier = $tierStmt->fetch();
+}
+
 render_partner_start('dashboard', 'Welcome, ' . $partner['company_name']);
 render_partner_email_verification_banner($partner);
 ?>
@@ -113,6 +120,15 @@ render_partner_email_verification_banner($partner);
     <div class="card"><div class="card-title" style="font-size:var(--font-size-2xl)"><?= count($referredCustomers) ?></div><p>Referred Customers</p></div>
     <div class="card"><div class="card-title" style="font-size:var(--font-size-2xl)">₹<?= number_format($totalPaid, 2) ?></div><p>Commission Paid</p></div>
     <div class="card"><div class="card-title" style="font-size:var(--font-size-2xl)">₹<?= number_format($totalPending, 2) ?></div><p>Commission Pending/Approved</p></div>
+    <div class="card">
+        <?php if ($tier): ?>
+        <div class="card-title" style="font-size:var(--font-size-2xl)"><?= e($tier['name']) ?></div>
+        <p>Your Tier &middot; <?= $tier['commission_type'] === 'percentage' ? e(rtrim(rtrim(number_format((float) $tier['commission_value'], 2), '0'), '.')) . '%' : '₹' . e(number_format((float) $tier['commission_value'], 2)) . ' flat' ?> commission</p>
+        <?php else: ?>
+        <div class="card-title" style="font-size:var(--font-size-2xl)">—</div>
+        <p>No tier assigned yet</p>
+        <?php endif; ?>
+    </div>
 </div>
 
 <h2 class="country-directory__subheading">Referred Customers</h2>

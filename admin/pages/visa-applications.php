@@ -342,12 +342,14 @@ if ($action === 'view' && $id) {
         'SELECT va.*, c.name AS country_name, v.name AS visa_type_name,
                 cust.customer_reference_no, cust.first_name, cust.last_name, cust.email, cust.mobile,
                 cust.referred_by_partner_id, p.company_name AS partner_company_name, p.partner_reference_no,
+                t.name AS tier_name, t.commission_type AS tier_commission_type, t.commission_value AS tier_commission_value,
                 e.full_name AS assigned_name
          FROM visa_applications va
          JOIN countries c ON c.id = va.country_id
          JOIN visa_types v ON v.id = va.visa_type_id
          JOIN customers cust ON cust.id = va.customer_id
          LEFT JOIN partners p ON p.id = cust.referred_by_partner_id
+         LEFT JOIN partner_tiers t ON t.id = p.tier_id
          LEFT JOIN admin_users e ON e.id = va.assigned_user
          WHERE va.id = :id AND va.deleted_at IS NULL'
     );
@@ -387,10 +389,27 @@ if ($action === 'view' && $id) {
     $appointments->execute(['id' => $id]);
 
     $commission = null;
+    $suggestedCommission = null;
     if ($application['referred_by_partner_id']) {
         $commissionStmt = $pdo->prepare('SELECT * FROM partner_commissions WHERE visa_application_id = :id');
         $commissionStmt->execute(['id' => $id]);
-        $commission = $commissionStmt->fetch();
+        $commission = $commissionStmt->fetch() ?: null;
+
+        // Tier-driven suggestion, computed from the most recent quote's
+        // service fee — not the government fee, since that passes
+        // straight through to the embassy and isn't Visagiri's margin
+        // to split commission from. Only offered as a starting point;
+        // the admin can always type a different amount before saving.
+        if ($application['tier_commission_type'] !== null) {
+            $latestQuoteStmt = $pdo->prepare('SELECT service_fee FROM visa_quotes WHERE visa_application_id = :id ORDER BY created_at DESC LIMIT 1');
+            $latestQuoteStmt->execute(['id' => $id]);
+            $latestServiceFee = $latestQuoteStmt->fetchColumn();
+            if ($application['tier_commission_type'] === 'flat') {
+                $suggestedCommission = (float) $application['tier_commission_value'];
+            } elseif ($latestServiceFee !== false && $latestServiceFee !== null) {
+                $suggestedCommission = round((float) $latestServiceFee * ((float) $application['tier_commission_value'] / 100), 2);
+            }
+        }
     }
 
     admin_header_start($application['application_reference_no'], 'visa-applications');
@@ -588,12 +607,22 @@ if ($action === 'view' && $id) {
 
     <?php if ($application['referred_by_partner_id']): ?>
     <h2 class="country-directory__subheading">Partner Commission</h2>
-    <p style="color:var(--text-muted);font-size:var(--font-size-sm)">Referred by <?= e($application['partner_company_name']) ?>.</p>
+    <p style="color:var(--text-muted);font-size:var(--font-size-sm)">
+        Referred by <?= e($application['partner_company_name']) ?>.
+        <?php if ($application['tier_name']): ?>
+        Tier: <?= e($application['tier_name']) ?> (<?= $application['tier_commission_type'] === 'percentage' ? e(rtrim(rtrim(number_format((float) $application['tier_commission_value'], 2), '0'), '.')) . '% of service fee' : '₹' . e(number_format((float) $application['tier_commission_value'], 2)) . ' flat' ?>).
+        <?php else: ?>
+        No commission tier assigned to this partner yet — set one on their <a href="/admin/partners/?action=view&id=<?= (int) $application['referred_by_partner_id'] ?>">profile</a> for an auto-suggested amount.
+        <?php endif; ?>
+    </p>
     <?php if (has_permission('visa.manage')): ?>
     <form method="post" action="/admin/visa-applications/?action=view&id=<?= $id ?>" style="margin-top:var(--space-3)">
         <?= csrf_field() ?><input type="hidden" name="action" value="set_commission">
+        <?php if ($suggestedCommission !== null && $commission === null): ?>
+        <p style="font-size:var(--font-size-sm);color:var(--text-muted)">Suggested from tier: <?= e(number_format($suggestedCommission, 2)) ?> (pre-filled below — you can change it before saving).</p>
+        <?php endif; ?>
         <div class="admin-form-grid">
-            <input class="form-input" type="number" step="0.01" name="commission_amount" placeholder="Commission amount" value="<?= e((string) ($commission['amount_due'] ?? '')) ?>">
+            <input class="form-input" type="number" step="0.01" name="commission_amount" placeholder="Commission amount" value="<?= e((string) ($commission['amount_due'] ?? $suggestedCommission ?? '')) ?>">
             <select class="form-select" name="commission_status">
                 <?php foreach (['pending', 'approved', 'paid'] as $s): ?>
                 <option value="<?= $s ?>"<?= ($commission['status'] ?? 'pending') === $s ? ' selected' : '' ?>><?= ucfirst($s) ?></option>

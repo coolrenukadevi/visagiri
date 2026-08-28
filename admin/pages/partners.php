@@ -33,6 +33,7 @@ $partnerAllStatuses = ['pending', 'documents_required', 'active', 'suspended', '
 // uses for its own employee-assignment dropdown, not narrowed to a
 // b2b-* role specifically (any active staff member can be assigned).
 $admins = $pdo->query('SELECT id, full_name FROM admin_users WHERE status = "active" ORDER BY full_name')->fetchAll();
+$tiers = $pdo->query('SELECT id, name FROM partner_tiers WHERE is_active = 1 ORDER BY sort_order')->fetchAll();
 
 // --- Handle POST (approve, suspend, reactivate, assign manager) ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -173,6 +174,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         flash_set('admin_notice', 'Relationship Manager updated.');
     }
 
+    if ($postAction === 'assign_tier' && $targetId) {
+        $newTierId = ($_POST['tier_id'] ?? '') !== '' ? (int) $_POST['tier_id'] : null;
+        $pdo->prepare('UPDATE partners SET tier_id = :tier WHERE id = :id')
+            ->execute(['tier' => $newTierId, 'id' => $targetId]);
+        log_action('assign_tier', 'partners', $targetId, null, $newTierId !== null ? (string) $newTierId : 'unassigned');
+        flash_set('admin_notice', 'Commission tier updated.');
+    }
+
     redirect('/admin/partners/');
 }
 
@@ -185,10 +194,12 @@ if ($action === 'view' && $id) {
         $params['current_admin'] = current_admin_id();
     }
     $stmt = $pdo->prepare(
-        "SELECT p.*, m.full_name AS manager_name, a.full_name AS approved_by_name
+        "SELECT p.*, m.full_name AS manager_name, a.full_name AS approved_by_name,
+                t.name AS tier_name, t.commission_type AS tier_commission_type, t.commission_value AS tier_commission_value
          FROM partners p
          LEFT JOIN admin_users m ON m.id = p.assigned_admin_id
          LEFT JOIN admin_users a ON a.id = p.approved_by
+         LEFT JOIN partner_tiers t ON t.id = p.tier_id
          WHERE $where"
     );
     $stmt->execute($params);
@@ -240,6 +251,7 @@ if ($action === 'view' && $id) {
         <p><strong>Status:</strong> <?= status_badge((string) $partner['status'], $partnerStatusBadgeMap) ?></p>
         <p><strong>Registered:</strong> <?= e(date('d M Y', strtotime((string) $partner['created_at']))) ?><?php if ($partner['approved_at']): ?> &middot; <strong>Approved:</strong> <?= e(date('d M Y', strtotime((string) $partner['approved_at']))) ?><?= $partner['approved_by_name'] ? ' by ' . e($partner['approved_by_name']) : '' ?><?php endif; ?></p>
         <p><strong>Relationship Manager:</strong> <?= e($partner['manager_name'] ?? 'Unassigned') ?></p>
+        <p><strong>Commission Tier:</strong> <?php if ($partner['tier_name']): ?><?= e($partner['tier_name']) ?> (<?= $partner['tier_commission_type'] === 'percentage' ? e(rtrim(rtrim(number_format((float) $partner['tier_commission_value'], 2), '0'), '.')) . '%' : '₹' . e(number_format((float) $partner['tier_commission_value'], 2)) . ' flat' ?>)<?php else: ?>Unassigned<?php endif; ?></p>
         <p><strong>Email Verified:</strong> <?= $partner['email_verified_at'] !== null ? '<span class="badge badge-success">Yes</span> (' . e(date('d M Y', strtotime((string) $partner['email_verified_at']))) . ')' : '<span class="badge badge-danger">Not yet</span>' ?></p>
         <p><strong>Enrollment:</strong> <?= $partner['enrollment_completed_at'] !== null ? '<span class="badge badge-success">Completed</span> (' . e(date('d M Y', strtotime((string) $partner['enrollment_completed_at']))) . ')' : '<span class="badge badge-warning">Incomplete — still in the registration wizard</span>' ?></p>
 
@@ -282,6 +294,16 @@ if ($action === 'view' && $id) {
                 <?php endforeach; ?>
             </select>
             <button type="submit" class="btn btn-outline btn-sm">Set Manager</button>
+        </form>
+        <form method="post" action="/admin/partners/" style="display:flex;gap:var(--space-2);align-items:center;margin-top:var(--space-2)">
+            <?= csrf_field() ?><input type="hidden" name="id" value="<?= $id ?>"><input type="hidden" name="action" value="assign_tier">
+            <select name="tier_id" class="form-select">
+                <option value="">No tier</option>
+                <?php foreach ($tiers as $t): ?>
+                <option value="<?= (int) $t['id'] ?>"<?= (int) $t['id'] === (int) ($partner['tier_id'] ?? 0) ? ' selected' : '' ?>><?= e($t['name']) ?></option>
+                <?php endforeach; ?>
+            </select>
+            <button type="submit" class="btn btn-outline btn-sm">Set Tier</button>
         </form>
         <?php endif; ?>
     </div>
