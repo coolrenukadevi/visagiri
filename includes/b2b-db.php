@@ -568,6 +568,105 @@ function b2b_partner_by_token(PDO $pdo, string $applicationRef, string $token): 
     return $partner;
 }
 
+/**
+ * Shared validation + storage for a document upload — extracted from
+ * b2b-document-upload.php so the same extension/MIME whitelist and size
+ * cap also back the admin "manually add a document" path in
+ * admin/b2b-partner.php, instead of a second, easily-drifting copy of
+ * this logic. $autoVerify marks the document Verified immediately
+ * (verified_by/verified_at set to the uploader) — used only for the
+ * staff-added path, where a Super Admin/B2B Admin/Relationship Manager
+ * is adding a document they've already reviewed (e.g. received by email
+ * because the partner's own upload was blocked by a hosting firewall),
+ * so it would be circular to re-queue it into their own verification list.
+ *
+ * @param array $file One element of $_FILES, e.g. $_FILES['file'].
+ * @return array{success:bool,code?:int,message?:string,doc_id?:int,filename?:string,status?:string}
+ */
+function b2b_save_uploaded_document(PDO $pdo, array $partner, string $docType, array $file, string $uploadedBy, string $uploaderRole, bool $autoVerify = false): array
+{
+    if (!array_key_exists($docType, B2B_DOC_TYPES)) {
+        return ['success' => false, 'code' => 422, 'message' => 'Unknown document type.'];
+    }
+    if ($docType === 'IATA' && !$partner['iata_registered']) {
+        return ['success' => false, 'code' => 422, 'message' => 'IATA certificate is only applicable for IATA-registered partners.'];
+    }
+    if (empty($file) || ($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
+        return ['success' => false, 'code' => 422, 'message' => 'Please choose a file to upload.'];
+    }
+
+    $allowedExtensions = json_decode(b2b_setting($pdo, 'allowed_file_types', '["pdf","jpg","jpeg","png","doc","docx"]'), true) ?: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'];
+    $maxSizeMb = (int) b2b_setting($pdo, 'max_upload_size_mb', '10');
+    $maxSizeBytes = $maxSizeMb * 1024 * 1024;
+
+    $originalName = $file['name'];
+    $tmpPath = $file['tmp_name'];
+    $size = (int) $file['size'];
+
+    if ($size > $maxSizeBytes) {
+        return ['success' => false, 'code' => 422, 'message' => "File is too large. Maximum size is {$maxSizeMb} MB."];
+    }
+
+    $ext = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+    if (!in_array($ext, $allowedExtensions, true)) {
+        return ['success' => false, 'code' => 422, 'message' => 'Unsupported file type. Allowed: ' . strtoupper(implode(', ', $allowedExtensions)) . '.'];
+    }
+
+    $mimeAllowlist = [
+        'pdf' => ['application/pdf'],
+        'jpg' => ['image/jpeg'], 'jpeg' => ['image/jpeg'],
+        'png' => ['image/png'],
+        'doc' => ['application/msword'],
+        'docx' => ['application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/zip'],
+    ];
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $detectedMime = $finfo->file($tmpPath);
+    $expectedMimes = $mimeAllowlist[$ext] ?? [];
+    if (!in_array($detectedMime, $expectedMimes, true)) {
+        return ['success' => false, 'code' => 422, 'message' => 'The file content does not match its extension. Please upload a genuine ' . strtoupper($ext) . ' file.'];
+    }
+
+    $targetDir = __DIR__ . '/../uploads/b2b-partners/' . $partner['application_ref'];
+    if (!is_dir($targetDir) && !mkdir($targetDir, 0770, true) && !is_dir($targetDir)) {
+        return ['success' => false, 'code' => 500, 'message' => 'Could not create the storage folder for this partner. Please check that uploads/b2b-partners/ is writable on the server.'];
+    }
+    $storedFilename = $partner['application_ref'] . '-' . $docType . '-' . time() . '.' . $ext;
+    $targetPath = $targetDir . '/' . $storedFilename;
+
+    if (!move_uploaded_file($tmpPath, $targetPath)) {
+        return ['success' => false, 'code' => 500, 'message' => 'Could not save the uploaded file. Please try again.'];
+    }
+
+    // Versioning: find the current row for this doc_type (if any) so the new upload supersedes it.
+    $existingStmt = $pdo->prepare('SELECT id FROM b2b_partner_documents WHERE partner_id = ? AND doc_type = ? ORDER BY id DESC LIMIT 1');
+    $existingStmt->execute([$partner['id'], $docType]);
+    $replacesId = $existingStmt->fetchColumn() ?: null;
+
+    $now = gmdate('c');
+    $status = $autoVerify ? 'Verified' : 'Pending';
+    $insert = $pdo->prepare('INSERT INTO b2b_partner_documents (
+        partner_id, doc_type, original_filename, stored_filename, mime, size, status, replaces_document_id, verified_by, verified_at, uploaded_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+    $insert->execute([
+        $partner['id'], $docType, $originalName, $storedFilename, $detectedMime, $size, $status, $replacesId ?: null,
+        $autoVerify ? $uploadedBy : null, $autoVerify ? $now : null, $now,
+    ]);
+    $docId = (int) $pdo->lastInsertId();
+
+    b2b_log_audit(
+        $pdo, 'document', $docId, $uploadedBy, $uploaderRole,
+        'Document uploaded: ' . B2B_DOC_TYPES[$docType] . ($autoVerify ? ' (added by staff, auto-verified)' : ''),
+        '', $originalName
+    );
+    b2b_notify(
+        $pdo, null, 'b2b_document_uploaded',
+        "{$partner['company_name']} " . ($autoVerify ? 'had a document added by staff' : 'uploaded a document') . " ({$docType}) for {$partner['application_ref']}.",
+        $partner['id']
+    );
+
+    return ['success' => true, 'doc_id' => $docId, 'filename' => $originalName, 'status' => $status];
+}
+
 /** Matches forex_status_class()'s exact slug-generation pattern — one CSS rule per status lives in admin.css. */
 function b2b_status_class(string $status): string
 {

@@ -260,6 +260,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             b2b_notify_partner($pdo, $partner, 'New Message from VisaAgency.in B2B Team', "Dear {$partner['contact_name']},\n\nYou have a new message from your Relationship Manager:\n\n\"$body\"\n\nPlease log in to your Partner Portal to reply.\n\nRegards,\nVisaAgency.in B2B Partner Team");
             $actionMessage = 'Message sent to the partner.';
         }
+    } elseif ($action === 'upload_document' && b2b_can_verify_documents()) {
+        // Staff-side fallback for when a partner can't complete their own
+        // upload (e.g. a hosting firewall blocking the upload endpoint) —
+        // shares the exact same validation as the partner-facing uploader
+        // via b2b_save_uploaded_document(), and auto-verifies since staff
+        // are attesting to a document they've already reviewed themselves
+        // (over email, etc.) rather than re-queuing it for their own review.
+        $docType = trim($_POST['doc_type'] ?? '');
+        $result = b2b_save_uploaded_document($pdo, $partner, $docType, $_FILES['file'] ?? [], admin_name(), admin_role(), true);
+        if (!$result['success']) {
+            $actionError = $result['message'];
+        } else {
+            $actionMessage = "Document \"{$result['filename']}\" added and marked Verified.";
+        }
     }
 }
 
@@ -483,6 +497,28 @@ document.querySelectorAll('.b2b-admin-action-form[data-needs-reason="1"]').forEa
             </div>
             <?php endforeach; ?>
         </div>
+
+        <?php if (b2b_can_verify_documents()): ?>
+        <details style="margin-top:16px;">
+            <summary style="cursor:pointer;font-size:12.5px;font-weight:600;color:var(--c-blue);">+ Manually add a document on the partner's behalf</summary>
+            <p class="crm-cell-sub" style="margin:10px 0;">Use this if the partner can't complete their own upload (e.g. a hosting-side block on their end). A document added here is marked <strong>Verified</strong> immediately, under your name — only use it for a document you've actually reviewed.</p>
+            <form method="post" enctype="multipart/form-data" class="crm-panel-grid">
+                <input type="hidden" name="action" value="upload_document">
+                <div class="crm-panel-item">
+                    <label>Document Type</label>
+                    <select name="doc_type" required style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:7px 10px;">
+                        <?php foreach (B2B_DOC_TYPES as $docKey => $docLabel):
+                            if ($docKey === 'IATA' && !$partner['iata_registered']) { continue; }
+                        ?>
+                        <option value="<?php echo htmlspecialchars($docKey); ?>"><?php echo htmlspecialchars($docLabel); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="crm-panel-item"><label>File</label><input type="file" name="file" required style="width:100%;border:1px solid var(--c-border);border-radius:8px;padding:6px 10px;"></div>
+                <div class="crm-panel-item full"><button type="submit" class="crm-btn crm-btn-primary crm-btn-sm">Add &amp; Mark Verified</button></div>
+            </form>
+        </details>
+        <?php endif; ?>
     </div>
 
 <?php elseif ($tab === 'applications'): ?>
