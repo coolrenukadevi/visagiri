@@ -138,9 +138,11 @@ $applications = $stmt->fetchAll();
 
 render_partner_start('applications', 'My Applications');
 ?>
+<?php if (current_partner_can_manage()): ?>
 <p style="margin-bottom:var(--space-5)"><a href="/partner/application-create/" class="btn btn-primary">+ New Application</a></p>
+<?php endif; ?>
 <?php if (!$applications): ?>
-<p class="empty-state">No applications yet. Click "New Application" above to submit one on behalf of a referred customer.</p>
+<p class="empty-state">No applications yet.<?= current_partner_can_manage() ? ' Click "New Application" above to submit one on behalf of a referred customer.' : '' ?></p>
 <?php else: ?>
 <div class="table-wrap">
     <table class="admin-table">

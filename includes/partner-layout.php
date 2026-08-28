@@ -14,6 +14,8 @@ const PARTNER_NAV = [
     'dashboard' => ['label' => 'Dashboard', 'href' => '/partner/dashboard/'],
     'applications' => ['label' => 'My Applications', 'href' => '/partner/applications/'],
     'wallet' => ['label' => 'Wallet', 'href' => '/partner/wallet/'],
+    'team' => ['label' => 'Team', 'href' => '/partner/team/'],
+    'messages' => ['label' => 'Messages', 'href' => '/partner/messages/'],
     'notifications' => ['label' => 'Notifications', 'href' => '/partner/notifications/'],
     'profile' => ['label' => 'Profile', 'href' => '/partner/profile/'],
 ];

@@ -46,6 +46,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             redirect($redirectTo);
         }
 
+        // Not the primary (owner) login — try a team-member identity.
+        // Only 'active' team members can sign in: 'invited' hasn't
+        // accepted yet (no password set), 'suspended' is blocked.
+        // Deliberately no "remember me" for team-member logins — the
+        // remember-cookie mechanism only stores a partner_id, and
+        // resuming it would silently log the browser back in as the
+        // owner, losing the team member's own role; simplest correct
+        // fix is to just not offer it here rather than build a
+        // parallel remember-token system for a secondary identity.
+        $teamStmt = db()->prepare("SELECT * FROM partner_team_members WHERE email = :email AND status = 'active'");
+        $teamStmt->execute(['email' => $identifier]);
+        $teamMember = $teamStmt->fetch();
+        $teamHashToCheck = $teamMember['password_hash'] ?? DUMMY_PASSWORD_HASH;
+        $teamPasswordOk = verify_password($password, $teamHashToCheck);
+
+        if ($teamMember && $teamPasswordOk) {
+            log_in_partner((int) $teamMember['partner_id'], (int) $teamMember['id']);
+            $redirectTo = $_SESSION['partner_redirect_after_login'] ?? '/partner/dashboard/';
+            unset($_SESSION['partner_redirect_after_login']);
+            redirect($redirectTo);
+        }
+
         $errors[] = 'Invalid email or password.';
     }
 }

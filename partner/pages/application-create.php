@@ -15,6 +15,11 @@ if (!is_partner_active()) {
     redirect('/partner/dashboard/');
 }
 
+if (!current_partner_can_manage()) {
+    http_response_code(403);
+    exit('Your team role (viewer) does not have permission to create applications.');
+}
+
 $pdo = db();
 $errors = [];
 $old = ['first_name' => '', 'last_name' => '', 'email' => '', 'mobile' => '', 'country_id' => '', 'visa_type_id' => '', 'travel_date' => '', 'notes' => ''];

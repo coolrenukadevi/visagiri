@@ -56,10 +56,57 @@ function require_partner_login(): void
     }
 }
 
-function log_in_partner(int $partnerId): void
+function log_in_partner(int $partnerId, ?int $teamMemberId = null): void
 {
     session_regenerate_id(true);
     $_SESSION['partner_id'] = $partnerId;
+    if ($teamMemberId !== null) {
+        $_SESSION['partner_team_member_id'] = $teamMemberId;
+    } else {
+        unset($_SESSION['partner_team_member_id']);
+    }
+}
+
+function current_partner_team_member_id(): ?int
+{
+    return $_SESSION['partner_team_member_id'] ?? null;
+}
+
+/**
+ * 'owner' for the primary partners-table login (the only identity
+ * that existed before this phase); otherwise the logged-in team
+ * member's own role. Never trust a role passed from the client —
+ * always re-derived here from the session's team-member id.
+ */
+function current_partner_role(): string
+{
+    $teamMemberId = current_partner_team_member_id();
+    if ($teamMemberId === null) {
+        return 'owner';
+    }
+
+    static $cached = null;
+    if ($cached !== null && $cached['id'] === $teamMemberId) {
+        return $cached['role'];
+    }
+
+    $stmt = db()->prepare('SELECT role FROM partner_team_members WHERE id = :id');
+    $stmt->execute(['id' => $teamMemberId]);
+    $role = $stmt->fetchColumn();
+    $cached = ['id' => $teamMemberId, 'role' => $role !== false ? $role : 'viewer'];
+    return $cached['role'];
+}
+
+/** Only the owner (primary login) can invite/remove/reassign team members. */
+function current_partner_can_manage_team(): bool
+{
+    return current_partner_role() === 'owner';
+}
+
+/** Viewers can look but not touch — no new applications, no team changes. Owner and manager both can. */
+function current_partner_can_manage(): bool
+{
+    return current_partner_role() !== 'viewer';
 }
 
 function remember_partner(int $partnerId): void
@@ -124,7 +171,7 @@ function forget_partner_remember_cookie(?int $partnerId): void
 function log_out_partner(): void
 {
     forget_partner_remember_cookie(current_partner_id());
-    unset($_SESSION['partner_id']);
+    unset($_SESSION['partner_id'], $_SESSION['partner_team_member_id']);
 }
 
 function create_partner_password_reset_token(int $partnerId): string
@@ -183,6 +230,51 @@ function create_partner_email_verification_token(int $partnerId): string
         'id' => $partnerId,
     ]);
     return $token;
+}
+
+/**
+ * Team-member invite token — same shape as the pairs above (random
+ * 32-byte token, only its SHA-256 hash stored, 7-day expiry since
+ * this one goes out over email and the recipient may not act on it
+ * right away, unlike a same-session email-verification link).
+ */
+function create_partner_team_invite(int $partnerId, string $fullName, string $email, string $role, ?int $invitedBy): string
+{
+    $token = bin2hex(random_bytes(32));
+    db()->prepare(
+        'INSERT INTO partner_team_members (partner_id, full_name, email, role, status, invite_token_hash, invite_expires_at, invited_by)
+         VALUES (:partner_id, :full_name, :email, :role, "invited", :hash, :expires, :invited_by)'
+    )->execute([
+        'partner_id' => $partnerId,
+        'full_name' => $fullName,
+        'email' => $email,
+        'role' => $role,
+        'hash' => hash('sha256', $token),
+        'expires' => date('Y-m-d H:i:s', time() + 60 * 60 * 24 * 7),
+        'invited_by' => $invitedBy,
+    ]);
+    return $token;
+}
+
+/** Returns the invited team-member row for a valid, unexpired token, or null. */
+function verify_partner_team_invite_token(string $token): ?array
+{
+    $stmt = db()->prepare(
+        "SELECT * FROM partner_team_members
+         WHERE invite_token_hash = :hash AND status = 'invited'
+           AND invite_expires_at IS NOT NULL AND invite_expires_at > NOW()"
+    );
+    $stmt->execute(['hash' => hash('sha256', $token)]);
+    $member = $stmt->fetch();
+    return $member ?: null;
+}
+
+/** Sets the invited member's password, activates them, and clears the token. */
+function accept_partner_team_invite(int $teamMemberId, string $newPlainPassword): void
+{
+    db()->prepare(
+        "UPDATE partner_team_members SET password_hash = :hash, status = 'active', invite_token_hash = NULL, invite_expires_at = NULL WHERE id = :id"
+    )->execute(['hash' => hash_password($newPlainPassword), 'id' => $teamMemberId]);
 }
 
 /** Marks the matching partner's email verified and clears the token. Returns the partner row, or null if the token is invalid/expired. */

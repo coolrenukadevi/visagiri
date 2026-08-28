@@ -84,6 +84,20 @@ switch ($segments[1] ?? null) {
         require __DIR__ . '/pages/wallet.php';
         exit;
 
+    case 'team':
+        require_partner_login();
+        require __DIR__ . '/pages/team.php';
+        exit;
+
+    case 'team-accept':
+        require __DIR__ . '/pages/team-accept.php';
+        exit;
+
+    case 'messages':
+        require_partner_login();
+        require __DIR__ . '/pages/messages.php';
+        exit;
+
     default:
         require __DIR__ . '/../pages/404.php';
         exit;

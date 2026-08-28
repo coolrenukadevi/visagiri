@@ -114,7 +114,7 @@ render_partner_email_verification_banner($partner);
     <input class="form-input" type="text" readonly value="<?= e($referralLink) ?>" onclick="this.select()">
 </div>
 
-<p style="margin-bottom:var(--space-6)"><a href="/partner/application-create/" class="btn btn-primary">+ New Application</a> <a href="/partner/applications/" class="btn btn-outline">My Applications</a> <a href="/partner/wallet/" class="btn btn-outline">Wallet</a></p>
+<p style="margin-bottom:var(--space-6)"><?php if (current_partner_can_manage()): ?><a href="/partner/application-create/" class="btn btn-primary">+ New Application</a> <?php endif; ?><a href="/partner/applications/" class="btn btn-outline">My Applications</a> <a href="/partner/wallet/" class="btn btn-outline">Wallet</a></p>
 
 <div class="stats-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:var(--space-4);margin-bottom:var(--space-6)">
     <div class="card"><div class="card-title" style="font-size:var(--font-size-2xl)"><?= count($referredCustomers) ?></div><p>Referred Customers</p></div>

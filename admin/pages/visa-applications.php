@@ -105,14 +105,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $note = trim((string) ($_POST['note'] ?? ''));
         if ($note !== '') {
             $visibleToCustomer = !empty($_POST['visible_to_customer']) ? 1 : 0;
-            $pdo->prepare('INSERT INTO visa_application_notes (visa_application_id, admin_user_id, note, visible_to_customer) VALUES (:id, :admin, :note, :visible)')
-                ->execute(['id' => $id, 'admin' => current_admin_id(), 'note' => $note, 'visible' => $visibleToCustomer]);
+            $visibleToPartner = !empty($_POST['visible_to_partner']) ? 1 : 0;
+            $pdo->prepare('INSERT INTO visa_application_notes (visa_application_id, admin_user_id, note, visible_to_customer, visible_to_partner) VALUES (:id, :admin, :note, :visible_customer, :visible_partner)')
+                ->execute(['id' => $id, 'admin' => current_admin_id(), 'note' => $note, 'visible_customer' => $visibleToCustomer, 'visible_partner' => $visibleToPartner]);
             log_action('update', 'visa_applications', $id, null, 'Note added');
-            if ($visibleToCustomer) {
-                $appStmt = $pdo->prepare('SELECT customer_id, application_reference_no FROM visa_applications WHERE id = :id');
+            if ($visibleToCustomer || $visibleToPartner) {
+                $appStmt = $pdo->prepare(
+                    'SELECT va.customer_id, va.application_reference_no, cust.referred_by_partner_id
+                     FROM visa_applications va JOIN customers cust ON cust.id = va.customer_id WHERE va.id = :id'
+                );
                 $appStmt->execute(['id' => $id]);
                 $app = $appStmt->fetch();
-                if ($app) {
+                if ($app && $visibleToCustomer) {
                     $pdo->prepare('INSERT INTO customer_notifications (customer_id, type, title, body, link) VALUES (:cid, "message", :title, :body, :link)')
                         ->execute([
                             'cid' => $app['customer_id'],
@@ -120,6 +124,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             'body' => mb_substr($note, 0, 200),
                             'link' => '/dashboard/messages/?application_id=' . $id,
                         ]);
+                }
+                if ($app && $visibleToPartner && $app['referred_by_partner_id']) {
+                    notify_partner(
+                        (int) $app['referred_by_partner_id'],
+                        'message',
+                        'New message on ' . $app['application_reference_no'],
+                        mb_substr($note, 0, 200),
+                        '/partner/messages/?application_id=' . $id
+                    );
                 }
             }
         }
@@ -598,8 +611,9 @@ if ($action === 'view' && $id) {
     <div class="card" style="margin-bottom:var(--space-3)">
         <p><?= nl2br(e($r['note'])) ?></p>
         <p style="color:var(--text-muted);font-size:var(--font-size-sm)">
-            <?= $r['customer_id'] ? 'Customer' : e($r['author'] ?? 'Unknown') ?> &middot; <?= e(date('d M Y H:i', strtotime((string) $r['created_at']))) ?>
+            <?= $r['customer_id'] ? 'Customer' : ($r['partner_id'] ? 'Partner' : e($r['author'] ?? 'Unknown')) ?> &middot; <?= e(date('d M Y H:i', strtotime((string) $r['created_at']))) ?>
             <?php if ($r['visible_to_customer']): ?> &middot; <span class="badge badge-info">Visible to customer</span><?php endif; ?>
+            <?php if ($r['visible_to_partner']): ?> &middot; <span class="badge badge-info">Visible to partner</span><?php endif; ?>
         </p>
     </div>
     <?php endforeach; else: ?><p class="empty-state">No notes yet.</p><?php endif; ?>
@@ -609,6 +623,11 @@ if ($action === 'view' && $id) {
         <label style="display:flex;align-items:center;gap:var(--space-2);margin-top:var(--space-2);font-size:var(--font-size-sm)">
             <input type="checkbox" name="visible_to_customer" value="1"> Send as a message the customer can see in their dashboard
         </label>
+        <?php if ($application['referred_by_partner_id']): ?>
+        <label style="display:flex;align-items:center;gap:var(--space-2);margin-top:var(--space-2);font-size:var(--font-size-sm)">
+            <input type="checkbox" name="visible_to_partner" value="1"> Send as a message the referring partner can see in their portal
+        </label>
+        <?php endif; ?>
         <button type="submit" class="btn btn-outline btn-sm" style="margin-top:var(--space-2)">Add Note</button>
     </form>
 
