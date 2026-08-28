@@ -32,13 +32,14 @@
   }
 }
 
-/* ---------- Utility bar: indicative USD->INR rate + existing Login panel ---------- */
-/* Deliberately minimal by design — two things only, per the client's
-   utility-bar redesign brief: the rate on the left, the pre-existing
-   Login dropdown (unchanged) on the right. The tagline and the
-   WhatsApp "24x7 Support" link that used to live here were dropped,
-   not lost — WhatsApp/email/enquire are still one tap away sitewide
-   via the floating enquiry-widget (includes/enquiry-widget.php). */
+/* ---------- Utility bar: indicative rate + WhatsApp support + existing Login panel ---------- */
+/* The old "Technology Meets Travel & Visa" tagline was dropped — the
+   rate widget replaces it as the bar's left-side content, per the
+   client's utility-bar redesign brief. The WhatsApp "24x7 Support"
+   link was dropped in that same pass, then restored by client request
+   (it also stays reachable sitewide via the floating enquiry-widget,
+   includes/enquiry-widget.php, but is kept here too as its own
+   always-visible one-tap link). Login (unchanged) stays right-most. */
 
 .site-header__utility {
   background: var(--visa-blue-dark);
@@ -103,6 +104,12 @@
 
 .site-header__utility-link:hover {
   color: var(--visa-gold);
+}
+
+.site-header__utility-contact {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
 }
 
 /* Rate widget trigger — an unstyled <button> wrapping the same
@@ -176,11 +183,12 @@
     padding: 6px 0;
   }
 
-  /* Compact mobile utility bar: the rate only, on one line — Login
-     stays reachable via the hamburger menu's own Login section
+  /* Compact mobile utility bar: rate + WhatsApp support, one line —
+     Login stays reachable via the hamburger menu's own Login section
      (.site-header__mobile-login) rather than duplicating the trigger
      here, which is what keeps this from wrapping onto a second line. */
   .site-header__login { display: none; }
+  .site-header__utility-link-text { display: none; }
 }
 
 @media (max-width: 420px) {
