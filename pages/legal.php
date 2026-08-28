@@ -1,14 +1,11 @@
 <?php
 declare(strict_types=1);
 
+// The other 7 slugs that used to share this stub now have their own
+// real pages (see public/index.php) — /disclaimer/ is the only one
+// left here, since it isn't one of the Legal & Support Centre's 9
+// target URLs.
 $legalTitles = [
-    'privacy' => 'Privacy Policy',
-    'terms' => 'Terms & Conditions',
-    'travel-terms' => 'Travel Terms',
-    'payment-policy' => 'Payment Policy',
-    'refund-policy' => 'Refund Policy',
-    'cookie-policy' => 'Cookie Policy',
-    'grievance' => 'Grievance Redressal',
     'disclaimer' => 'Disclaimer',
 ];
 

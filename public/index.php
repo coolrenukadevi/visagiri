@@ -50,6 +50,7 @@ require_once "$root/includes/currency-rate.php";
 require_once "$root/includes/mail.php";
 require_once "$root/includes/partner-enrollment.php";
 require_once "$root/includes/csv-export.php";
+require_once "$root/includes/legal-layout.php";
 
 start_secure_session();
 send_security_headers();
@@ -87,12 +88,26 @@ switch ($segments[0] ?? '') {
         $dispatch("$root/pages/faq.php");
 
     case 'privacy':
+        $dispatch("$root/pages/privacy.php");
+
     case 'terms':
+        $dispatch("$root/pages/terms.php");
+
     case 'travel-terms':
+        $dispatch("$root/pages/travel-terms.php");
+
     case 'payment-policy':
+        $dispatch("$root/pages/payment-policy.php");
+
     case 'refund-policy':
+        $dispatch("$root/pages/refund-policy.php");
+
     case 'cookie-policy':
+        $dispatch("$root/pages/cookie-policy.php");
+
     case 'grievance':
+        $dispatch("$root/pages/grievance.php");
+
     case 'disclaimer':
         $dispatch("$root/pages/legal.php");
 

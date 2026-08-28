@@ -73,6 +73,13 @@ function format_money(float $amount, string $currency = 'INR'): string
  * list/detail page in this codebase (customers, partners, visa
  * applications, ...) with one shared helper.
  */
+/** Turns the site_settings 'company_founding_date' value (stored 'YYYY-MM') into "Month YYYY" for display. Falls back to the raw value if it's not in that shape. */
+function format_founding_date(string $yearMonth): string
+{
+    $timestamp = DateTime::createFromFormat('Y-m', $yearMonth);
+    return $timestamp !== false ? $timestamp->format('F Y') : $yearMonth;
+}
+
 function status_badge(string $status, array $map): string
 {
     $class = $map[$status] ?? 'neutral';

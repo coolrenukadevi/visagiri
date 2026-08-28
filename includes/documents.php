@@ -217,3 +217,48 @@ function store_partner_document_upload(array $file, string $documentType, int $p
 
     return (int) db()->lastInsertId();
 }
+
+/**
+ * Same storage/validation path again, for an attachment on the public
+ * Grievance form. Unlike every other document, this one has no logged-
+ * in uploader at all — no admin, no customer session — so both
+ * uploaded_by and uploaded_by_customer_id stay NULL (both nullable
+ * since schema-customer-partner-portal.sql); the grievance_id FK alone
+ * identifies where it came from, the same way general_enquiry_id does
+ * for a general-enquiry attachment.
+ */
+function store_grievance_document_upload(array $file, ?string $documentType, int $grievanceId): int
+{
+    if (!is_dir(DOCUMENTS_STORAGE_DIR)) {
+        mkdir(DOCUMENTS_STORAGE_DIR, 0755, true);
+    }
+
+    $originalName = (string) $file['name'];
+    $extension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+    $storedFilename = bin2hex(random_bytes(24)) . '.' . $extension;
+    $destination = DOCUMENTS_STORAGE_DIR . '/' . $storedFilename;
+
+    if (!move_uploaded_file($file['tmp_name'], $destination)) {
+        throw new RuntimeException('Failed to store uploaded file.');
+    }
+
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    $mimeType = finfo_file($finfo, $destination) ?: 'application/octet-stream';
+    finfo_close($finfo);
+
+    $stmt = db()->prepare(
+        'INSERT INTO documents (grievance_id, document_type, original_filename, stored_filename, storage_path, mime_type, file_size)
+         VALUES (:grievance_id, :doc_type, :original_name, :stored_name, :storage_path, :mime, :size)'
+    );
+    $stmt->execute([
+        'grievance_id' => $grievanceId,
+        'doc_type' => $documentType,
+        'original_name' => basename($originalName),
+        'stored_name' => $storedFilename,
+        'storage_path' => 'storage/documents/' . $storedFilename,
+        'mime' => $mimeType,
+        'size' => $file['size'],
+    ]);
+
+    return (int) db()->lastInsertId();
+}

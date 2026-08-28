@@ -19,6 +19,19 @@ $fields = [
     'company_founding_date' => 'Founding date (YYYY-MM)',
     'company_cin' => 'CIN',
     'company_parent' => 'Parent company',
+    'grievance_sla_hours' => 'Grievance SLA (hours to first resolution target)',
+    'legal_registered_office_address' => 'Registered office address (shown on legal pages when set)',
+    'legal_governing_law' => 'Governing law clause (shown on legal pages when set)',
+    'legal_jurisdiction_city' => 'Jurisdiction city (shown on legal pages when set)',
+    'legal_grievance_officer_name' => 'Grievance officer name (shown on Grievance page when set)',
+    'legal_grievance_officer_email' => 'Grievance officer email (shown on Grievance page when set)',
+    'legal_privacy_updated_at' => 'Privacy Policy — last updated (YYYY-MM-DD)',
+    'legal_terms_updated_at' => 'Terms & Conditions — last updated (YYYY-MM-DD)',
+    'legal_travel_terms_updated_at' => 'Travel Terms — last updated (YYYY-MM-DD)',
+    'legal_payment_policy_updated_at' => 'Payment Policy — last updated (YYYY-MM-DD)',
+    'legal_refund_policy_updated_at' => 'Refund Policy — last updated (YYYY-MM-DD)',
+    'legal_cookie_policy_updated_at' => 'Cookie Policy — last updated (YYYY-MM-DD)',
+    'legal_grievance_updated_at' => 'Grievance Redressal — last updated (YYYY-MM-DD)',
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

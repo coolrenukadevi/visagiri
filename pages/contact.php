@@ -5,29 +5,63 @@ declare(strict_types=1);
  * General enquiry form — the site's one non-visa-specific contact
  * channel (alongside the WhatsApp/call/email widget on every page,
  * and the structured /enquire/ form for visa-specific enquiries).
- * Stored in the general_enquiries table (service_type = 'general'),
- * the same table used for attestation service enquiries, with a
- * generated reference number; Google Sheets/Drive and an email ping
- * are best-effort secondary notifications — see includes/google-sheets.php.
+ * Stored in the general_enquiries table, service_type tagged from the
+ * "How Can We Help?" selector below; Google Sheets/Drive and an email
+ * ping are best-effort secondary notifications — see
+ * includes/google-sheets.php.
+ *
+ * The old single-purpose ?topic=forex boolean (added for the header
+ * utility bar's "Get Forex Assistance" CTA) is now one case of a
+ * proper 5-way service selector, kept as a backward-compatible alias
+ * so that existing link doesn't need to change.
  */
 
 require __DIR__ . '/../includes/google-sheets.php';
 
-// The header utility bar's "Get Forex Assistance" popover CTA links
-// here with ?topic=forex — reusing this existing general-enquiry
-// pipeline rather than standing up a separate forex landing page,
-// same "check before building" discipline as the rest of this
-// project. service_type is a free-text column (schema-crm.sql), so
-// tagging it 'forex' here is a real, queryable distinction for staff,
-// not just cosmetic prefill text.
-$isForexTopic = trim((string) ($_GET['topic'] ?? $_POST['topic'] ?? '')) === 'forex';
+const CONTACT_SERVICES = [
+    'visa' => [
+        'label' => 'Visa Assistance',
+        'eyebrow' => 'Visa Assistance',
+        'heading' => 'Tell us about your visa requirement and our team will get back to you.',
+    ],
+    'attestation' => [
+        'label' => 'Apostille & Attestation',
+        'eyebrow' => 'Apostille & Attestation',
+        'heading' => 'Tell us which documents need apostille or attestation and our team will guide you through it.',
+    ],
+    'forex' => [
+        'label' => 'Forex',
+        'eyebrow' => 'Forex Assistance',
+        'heading' => 'Tell us about your forex or currency exchange requirement and our team will get back to you.',
+    ],
+    'travel' => [
+        'label' => 'Travel Services',
+        'eyebrow' => 'Travel Services',
+        'heading' => 'Tell us about your travel-document or itinerary-support requirement and our team will get back to you.',
+    ],
+    'general' => [
+        'label' => 'General Enquiry',
+        'eyebrow' => 'Get In Touch',
+        'heading' => 'Tell us about your visa or document attestation needs and our team will get back to you.',
+    ],
+];
+
+$requestedService = trim((string) ($_GET['service'] ?? $_POST['service'] ?? ''));
+if ($requestedService === '' && trim((string) ($_GET['topic'] ?? $_POST['topic'] ?? '')) === 'forex') {
+    $requestedService = 'forex'; // backward-compatible alias for the header utility bar's existing CTA link
+}
+$serviceType = array_key_exists($requestedService, CONTACT_SERVICES) ? $requestedService : 'general';
+
+$forexPrefill = $serviceType === 'forex' && ($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST'
+    ? 'I saw the indicative USD to INR rate on your website and would like help with a forex/currency exchange requirement.'
+    : '';
 
 $submitted = false;
 $success = false;
 $errors = [];
 $values = [
     'name' => '', 'email' => '', 'phone' => '', 'destination' => '',
-    'message' => $isForexTopic ? 'I saw the indicative USD to INR rate on your website and would like help with a forex/currency exchange requirement.' : '',
+    'message' => $forexPrefill,
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -75,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     );
                     $stmt->execute([
                         'ref' => $referenceNumber,
-                        'service_type' => $isForexTopic ? 'forex' : 'general',
+                        'service_type' => $serviceType,
                         'name' => $values['name'],
                         'email' => $values['email'],
                         'phone' => $values['phone'] !== '' ? $values['phone'] : null,
@@ -100,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'name' => $values['name'],
                 'email' => $values['email'],
                 'phone' => $values['phone'],
-                'destination' => $values['destination'],
+                'destination' => (CONTACT_SERVICES[$serviceType]['label'] ?? 'General') . ($values['destination'] !== '' ? ' — ' . $values['destination'] : ''),
                 'message' => $values['message'],
                 'submitted_at' => date('c'),
             ]);
@@ -115,21 +149,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$pageTitle = $isForexTopic ? 'Get Forex Assistance - Visagiri' : 'Contact Us - Visagiri';
-$pageDescription = $isForexTopic
-    ? 'Get in touch with Visagiri for forex and currency exchange assistance.'
-    : "Get in touch with Visagiri for visa consultancy and document attestation assistance — enquiry form, WhatsApp, call, or email.";
+$pageTitle = ($serviceType === 'general' ? 'Contact Us' : CONTACT_SERVICES[$serviceType]['eyebrow']) . ' | Visagiri';
+$pageDescription = 'How can we help? Reach Visagiri for visa assistance, apostille & attestation, forex, or travel-related enquiries — enquiry form, WhatsApp, call, or email.';
 $canonicalUrl = APP_URL . '/contact/';
 require __DIR__ . '/../includes/header.php';
 ?>
 <section class="section" style="padding-top:var(--space-8)">
-    <div class="container" style="max-width:640px">
+    <div class="container" style="max-width:720px">
         <div class="section-heading" style="text-align:left;margin-left:0;max-width:none">
-            <span class="section-eyebrow"><?= $isForexTopic ? 'Forex Assistance' : 'Get In Touch' ?></span>
-            <h1>Contact Us</h1>
-            <p><?= $isForexTopic
-                ? 'Tell us about your forex or currency exchange requirement and our team will get back to you.'
-                : 'Tell us about your visa or document attestation needs and our team will get back to you.' ?></p>
+            <span class="section-eyebrow" id="contact-eyebrow"><?= e(CONTACT_SERVICES[$serviceType]['eyebrow']) ?></span>
+            <h1>How Can We Help?</h1>
+            <p id="contact-heading"><?= e(CONTACT_SERVICES[$serviceType]['heading']) ?></p>
+        </div>
+
+        <div class="contact-service-selector" role="group" aria-label="What do you need help with?">
+            <?php foreach (CONTACT_SERVICES as $key => $service): ?>
+            <button type="button" class="contact-service-card<?= $serviceType === $key ? ' is-selected' : '' ?>" data-service="<?= e($key) ?>" data-eyebrow="<?= e($service['eyebrow']) ?>" data-heading="<?= e($service['heading']) ?>">
+                <?= e($service['label']) ?>
+            </button>
+            <?php endforeach; ?>
         </div>
 
         <?php if ($submitted && $success): ?>
@@ -152,7 +190,7 @@ require __DIR__ . '/../includes/header.php';
         <div class="card">
             <form method="post" action="/contact/" novalidate>
                 <?= csrf_field() ?>
-                <?php if ($isForexTopic): ?><input type="hidden" name="topic" value="forex"><?php endif; ?>
+                <input type="hidden" name="service" id="service-field" value="<?= e($serviceType) ?>">
                 <div class="form-group" style="position:absolute;left:-9999px" aria-hidden="true">
                     <label for="website">Leave this field blank</label>
                     <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
@@ -186,10 +224,23 @@ require __DIR__ . '/../includes/header.php';
             </form>
         </div>
 
-        <p style="margin-top:var(--space-6);text-align:center">
-            Prefer to talk directly? <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to get in touch.")) ?>" target="_blank" rel="noopener noreferrer">WhatsApp us</a>,
-            call <a href="tel:<?= e(setting('contact_phone_dial', '+917065819819')) ?>"><?= e(setting('contact_phone_display', '+91 7065 819 819')) ?></a>, or email <a href="mailto:<?= e(setting('contact_email', 'info@visagiri.com')) ?>"><?= e(setting('contact_email', 'info@visagiri.com')) ?></a>.
-        </p>
+        <div class="contact-cards">
+            <div class="contact-card">
+                <div class="contact-card__title">WhatsApp</div>
+                <p class="contact-card__detail"><?= e(setting('contact_phone_display', '+91 7065 819 819')) ?></p>
+                <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to get in touch.")) ?>" class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">WhatsApp Us</a>
+            </div>
+            <div class="contact-card">
+                <div class="contact-card__title">Email</div>
+                <p class="contact-card__detail"><?= e(setting('contact_email', 'info@visagiri.com')) ?></p>
+                <a href="mailto:<?= e(setting('contact_email', 'info@visagiri.com')) ?>" class="btn btn-outline btn-sm">Email Us</a>
+            </div>
+            <div class="contact-card">
+                <div class="contact-card__title">Call</div>
+                <p class="contact-card__detail"><?= e(setting('contact_phone_display', '+91 7065 819 819')) ?></p>
+                <a href="tel:<?= e(setting('contact_phone_dial', '+917065819819')) ?>" class="btn btn-outline btn-sm">Call Us</a>
+            </div>
+        </div>
     </div>
 </section>
 <?php require __DIR__ . '/../includes/footer.php'; ?>

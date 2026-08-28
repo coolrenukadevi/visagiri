@@ -807,3 +807,162 @@
     display: none;
   }
 }
+
+/* ---------- Legal & Support Centre (privacy/terms/etc.) ---------- */
+
+.legal-hero {
+  max-width: 70ch;
+  margin: var(--space-4) 0 var(--space-6);
+}
+
+.legal-hero__description {
+  margin-top: var(--space-3);
+  color: var(--text-muted);
+  font-size: var(--font-size-lg);
+}
+
+.legal-hero__updated {
+  margin-top: var(--space-3);
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* Desktop: sticky sidebar TOC + content, reusing .dashboard-shell's
+   proven grid shape but under its own class so it can hide the
+   sidebar outright on mobile (rather than reordering it below the
+   content, which .dashboard-shell does) in favor of the accordion
+   version rendered separately above. */
+.legal-shell {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: var(--space-8);
+  align-items: start;
+  padding-bottom: var(--space-10);
+}
+
+.legal-shell__sidebar {
+  position: sticky;
+  top: calc(var(--space-6) + 64px);
+}
+
+.legal-shell__toc-title {
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin-bottom: var(--space-3);
+}
+
+.legal-toc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.legal-toc-list li + li {
+  margin-top: var(--space-2);
+}
+
+.legal-toc-list a {
+  display: block;
+  padding: var(--space-1) 0;
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  border-left: 2px solid transparent;
+  padding-left: var(--space-3);
+}
+
+.legal-toc-list a:hover {
+  color: var(--visa-blue);
+  border-left-color: var(--visa-blue);
+}
+
+.legal-shell__content h2 {
+  margin-top: var(--space-8);
+  scroll-margin-top: calc(var(--space-4) + 72px);
+}
+
+.legal-shell__content h2:first-child {
+  margin-top: 0;
+}
+
+.legal-shell__content p,
+.legal-shell__content li {
+  color: var(--text-muted);
+}
+
+.legal-shell__content ul,
+.legal-shell__content ol {
+  padding-left: var(--space-6);
+  margin: var(--space-3) 0;
+}
+
+/* Mobile "On This Page" accordion — hidden on desktop, where the
+   sticky sidebar already covers the same job. */
+.legal-toc-mobile {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .legal-shell__sidebar { display: none; }
+  .legal-shell { grid-template-columns: 1fr; }
+  .legal-toc-mobile { display: block; margin-bottom: var(--space-5); }
+}
+
+/* ---------- Contact page: "How Can We Help?" service selector + contact cards ---------- */
+
+.contact-service-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-3);
+  margin: var(--space-5) 0 var(--space-6);
+}
+
+.contact-service-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  padding: var(--space-4);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-dark);
+  cursor: pointer;
+  text-align: center;
+  transition: border-color var(--transition-fast), background var(--transition-fast), color var(--transition-fast);
+}
+
+.contact-service-card:hover {
+  border-color: var(--visa-blue);
+}
+
+.contact-service-card.is-selected {
+  border-color: var(--visa-blue);
+  background: var(--visa-blue);
+  color: var(--white);
+}
+
+.contact-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-8);
+}
+
+.contact-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  text-align: center;
+}
+
+.contact-card__title {
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-2);
+}
+
+.contact-card__detail {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--space-3);
+}

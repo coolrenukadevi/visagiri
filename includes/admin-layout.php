@@ -68,6 +68,9 @@ function admin_header_start(string $pageTitle, string $activeNav): void
             <?php if (has_permission('general_enquiries.view')): ?>
             <a href="/admin/general-enquiries/" class="<?= $activeNav === 'general-enquiries' ? 'is-active' : '' ?>">General &amp; Attestation Enquiries</a>
             <?php endif; ?>
+            <?php if (has_permission('grievances.view')): ?>
+            <a href="/admin/grievances/" class="<?= $activeNav === 'grievances' ? 'is-active' : '' ?>">Grievances</a>
+            <?php endif; ?>
             <?php if (has_permission('forex.requests.view')): ?>
             <button type="button" class="admin-sidebar__group" aria-expanded="<?= $isGroupOpen('forex') ? 'true' : 'false' ?>" aria-controls="sidebar-group-forex">Forex <?= nav_chevron_icon() ?></button>
             <div class="admin-sidebar__subgroup<?= $isGroupOpen('forex') ? ' is-open' : '' ?>" id="sidebar-group-forex">

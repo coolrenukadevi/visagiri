@@ -273,7 +273,7 @@
       setOpen(!enquiryWidget.classList.contains('is-open'));
     });
     document.addEventListener('click', function (event) {
-      if (enquiryWidget.classList.contains('is-open') && !enquiryWidget.contains(event.target)) {
+      if (enquiryWidget.classList.contains('is-open') && !enquiryWidget.contains(event.target) && !event.target.closest('.js-open-enquiry-widget')) {
         setOpen(false);
       }
     });
@@ -282,6 +282,50 @@
         setOpen(false);
         enquiryToggle.focus();
       }
+    });
+
+    // Footer "Get Assistance" CTA banner + contact strip button — both
+    // open this same fixed-position widget rather than duplicating a
+    // second enquiry surface, per the brief's "open the existing quick
+    // enquiry dialogue" instruction. Registered before the outside-click
+    // listener runs (element listeners fire during the target phase,
+    // ahead of anything bubbled to document), and excluded from that
+    // listener's own "outside click closes it" check above — otherwise
+    // the same click that opens the widget would immediately bubble to
+    // document and close it again, since these triggers live outside
+    // #enquiry-widget by design.
+    document.querySelectorAll('.js-open-enquiry-widget').forEach(function (trigger) {
+      trigger.addEventListener('click', function () {
+        setOpen(true);
+        enquiryToggle.focus();
+      });
+    });
+  }
+
+  // Contact page "How Can We Help?" service selector — clicking a card
+  // sets the hidden service field and swaps the hero eyebrow/heading
+  // text, so submitting without ever clicking a card still posts
+  // whatever service the page loaded with (the PHP-rendered default),
+  // matching how every other progressively-enhanced control on this
+  // site degrades: the form works with this script absent, just
+  // without the live text swap.
+  var serviceCards = document.querySelectorAll('.contact-service-card');
+  var serviceField = document.getElementById('service-field');
+  var eyebrowEl = document.getElementById('contact-eyebrow');
+  var headingEl = document.getElementById('contact-heading');
+  if (serviceCards.length && serviceField) {
+    serviceCards.forEach(function (card) {
+      card.addEventListener('click', function () {
+        serviceCards.forEach(function (c) { c.classList.remove('is-selected'); });
+        card.classList.add('is-selected');
+        serviceField.value = card.getAttribute('data-service') || 'general';
+        if (eyebrowEl) {
+          eyebrowEl.textContent = card.getAttribute('data-eyebrow') || '';
+        }
+        if (headingEl) {
+          headingEl.textContent = card.getAttribute('data-heading') || '';
+        }
+      });
     });
   }
 })();
