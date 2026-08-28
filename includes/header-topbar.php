@@ -56,5 +56,4 @@ $headerWhatsappMsg = rawurlencode('Hello VisaAgency.in, I need assistance with m
             <?php endif; ?>
         </div>
     </div>
-    <a href="contact" class="header-enquire-btn" data-open-quick-enquiry>Enquire Now</a>
 </div>
