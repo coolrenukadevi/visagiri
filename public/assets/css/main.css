@@ -187,21 +187,20 @@ h3, .h3 { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 500; l
 /* Floating glass nav */
 .site-header {
   position: sticky; top: 0; z-index: 900;
-  background: var(--paper-dim);
-  padding: 16px 20px 0;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(14px) saturate(150%); -webkit-backdrop-filter: blur(14px) saturate(150%);
+  border-bottom: 1px solid var(--border);
+  transition: box-shadow var(--gh-transition);
 }
 .site-header .container {
   height: auto; display: flex; align-items: center; justify-content: space-between; gap: 20px;
-  max-width: 1240px;
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(18px) saturate(160%); -webkit-backdrop-filter: blur(18px) saturate(160%);
-  border: 1px solid rgba(124, 58, 237, 0.14); border-radius: var(--gh-radius-header);
-  padding: 10px 14px 10px 24px; margin-bottom: 16px;
-  box-shadow: 0 1px 0 rgba(124, 58, 237, 0.12) inset, 0 12px 32px rgba(10, 14, 39, 0.1);
-  transition: padding var(--gh-transition), border-radius var(--gh-transition), box-shadow var(--gh-transition);
+  max-width: var(--container-max);
+  padding: 14px 24px;
+  transition: padding var(--gh-transition);
 }
-.site-header.is-scrolled .container { padding-top: 7px; padding-bottom: 7px; box-shadow: 0 1px 0 rgba(124, 58, 237, 0.16) inset, 0 16px 38px rgba(10, 14, 39, 0.16); backdrop-filter: blur(24px) saturate(170%); -webkit-backdrop-filter: blur(24px) saturate(170%); }
-@media (max-width: 640px) { .site-header { padding: 12px 12px 0; } .site-header .container { padding: 8px 8px 8px 16px; } }
+.site-header.is-scrolled { box-shadow: 0 4px 20px rgba(10, 33, 29, 0.08); }
+.site-header.is-scrolled .container { padding-top: 10px; padding-bottom: 10px; }
+@media (max-width: 640px) { .site-header .container { padding: 10px 16px; } }
 
 .brand { display: flex; align-items: center; }
 .brand-logo { height: 28px; width: auto; display: block; }
