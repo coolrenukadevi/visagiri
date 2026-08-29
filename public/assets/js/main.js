@@ -54,6 +54,30 @@
     if (e.key === 'Escape') closeAllNavItems();
   });
 
+  /* Utility bar language selector (English is the only wired option today —
+     other languages are listed but disabled until real translations ship). */
+  var langSelect = document.querySelector('[data-lang-select]');
+  if (langSelect) {
+    var langBtn = langSelect.querySelector('.utility-lang-btn');
+    langBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var open = langSelect.classList.toggle('is-open');
+      langBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('[data-lang-select]')) {
+        langSelect.classList.remove('is-open');
+        langBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        langSelect.classList.remove('is-open');
+        langBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
   /* Sticky header: shrink + hide utility bar past a scroll threshold */
   var siteHeader = document.querySelector('.site-header');
   if (siteHeader) {

@@ -7,14 +7,31 @@ $current_path = $current_path ?? ($_SERVER['REQUEST_URI'] ?? '/');
 ?>
 <a class="sr-only" href="#main-content">Skip to main content</a>
 <div class="utility-bar">
-  <span>AI-Powered Financial Infrastructure</span>
-  <span>Global Payments</span>
-  <span>Secure &amp; Trusted</span>
-  <span class="utility-support">
-    <a href="https://wa.me/917066820820" target="_blank" rel="noopener">
-      <i class="support-dot" aria-hidden="true"></i>24&times;7 Support
-    </a>
-  </span>
+  <div class="utility-left">
+    <span>AI-Powered Financial Infrastructure</span>
+    <span>Global Payments</span>
+    <span>Secure &amp; Trusted</span>
+  </div>
+  <div class="utility-right">
+    <span class="utility-support">
+      <a href="https://wa.me/917066820820" target="_blank" rel="noopener">
+        <i class="support-dot" aria-hidden="true"></i>24&times;7 Support
+      </a>
+    </span>
+    <div class="utility-lang" data-lang-select>
+      <button type="button" class="utility-lang-btn" aria-haspopup="true" aria-expanded="false">
+        EN <i class="chev" aria-hidden="true"></i>
+      </button>
+      <div class="utility-lang-menu" role="menu" aria-label="Select language">
+        <button type="button" class="utility-lang-option is-active" role="menuitem">English</button>
+        <button type="button" class="utility-lang-option" role="menuitem" disabled>हिन्दी <span class="soon">Coming soon</span></button>
+        <button type="button" class="utility-lang-option" role="menuitem" disabled>தமிழ் <span class="soon">Coming soon</span></button>
+        <button type="button" class="utility-lang-option" role="menuitem" disabled>తెలుగు <span class="soon">Coming soon</span></button>
+        <button type="button" class="utility-lang-option" role="menuitem" disabled>বাংলা <span class="soon">Coming soon</span></button>
+        <button type="button" class="utility-lang-option" role="menuitem" disabled>मराठी <span class="soon">Coming soon</span></button>
+      </div>
+    </div>
+  </div>
 </div>
 <header class="site-header">
   <div class="container">
@@ -125,9 +142,6 @@ $current_path = $current_path ?? ($_SERVER['REQUEST_URI'] ?? '/');
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         Login / Sign Up
       </button>
-      <div class="lang-select" aria-label="Language: English">
-        EN <i class="chev" aria-hidden="true"></i>
-      </div>
       <button class="hamburger" aria-label="Open menu"><span></span></button>
     </div>
   </div>
