@@ -43,18 +43,63 @@ $current_path = $current_path ?? ($_SERVER['REQUEST_URI'] ?? '/');
       <ul class="main-nav">
         <li class="nav-item">
           <button class="nav-link" aria-haspopup="true" aria-expanded="false">Products <i class="chev" aria-hidden="true"></i></button>
-          <div class="mega-menu">
+          <div class="mega-menu mega-menu-wide">
             <div>
               <div class="mega-col-title">Accept &amp; Collect</div>
-              <a class="mega-link" href="/products/payment-gateway"><strong>Payment Gateway</strong><span>Accept cards, UPI, netbanking, and wallets</span></a>
-              <a class="mega-link" href="/products/payment-links"><strong>Payment Links</strong><span>Collect payments without code</span></a>
-              <a class="mega-link" href="/products/payment-collection"><strong>Payment Collection</strong><span>Recurring and bulk collection workflows</span></a>
+              <a class="mega-link mega-link-plain" href="/products/payment-gateway"><strong>Payment Gateway</strong></a>
+              <a class="mega-link mega-link-plain" href="/products/payment-links"><strong>Payment Links</strong></a>
+              <a class="mega-link mega-link-plain" href="/contact?intent=sales&amp;product=payment-pages"><strong>Payment Pages</strong></a>
+              <a class="mega-link mega-link-plain" href="/contact?intent=sales&amp;product=upi-payments"><strong>UPI Payments</strong></a>
+              <a class="mega-link mega-link-plain" href="/contact?intent=sales&amp;product=recurring-payments"><strong>Recurring Payments</strong></a>
+              <a class="mega-link mega-link-plain" href="/contact?intent=sales&amp;product=subscription-billing"><strong>Subscription Billing</strong></a>
+              <a class="mega-link mega-link-plain" href="/products/payment-collection"><strong>Smart Collections</strong></a>
             </div>
             <div>
-              <div class="mega-col-title">Move &amp; Understand Money</div>
-              <a class="mega-link" href="/products/payouts"><strong>Payouts</strong><span>Vendor, employee, and partner payouts</span></a>
-              <a class="mega-link" href="/products/payment-analytics"><strong>Payment Analytics</strong><span>Performance, settlements, and reconciliation</span></a>
-              <a class="mega-link" href="/developers"><strong>APIs &amp; Webhooks</strong><span>Developer-first integrations</span></a>
+              <div class="mega-col-title">Pay &amp; Move Money</div>
+              <a class="mega-link mega-link-plain" href="/products/payouts"><strong>Payouts</strong></a>
+              <a class="mega-link mega-link-plain" href="/contact?intent=sales&amp;product=bulk-payouts"><strong>Bulk Payouts</strong></a>
+              <a class="mega-link mega-link-plain" href="/contact?intent=sales&amp;product=vendor-payments"><strong>Vendor Payments</strong></a>
+              <a class="mega-link mega-link-plain" href="/contact?intent=sales&amp;product=employee-payments"><strong>Employee Payments</strong></a>
+              <a class="mega-link mega-link-plain" href="/contact?intent=sales&amp;product=partner-payments"><strong>Partner Payments</strong></a>
+              <a class="mega-link mega-link-plain" href="/contact?intent=sales&amp;product=international-payments"><strong>International Payments</strong></a>
+            </div>
+            <div>
+              <div class="mega-col-title">Financial Operations</div>
+              <a class="mega-link mega-link-plain" href="/products/payment-analytics"><strong>Reconciliation</strong></a>
+              <a class="mega-link mega-link-plain" href="/products/payment-analytics"><strong>Settlements</strong></a>
+              <a class="mega-link mega-link-plain" href="/products/payment-analytics"><strong>Refunds</strong></a>
+              <a class="mega-link mega-link-plain" href="/contact?intent=sales&amp;product=chargebacks"><strong>Chargebacks</strong></a>
+              <a class="mega-link mega-link-plain" href="/contact?intent=sales&amp;product=invoice-management"><strong>Invoice Management</strong></a>
+              <a class="mega-link mega-link-plain" href="/contact?intent=sales&amp;product=expense-management"><strong>Expense Management</strong></a>
+              <a class="mega-link mega-link-plain" href="/products/payment-analytics"><strong>Finance Analytics</strong></a>
+              <a class="mega-link mega-link-plain" href="/contact?intent=sales&amp;product=mis-reports"><strong>MIS &amp; Reports</strong></a>
+            </div>
+            <div>
+              <div class="mega-col-title">AI &amp; Intelligence</div>
+              <a class="mega-link mega-link-plain" href="/contact?intent=sales&amp;product=paynancial-ai"><strong>Paynancial AI</strong></a>
+              <a class="mega-link mega-link-plain" href="/contact?intent=sales&amp;product=ai-fraud-detection"><strong>AI Fraud Detection</strong></a>
+              <a class="mega-link mega-link-plain" href="/contact?intent=sales&amp;product=ai-reconciliation"><strong>AI Reconciliation</strong></a>
+              <a class="mega-link mega-link-plain" href="/contact?intent=sales&amp;product=ai-financial-assistant"><strong>AI Financial Assistant</strong></a>
+              <a class="mega-link mega-link-plain" href="/contact?intent=sales&amp;product=ai-cash-flow-intelligence"><strong>AI Cash-Flow Intelligence</strong></a>
+              <a class="mega-link mega-link-plain" href="/contact?intent=sales&amp;product=ai-revenue-forecasting"><strong>AI Revenue Forecasting</strong></a>
+            </div>
+            <div>
+              <div class="mega-col-title">Embedded Finance</div>
+              <a class="mega-link mega-link-plain" href="/contact?intent=sales&amp;product=embedded-payments"><strong>Embedded Payments</strong></a>
+              <a class="mega-link mega-link-plain" href="/contact?intent=sales&amp;product=embedded-payouts"><strong>Embedded Payouts</strong></a>
+              <a class="mega-link mega-link-plain" href="/contact?intent=sales&amp;product=embedded-billing"><strong>Embedded Billing</strong></a>
+              <a class="mega-link mega-link-plain" href="/contact?intent=sales&amp;product=wallet-infrastructure"><strong>Wallet Infrastructure</strong></a>
+              <a class="mega-link mega-link-plain" href="/contact?intent=sales&amp;product=split-payments"><strong>Split Payments</strong></a>
+              <a class="mega-link mega-link-plain" href="/contact?intent=sales&amp;product=white-label-payments"><strong>White-Label Payments</strong></a>
+            </div>
+            <div>
+              <div class="mega-col-title">Developer Platform</div>
+              <a class="mega-link mega-link-plain" href="/developers#docs"><strong>Payment APIs</strong></a>
+              <a class="mega-link mega-link-plain" href="/developers#docs"><strong>Payout APIs</strong></a>
+              <a class="mega-link mega-link-plain" href="/developers#sdks"><strong>SDKs</strong></a>
+              <a class="mega-link mega-link-plain" href="/developers#webhooks"><strong>Webhooks</strong></a>
+              <a class="mega-link mega-link-plain" href="/developers#sandbox"><strong>Sandbox</strong></a>
+              <a class="mega-link mega-link-plain" href="/developers"><strong>API Dashboard</strong></a>
             </div>
           </div>
         </li>
@@ -166,12 +211,56 @@ $current_path = $current_path ?? ($_SERVER['REQUEST_URI'] ?? '/');
   <details>
     <summary>Products <i class="chev" aria-hidden="true"></i></summary>
     <ul>
+      <li class="mobile-nav-group-label">Accept &amp; Collect</li>
       <li><a href="/products/payment-gateway">Payment Gateway</a></li>
       <li><a href="/products/payment-links">Payment Links</a></li>
-      <li><a href="/products/payment-collection">Payment Collection</a></li>
+      <li><a href="/contact?intent=sales&amp;product=payment-pages">Payment Pages</a></li>
+      <li><a href="/contact?intent=sales&amp;product=upi-payments">UPI Payments</a></li>
+      <li><a href="/contact?intent=sales&amp;product=recurring-payments">Recurring Payments</a></li>
+      <li><a href="/contact?intent=sales&amp;product=subscription-billing">Subscription Billing</a></li>
+      <li><a href="/products/payment-collection">Smart Collections</a></li>
+
+      <li class="mobile-nav-group-label">Pay &amp; Move Money</li>
       <li><a href="/products/payouts">Payouts</a></li>
-      <li><a href="/products/payment-analytics">Payment Analytics</a></li>
-      <li><a href="/developers">APIs &amp; Webhooks</a></li>
+      <li><a href="/contact?intent=sales&amp;product=bulk-payouts">Bulk Payouts</a></li>
+      <li><a href="/contact?intent=sales&amp;product=vendor-payments">Vendor Payments</a></li>
+      <li><a href="/contact?intent=sales&amp;product=employee-payments">Employee Payments</a></li>
+      <li><a href="/contact?intent=sales&amp;product=partner-payments">Partner Payments</a></li>
+      <li><a href="/contact?intent=sales&amp;product=international-payments">International Payments</a></li>
+
+      <li class="mobile-nav-group-label">Financial Operations</li>
+      <li><a href="/products/payment-analytics">Reconciliation</a></li>
+      <li><a href="/products/payment-analytics">Settlements</a></li>
+      <li><a href="/products/payment-analytics">Refunds</a></li>
+      <li><a href="/contact?intent=sales&amp;product=chargebacks">Chargebacks</a></li>
+      <li><a href="/contact?intent=sales&amp;product=invoice-management">Invoice Management</a></li>
+      <li><a href="/contact?intent=sales&amp;product=expense-management">Expense Management</a></li>
+      <li><a href="/products/payment-analytics">Finance Analytics</a></li>
+      <li><a href="/contact?intent=sales&amp;product=mis-reports">MIS &amp; Reports</a></li>
+
+      <li class="mobile-nav-group-label">AI &amp; Intelligence</li>
+      <li><a href="/contact?intent=sales&amp;product=paynancial-ai">Paynancial AI</a></li>
+      <li><a href="/contact?intent=sales&amp;product=ai-fraud-detection">AI Fraud Detection</a></li>
+      <li><a href="/contact?intent=sales&amp;product=ai-reconciliation">AI Reconciliation</a></li>
+      <li><a href="/contact?intent=sales&amp;product=ai-financial-assistant">AI Financial Assistant</a></li>
+      <li><a href="/contact?intent=sales&amp;product=ai-cash-flow-intelligence">AI Cash-Flow Intelligence</a></li>
+      <li><a href="/contact?intent=sales&amp;product=ai-revenue-forecasting">AI Revenue Forecasting</a></li>
+
+      <li class="mobile-nav-group-label">Embedded Finance</li>
+      <li><a href="/contact?intent=sales&amp;product=embedded-payments">Embedded Payments</a></li>
+      <li><a href="/contact?intent=sales&amp;product=embedded-payouts">Embedded Payouts</a></li>
+      <li><a href="/contact?intent=sales&amp;product=embedded-billing">Embedded Billing</a></li>
+      <li><a href="/contact?intent=sales&amp;product=wallet-infrastructure">Wallet Infrastructure</a></li>
+      <li><a href="/contact?intent=sales&amp;product=split-payments">Split Payments</a></li>
+      <li><a href="/contact?intent=sales&amp;product=white-label-payments">White-Label Payments</a></li>
+
+      <li class="mobile-nav-group-label">Developer Platform</li>
+      <li><a href="/developers#docs">Payment APIs</a></li>
+      <li><a href="/developers#docs">Payout APIs</a></li>
+      <li><a href="/developers#sdks">SDKs</a></li>
+      <li><a href="/developers#webhooks">Webhooks</a></li>
+      <li><a href="/developers#sandbox">Sandbox</a></li>
+      <li><a href="/developers">API Dashboard</a></li>
     </ul>
   </details>
   <details>
