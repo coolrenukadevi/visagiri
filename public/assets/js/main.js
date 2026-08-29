@@ -78,8 +78,15 @@
     });
   }
 
-  /* Sticky header: shrink + hide utility bar past a scroll threshold */
+  /* Sticky header: shrink + hide utility bar past a scroll threshold.
+     Also publishes the header's live rendered height as --header-h so
+     off-canvas panels (login) can sit below it instead of covering it. */
   var siteHeader = document.querySelector('.site-header');
+  function updateHeaderHeightVar() {
+    if (siteHeader) {
+      document.documentElement.style.setProperty('--header-h', siteHeader.getBoundingClientRect().height + 'px');
+    }
+  }
   if (siteHeader) {
     var lastScrolled = false;
     var onScroll = function () {
@@ -87,10 +94,13 @@
       if (scrolled !== lastScrolled) {
         siteHeader.classList.toggle('is-scrolled', scrolled);
         lastScrolled = scrolled;
+        updateHeaderHeightVar();
       }
     };
     window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', updateHeaderHeightVar);
     onScroll();
+    updateHeaderHeightVar();
   }
 
   /* ---------------------------------------------------------------
@@ -117,6 +127,7 @@
 
   function openLoginPanel(role) {
     if (!loginPanel || !loginOverlay) return;
+    updateHeaderHeightVar();
     loginOverlay.classList.add('is-open');
     loginPanel.classList.add('is-open');
     document.body.style.overflow = 'hidden';
