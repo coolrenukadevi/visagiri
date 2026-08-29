@@ -1,6 +1,20 @@
 Options -Indexes -MultiViews
 DirectoryIndex index.php
 
+# The project root's .htaccess denies everything by default (defense in
+# depth for hosts that can't be pointed at /public). Apache/LiteSpeed
+# merge .htaccess by real filesystem path, not by document root, so that
+# parent denial still reaches every file under here unless explicitly
+# overridden — this does that, for the one folder that's meant to be
+# reachable over HTTP.
+<IfModule mod_authz_core.c>
+  Require all granted
+</IfModule>
+<IfModule !mod_authz_core.c>
+  Order allow,deny
+  Allow from all
+</IfModule>
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
