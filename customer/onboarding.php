@@ -12,7 +12,7 @@ $stmt->execute(['uid' => $auth_user['id']]);
 $customer = $stmt->fetch();
 $customerId = (int) ($customer['id'] ?? 0);
 
-$page_meta = ['title' => 'Business Profile &amp; Verification | Paynancial', 'heading' => 'Business Profile & Verification'];
+$page_meta = ['title' => 'Business Profile & Verification | Paynancial', 'heading' => 'Business Profile & Verification'];
 
 $profileStmt = $pdo->prepare('SELECT * FROM customer_kyc_profiles WHERE customer_id = :cid');
 $profileStmt->execute(['cid' => $customerId]);
