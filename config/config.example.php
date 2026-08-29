@@ -32,6 +32,11 @@ define('SESSION_COOKIE_SECURE', true);         // requires HTTPS in production
 define('LOGIN_MAX_ATTEMPTS', 5);
 define('LOGIN_LOCKOUT_MINUTES', 15);
 define('PASSWORD_RESET_TOKEN_TTL_MINUTES', 30);
+define('OTP_LENGTH', 6);
+define('OTP_EXPIRY_MINUTES', 5);
+define('OTP_MAX_ATTEMPTS', 5);
+define('DEVICE_COOKIE_NAME', 'pyn_device');
+define('DEVICE_COOKIE_DAYS', 180);
 
 // A long, random, per-install secret used to key CSRF/HMAC operations.
 // Generate with: bin2hex(random_bytes(32))

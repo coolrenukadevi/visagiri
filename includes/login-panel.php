@@ -112,6 +112,23 @@
       <button type="submit" class="btn btn-primary btn-block">HRMS Login</button>
     </form>
 
+    <!-- OTP verification step, shared across all four login forms -->
+    <form class="login-form" data-role-form="otp" novalidate>
+      <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
+      <div class="form-error" role="alert"></div>
+      <p class="form-note" style="margin-top:0;">Enter the <?= (int) OTP_LENGTH ?>-digit code sent to <strong data-otp-destination></strong></p>
+      <div class="field">
+        <label for="otp-code">Verification code</label>
+        <input id="otp-code" name="otp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="<?= (int) OTP_LENGTH ?>" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Verify &amp; continue</button>
+      <p class="form-note">
+        <button type="button" class="btn-link-like" data-otp-resend style="background:none;border:none;color:inherit;padding:0;font:inherit;cursor:pointer;text-decoration:underline;">Resend code</button>
+        &nbsp;·&nbsp;
+        <button type="button" class="btn-link-like" data-otp-back style="background:none;border:none;color:inherit;padding:0;font:inherit;cursor:pointer;text-decoration:underline;">Back to sign in</button>
+      </p>
+    </form>
+
     <div class="login-security-msg">
       <span aria-hidden="true">🔒</span>
       <span>Your information is protected with secure authentication.</span>

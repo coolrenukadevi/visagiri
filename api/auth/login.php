@@ -34,4 +34,8 @@ if (!$result['ok']) {
     json_response(['ok' => false, 'error' => $result['error']], 401);
 }
 
+if (!empty($result['otp_required'])) {
+    json_response(['ok' => true, 'otp_required' => true, 'destination_masked' => $result['destination_masked']]);
+}
+
 json_response(['ok' => true, 'redirect' => $result['redirect']]);

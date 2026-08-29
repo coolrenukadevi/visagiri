@@ -20,6 +20,8 @@ $current_path = $requestPath;
 if (($segments[0] ?? '') === 'api') {
     $apiRoutes = [
         'api/auth/login'            => __DIR__ . '/../api/auth/login.php',
+        'api/auth/verify-otp'       => __DIR__ . '/../api/auth/verify-otp.php',
+        'api/auth/resend-otp'       => __DIR__ . '/../api/auth/resend-otp.php',
         'api/auth/logout'           => __DIR__ . '/../api/auth/logout.php',
         'api/auth/forgot-password'  => __DIR__ . '/../api/auth/forgot-password.php',
         'api/contact/submit'        => __DIR__ . '/../api/contact/submit.php',

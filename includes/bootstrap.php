@@ -19,6 +19,7 @@ ini_set('display_errors', APP_DEBUG ? '1' : '0');
 require_once __DIR__ . '/database.php';
 require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/security.php';
+require_once __DIR__ . '/otp.php';
 require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/partner.php';
 require_once __DIR__ . '/partner-assistant.php';

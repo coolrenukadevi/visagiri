@@ -62,23 +62,96 @@ function attempt_login(PDO $pdo, string $identifier, string $password, string $r
 
     record_login_attempt($pdo, $identifier, $roleGroup, true);
 
-    // Successful login: regenerate the session ID to prevent fixation.
+    // Staff accounts always verify with OTP. Customers/partners only do
+    // when they've opted into two-factor, or this device hasn't been
+    // seen before for this account.
+    $staffRoles = ['employee', 'hr', 'admin', 'super_admin'];
+    $deviceToken = current_device_token();
+    $deviceKnown = $deviceToken !== null && device_is_known($pdo, (int) $user['id'], $deviceToken);
+    $otpRequired = in_array($user['role_slug'], $staffRoles, true) || (bool) $user['two_factor_enabled'] || !$deviceKnown;
+
+    if ($otpRequired) {
+        $otpId = generate_and_send_otp($pdo, $user, 'login');
+        $_SESSION['_login_challenge'] = [
+            'user_id'    => (int) $user['id'],
+            'role_group' => $roleGroup,
+            'otp_id'     => $otpId,
+            'expires_at' => time() + OTP_EXPIRY_MINUTES * 60,
+        ];
+        return ['ok' => true, 'otp_required' => true, 'destination_masked' => mask_destination($user['email'])];
+    }
+
+    finalize_login($pdo, $user);
+    return ['ok' => true, 'role' => $user['role_slug'], 'redirect' => DASHBOARD_BY_ROLE[$user['role_slug']] ?? '/'];
+}
+
+/** Complete a login that required an OTP step. */
+function complete_otp_login(PDO $pdo, string $code): array
+{
+    $challenge = $_SESSION['_login_challenge'] ?? null;
+    if (!$challenge || time() > $challenge['expires_at']) {
+        unset($_SESSION['_login_challenge']);
+        return ['ok' => false, 'error' => 'This code has expired. Please sign in again.'];
+    }
+
+    if (!verify_otp($pdo, (int) $challenge['otp_id'], $code)) {
+        return ['ok' => false, 'error' => 'Incorrect or expired code. Please try again.'];
+    }
+
+    $stmt = $pdo->prepare('SELECT u.*, r.slug AS role_slug FROM users u JOIN roles r ON r.id = u.role_id WHERE u.id = :id');
+    $stmt->execute(['id' => $challenge['user_id']]);
+    $user = $stmt->fetch();
+    if (!$user) {
+        return ['ok' => false, 'error' => 'Account not found.'];
+    }
+
+    $isNewDevice = finalize_login($pdo, $user);
+    unset($_SESSION['_login_challenge']);
+    if ($isNewDevice) {
+        send_new_device_alert($user);
+    }
+
+    return ['ok' => true, 'redirect' => DASHBOARD_BY_ROLE[$user['role_slug']] ?? '/'];
+}
+
+/** Resend the OTP for a pending login challenge. */
+function resend_login_otp(PDO $pdo): array
+{
+    $challenge = $_SESSION['_login_challenge'] ?? null;
+    if (!$challenge) {
+        return ['ok' => false, 'error' => 'No sign-in in progress.'];
+    }
+    $stmt = $pdo->prepare('SELECT * FROM users WHERE id = :id');
+    $stmt->execute(['id' => $challenge['user_id']]);
+    $user = $stmt->fetch();
+    if (!$user) {
+        return ['ok' => false, 'error' => 'Account not found.'];
+    }
+    $otpId = generate_and_send_otp($pdo, $user, 'login');
+    $_SESSION['_login_challenge']['otp_id'] = $otpId;
+    $_SESSION['_login_challenge']['expires_at'] = time() + OTP_EXPIRY_MINUTES * 60;
+    return ['ok' => true, 'destination_masked' => mask_destination($user['email'])];
+}
+
+/** Finalize a verified login: rotate the session, persist it, and record the device. Returns true if the device is newly seen. */
+function finalize_login(PDO $pdo, array $user): bool
+{
     session_regenerate_id(true);
 
     $_SESSION['user'] = [
-        'id'       => (int) $user['id'],
-        'uuid'     => $user['uuid'],
-        'name'     => $user['full_name'],
-        'email'    => $user['email'],
-        'role'     => $user['role_slug'],
+        'id'    => (int) $user['id'],
+        'uuid'  => $user['uuid'],
+        'name'  => $user['full_name'],
+        'email' => $user['email'],
+        'role'  => $user['role_slug'],
     ];
+    $_SESSION['_session_version'] = (int) $user['session_version'];
 
-    $update = $pdo->prepare(
-        'UPDATE users SET last_login_at = NOW(), last_login_ip = :ip, failed_login_count = 0 WHERE id = :id'
-    );
-    $update->execute(['ip' => client_ip(), 'id' => $user['id']]);
+    $pdo->prepare('UPDATE users SET last_login_at = NOW(), last_login_ip = :ip, failed_login_count = 0 WHERE id = :id')
+        ->execute(['ip' => client_ip(), 'id' => $user['id']]);
 
-    return ['ok' => true, 'role' => $user['role_slug'], 'redirect' => DASHBOARD_BY_ROLE[$user['role_slug']] ?? '/'];
+    $deviceToken = current_device_token() ?? issue_device_cookie();
+    return register_known_device($pdo, (int) $user['id'], $deviceToken);
 }
 
 function current_user(): ?array
@@ -99,6 +172,18 @@ function require_role(array $roles): array
         header('Location: /?login=required');
         exit;
     }
+
+    // If session_version has been bumped since this session was issued
+    // (e.g. "log out of all other devices"), this session is stale.
+    $currentVersion = db()->prepare('SELECT session_version FROM users WHERE id = :id');
+    $currentVersion->execute(['id' => $user['id']]);
+    $dbVersion = $currentVersion->fetchColumn();
+    if ($dbVersion === false || (int) $dbVersion !== (int) ($_SESSION['_session_version'] ?? -1)) {
+        logout_user();
+        header('Location: /?login=required');
+        exit;
+    }
+
     return $user;
 }
 

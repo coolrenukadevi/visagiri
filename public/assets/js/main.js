@@ -102,8 +102,22 @@
     }
   })();
 
-  /* AJAX login submit */
-  document.querySelectorAll('.login-form').forEach(function (form) {
+  /* AJAX login submit (the 4 real portal forms; the OTP form is handled separately below) */
+  function postJson(url, payload) {
+    return fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      credentials: 'same-origin'
+    }).then(function (res) { return res.json().then(function (data) { return { ok: res.ok, data: data }; }); });
+  }
+
+  function showFormError(form, message) {
+    var errorBox = form.querySelector('.form-error');
+    if (errorBox) { errorBox.textContent = message; errorBox.classList.add('is-visible'); }
+  }
+
+  document.querySelectorAll('.login-form[data-role-form]:not([data-role-form="otp"])').forEach(function (form) {
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var errorBox = form.querySelector('.form-error');
@@ -111,33 +125,79 @@
       if (errorBox) { errorBox.classList.remove('is-visible'); errorBox.textContent = ''; }
       if (submitBtn) { submitBtn.disabled = true; submitBtn.dataset.label = submitBtn.textContent; submitBtn.textContent = 'Signing in…'; }
 
-      var payload = Object.fromEntries(new FormData(form).entries());
-
-      fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-        credentials: 'same-origin'
-      })
-        .then(function (res) { return res.json().then(function (data) { return { ok: res.ok, data: data }; }); })
+      postJson('/api/auth/login', Object.fromEntries(new FormData(form).entries()))
         .then(function (result) {
-          if (result.ok && result.data.ok) {
+          if (result.ok && result.data.ok && result.data.otp_required) {
+            var otpForm = document.querySelector('.login-form[data-role-form="otp"]');
+            var dest = otpForm.querySelector('[data-otp-destination]');
+            if (dest) dest.textContent = result.data.destination_masked || 'your registered email';
+            otpForm.dataset.returnRole = form.getAttribute('data-role-form');
+            setActiveRole('otp');
+            var otpInput = otpForm.querySelector('#otp-code');
+            if (otpInput) { otpInput.value = ''; otpInput.focus(); }
+          } else if (result.ok && result.data.ok) {
             window.location.href = result.data.redirect || '/';
           } else {
-            if (errorBox) {
-              errorBox.textContent = (result.data && result.data.error) || 'Unable to sign in. Please try again.';
-              errorBox.classList.add('is-visible');
-            }
+            showFormError(form, (result.data && result.data.error) || 'Unable to sign in. Please try again.');
           }
         })
-        .catch(function () {
-          if (errorBox) { errorBox.textContent = 'Network error. Please try again.'; errorBox.classList.add('is-visible'); }
-        })
+        .catch(function () { showFormError(form, 'Network error. Please try again.'); })
         .finally(function () {
           if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = submitBtn.dataset.label; }
         });
     });
   });
+
+  /* OTP step: verify, resend, back-to-login */
+  var otpForm = document.querySelector('.login-form[data-role-form="otp"]');
+  if (otpForm) {
+    otpForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var submitBtn = otpForm.querySelector('button[type="submit"]');
+      otpForm.querySelector('.form-error').classList.remove('is-visible');
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.dataset.label = submitBtn.textContent; submitBtn.textContent = 'Verifying…'; }
+
+      postJson('/api/auth/verify-otp', Object.fromEntries(new FormData(otpForm).entries()))
+        .then(function (result) {
+          if (result.ok && result.data.ok) {
+            window.location.href = result.data.redirect || '/';
+          } else {
+            showFormError(otpForm, (result.data && result.data.error) || 'Unable to verify that code.');
+          }
+        })
+        .catch(function () { showFormError(otpForm, 'Network error. Please try again.'); })
+        .finally(function () {
+          if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = submitBtn.dataset.label; }
+        });
+    });
+
+    var resendBtn = otpForm.querySelector('[data-otp-resend]');
+    if (resendBtn) {
+      resendBtn.addEventListener('click', function () {
+        resendBtn.disabled = true;
+        var original = resendBtn.textContent;
+        resendBtn.textContent = 'Sending…';
+        postJson('/api/auth/resend-otp', { csrf_token: otpForm.querySelector('[name="csrf_token"]').value })
+          .then(function (result) {
+            if (result.ok && result.data.ok) {
+              resendBtn.textContent = 'Code sent';
+            } else {
+              showFormError(otpForm, (result.data && result.data.error) || 'Could not resend code.');
+              resendBtn.textContent = original;
+            }
+          })
+          .catch(function () { resendBtn.textContent = original; })
+          .finally(function () { setTimeout(function () { resendBtn.disabled = false; resendBtn.textContent = original; }, 3000); });
+      });
+    }
+
+    var backBtn = otpForm.querySelector('[data-otp-back]');
+    if (backBtn) {
+      backBtn.addEventListener('click', function () {
+        setActiveRole(otpForm.dataset.returnRole || 'customer');
+      });
+    }
+  }
 
   /* ---------------------------------------------------------------
      Scroll reveal
