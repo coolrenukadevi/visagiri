@@ -312,7 +312,7 @@ h3, .h3 { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 500; l
 
 /* Mobile nav drawer */
 .mobile-nav {
-  position: fixed; top: 0; right: 0; bottom: 0; width: min(360px, 100%); z-index: 950;
+  position: fixed; top: var(--header-h, 76px); right: 0; height: calc(100dvh - var(--header-h, 76px)); width: min(360px, 100%); z-index: 950;
   background: var(--paper);
   border-left: 1px solid var(--border);
   box-shadow: -12px 0 40px rgba(10, 33, 29, 0.14);

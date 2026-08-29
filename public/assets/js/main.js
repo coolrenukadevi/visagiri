@@ -84,7 +84,10 @@
   var siteHeader = document.querySelector('.site-header');
   function updateHeaderHeightVar() {
     if (siteHeader) {
-      document.documentElement.style.setProperty('--header-h', siteHeader.getBoundingClientRect().height + 'px');
+      /* bottom (not height) — the utility bar sits above .site-header in
+         normal flow, so bottom already includes it; height alone would
+         leave the panel overlapping the header's lower-right corner. */
+      document.documentElement.style.setProperty('--header-h', siteHeader.getBoundingClientRect().bottom + 'px');
     }
   }
   if (siteHeader) {
@@ -111,6 +114,7 @@
   var mobileNavClose = document.querySelector('.mobile-nav-close');
   function toggleMobileNav(open) {
     if (!mobileNav) return;
+    if (open) updateHeaderHeightVar();
     mobileNav.classList.toggle('is-open', open);
     document.body.style.overflow = open ? 'hidden' : '';
   }
