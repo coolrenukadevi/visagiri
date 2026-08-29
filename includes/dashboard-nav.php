@@ -8,6 +8,7 @@ function dashboard_nav_items(string $area): array
     return match ($area) {
         'customer' => [
             ['label' => 'Dashboard', 'page' => 'dashboard'],
+            ['label' => 'Business Profile & Verification', 'page' => 'onboarding'],
             ['label' => 'Payment History', 'page' => 'transactions'],
             ['label' => 'Profile', 'page' => 'profile'],
         ],
@@ -47,6 +48,7 @@ function dashboard_nav_items(string $area): array
             ['label' => 'CMS', 'page' => 'cms'],
             ['group' => 'Partner Hub', 'label' => 'Partner Applications', 'page' => 'partner-applications'],
             ['group' => 'Partner Hub', 'label' => 'Customer Applications', 'page' => 'customer-applications'],
+            ['group' => 'Partner Hub', 'label' => 'Customer eKYC', 'page' => 'customer-kyc'],
             ['group' => 'Partner Hub', 'label' => 'Solution Catalog', 'page' => 'products'],
             ['group' => 'Partner Hub', 'label' => 'Commission Rules', 'page' => 'commission-rules'],
         ],

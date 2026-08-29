@@ -48,7 +48,7 @@
         <a href="/forgot-password?type=customer">Forgot Password?</a>
       </div>
       <button type="submit" class="btn btn-primary btn-block">Login</button>
-      <p class="form-note">Don't have an account? <a href="/contact?intent=signup">Create Customer Account</a></p>
+      <p class="form-note">Don't have an account? <a href="/signup">Create Customer Account</a></p>
     </form>
 
     <!-- Partner -->

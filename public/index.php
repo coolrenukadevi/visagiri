@@ -59,10 +59,29 @@ if (($segments[0] ?? '') === 'partner' && ($segments[1] ?? '') === 'login') {
 }
 
 // ---------------------------------------------------------------------
+// Public customer self-service signup — /signup and /signup/verify.
+// Not authenticated (the account only becomes active once the OTP
+// step in pages/signup-verify.php completes).
+// ---------------------------------------------------------------------
+if (($segments[0] ?? '') === 'signup') {
+    $signupFile = ($segments[1] ?? '') === 'verify' ? '/../pages/signup-verify.php' : '/../pages/signup.php';
+    ob_start();
+    include __DIR__ . $signupFile;
+    $page_body = ob_get_clean();
+
+    include __DIR__ . '/../includes/site-head.php';
+    include __DIR__ . '/../includes/header.php';
+    echo '<main id="main-content">' . $page_body . '</main>';
+    include __DIR__ . '/../includes/footer.php';
+    include __DIR__ . '/../includes/site-foot.php';
+    exit;
+}
+
+// ---------------------------------------------------------------------
 // Authenticated dashboard routes: /{area}/{page}[/{id}]
 // ---------------------------------------------------------------------
 $dashboardAreas = [
-    'customer'    => ['roles' => ['customer'],                         'dir' => 'customer', 'pages' => ['dashboard', 'transactions', 'profile']],
+    'customer'    => ['roles' => ['customer'],                         'dir' => 'customer', 'pages' => ['dashboard', 'onboarding', 'transactions', 'profile']],
     'partner'     => ['roles' => ['partner'],                          'dir' => 'partner',  'pages' => [
         'dashboard', 'onboarding', 'customers', 'enroll-customer', 'products', 'transactions',
         'settlements', 'commissions', 'proposals', 'payment-links', 'performance', 'support',
@@ -72,7 +91,7 @@ $dashboardAreas = [
     'hrms'        => ['roles' => ['hr', 'admin', 'super_admin'],       'dir' => 'hrms',     'pages' => ['dashboard', 'employees', 'recruitment', 'attendance']],
     'admin'       => ['roles' => ['admin', 'super_admin'],             'dir' => 'admin',    'pages' => [
         'dashboard', 'users', 'transactions', 'cms', 'enquiries',
-        'partner-applications', 'products', 'commission-rules', 'customer-applications',
+        'partner-applications', 'products', 'commission-rules', 'customer-applications', 'customer-kyc',
     ]],
     'super-admin' => ['roles' => ['super_admin'],                      'dir' => 'admin',    'pages' => ['dashboard']],
 ];
