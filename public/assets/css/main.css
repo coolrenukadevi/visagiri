@@ -182,7 +182,7 @@ h3, .h3 { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 500; l
   font-weight: 500; font-size: 0.9rem; color: var(--paper); transition: opacity var(--transition), background var(--transition);
   opacity: 0.72; background: none; border: none;
 }
-.nav-link:hover, .nav-item.is-open > .nav-link { opacity: 1; background: rgba(250, 249, 245, 0.1); }
+.nav-link:hover, .nav-item.is-open > .nav-link { opacity: 1; color: #fff; background: linear-gradient(120deg, var(--teal-500), var(--orange-500)); }
 .nav-link .chev { width: 8px; height: 8px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg); margin-top: -3px; transition: transform var(--transition); }
 .nav-item.is-open > .nav-link .chev { transform: rotate(-135deg); margin-top: 3px; }
 
