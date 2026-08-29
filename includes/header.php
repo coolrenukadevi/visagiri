@@ -6,6 +6,12 @@
 $current_path = $current_path ?? ($_SERVER['REQUEST_URI'] ?? '/');
 ?>
 <a class="sr-only" href="#main-content">Skip to main content</a>
+<div class="utility-bar">
+  <span>AI-Powered Financial Infrastructure</span>
+  <span>Global Payments</span>
+  <span>Secure &amp; Trusted</span>
+  <span>24&times;7 Support</span>
+</div>
 <header class="site-header">
   <div class="container">
     <a href="/" class="brand" aria-label="Paynancial home">
