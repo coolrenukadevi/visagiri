@@ -28,11 +28,12 @@
       <div>
         <h4>Products</h4>
         <ul>
-          <li><a href="/products#payment-gateway">Payment Gateway</a></li>
-          <li><a href="/products#payment-links">Payment Links</a></li>
-          <li><a href="/products#payment-collection">Payment Collection</a></li>
-          <li><a href="/products#payouts">Payouts</a></li>
-          <li><a href="/products#analytics">Analytics</a></li>
+          <li><a href="/products/payment-gateway">Payment Gateway</a></li>
+          <li><a href="/products/payment-links">Payment Links</a></li>
+          <li><a href="/products/payment-collection">Payment Collection</a></li>
+          <li><a href="/products/payouts">Payouts</a></li>
+          <li><a href="/products/payment-analytics">Payment Analytics</a></li>
+          <li><a href="/developers">APIs &amp; Webhooks</a></li>
         </ul>
       </div>
       <div>
@@ -43,6 +44,8 @@
           <li><a href="/solutions#healthcare">Healthcare</a></li>
           <li><a href="/solutions#education">Education</a></li>
           <li><a href="/solutions#retail">Retail</a></li>
+          <li><a href="/solutions#hospitality">Hospitality</a></li>
+          <li><a href="/solutions#professional-services">Professional Services</a></li>
           <li><a href="/solutions#enterprise">Enterprise</a></li>
         </ul>
       </div>
@@ -60,11 +63,12 @@
       <div>
         <h4>Resources</h4>
         <ul>
-          <li><a href="/developers">Developers</a></li>
           <li><a href="/developers#docs">API Documentation</a></li>
+          <li><a href="/developers#integration-guide">Integration Guides</a></li>
           <li><a href="/support#faqs">FAQs</a></li>
-          <li><a href="/support">Support</a></li>
-          <li><a href="/security">Security</a></li>
+          <li><a href="/support">Support Center</a></li>
+          <li><a href="/security">Security &amp; Compliance</a></li>
+          <li><a href="/blog">Blog / Insights</a></li>
         </ul>
       </div>
       <div>

@@ -126,6 +126,31 @@ if (($segments[0] ?? '') === 'pay' && isset($segments[1])) {
 }
 
 // ---------------------------------------------------------------------
+// Product detail pages: /products/{slug}
+// ---------------------------------------------------------------------
+if (($segments[0] ?? '') === 'products' && isset($segments[1])) {
+    $product_slug = $segments[1];
+    $product_not_found = false;
+    ob_start();
+    include __DIR__ . '/../pages/product-detail.php';
+    $page_body = ob_get_clean();
+
+    if ($product_not_found) {
+        http_response_code(404);
+        ob_start();
+        include __DIR__ . '/../pages/404.php';
+        $page_body = ob_get_clean();
+    }
+
+    include __DIR__ . '/../includes/site-head.php';
+    include __DIR__ . '/../includes/header.php';
+    echo '<main id="main-content">' . $page_body . '</main>';
+    include __DIR__ . '/../includes/footer.php';
+    include __DIR__ . '/../includes/site-foot.php';
+    exit;
+}
+
+// ---------------------------------------------------------------------
 // Legal pages: /legal/{slug}
 // ---------------------------------------------------------------------
 if (($segments[0] ?? '') === 'legal') {

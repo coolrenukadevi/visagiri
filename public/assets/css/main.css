@@ -274,13 +274,16 @@ section:last-of-type { border-bottom: none; }
 .grid-3 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
 .grid-4 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
 .grid-2 { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
-/* Hairline card-grid treatment only applies when paired with a sizing
+/* Bordered card-grid treatment only applies when paired with a sizing
    modifier (.grid-2/.grid-3/.grid-4) — plain .grid stays a bare layout
-   utility for one-off inline column splits. */
-.grid.grid-2, .grid.grid-3, .grid.grid-4 { gap: 1px; background: var(--border); border: 1px solid var(--border); }
+   utility for one-off inline column splits. Each card carries its own
+   border with a real gap between them, rather than a shared background
+   showing through 1px seams — that trick left a visible gray block
+   behind any incomplete trailing row (e.g. 6 cards in a 4-up layout). */
+.grid.grid-2, .grid.grid-3, .grid.grid-4 { gap: 20px; }
 
 .card {
-  background: var(--paper); padding: 28px;
+  background: var(--paper); padding: 28px; border: 1px solid var(--border);
   transition: background var(--transition);
 }
 .card:hover { background: var(--paper-dim); }
@@ -289,7 +292,7 @@ section:last-of-type { border-bottom: none; }
 .card p { color: var(--text-muted); font-size: 0.92rem; }
 .card-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 16px; font-family: var(--font-mono); font-weight: 500; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--accent-strong); }
 
-.card.dark { background: var(--ink-soft); }
+.card.dark { background: var(--ink-soft); border-color: var(--border-on-ink); }
 .card.dark .card-icon { border-color: var(--border-on-ink); color: var(--teal-300); }
 .card.dark h3 { color: var(--white); }
 .card.dark p { color: rgba(250,249,245,0.64); }
@@ -331,6 +334,7 @@ section:last-of-type { border-bottom: none; }
 }
 .cta-band .btn-primary { background: var(--teal-500); color: var(--white); }
 .cta-band .btn-primary:hover { background: var(--teal-300); color: var(--ink); }
+.cta-band .lead { color: rgba(255,255,255,0.78); }
 
 /* ---------------------------------------------------------------------
    Footer
