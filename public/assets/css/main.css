@@ -166,8 +166,7 @@ h3, .h3 { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 500; l
 /* Utility bar — slim strip above the main nav */
 .utility-bar {
   position: relative; z-index: 950;
-  background: linear-gradient(90deg, var(--gh-navy) 0%, var(--gh-navy-2) 55%, #241a4d 100%);
-  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  background: var(--ink);
   color: var(--gh-text-dim);
   font-size: 0.79rem; font-weight: 600; letter-spacing: 0.01em;
   padding: 8px 20px;
@@ -180,10 +179,10 @@ h3, .h3 { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 500; l
 .utility-right { display: flex; align-items: center; gap: 20px; flex-shrink: 0; }
 .utility-support a { display: inline-flex; align-items: center; gap: 7px; color: var(--gh-text); font-weight: 600; transition: color var(--gh-transition); }
 .utility-support a:hover { color: #fff; }
-.support-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gh-purple-light); flex-shrink: 0; animation: support-pulse 2.2s ease-in-out infinite; }
+.support-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--orange-500); flex-shrink: 0; animation: support-pulse 2.2s ease-in-out infinite; }
 @keyframes support-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.55); }
-  50% { box-shadow: 0 0 0 5px rgba(168, 85, 247, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 85, 0, 0.55); }
+  50% { box-shadow: 0 0 0 5px rgba(255, 85, 0, 0); }
 }
 .site-header.is-scrolled .utility-bar { max-height: 0; padding-top: 0; padding-bottom: 0; opacity: 0; overflow: hidden; }
 @media (max-width: 720px) { .utility-left { display: none; } }
