@@ -87,7 +87,7 @@ $dashboardAreas = [
         'settlements', 'commissions', 'proposals', 'payment-links', 'performance', 'support',
         'resources', 'marketing', 'profile', 'team',
     ]],
-    'employee'    => ['roles' => ['employee', 'admin', 'super_admin'], 'dir' => 'employee', 'pages' => ['dashboard', 'tasks']],
+    'employee'    => ['roles' => ['employee', 'admin', 'super_admin'], 'dir' => 'employee', 'pages' => ['dashboard', 'tasks', 'profile']],
     'hrms'        => ['roles' => ['hr', 'admin', 'super_admin'],       'dir' => 'hrms',     'pages' => ['dashboard', 'employees', 'recruitment', 'attendance']],
     'admin'       => ['roles' => ['admin', 'super_admin'],             'dir' => 'admin',    'pages' => [
         'dashboard', 'users', 'transactions', 'cms', 'enquiries',

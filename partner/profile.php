@@ -15,27 +15,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $action = (string) ($_POST['form_action'] ?? '');
 
-        if ($action === 'change_password') {
-            $current = (string) ($_POST['current_password'] ?? '');
-            $new = (string) ($_POST['new_password'] ?? '');
-            $confirm = (string) ($_POST['new_password_confirm'] ?? '');
-
-            $userStmt = $pdo->prepare('SELECT password_hash FROM users WHERE id = :id');
-            $userStmt->execute(['id' => $auth_user['id']]);
-            $hash = $userStmt->fetchColumn();
-
-            if (!password_verify($current, (string) $hash)) {
-                $errors[] = 'Current password is incorrect.';
-            } elseif (strlen($new) < 10) {
-                $errors[] = 'New password must be at least 10 characters.';
-            } elseif ($new !== $confirm) {
-                $errors[] = 'New passwords do not match.';
-            } else {
-                $pdo->prepare('UPDATE users SET password_hash = :hash WHERE id = :id')
-                    ->execute(['hash' => password_hash($new, PASSWORD_DEFAULT), 'id' => $auth_user['id']]);
-                log_partner_activity($pdo, $context, 'profile.password_changed', 'user', $auth_user['id']);
-                $notice = 'Password updated.';
-            }
+        if ($action === 'change_password' || $action === 'logout_other_devices') {
+            $result = handle_security_panel_post($pdo, $auth_user, $action);
+            $errors = $result['errors'];
+            $notice = $result['notice'];
         } elseif ($action === 'update_business' && $canEditBusiness) {
             $businessName = sanitize_input((string) ($_POST['business_name'] ?? ''));
             $website = sanitize_input((string) ($_POST['website'] ?? ''));
@@ -69,19 +52,7 @@ $partner = $partnerStmt->fetch();
   </div>
 </div>
 
-<div class="panel">
-  <div class="panel-head"><h2>Change Password</h2></div>
-  <form method="post">
-    <?= csrf_field() ?>
-    <input type="hidden" name="form_action" value="change_password">
-    <div class="field-grid">
-      <div class="field"><label>Current Password</label><input type="password" name="current_password" required></div>
-      <div class="field"><label>New Password</label><input type="password" name="new_password" minlength="10" required></div>
-      <div class="field"><label>Confirm New Password</label><input type="password" name="new_password_confirm" minlength="10" required></div>
-    </div>
-    <button type="submit" class="btn btn-primary">Update Password</button>
-  </form>
-</div>
+<?php render_security_panel($pdo, $auth_user); ?>
 
 <div class="panel">
   <div class="panel-head"><h2>Business Profile</h2></div>

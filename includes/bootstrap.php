@@ -23,6 +23,7 @@ require_once __DIR__ . '/otp.php';
 require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/partner.php';
 require_once __DIR__ . '/partner-assistant.php';
+require_once __DIR__ . '/security-panel.php';
 
 /**
  * Any exception that escapes a page (most commonly a database outage) ends

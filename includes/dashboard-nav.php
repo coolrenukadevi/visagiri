@@ -33,6 +33,7 @@ function dashboard_nav_items(string $area): array
         'employee' => [
             ['label' => 'Dashboard', 'page' => 'dashboard'],
             ['label' => 'My Tasks', 'page' => 'tasks'],
+            ['label' => 'Profile & Security', 'page' => 'profile'],
         ],
         'hrms' => [
             ['label' => 'Dashboard', 'page' => 'dashboard'],
