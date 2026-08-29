@@ -211,16 +211,9 @@ h3, .h3 { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 500; l
 .main-nav > li { position: relative; }
 .nav-link {
   display: flex; align-items: center; gap: 6px; padding: 10px 14px; border-radius: 10px;
-  font-weight: 500; font-size: 0.89rem; color: var(--text); opacity: 0.82; transition: color var(--gh-transition), opacity var(--gh-transition);
+  font-weight: 500; font-size: 0.89rem; color: var(--text);
   background: none; border: none; position: relative;
 }
-.nav-link::after {
-  content: ''; position: absolute; left: 14px; right: 14px; bottom: 4px; height: 2px; border-radius: 2px;
-  background: linear-gradient(90deg, var(--gh-purple), var(--gh-blue));
-  transform: scaleX(0); transform-origin: left; transition: transform var(--gh-transition);
-}
-.nav-link:hover, .nav-item.is-open > .nav-link { opacity: 1; color: var(--gh-purple); }
-.nav-link:hover::after, .nav-item.is-open > .nav-link::after { transform: scaleX(1); }
 .nav-link .chev { width: 8px; height: 8px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg); margin-top: -3px; transition: transform var(--gh-transition); }
 .nav-item.is-open > .nav-link .chev { transform: rotate(-135deg); margin-top: 3px; }
 
