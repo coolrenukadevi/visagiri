@@ -562,3 +562,76 @@ section:last-of-type { border-bottom: none; }
 .flex { display: flex; }
 .gap-2 { gap: 8px; }
 .gap-3 { gap: 16px; }
+
+/* ---------------------------------------------------------------------
+   Legal pages (Privacy, Terms, Refund, Cookie, Security) — sticky TOC,
+   article typography, callouts and tables shared across all five.
+   --------------------------------------------------------------------- */
+.legal-wrap { padding: 64px 0 100px; }
+.legal-grid { display: grid; grid-template-columns: 240px 1fr; gap: 64px; align-items: start; }
+@media (max-width: 860px) { .legal-grid { grid-template-columns: 1fr; gap: 32px; } }
+
+.legal-toc { position: sticky; top: 96px; }
+@media (max-width: 860px) { .legal-toc { position: static; } }
+.legal-toc-label { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+.legal-toc ol { list-style: none; margin: 14px 0 0; padding: 0; border-left: 1px solid var(--border); }
+.legal-toc li { margin: 0; }
+.legal-toc a { display: block; padding: 9px 0 9px 18px; margin-left: -1px; border-left: 2px solid transparent; font-size: 0.85rem; color: var(--text-muted); text-decoration: none; transition: all 0.15s; }
+.legal-toc a .n { font-family: var(--font-mono); color: var(--teal-500); margin-right: 8px; font-size: 0.76rem; }
+.legal-toc a:hover { color: var(--ink); }
+.legal-toc a.active { color: var(--ink); border-left-color: var(--orange-500); font-weight: 500; }
+
+.legal-meta { display: flex; gap: 24px; flex-wrap: wrap; padding-bottom: 32px; margin-bottom: 40px; border-bottom: 1px solid var(--border); font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted); }
+.legal-meta strong { color: var(--ink); }
+
+.legal-intro { font-size: 1rem; color: var(--text-muted); max-width: 68ch; margin: 0 0 40px; }
+.legal-intro strong { color: var(--ink); }
+
+.legal-section { margin-bottom: 52px; scroll-margin-top: 100px; }
+.legal-section:last-child { margin-bottom: 0; }
+.legal-section .sec-num { font-family: var(--font-mono); font-size: 0.8rem; color: var(--teal-500); display: block; margin-bottom: 10px; }
+.legal-section h2 { font-size: 1.4rem; margin: 0 0 18px; max-width: 36ch; }
+.legal-section h3 { font-weight: 600; font-size: 0.97rem; color: var(--ink); margin: 22px 0 10px; }
+.legal-article p { color: var(--text-muted); font-size: 0.94rem; line-height: 1.75; margin: 0 0 16px; max-width: 70ch; }
+.legal-article ul, .legal-article ol.legal-list { margin: 0 0 16px; padding-left: 22px; color: var(--text-muted); font-size: 0.94rem; line-height: 1.75; max-width: 68ch; }
+.legal-article li { margin-bottom: 8px; }
+.legal-article strong { color: var(--ink); }
+.legal-article a.inline-link { color: var(--teal-500); text-decoration: underline; text-underline-offset: 2px; }
+
+.legal-callout { background: var(--paper-dim); border-left: 3px solid var(--teal-500); padding: 18px 22px; margin: 0 0 24px; font-size: 0.87rem; color: var(--ink); border-radius: 0 4px 4px 0; max-width: 68ch; }
+.legal-callout strong { color: var(--teal-500); }
+.legal-callout.warn { border-left-color: var(--orange-500); }
+.legal-callout.warn strong { color: var(--orange-500); }
+
+.legal-table { width: 100%; max-width: 78ch; border-collapse: collapse; margin: 0 0 24px; font-size: 0.87rem; }
+.legal-table th, .legal-table td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.legal-table th { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-muted); font-weight: 500; }
+.legal-table td { color: var(--text-muted); }
+.legal-table td strong { color: var(--ink); }
+
+.legal-related { margin-top: 64px; padding-top: 40px; border-top: 1px solid var(--border); }
+.legal-related h4 { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin: 0; font-weight: 500; }
+.legal-related-links { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+.legal-related-links a { padding: 10px 16px; border: 1px solid var(--border); border-radius: 999px; font-size: 0.84rem; text-decoration: none; color: var(--ink); transition: all 0.15s; }
+.legal-related-links a.current { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.legal-related-links a:not(.current):hover { border-color: var(--teal-500); color: var(--teal-500); }
+
+/* Security page: four-up pillar strip */
+.security-pillars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-bottom: 16px; }
+@media (max-width: 860px) { .security-pillars { grid-template-columns: repeat(2, 1fr); } }
+.security-pillar { background: var(--paper); padding: 22px 18px; }
+.security-pillar svg { width: 20px; height: 20px; color: var(--teal-500); margin-bottom: 12px; }
+.security-pillar h3 { font-size: 0.9rem; font-weight: 600; margin: 0 0 6px; }
+.security-pillar p { font-size: 0.82rem; color: var(--text-muted); margin: 0; }
+
+/* Cookie policy: preference toggles (illustrative — wire to a real consent manager to persist choices) */
+.cookie-pref { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; padding: 18px 0; border-bottom: 1px solid var(--border); }
+.cookie-pref:last-child { border-bottom: none; }
+.cookie-pref-info h3 { margin: 0 0 4px; }
+.cookie-pref-info p { margin: 0; font-size: 0.84rem; color: var(--text-muted); max-width: 52ch; }
+.cookie-toggle { flex-shrink: 0; width: 42px; height: 24px; border-radius: 999px; background: var(--border); position: relative; cursor: pointer; border: none; padding: 0; }
+.cookie-toggle::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: var(--paper); transition: transform 0.18s; }
+.cookie-toggle.on { background: var(--teal-500); }
+.cookie-toggle.on::after { transform: translateX(18px); }
+.cookie-toggle.locked { background: var(--text-muted); opacity: 0.5; cursor: not-allowed; }
+.cookie-toggle.locked::after { transform: translateX(18px); }

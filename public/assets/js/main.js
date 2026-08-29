@@ -276,6 +276,27 @@
   });
 
   /* ---------------------------------------------------------------
+     Legal pages: sticky TOC scrollspy + cookie preference toggles
+     --------------------------------------------------------------- */
+  var legalTocLinks = document.querySelectorAll('.legal-toc a');
+  var legalSections = document.querySelectorAll('.legal-section');
+  if (legalTocLinks.length && legalSections.length && 'IntersectionObserver' in window) {
+    var legalObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          legalTocLinks.forEach(function (l) { l.classList.remove('active'); });
+          var active = document.querySelector('.legal-toc a[href="#' + entry.target.id + '"]');
+          if (active) active.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+    legalSections.forEach(function (s) { legalObserver.observe(s); });
+  }
+  document.querySelectorAll('.cookie-toggle:not(.locked)').forEach(function (toggle) {
+    toggle.addEventListener('click', function () { toggle.classList.toggle('on'); });
+  });
+
+  /* ---------------------------------------------------------------
      Dashboard sidebar toggle (mobile)
      --------------------------------------------------------------- */
   var sidebarToggle = document.querySelector('.sidebar-toggle');
