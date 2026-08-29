@@ -51,6 +51,8 @@ function dashboard_nav_items(string $area): array
             ['group' => 'Partner Hub', 'label' => 'Customer eKYC', 'page' => 'customer-kyc'],
             ['group' => 'Partner Hub', 'label' => 'Solution Catalog', 'page' => 'products'],
             ['group' => 'Partner Hub', 'label' => 'Commission Rules', 'page' => 'commission-rules'],
+            ['group' => 'Security', 'label' => 'Change Requests', 'page' => 'change-requests'],
+            ['group' => 'Security', 'label' => 'Audit Logs', 'page' => 'audit-logs'],
         ],
         'super-admin' => [
             ['label' => 'Dashboard', 'page' => 'dashboard'],
