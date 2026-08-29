@@ -8,27 +8,66 @@
   var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ---------------------------------------------------------------
-     Mega menu (desktop)
+     Mega menu (desktop) — opens on hover (stays open while the cursor
+     moves into the dropdown) and on click/Enter for keyboard users.
      --------------------------------------------------------------- */
   var navItems = document.querySelectorAll('.nav-item');
+  var closeTimer = null;
+
+  function setNavItemOpen(item, open) {
+    item.classList.toggle('is-open', open);
+    var trigger = item.querySelector('.nav-link[aria-haspopup]');
+    if (trigger) trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  function closeAllNavItems() {
+    navItems.forEach(function (i) { setNavItemOpen(i, false); });
+  }
+
   navItems.forEach(function (item) {
     var trigger = item.querySelector('.nav-link');
     if (!trigger || !item.querySelector('.mega-menu')) return;
+
     trigger.addEventListener('click', function (e) {
       e.preventDefault();
       var isOpen = item.classList.contains('is-open');
-      navItems.forEach(function (i) { i.classList.remove('is-open'); });
-      if (!isOpen) item.classList.add('is-open');
+      closeAllNavItems();
+      if (!isOpen) setNavItemOpen(item, true);
+    });
+
+    item.addEventListener('mouseenter', function () {
+      if (window.matchMedia('(hover: hover)').matches) {
+        clearTimeout(closeTimer);
+        closeAllNavItems();
+        setNavItemOpen(item, true);
+      }
+    });
+    item.addEventListener('mouseleave', function () {
+      if (window.matchMedia('(hover: hover)').matches) {
+        closeTimer = setTimeout(function () { setNavItemOpen(item, false); }, 150);
+      }
     });
   });
   document.addEventListener('click', function (e) {
-    if (!e.target.closest('.nav-item')) {
-      navItems.forEach(function (i) { i.classList.remove('is-open'); });
-    }
+    if (!e.target.closest('.nav-item')) closeAllNavItems();
   });
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') navItems.forEach(function (i) { i.classList.remove('is-open'); });
+    if (e.key === 'Escape') closeAllNavItems();
   });
+
+  /* Sticky header: shrink + hide utility bar past a scroll threshold */
+  var siteHeader = document.querySelector('.site-header');
+  if (siteHeader) {
+    var lastScrolled = false;
+    var onScroll = function () {
+      var scrolled = window.scrollY > 24;
+      if (scrolled !== lastScrolled) {
+        siteHeader.classList.toggle('is-scrolled', scrolled);
+        lastScrolled = scrolled;
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
 
   /* ---------------------------------------------------------------
      Mobile nav drawer
