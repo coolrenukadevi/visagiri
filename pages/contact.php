@@ -50,10 +50,27 @@ $activeIntent = $intentMap[$intent] ?? 'general';
 </section>
 
 <section>
-  <div class="container grid grid-3">
+  <div class="container grid grid-4">
+    <div class="card reveal"><h3>Address</h3><p>Sharda Mansion, Kailashpuri, Kankarbagh, Hanuman Nagar, Patna, Bihar 800020</p></div>
     <div class="card reveal"><h3>Email</h3><p><a href="mailto:hello@paynancial.com">hello@paynancial.com</a></p></div>
     <div class="card reveal"><h3>Mobile</h3><p><a href="tel:+917066820820">+91 7066 820 820</a></p></div>
-    <div class="card reveal"><h3>Phone</h3><p><a href="tel:+916122999382">+91 612 2999 382</a></p></div>
+    <div class="card reveal"><h3>Phone</h3><p><a href="tel:+916122999382">0612 299 9382</a></p></div>
+  </div>
+</section>
+
+<section class="section-subtle">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Find Us</span>
+      <h2>Visit our office</h2>
+    </div>
+  </div>
+  <div class="full-bleed reveal">
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3598.44364130444!2d85.15587967453587!3d25.59017037746008!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x81a5f16d60d68927%3A0x87d0b4066c787f35!2sPaynancial!5e0!3m2!1sen!2sin!4v1788035442726!5m2!1sen!2sin"
+      width="100%" height="420" style="border:0;display:block;" allowfullscreen="" loading="lazy"
+      referrerpolicy="strict-origin-when-cross-origin" title="Paynancial office location on map">
+    </iframe>
   </div>
 </section>
 

@@ -263,6 +263,17 @@
   }
 
   /* ---------------------------------------------------------------
+     Leadership avatar photo fallback (CSP forbids inline onerror)
+     --------------------------------------------------------------- */
+  document.querySelectorAll('.js-avatar-photo').forEach(function (img) {
+    img.addEventListener('error', function () {
+      img.style.display = 'none';
+      var wrap = img.closest('.leader-avatar');
+      if (wrap) { wrap.classList.add('img-error'); }
+    });
+  });
+
+  /* ---------------------------------------------------------------
      Scroll reveal
      --------------------------------------------------------------- */
   var revealEls = document.querySelectorAll('.reveal');

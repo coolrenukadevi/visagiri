@@ -33,6 +33,7 @@ function security_headers(): void
         "Content-Security-Policy: default-src 'self'; img-src 'self' data:; "
         . "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
         . "font-src 'self' data: https://fonts.gstatic.com; "
+        . "frame-src https://www.google.com; "
         . "script-src 'self' 'nonce-{$nonce}' https://cdnjs.cloudflare.com; frame-ancestors 'none'"
     );
     if (SESSION_COOKIE_SECURE) {
