@@ -112,6 +112,7 @@ $industries = [
       </div>
     </div>
     <div class="compliance-note reveal">Paynancial's AI-assisted capabilities support the decisions a business or its agents make — they do not replace a business's own approval controls, and they do not guarantee a specific fraud, revenue or approval outcome.</div>
+    <p class="reveal" style="margin-top:18px;"><a class="card-link" href="/agentic-ai">Read more about agentic AI in finance →</a></p>
   </div>
 </section>
 

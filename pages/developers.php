@@ -125,6 +125,7 @@ echo $payout->status;</code></pre>
       </div>
     </div>
     <div class="compliance-note reveal">The sandbox is the recommended place to test any agent-driven or autonomous workflow — including retry behavior, rate limits and failure handling — before it's given a live key.</div>
+    <p class="reveal" style="margin-top:18px;"><a class="card-link" href="/agentic-ai#payment-orchestration">Read more about AI payment orchestration and governance →</a></p>
   </div>
 </section>
 

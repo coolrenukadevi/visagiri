@@ -25,6 +25,7 @@ if (($segments[0] ?? '') === 'api') {
         'api/auth/logout'           => __DIR__ . '/../api/auth/logout.php',
         'api/auth/forgot-password'  => __DIR__ . '/../api/auth/forgot-password.php',
         'api/contact/submit'        => __DIR__ . '/../api/contact/submit.php',
+        'api/newsletter/subscribe'  => __DIR__ . '/../api/newsletter/subscribe.php',
         'api/partner/recommend'     => __DIR__ . '/../api/partner/recommend.php',
         'api/partner/assistant'     => __DIR__ . '/../api/partner/assistant.php',
     ];
@@ -221,6 +222,9 @@ if (($segments[0] ?? '') === 'legal') {
 $publicRoutes = [
     ''                 => 'home',
     'about'            => 'about',
+    'technology'       => 'technology',
+    'agentic-ai'       => 'agentic-ai',
+    'trust'            => 'trust',
     'leadership'       => 'leadership',
     'solutions'        => 'solutions',
     'products'         => 'products',

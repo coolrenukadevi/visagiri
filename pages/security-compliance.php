@@ -128,6 +128,7 @@ $sectionCount = count($sections);
         <div class="legal-related">
           <h4>Related policies</h4>
           <div class="legal-related-links">
+            <a href="/trust">Trust Center</a>
             <a href="/legal/privacy-policy">Privacy Policy</a>
             <a href="/legal/terms-conditions">Terms &amp; Conditions</a>
             <a href="/legal/refund-policy">Refund Policy</a>

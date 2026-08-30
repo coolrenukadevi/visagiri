@@ -1,4 +1,22 @@
 <footer class="site-footer">
+  <div class="footer-statement">
+    <div class="container footer-statement-grid">
+      <div>
+        <h2>Building the financial infrastructure for an AI-native economy.</h2>
+        <p>Payments, payouts, billing, reconciliation and financial intelligence — connected through one platform, built for a world where AI agents are starting to run a growing share of the work in between.</p>
+      </div>
+      <form class="footer-newsletter" id="newsletter-form" novalidate>
+        <?= csrf_field() ?>
+        <label for="newsletter-email">Get insights on payments, AI and financial infrastructure.</label>
+        <div class="footer-newsletter-row">
+          <input type="email" id="newsletter-email" name="email" placeholder="you@company.com" required>
+          <button type="submit" class="btn btn-primary">Subscribe</button>
+        </div>
+        <p class="footer-newsletter-msg" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
@@ -26,49 +44,64 @@
         </div>
       </div>
       <div>
-        <h4>Products</h4>
-        <ul>
-          <li><a href="/products/payment-gateway">Payment Gateway</a></li>
-          <li><a href="/products/payment-links">Payment Links</a></li>
-          <li><a href="/products/payment-collection">Payment Collection</a></li>
-          <li><a href="/products/payouts">Payouts</a></li>
-          <li><a href="/products/payment-analytics">Payment Analytics</a></li>
-          <li><a href="/developers">APIs &amp; Webhooks</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Solutions</h4>
-        <ul>
-          <li><a href="/solutions#ecommerce">E-Commerce</a></li>
-          <li><a href="/solutions#travel">Travel</a></li>
-          <li><a href="/solutions#healthcare">Healthcare</a></li>
-          <li><a href="/solutions#education">Education</a></li>
-          <li><a href="/solutions#retail">Retail</a></li>
-          <li><a href="/solutions#hospitality">Hospitality</a></li>
-          <li><a href="/solutions#professional-services">Professional Services</a></li>
-          <li><a href="/solutions#enterprise">Enterprise</a></li>
-        </ul>
-      </div>
-      <div>
         <h4>Company</h4>
         <ul>
-          <li><a href="/about">About</a></li>
+          <li><a href="/about">About Paynancial</a></li>
+          <li><a href="/technology">Technology</a></li>
           <li><a href="/leadership">Leadership</a></li>
           <li><a href="/careers">Careers</a></li>
-          <li><a href="/partners">Partners</a></li>
-          <li><a href="/contact">Contact</a></li>
-          <li><a href="/blog">News</a></li>
+          <li><a href="/contact">Contact Us</a></li>
+          <li><a href="/blog">News &amp; Insights</a></li>
         </ul>
       </div>
       <div>
-        <h4>Resources</h4>
+        <h4>Products &amp; Solutions</h4>
         <ul>
-          <li><a href="/developers#docs">API Documentation</a></li>
-          <li><a href="/developers#integration-guide">Integration Guides</a></li>
+          <li><a href="/products">Payment Infrastructure</a></li>
+          <li><a href="/products#cat-ai-intelligence">AI &amp; Intelligence</a></li>
+          <li><a href="/solutions#business">By Business Size</a></li>
+          <li><a href="/solutions#industries">By Industry</a></li>
+          <li><a href="/solutions#enterprise">Enterprise</a></li>
+          <li><a href="/pricing">Pricing</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Agentic AI <span class="footer-badge">New</span></h4>
+        <ul>
+          <li><a href="/agentic-ai">Agentic AI in Finance</a></li>
+          <li><a href="/agentic-ai#financial-agents">AI Financial Agents</a></li>
+          <li><a href="/agentic-ai#payment-orchestration">Payment Orchestration</a></li>
+          <li><a href="/agentic-ai#governance">Human-in-the-Loop &amp; Governance</a></li>
+          <li><a href="/technology">The Future of Financial Infrastructure</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Developers</h4>
+        <ul>
+          <li><a href="/developers#docs">Documentation</a></li>
+          <li><a href="/developers#api-reference">API Reference</a></li>
+          <li><a href="/developers#webhooks">Webhooks</a></li>
+          <li><a href="/developers#sandbox">Sandbox</a></li>
+          <li><a href="/developers#agentic-ai">Agent-Ready APIs</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Resources &amp; Trust</h4>
+        <ul>
+          <li><a href="/blog">Insights / Blog</a></li>
           <li><a href="/support#faqs">FAQs</a></li>
           <li><a href="/support">Support Center</a></li>
-          <li><a href="/security">Security &amp; Compliance</a></li>
-          <li><a href="/blog">Blog / Insights</a></li>
+          <li><a href="/trust">Trust Center</a></li>
+          <li><a href="/security">Security</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="/legal/privacy-policy">Privacy Policy</a></li>
+          <li><a href="/legal/terms-conditions">Terms &amp; Conditions</a></li>
+          <li><a href="/legal/refund-policy">Refund Policy</a></li>
+          <li><a href="/legal/cookie-policy">Cookie Policy</a></li>
         </ul>
       </div>
       <div>
@@ -101,6 +134,7 @@
         <li><a href="/legal/refund-policy">Refund Policy</a></li>
         <li><a href="/legal/cookie-policy">Cookie Policy</a></li>
         <li><a href="/security">Security</a></li>
+        <li><a href="/trust">Trust Center</a></li>
       </ul>
     </div>
   </div>

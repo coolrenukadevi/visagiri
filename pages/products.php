@@ -150,6 +150,7 @@ $catalog = [
       </div>
     </div>
     <div class="compliance-note reveal">Paynancial's AI &amp; Intelligence products assist with detection, reconciliation and forecasting — they support a human or agent decision, they do not replace approval controls a business chooses to keep in place, and they do not guarantee fraud prevention or a specific financial outcome.</div>
+    <p class="reveal" style="margin-top:18px;"><a class="card-link" href="/agentic-ai">Read more about agentic AI in finance →</a></p>
   </div>
 </section>
 

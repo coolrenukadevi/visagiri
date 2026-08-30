@@ -386,6 +386,40 @@
   });
 
   /* ---------------------------------------------------------------
+     Footer newsletter subscribe
+     --------------------------------------------------------------- */
+  var newsletterForm = document.getElementById('newsletter-form');
+  if (newsletterForm) {
+    newsletterForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var msg = newsletterForm.querySelector('.footer-newsletter-msg');
+      var button = newsletterForm.querySelector('button[type="submit"]');
+      var payload = Object.fromEntries(new FormData(newsletterForm).entries());
+      msg.textContent = '';
+      msg.className = 'footer-newsletter-msg';
+      button.disabled = true;
+      fetch('/api/newsletter/subscribe', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload), credentials: 'same-origin'
+      }).then(function (r) { return r.json(); }).then(function (data) {
+        button.disabled = false;
+        if (data.ok) {
+          msg.textContent = "You're subscribed — thanks for joining.";
+          msg.className = 'footer-newsletter-msg is-success';
+          newsletterForm.reset();
+        } else {
+          msg.textContent = data.error || 'Something went wrong. Please try again.';
+          msg.className = 'footer-newsletter-msg is-error';
+        }
+      }).catch(function () {
+        button.disabled = false;
+        msg.textContent = 'Network error. Please try again.';
+        msg.className = 'footer-newsletter-msg is-error';
+      });
+    });
+  }
+
+  /* ---------------------------------------------------------------
      Dashboard sidebar toggle (mobile)
      --------------------------------------------------------------- */
   var sidebarToggle = document.querySelector('.sidebar-toggle');

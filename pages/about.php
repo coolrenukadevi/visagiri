@@ -95,6 +95,7 @@ $page_meta = [
       <div class="reveal">
         <p>Our answer isn't a single "AI product" bolted onto a payment gateway. It's the same discipline we started with — reliability and data protection as the baseline, not a feature — applied to a new kind of caller: idempotent by default so a retried request can't duplicate a payment, structured errors an agent can act on without a human translating them, and audit trails detailed enough that every autonomous action stays traceable back to a decision a business actually made.</p>
         <p>That applies whether "the business" is a solo founder running one AI bookkeeping assistant or an enterprise treasury desk running a fleet of them. We'd rather be the infrastructure that was already ready for this shift than the one racing to catch up to it.</p>
+        <p class="reveal"><a class="card-link" href="/technology">Read the full story: Financial Technology in the Era of Agentic AI →</a></p>
       </div>
     </div>
   </div>

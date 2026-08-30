@@ -68,6 +68,7 @@ $faqs = [
         <p>What's the agent's spending or payout limit, and who's notified when it's reached? Can every action it takes be traced back to a specific request? What happens if it retries a call it shouldn't have? A platform built agent-first — idempotent by default, with real-time webhooks and clear audit trails — answers these before you have to find out the hard way.</p>
       </div>
     </div>
+    <p class="reveal" style="margin-top:18px;"><a class="card-link" href="/agentic-ai">Read the full Agentic AI in Finance guide →</a></p>
   </div>
 </section>
 
