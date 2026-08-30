@@ -1142,6 +1142,34 @@ a.auth-menu-item:hover { background: var(--paper-alt); }
 .doc-item-remove { flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; border: none; background: var(--paper-alt); color: var(--ink-500); font-size: 1rem; line-height: 1; cursor: pointer; }
 .doc-item-remove:hover { background: rgba(194, 46, 63, 0.12); color: #c22e3f; }
 @media (max-width: 560px) { .doc-counter { flex-direction: column; gap: 4px; } }
+
+/* Forex document checklist */
+.forex-checklist { display: flex; flex-direction: column; border: 1px solid var(--ink-100); border-radius: var(--radius-md); overflow: hidden; }
+.forex-checklist-item { display: flex; align-items: center; gap: 12px; padding: 11px 16px; border-top: 1px solid var(--ink-100); }
+.forex-checklist-item:first-child { border-top: none; }
+.forex-checklist-check { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--ink-300); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; color: white; }
+.forex-checklist-item.is-done .forex-checklist-check { background: #1a8a5f; border-color: #1a8a5f; }
+.forex-checklist-label { flex: 1; font-size: 0.88rem; color: var(--ink-900); }
+.forex-checklist-tag { flex-shrink: 0; font-size: 0.66rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; padding: 3px 9px; border-radius: var(--radius-full); }
+.forex-checklist-tag.is-mandatory { background: rgba(194, 46, 63, 0.1); color: #c22e3f; }
+.forex-checklist-tag.is-conditional { background: var(--paper-alt); color: var(--ink-500); }
+
+/* Forex delivery pipeline */
+.forex-pipeline { display: flex; flex-wrap: wrap; gap: 8px 4px; }
+.forex-pipeline-stage { display: flex; align-items: center; gap: 6px; font-size: 0.74rem; font-weight: 600; color: var(--ink-500); background: var(--paper-alt); border-radius: var(--radius-full); padding: 6px 12px 6px 8px; }
+.forex-pipeline-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ink-300); flex-shrink: 0; }
+.forex-pipeline-stage.is-current { color: var(--brand-blue); background: rgba(41, 182, 246, 0.12); }
+.forex-pipeline-stage.is-current .forex-pipeline-dot { background: var(--brand-blue); }
+.forex-pipeline-stage.is-done { color: #1a8a5f; background: rgba(26, 138, 95, 0.1); }
+.forex-pipeline-stage.is-done .forex-pipeline-dot { background: #1a8a5f; }
+
+/* FEMA/RBI guideline cards */
+.guideline-list { display: flex; flex-direction: column; gap: 14px; margin-top: 24px; }
+.guideline-card { border: 1px solid var(--ink-100); border-radius: var(--radius-md); padding: 18px 20px; }
+.guideline-head { display: flex; align-items: center; justify-content: space-between; gap: 8px 12px; flex-wrap: wrap; margin-bottom: 8px; }
+.guideline-head h2 { font-size: 1rem; }
+.guideline-card p { font-size: 0.88rem; color: var(--ink-700); margin: 0 0 10px; }
+.guideline-meta { display: flex; gap: 16px; font-size: 0.74rem; color: var(--ink-500); flex-wrap: wrap; }
 .account-panel {
   background: var(--paper); border: 1px solid var(--ink-100); border-radius: var(--radius-md);
   padding: 22px; min-width: 0;

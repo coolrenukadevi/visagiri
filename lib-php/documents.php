@@ -77,6 +77,9 @@ function document_migrate(PDO $pdo): void
         ['invitation_letter', 'Invitation Letter', 0],
         ['sponsorship_letter', 'Sponsorship Letter', 0],
         ['previous_visa_copy', 'Previous Visa Copy', 0],
+        ['pan_card', 'PAN Card Copy', 0],
+        ['visa_copy', 'Visa Copy', 0],
+        ['lerms_letter', 'LERMS Letter', 0],
         ['other', 'Other Supporting Document', 0],
     ] as [$code, $label, $isPassport]) {
         $seed->execute([$code, $label, $isPassport, $order++]);

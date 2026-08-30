@@ -15,7 +15,9 @@ require_once __DIR__ . '/lib-php/auth.php';
 require_once __DIR__ . '/lib-php/customer_auth.php';
 require_once __DIR__ . '/lib-php/enquiries.php';
 require_once __DIR__ . '/lib-php/visa_enquiries.php';
+require_once __DIR__ . '/lib-php/forex_enquiries.php';
 require_once __DIR__ . '/lib-php/documents.php';
+require_once __DIR__ . '/lib-php/compliance.php';
 
 header('Cache-Control: no-store, private');
 auth_session_start();
@@ -34,6 +36,7 @@ if (!$enquiry || (int) $enquiry['customer_id'] !== (int) $customer['id']) {
     exit;
 }
 $isVisa = $enquiry['service_code'] === 'visa';
+$isForex = $enquiry['service_code'] === 'forex';
 
 $notesSaved = false;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'save_notes') {
@@ -86,11 +89,52 @@ $visaDetails = $isVisa ? (visa_enquiry_for((int) $enquiry['id']) ?? []) : [];
 // Sticky values: what was just submitted (if it had errors) beats what's saved.
 $vv = static fn($k, $d = '') => e((string) ($_POST[$k] ?? $visaDetails[$k] ?? $d));
 
+$forexErrors = [];
+$forexSaved = false;
+if ($isForex && $_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'save_forex_details') {
+    if (!auth_csrf_valid($_POST['csrf'] ?? null)) {
+        $forexErrors['form'] = 'Your session expired — please try again.';
+    } else {
+        $fp = [];
+        foreach (['pan_number' => 'PAN number', 'passport_number' => 'Passport number', 'nationality' => 'Nationality',
+                  'residential_address' => 'Residential address', 'city_of_visit' => 'City of visit',
+                  'departure_city' => 'Departure city'] as $k => $label) {
+            $v = trim((string) ($_POST[$k] ?? ''));
+            if ($v === '') $forexErrors[$k] = "$label is required.";
+            $fp[$k] = $v;
+        }
+        if ($fp['pan_number'] !== '' && !preg_match('/^[A-Z]{5}[0-9]{4}[A-Z]$/', strtoupper($fp['pan_number']))) {
+            $forexErrors['pan_number'] = 'Enter a valid 10-character PAN (e.g. ABCDE1234F).';
+        }
+        $fp['travel_start_date'] = trim((string) ($_POST['travel_start_date'] ?? ''));
+        $fp['travel_end_date'] = trim((string) ($_POST['travel_end_date'] ?? ''));
+        $fp['traveller_count'] = max(1, (int) ($_POST['traveller_count'] ?? 1));
+        $fp['forex_type'] = trim((string) ($_POST['forex_type'] ?? ''));
+        if (!in_array($fp['forex_type'], FOREX_TYPES, true)) $forexErrors['forex_type'] = 'Choose a forex type.';
+        $fp['currency_code'] = trim((string) ($_POST['currency_code'] ?? ''));
+        if (!isset(FOREX_CURRENCIES[$fp['currency_code']])) $forexErrors['currency_code'] = 'Choose a currency.';
+        $fp['amount_required'] = max(0, (float) ($_POST['amount_required'] ?? 0));
+        $fp['approx_inr_value'] = max(0, (float) ($_POST['approx_inr_value'] ?? 0));
+        $fp['delivery_method'] = in_array($_POST['delivery_method'] ?? '', FOREX_DELIVERY_METHODS, true) ? $_POST['delivery_method'] : 'Branch Pickup';
+
+        if (!$forexErrors) {
+            forex_enquiry_save((int) $enquiry['id'], $fp);
+            $forexSaved = true;
+        }
+    }
+}
+$forexDetails = $isForex ? (forex_enquiry_for((int) $enquiry['id']) ?? []) : [];
+$fv = static fn($k, $d = '') => e((string) ($_POST[$k] ?? $forexDetails[$k] ?? $d));
+
 $documents = documents_for_enquiry((int) $enquiry['id']);
 $documentTypes = document_types_all();
 $docNonPassportCount = count(array_filter($documents, static fn($d) => !$d['is_passport']));
 $docTotalBytes = array_sum(array_column($documents, 'size_bytes'));
 $docHasPassport = (bool) array_filter($documents, static fn($d) => $d['is_passport']);
+
+$forexChecklist = $isForex ? forex_checklist_status($documents) : [];
+$forexTransaction = $isForex ? forex_transaction_ensure((int) $enquiry['id']) : null;
+$forexReadyForDelivery = $isForex ? forex_ready_for_delivery($forexChecklist, $documents) : false;
 
 $history = enquiry_status_history_for((int) $enquiry['id']);
 
@@ -200,6 +244,93 @@ $page = [
           </div>
           <div class="wizard-actions"><span></span><button type="submit" class="btn btn-primary btn-sm"><?= $visaDetails ? 'Update Visa Details' : 'Save Visa Details' ?></button></div>
         </form>
+        <?php endif; ?>
+
+        <?php if ($isForex): ?>
+        <h2 class="account-section-title" style="margin-top:32px">Forex Details</h2>
+        <p class="auth-note" style="margin-top:-10px">
+          <?= $forexDetails ? 'Update these any time before your consultant reviews the enquiry.' : 'A few more details help your consultant prepare a quotation.' ?>
+        </p>
+        <?php if ($forexSaved): ?><p class="notice-inline">Forex details saved.</p><?php endif; ?>
+        <?php if (isset($forexErrors['form'])): ?><p class="auth-error" role="alert"><?= e($forexErrors['form']) ?></p><?php endif; ?>
+        <form method="post" action="<?= url('/enquiry/' . $enquiry['enquiry_code']) ?>">
+          <input type="hidden" name="csrf" value="<?= e(auth_csrf_token()) ?>">
+          <input type="hidden" name="action" value="save_forex_details">
+          <div class="enquiry-grid">
+            <div class="enquiry-field"><label for="pan_number">PAN Number *</label><input type="text" id="pan_number" name="pan_number" value="<?= $fv('pan_number') ?>" placeholder="ABCDE1234F" maxlength="10" required>
+              <?php if (isset($forexErrors['pan_number'])): ?><span class="field-error"><?= e($forexErrors['pan_number']) ?></span><?php endif; ?>
+            </div>
+            <div class="enquiry-field"><label for="forex_passport_number">Passport Number *</label><input type="text" id="forex_passport_number" name="passport_number" value="<?= $fv('passport_number') ?>" required>
+              <?php if (isset($forexErrors['passport_number'])): ?><span class="field-error"><?= e($forexErrors['passport_number']) ?></span><?php endif; ?>
+            </div>
+            <div class="enquiry-field"><label for="nationality">Nationality *</label><input type="text" id="nationality" name="nationality" value="<?= $fv('nationality') ?>" required>
+              <?php if (isset($forexErrors['nationality'])): ?><span class="field-error"><?= e($forexErrors['nationality']) ?></span><?php endif; ?>
+            </div>
+            <div class="enquiry-field full"><label for="residential_address">Residential Address *</label><input type="text" id="residential_address" name="residential_address" value="<?= $fv('residential_address') ?>" required>
+              <?php if (isset($forexErrors['residential_address'])): ?><span class="field-error"><?= e($forexErrors['residential_address']) ?></span><?php endif; ?>
+            </div>
+            <div class="enquiry-field"><label for="city_of_visit">City of Visit *</label><input type="text" id="city_of_visit" name="city_of_visit" value="<?= $fv('city_of_visit') ?>" required>
+              <?php if (isset($forexErrors['city_of_visit'])): ?><span class="field-error"><?= e($forexErrors['city_of_visit']) ?></span><?php endif; ?>
+            </div>
+            <div class="enquiry-field"><label for="departure_city">Departure City *</label><input type="text" id="departure_city" name="departure_city" value="<?= $fv('departure_city') ?>" required>
+              <?php if (isset($forexErrors['departure_city'])): ?><span class="field-error"><?= e($forexErrors['departure_city']) ?></span><?php endif; ?>
+            </div>
+            <div class="enquiry-field"><label for="travel_start_date">Travel Start Date</label><input type="date" id="travel_start_date" name="travel_start_date" value="<?= $fv('travel_start_date') ?>"></div>
+            <div class="enquiry-field"><label for="travel_end_date">Travel End Date</label><input type="date" id="travel_end_date" name="travel_end_date" value="<?= $fv('travel_end_date') ?>"></div>
+            <div class="enquiry-field"><label for="forex_traveller_count">Number of Travellers</label><input type="number" id="forex_traveller_count" name="traveller_count" min="1" value="<?= $fv('traveller_count', '1') ?>"></div>
+            <div class="enquiry-field"><label for="forex_type">Forex Type *</label>
+              <select id="forex_type" name="forex_type" required>
+                <option value="">Select&hellip;</option>
+                <?php foreach (FOREX_TYPES as $ft): ?><option value="<?= e($ft) ?>" <?= ($forexDetails['forex_type'] ?? '') === $ft ? 'selected' : '' ?>><?= e($ft) ?></option><?php endforeach; ?>
+              </select>
+              <?php if (isset($forexErrors['forex_type'])): ?><span class="field-error"><?= e($forexErrors['forex_type']) ?></span><?php endif; ?>
+            </div>
+            <div class="enquiry-field"><label for="currency_code">Currency Required *</label>
+              <select id="currency_code" name="currency_code" required>
+                <option value="">Select&hellip;</option>
+                <?php foreach (FOREX_CURRENCIES as $code => $label): ?><option value="<?= e($code) ?>" <?= ($forexDetails['currency_code'] ?? '') === $code ? 'selected' : '' ?>><?= e($code . ' — ' . $label) ?></option><?php endforeach; ?>
+              </select>
+              <?php if (isset($forexErrors['currency_code'])): ?><span class="field-error"><?= e($forexErrors['currency_code']) ?></span><?php endif; ?>
+            </div>
+            <div class="enquiry-field"><label for="amount_required">Amount Required</label><input type="number" id="amount_required" name="amount_required" min="0" step="0.01" value="<?= $fv('amount_required', '0') ?>"></div>
+            <div class="enquiry-field"><label for="approx_inr_value">Approximate INR Value</label><input type="number" id="approx_inr_value" name="approx_inr_value" min="0" step="0.01" value="<?= $fv('approx_inr_value', '0') ?>">
+              <span class="auth-note" style="margin:4px 0 0">For an indicative rate, see the <a href="<?= url('/') ?>#fx">live exchange rate strip</a> — this figure isn't a quotation.</span>
+            </div>
+            <div class="enquiry-field"><label for="delivery_method">Delivery Method *</label>
+              <select id="delivery_method" name="delivery_method">
+                <?php foreach (FOREX_DELIVERY_METHODS as $dm): ?><option value="<?= e($dm) ?>" <?= ($forexDetails['delivery_method'] ?? 'Branch Pickup') === $dm ? 'selected' : '' ?>><?= e($dm) ?></option><?php endforeach; ?>
+              </select>
+            </div>
+          </div>
+          <div class="wizard-actions"><span></span><button type="submit" class="btn btn-primary btn-sm"><?= $forexDetails ? 'Update Forex Details' : 'Save Forex Details' ?></button></div>
+        </form>
+
+        <h2 class="account-section-title" style="margin-top:32px">Forex Document Checklist</h2>
+        <p class="auth-note" style="margin-top:-10px">Mandatory items are required for every forex transaction. Conditional items apply depending on your specific transaction — your consultant will confirm which ones you need. See the <a href="<?= url('/forex-guidelines') ?>" target="_blank">FEMA &amp; RBI Forex Guidelines</a> for general rules.</p>
+        <div class="forex-checklist">
+          <?php foreach ($forexChecklist as $item): ?>
+          <div class="forex-checklist-item <?= $item['uploaded'] ? 'is-done' : '' ?>">
+            <span class="forex-checklist-check"><?= $item['uploaded'] ? '&check;' : '' ?></span>
+            <span class="forex-checklist-label"><?= e($item['label']) ?></span>
+            <span class="forex-checklist-tag <?= $item['mandatory'] ? 'is-mandatory' : 'is-conditional' ?>"><?= $item['mandatory'] ? 'Mandatory' : 'Conditional' ?></span>
+          </div>
+          <?php endforeach; ?>
+        </div>
+        <p class="auth-note">Upload these in the Documents section below, tagged with the matching document type.</p>
+
+        <h2 class="account-section-title" style="margin-top:32px">Delivery Pipeline</h2>
+        <div class="forex-pipeline">
+          <?php foreach (FOREX_PIPELINE_STAGES as $i => $stage): $reached = $stage === $forexTransaction['stage']; $done = array_search($forexTransaction['stage'], FOREX_PIPELINE_STAGES, true) > $i; ?>
+          <div class="forex-pipeline-stage <?= $done ? 'is-done' : ($reached ? 'is-current' : '') ?>">
+            <span class="forex-pipeline-dot"></span><span><?= e($stage) ?></span>
+          </div>
+          <?php endforeach; ?>
+        </div>
+        <?php if (!$forexReadyForDelivery): ?>
+        <p class="doc-passport-status is-missing" style="margin-top:14px">
+          &#128274; <strong>Ready for Delivery</strong> and <strong>Delivered</strong> are locked until every mandatory document above is uploaded and verified by a consultant — home delivery never ships on an unverified transaction.
+        </p>
+        <?php endif; ?>
         <?php endif; ?>
 
         <h2 class="account-section-title" style="margin-top:32px">Documents</h2>
