@@ -20,7 +20,7 @@
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <a href="/" class="brand"><img src="<?= asset('images/paynancial-logo.png') ?>" alt="Paynancial" class="brand-logo"></a>
+        <a href="/" class="brand"><img src="<?= asset('images/paynancial-logo-dark-bg.png') ?>" alt="Paynancial" class="brand-logo"></a>
         <p>Smart Solutions. Simplified Payments.</p>
         <div class="footer-social">
           <a href="https://www.facebook.com/paynancial" target="_blank" rel="noopener noreferrer" aria-label="Paynancial on Facebook">
