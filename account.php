@@ -15,16 +15,70 @@ require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/includes/partials.php';
 require_once __DIR__ . '/lib-php/auth.php';
 require_once __DIR__ . '/lib-php/oauth.php';
+require_once __DIR__ . '/lib-php/customer_auth.php';
 
 header('Cache-Control: no-store, private');
+auth_session_start();
 
-auth_require_login('/account');
-$user = auth_user();
+/* Two independent sign-in systems can each land you here (see
+   lib-php/customer_auth.php for why they're separate) — check both rather
+   than assuming OAuth. If someone somehow has both active in one browser
+   session, the password-based one wins for display; there's no merged
+   identity to fall back to. */
+$cvUser     = auth_user();
+$cvCustomer = customer_current();
+if (!$cvUser && !$cvCustomer) {
+    header('Location: ' . url('/customer-login') . '?next=' . rawurlencode(auth_safe_next('/account')), true, 302);
+    exit;
+}
+$isCustomer = (bool) $cvCustomer;
 
-$identities = auth_user_identities((int) $user['id']);
+// ---- Actions (before any output) ----
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'customer_logout') {
+    if (auth_csrf_valid($_POST['csrf'] ?? null)) {
+        customer_logout();
+    }
+    header('Location: ' . url('/'), true, 302);
+    exit;
+}
+$passwordError = '';
+$passwordSaved = false;
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'change_password' && $isCustomer) {
+    if (!auth_csrf_valid($_POST['csrf'] ?? null)) {
+        $passwordError = 'Your session expired — please try again.';
+    } elseif (!customer_verify_password($cvCustomer, (string) ($_POST['current_password'] ?? ''))) {
+        $passwordError = 'Current password is incorrect.';
+    } elseif (strlen((string) ($_POST['new_password'] ?? '')) < 8) {
+        $passwordError = 'New password must be at least 8 characters.';
+    } elseif (($_POST['new_password'] ?? '') !== ($_POST['new_password_confirm'] ?? '')) {
+        $passwordError = 'New passwords do not match.';
+    } else {
+        $pdo = customer_db();
+        $pdo->prepare('UPDATE customers SET password_hash = ? WHERE id = ?')
+            ->execute([password_hash((string) $_POST['new_password'], PASSWORD_DEFAULT), $cvCustomer['id']]);
+        $passwordSaved = true;
+    }
+}
+
+$identities = $cvUser ? auth_user_identities((int) $cvUser['id']) : [];
 $linked     = array_column($identities, 'provider');
 $providers  = oauth_providers();
 $isNew      = isset($_GET['welcome']);
+
+// ---- Unified display fields, whichever system this session came from ----
+if ($isCustomer) {
+    $displayName  = explode(' ', trim((string) $cvCustomer['full_name']))[0] ?: 'Account';
+    $displayEmail = (string) $cvCustomer['email'];
+    $avatarUrl    = '';
+    $memberSince  = (int) $cvCustomer['created_at'];
+    $customerCode = (string) $cvCustomer['customer_code'];
+} else {
+    $displayName  = auth_display_name($cvUser);
+    $displayEmail = (string) ($cvUser['email'] ?? '');
+    $avatarUrl    = (string) ($cvUser['avatar_url'] ?? '');
+    $memberSince  = (int) $cvUser['created_at'];
+    $customerCode = '';
+}
 
 $crumb = [['label' => 'Home', 'href' => url('/')], ['label' => 'My account']];
 $page = [
@@ -56,27 +110,36 @@ $actions = [
       <?= breadcrumbs($crumb) ?>
 
       <div class="account-head">
-        <?php $cvInitial = mb_strtoupper(mb_substr(auth_display_name($user), 0, 1)); ?>
-        <?php if ($user['avatar_url']): ?>
+        <?php $cvInitial = mb_strtoupper(mb_substr($displayName, 0, 1)); ?>
+        <?php if ($avatarUrl): ?>
         <?php // data-initial lets common.js swap in the lettered circle if the
               // provider's image 404s later — remote avatars do rot. ?>
-        <img class="account-avatar js-avatar" src="<?= e($user['avatar_url']) ?>" alt=""
+        <img class="account-avatar js-avatar" src="<?= e($avatarUrl) ?>" alt=""
              width="64" height="64" referrerpolicy="no-referrer"
              data-initial="<?= e($cvInitial) ?>" data-fallback-class="account-avatar account-avatar-initial">
         <?php else: ?>
         <span class="account-avatar account-avatar-initial" aria-hidden="true"><?= e($cvInitial) ?></span>
         <?php endif; ?>
         <div>
-          <h1><?= $isNew ? 'Welcome, ' : 'Welcome back, ' ?><?= e(auth_display_name($user)) ?>.</h1>
+          <h1><?= $isNew ? 'Welcome, ' : 'Welcome back, ' ?><?= e($displayName) ?>.</h1>
           <p class="account-sub">
-            <?php if ($user['email']): ?><?= e($user['email']) ?> ·<?php endif; ?>
-            Member since <?= e(date('j F Y', (int) $user['created_at'])) ?>
+            <?php if ($customerCode): ?><span class="mono"><?= e($customerCode) ?></span> ·<?php endif; ?>
+            <?php if ($displayEmail): ?><?= e($displayEmail) ?> ·<?php endif; ?>
+            Member since <?= e(date('j F Y', $memberSince)) ?>
           </p>
         </div>
+        <?php if ($isCustomer): ?>
+        <form method="post" action="<?= url('/account') ?>" class="account-signout">
+          <input type="hidden" name="csrf" value="<?= e(auth_csrf_token()) ?>">
+          <input type="hidden" name="action" value="customer_logout">
+          <button type="submit" class="btn btn-sm btn-outline-brand">Sign out</button>
+        </form>
+        <?php else: ?>
         <form method="post" action="<?= url('/logout') ?>" class="account-signout">
           <input type="hidden" name="csrf" value="<?= e(auth_csrf_token()) ?>">
           <button type="submit" class="btn btn-sm btn-outline-brand">Sign out</button>
         </form>
+        <?php endif; ?>
       </div>
 
       <?php if ($isNew): ?>
@@ -107,6 +170,23 @@ $actions = [
 
         <!-- Sign-in methods -->
         <div class="account-panel">
+          <?php if ($isCustomer): ?>
+          <h2>Password &amp; security</h2>
+          <?php if ($passwordSaved): ?>
+          <p class="notice-inline">Password updated.</p>
+          <?php endif; ?>
+          <?php if ($passwordError): ?>
+          <p class="auth-error" role="alert"><?= e($passwordError) ?></p>
+          <?php endif; ?>
+          <form method="post" action="<?= url('/account') ?>" class="account-password-form">
+            <input type="hidden" name="csrf" value="<?= e(auth_csrf_token()) ?>">
+            <input type="hidden" name="action" value="change_password">
+            <div class="field"><label for="current_password">Current password</label><input type="password" id="current_password" name="current_password" required></div>
+            <div class="field"><label for="new_password">New password</label><input type="password" id="new_password" name="new_password" minlength="8" required></div>
+            <div class="field"><label for="new_password_confirm">Confirm new password</label><input type="password" id="new_password_confirm" name="new_password_confirm" minlength="8" required></div>
+            <button type="submit" class="btn btn-sm btn-outline-brand">Change password</button>
+          </form>
+          <?php else: ?>
           <h2>Sign-in methods</h2>
           <ul class="account-identities">
             <?php foreach ($providers as $key => $prov):
@@ -127,6 +207,7 @@ $actions = [
             Linking a second provider that shares the same verified email address
             signs you into this same account rather than creating a new one.
           </p>
+          <?php endif; ?>
         </div>
       </div>
 
@@ -141,10 +222,16 @@ $actions = [
       </div>
 
       <p class="account-note account-note-wide">
+        <?php if ($isCustomer): ?>
+        Your password is stored as a salted hash — we can't read it, and neither can anyone who
+        gets access to the database. See the <a href="<?= url('/privacy-policy') ?>">Privacy Policy</a>,
+        or <a href="<?= url('/contact') ?>">contact us</a> to have this account deleted.
+        <?php else: ?>
         We hold only what the sign-in provider gave us: your name, profile
         picture and (where shared) your email address. No password of yours is
         ever stored here. See the <a href="<?= url('/privacy-policy') ?>">Privacy Policy</a>,
         or <a href="<?= url('/contact') ?>">contact us</a> to have this account deleted.
+        <?php endif; ?>
       </p>
     </div>
   </section>

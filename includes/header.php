@@ -1,9 +1,16 @@
 <?php
 require_once __DIR__ . '/nav.php';
 require_once __DIR__ . '/../lib-php/auth.php';
+require_once __DIR__ . '/../lib-php/customer_auth.php';
 $NAV = nav_data()['nav'];
 $REGIONS = regions_data();
+// Two independent sign-in systems can be active — see customer_auth.php.
+// The password-based one is what /register now creates, so it takes display
+// priority if somehow both are present in one browser session.
 $cvUser = auth_user();
+$cvCustomer = customer_current();
+$cvSignedIn = $cvCustomer ?: $cvUser;
+$cvSignedInName = $cvCustomer ? (explode(' ', trim((string) $cvCustomer['full_name']))[0] ?: 'Account') : auth_display_name($cvUser);
 // Send an anonymous visitor back to the page they were on after signing in.
 $cvNext = auth_safe_next($_SERVER['REQUEST_URI'] ?? '/');
 ?>
@@ -21,17 +28,17 @@ $cvNext = auth_safe_next($_SERVER['REQUEST_URI'] ?? '/');
                control there reintroduced the horizontal overflow. */ ?>
       <div class="utility-login-group">
         <button type="button" class="utility-pill" id="customerLoginBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="customerLoginDialog"
-                aria-label="<?= $cvUser ? e(auth_display_name($cvUser) . ' — customer account') : 'Customer Login' ?>">
-          <?php if ($cvUser): ?>
-            <?php $cvInitial = mb_strtoupper(mb_substr(auth_display_name($cvUser), 0, 1)); ?>
-            <?php if ($cvUser['avatar_url']): ?>
+                aria-label="<?= $cvSignedIn ? e($cvSignedInName . ' — customer account') : 'Customer Login' ?>">
+          <?php if ($cvSignedIn): ?>
+            <?php $cvInitial = mb_strtoupper(mb_substr($cvSignedInName, 0, 1)); ?>
+            <?php if (!empty($cvUser['avatar_url']) && !$cvCustomer): ?>
             <img class="js-avatar" src="<?= e($cvUser['avatar_url']) ?>" alt="" width="18" height="18"
                  referrerpolicy="no-referrer" data-initial="<?= e($cvInitial) ?>"
                  data-fallback-class="utility-account-initial">
             <?php else: ?>
             <span class="utility-account-initial" aria-hidden="true"><?= e($cvInitial) ?></span>
             <?php endif; ?>
-            <span class="pill-label"><?= e(auth_display_name($cvUser)) ?></span>
+            <span class="pill-label"><?= e($cvSignedInName) ?></span>
           <?php else: ?>
             <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-4 0-9 2-9 5v3h18v-3c0-3-5-5-9-5z"/></svg>
             <span class="pill-label">Customer<span class="hide-xs"> Login</span></span>
@@ -140,11 +147,11 @@ $cvNext = auth_safe_next($_SERVER['REQUEST_URI'] ?? '/');
 </div>
 
 <?php /* Customer account dialog. The menu adapts to sign-in state, but every
-         item routes somewhere real today: existing OAuth sign-in, the
-         existing /track-visa and /contact pages, or an honest "Coming soon"
-         placeholder (same convention as .mega-link.is-todo) for the pieces
-         that need the CRM backend from a later phase. Nothing here fakes a
-         working feature. */ ?>
+         item routes somewhere real today: the new password sign-in/register
+         (Phase 2), the existing OAuth sign-in, /track-visa and /contact, or
+         an honest "Coming soon" placeholder (same convention as
+         .mega-link.is-todo) for the pieces that still need CRM backend from
+         a later phase. Nothing here fakes a working feature. */ ?>
 <div class="auth-dialog" id="customerLoginDialog" role="dialog" aria-modal="true" aria-label="Customer account" hidden>
   <div class="auth-dialog-panel">
     <div class="auth-dialog-head">
@@ -154,18 +161,26 @@ $cvNext = auth_safe_next($_SERVER['REQUEST_URI'] ?? '/');
       </button>
     </div>
     <ul class="auth-menu">
-      <?php if ($cvUser): ?>
+      <?php if ($cvSignedIn): ?>
       <li><a class="auth-menu-item" href="<?= url('/account') ?>">My Account</a></li>
       <?php else: ?>
-      <li><a class="auth-menu-item" href="<?= url('/login') ?>?next=<?= rawurlencode($cvNext) ?>" rel="nofollow">Customer Sign In</a></li>
+      <li><a class="auth-menu-item" href="<?= url('/customer-login') ?>?next=<?= rawurlencode($cvNext) ?>">Customer Sign In</a></li>
+      <li><a class="auth-menu-item" href="<?= url('/register') ?>">New Customer Registration</a></li>
       <?php endif; ?>
-      <li><span class="auth-menu-item is-todo" title="Coming soon">New Customer Registration</span></li>
       <li><a class="auth-menu-item" href="<?= url('/track-visa') ?>">Track Enquiry</a></li>
       <li><span class="auth-menu-item is-todo" title="Coming soon">Upload Additional Documents</span></li>
       <li><span class="auth-menu-item is-todo" title="Coming soon">View Enquiry Status</span></li>
       <li><span class="auth-menu-item is-todo" title="Coming soon">Download Documents / Receipts</span></li>
       <li><a class="auth-menu-item" href="<?= url('/contact') ?>">Contact Consultant</a></li>
-      <?php if ($cvUser): ?>
+      <?php if ($cvCustomer): ?>
+      <li>
+        <form method="post" action="<?= url('/account') ?>" class="auth-menu-form">
+          <input type="hidden" name="csrf" value="<?= e(auth_csrf_token()) ?>">
+          <input type="hidden" name="action" value="customer_logout">
+          <button type="submit" class="auth-menu-item auth-menu-danger">Logout</button>
+        </form>
+      </li>
+      <?php elseif ($cvUser): ?>
       <li>
         <form method="post" action="<?= url('/logout') ?>" class="auth-menu-form">
           <input type="hidden" name="csrf" value="<?= e(auth_csrf_token()) ?>">
@@ -174,7 +189,9 @@ $cvNext = auth_safe_next($_SERVER['REQUEST_URI'] ?? '/');
       </li>
       <?php endif; ?>
     </ul>
-    <p class="auth-dialog-note">New here? Signing in with Google, Facebook or X creates your account automatically — a dedicated registration form is coming in a later phase.</p>
+    <?php if (!$cvSignedIn): ?>
+    <p class="auth-dialog-note">New here? <a href="<?= url('/register') ?>">Create an account</a> — or sign in with Google, Facebook or X from the Customer Sign In page instead.</p>
+    <?php endif; ?>
   </div>
 </div>
 
