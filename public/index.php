@@ -173,6 +173,32 @@ if (($segments[0] ?? '') === 'products' && isset($segments[1])) {
 }
 
 // ---------------------------------------------------------------------
+// Solutions landing pages: /solutions/{slug}
+// ---------------------------------------------------------------------
+$solutionPages = [
+    'startups' => 'solutions-startups',
+    'saas'     => 'solutions-saas',
+];
+if (($segments[0] ?? '') === 'solutions' && isset($segments[1])) {
+    $solutionFile = $solutionPages[$segments[1]] ?? null;
+    ob_start();
+    if ($solutionFile === null) {
+        http_response_code(404);
+        include __DIR__ . '/../pages/404.php';
+    } else {
+        include __DIR__ . '/../pages/' . $solutionFile . '.php';
+    }
+    $page_body = ob_get_clean();
+
+    include __DIR__ . '/../includes/site-head.php';
+    include __DIR__ . '/../includes/header.php';
+    echo '<main id="main-content">' . $page_body . '</main>';
+    include __DIR__ . '/../includes/footer.php';
+    include __DIR__ . '/../includes/site-foot.php';
+    exit;
+}
+
+// ---------------------------------------------------------------------
 // Legal pages: /legal/{slug}
 // ---------------------------------------------------------------------
 if (($segments[0] ?? '') === 'legal') {

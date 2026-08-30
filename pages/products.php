@@ -101,7 +101,7 @@ $catalog = [
     </div>
     <div class="ledger reveal catalog-list">
       <?php foreach ($catalog as $category => $items): ?>
-        <div class="ledger-row catalog-row">
+        <div class="ledger-row catalog-row" id="cat-<?= e(strtolower(preg_replace('/[^a-z0-9]+/i', '-', trim($category)))) ?>">
           <span class="ledger-tag"><?= e($category) ?></span>
           <div class="pill-list">
             <?php foreach ($items as [$label, $href]): ?>

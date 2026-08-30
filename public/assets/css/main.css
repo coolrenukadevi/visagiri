@@ -281,6 +281,24 @@ h3, .h3 { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 500; l
 .mega-link.mega-link-plain { padding: 6px 12px; }
 .mega-link.mega-link-plain strong { font-weight: 400; font-size: 0.83rem; }
 
+/* Solutions variant — a left positioning rail plus 5 curated columns,
+   each with a "view all" link into the fuller hub/category page rather
+   than listing every item (keeps the surface from feeling overcrowded). */
+.mega-menu.mega-menu-solutions {
+  width: min(1040px, 94vw); grid-template-columns: 200px repeat(5, 1fr); gap: 0; padding: 0; overflow: hidden;
+  left: 0; transform: translateY(6px);
+}
+.nav-item.is-open .mega-menu.mega-menu-solutions { transform: translateY(0); }
+.mega-menu-solutions .mega-rail { background: var(--paper-dim); padding: 22px 18px; }
+.mega-menu-solutions .mega-rail h4 { font-family: var(--font-serif); font-size: 1.08rem; font-weight: 500; }
+.mega-menu-solutions .mega-rail p { font-size: 0.78rem; color: var(--text-muted); margin-top: 10px; line-height: 1.5; }
+.mega-menu-solutions .mega-rail .rail-cta { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; font-size: 0.72rem; font-weight: 600; color: var(--accent-strong); border-bottom: 1.5px solid var(--accent-strong); padding-bottom: 2px; }
+.mega-menu-solutions .mega-col-set { padding: 18px 14px; }
+.mega-menu-solutions .mega-col-set.startups { background: linear-gradient(180deg, var(--teal-50), transparent 75%); }
+.mega-viewall { display: block; margin-top: 6px; padding: 6px 12px; font-family: var(--font-mono); font-size: 0.68rem; font-weight: 500; color: var(--accent-strong); }
+.mega-menu-solutions .mega-col-set.startups .mega-viewall { color: #b34600; }
+.mega-menu-solutions .compliance-line { grid-column: 1 / -1; padding: 10px 22px; background: var(--ink); color: rgba(250,249,245,0.7); font-size: 0.68rem; }
+
 .header-actions { display: flex; align-items: center; gap: 10px; }
 .btn-contact, .btn-login-signup {
   display: inline-flex; align-items: center; gap: 7px; border-radius: 999px; padding: 10px 18px 10px 16px;
@@ -434,6 +452,19 @@ section:last-of-type { border-bottom: none; }
 .pill-list { display: flex; flex-wrap: wrap; gap: 10px; }
 .pill { padding: 7px 15px; border: 1px solid var(--border); font-family: var(--font-mono); font-size: 0.76rem; letter-spacing: 0.02em; }
 .pill.is-active { background: var(--accent-strong); color: var(--white); border-color: var(--accent-strong); }
+
+.compliance-note { margin-top: 18px; padding: 16px 18px; background: var(--paper-dim); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 0.84rem; color: var(--text-muted); }
+
+.breadcrumb { display: flex; flex-wrap: wrap; gap: 6px; font-family: var(--font-mono); font-size: 0.74rem; color: var(--text-muted); margin-bottom: 18px; }
+.breadcrumb a { color: var(--text-muted); }
+.breadcrumb a:hover { color: var(--accent-strong); }
+.breadcrumb span[aria-hidden] { opacity: 0.5; }
+.breadcrumb .current { color: var(--text); }
+
+.lifecycle-strip { display: flex; overflow-x: auto; gap: 0; padding-bottom: 8px; scrollbar-width: thin; }
+.lifecycle-strip .step { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; padding-right: 20px; }
+.lifecycle-strip .step b { font-family: var(--font-mono); font-size: 0.76rem; color: var(--accent-strong); }
+.lifecycle-strip .step:not(:last-child)::after { content: '→'; margin-left: 10px; color: var(--border-strong, var(--border)); }
 
 /* Journey / steps */
 .journey { display: flex; overflow-x: auto; gap: 0; padding-bottom: 12px; scrollbar-width: thin; }

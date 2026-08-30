@@ -105,21 +105,57 @@ $current_path = $current_path ?? ($_SERVER['REQUEST_URI'] ?? '/');
         </li>
         <li class="nav-item">
           <button class="nav-link" aria-haspopup="true" aria-expanded="false">Solutions <i class="chev" aria-hidden="true"></i></button>
-          <div class="mega-menu">
-            <div>
-              <div class="mega-col-title">By Industry</div>
-              <a class="mega-link" href="/solutions#ecommerce"><strong>E-Commerce</strong><span>Fast, reliable checkout at scale</span></a>
-              <a class="mega-link" href="/solutions#travel"><strong>Travel</strong><span>High-value, multi-currency bookings</span></a>
-              <a class="mega-link" href="/solutions#healthcare"><strong>Healthcare</strong><span>Secure billing for clinics &amp; hospitals</span></a>
-              <a class="mega-link" href="/solutions#education"><strong>Education</strong><span>Fee collection made simple</span></a>
+          <div class="mega-menu mega-menu-solutions">
+            <div class="mega-rail">
+              <h4>Solutions</h4>
+              <p>AI-powered financial infrastructure for every business model — from your first transaction to your next million.</p>
+              <a class="rail-cta" href="/contact?intent=sales">Talk to a Solutions Specialist →</a>
             </div>
-            <div>
-              <div class="mega-col-title">&nbsp;</div>
-              <a class="mega-link" href="/solutions#retail"><strong>Retail</strong><span>Online and in-store payment flows</span></a>
-              <a class="mega-link" href="/solutions#hospitality"><strong>Hospitality</strong><span>Bookings, deposits, and on-site payments</span></a>
-              <a class="mega-link" href="/solutions#professional-services"><strong>Professional Services</strong><span>Simple invoicing and collection</span></a>
-              <a class="mega-link" href="/solutions#enterprise"><strong>Enterprise</strong><span>Custom infrastructure for scale</span></a>
+            <div class="mega-col-set">
+              <div class="mega-col-title">Business</div>
+              <a class="mega-link mega-link-plain" href="/solutions/startups"><strong>Startups &amp; New Businesses</strong></a>
+              <a class="mega-link mega-link-plain" href="/solutions/saas"><strong>SaaS &amp; Subscription</strong></a>
+              <a class="mega-link mega-link-plain" href="/solutions#sme"><strong>SMEs &amp; Growing Businesses</strong></a>
+              <a class="mega-link mega-link-plain" href="/solutions#marketplaces"><strong>Marketplaces &amp; Platforms</strong></a>
+              <a class="mega-link mega-link-plain" href="/solutions#enterprise"><strong>Enterprises</strong></a>
+              <a class="mega-viewall" href="/solutions#business">View all business types →</a>
             </div>
+            <div class="mega-col-set">
+              <div class="mega-col-title">Industry</div>
+              <a class="mega-link mega-link-plain" href="/solutions#ecommerce"><strong>E-Commerce</strong></a>
+              <a class="mega-link mega-link-plain" href="/solutions#travel"><strong>Travel &amp; Tourism</strong></a>
+              <a class="mega-link mega-link-plain" href="/solutions#healthcare"><strong>Healthcare</strong></a>
+              <a class="mega-link mega-link-plain" href="/solutions#fintech"><strong>FinTech</strong></a>
+              <a class="mega-link mega-link-plain" href="/solutions#real-estate"><strong>Real Estate &amp; PropTech</strong></a>
+              <a class="mega-viewall" href="/solutions#industries">View all 14 industries →</a>
+            </div>
+            <div class="mega-col-set">
+              <div class="mega-col-title">Use Case</div>
+              <a class="mega-link mega-link-plain" href="/products/payment-gateway"><strong>Accept Payments</strong></a>
+              <a class="mega-link mega-link-plain" href="/products/payment-collection"><strong>Collect &amp; Bill</strong></a>
+              <a class="mega-link mega-link-plain" href="/products/payouts"><strong>Pay &amp; Payout</strong></a>
+              <a class="mega-link mega-link-plain" href="/products/payment-analytics"><strong>Finance Operations</strong></a>
+              <a class="mega-link mega-link-plain" href="/contact?intent=sales&amp;product=paynancial-ai"><strong>AI &amp; Intelligence</strong></a>
+              <a class="mega-viewall" href="/products">See the full catalog →</a>
+            </div>
+            <div class="mega-col-set">
+              <div class="mega-col-title">Platform</div>
+              <a class="mega-link mega-link-plain" href="/contact?intent=sales&amp;product=embedded-finance"><strong>Embedded Finance</strong></a>
+              <a class="mega-link mega-link-plain" href="/contact?intent=sales&amp;product=banking-as-a-service"><strong>Banking / Payments-as-a-Service</strong></a>
+              <a class="mega-link mega-link-plain" href="/contact?intent=sales&amp;product=payment-orchestration"><strong>Payment Orchestration</strong></a>
+              <a class="mega-link mega-link-plain" href="/contact?intent=sales&amp;product=wallet-infrastructure"><strong>Wallet Infrastructure</strong></a>
+              <a class="mega-link mega-link-plain" href="/contact?intent=sales&amp;product=white-label-payments"><strong>White-Label Payments</strong></a>
+              <a class="mega-viewall" href="/products#cat-embedded-finance">Explore platform solutions →</a>
+            </div>
+            <div class="mega-col-set startups">
+              <div class="mega-col-title">Startups &amp; SaaS</div>
+              <a class="mega-link mega-link-plain" href="/solutions/startups"><strong>Startup Payment Stack</strong></a>
+              <a class="mega-link mega-link-plain" href="/solutions/saas"><strong>SaaS Subscription Billing</strong></a>
+              <a class="mega-link mega-link-plain" href="/solutions#marketplaces"><strong>Marketplace Payments</strong></a>
+              <a class="mega-link mega-link-plain" href="/solutions/startups#stages"><strong>MVP &amp; Scale-Up Infra</strong></a>
+              <a class="mega-viewall" href="/solutions/startups">Built for Startups →</a>
+            </div>
+            <div class="compliance-line">Embedded finance, wallet and banking-adjacent solutions are available subject to applicable regulatory requirements, licensing and partner arrangements.</div>
           </div>
         </li>
         <li class="nav-item">
@@ -266,14 +302,45 @@ $current_path = $current_path ?? ($_SERVER['REQUEST_URI'] ?? '/');
   <details>
     <summary>Solutions <i class="chev" aria-hidden="true"></i></summary>
     <ul>
+      <li class="mobile-nav-group-label">Business</li>
+      <li><a href="/solutions/startups">Startups &amp; New Businesses</a></li>
+      <li><a href="/solutions/saas">SaaS &amp; Subscription</a></li>
+      <li><a href="/solutions#sme">SMEs &amp; Growing Businesses</a></li>
+      <li><a href="/solutions#marketplaces">Marketplaces &amp; Platforms</a></li>
+      <li><a href="/solutions#enterprise">Enterprises</a></li>
+
+      <li class="mobile-nav-group-label">Industry</li>
       <li><a href="/solutions#ecommerce">E-Commerce</a></li>
-      <li><a href="/solutions#travel">Travel</a></li>
+      <li><a href="/solutions#travel">Travel &amp; Tourism</a></li>
       <li><a href="/solutions#healthcare">Healthcare</a></li>
-      <li><a href="/solutions#education">Education</a></li>
+      <li><a href="/solutions#education">Education &amp; EdTech</a></li>
       <li><a href="/solutions#retail">Retail</a></li>
       <li><a href="/solutions#hospitality">Hospitality</a></li>
       <li><a href="/solutions#professional-services">Professional Services</a></li>
-      <li><a href="/solutions#enterprise">Enterprise</a></li>
+      <li><a href="/solutions#fintech">FinTech</a></li>
+      <li><a href="/solutions#logistics">Logistics &amp; Transportation</a></li>
+      <li><a href="/solutions#real-estate">Real Estate &amp; PropTech</a></li>
+      <li><a href="/solutions#insurance">Insurance &amp; InsurTech</a></li>
+      <li><a href="/solutions#gaming">Gaming &amp; Digital Services</a></li>
+      <li><a href="/solutions#nonprofits">NGOs &amp; Non-Profits</a></li>
+
+      <li class="mobile-nav-group-label">Use Case</li>
+      <li><a href="/products/payment-gateway">Accept Payments</a></li>
+      <li><a href="/products/payment-collection">Collect &amp; Bill</a></li>
+      <li><a href="/products/payouts">Pay &amp; Payout</a></li>
+      <li><a href="/products/payment-analytics">Finance Operations</a></li>
+      <li><a href="/contact?intent=sales&amp;product=paynancial-ai">AI &amp; Intelligence</a></li>
+
+      <li class="mobile-nav-group-label">Platform</li>
+      <li><a href="/contact?intent=sales&amp;product=embedded-finance">Embedded Finance</a></li>
+      <li><a href="/contact?intent=sales&amp;product=banking-as-a-service">Banking / Payments-as-a-Service</a></li>
+      <li><a href="/contact?intent=sales&amp;product=wallet-infrastructure">Wallet Infrastructure</a></li>
+      <li><a href="/contact?intent=sales&amp;product=white-label-payments">White-Label Payments</a></li>
+
+      <li class="mobile-nav-group-label">Startups &amp; SaaS</li>
+      <li><a href="/solutions/startups">Startup Payment Stack</a></li>
+      <li><a href="/solutions/saas">SaaS Subscription Billing</a></li>
+      <li><a href="/solutions/startups#stages">MVP &amp; Scale-Up Infra</a></li>
     </ul>
   </details>
   <details>
