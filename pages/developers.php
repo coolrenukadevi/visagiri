@@ -1,7 +1,7 @@
 <?php
 $page_meta = [
-    'title' => 'Developers | Paynancial API Documentation',
-    'description' => 'Integrate Paynancial payments with clear API documentation, SDKs and a sandbox environment.',
+    'title' => 'Developers | Agent-Ready Payment APIs | Paynancial',
+    'description' => 'Integrate Paynancial payments with clear API documentation, SDKs and a sandbox environment — designed for human developers and AI agents alike.',
 ];
 ?>
 <section style="padding-top:56px;">
@@ -9,7 +9,7 @@ $page_meta = [
     <div class="section-head reveal">
       <span class="eyebrow">Developers</span>
       <h1>Build with the Paynancial API.</h1>
-      <p class="lead">A REST API, webhooks and SDKs designed to get payments into your product quickly and securely — built to be called just as reliably by an AI agent as by a person.</p>
+      <p class="lead">A REST API, webhooks and SDKs designed to get payments into your product quickly and securely — built to be called just as reliably by an AI agent as by a person, from a single sandbox key to an enterprise integration processing millions of calls.</p>
     </div>
   </div>
 </section>
@@ -70,6 +70,61 @@ refund = client.refunds.create(
     <?php foreach (['Payment API', 'Payout API', 'Transaction API', 'Refund API'] as $api): ?>
       <div class="card reveal"><h3><?= e($api) ?></h3><p style="font-size:0.85rem;">Full reference documentation and examples.</p></div>
     <?php endforeach; ?>
+  </div>
+</section>
+
+<section id="agentic-ai">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">The Agentic AI Era</span>
+      <h2>Designed for the caller to be an agent, not just a person.</h2>
+      <p class="lead">A growing share of integrations calling this API won't be a person clicking through a checkout — they'll be an AI agent retrying a failed charge, reconciling a ledger, or approving a payout inside limits a business set. That changes what "reliable" means for an API, at any scale from a solo developer's script to an enterprise's agent fleet.</p>
+    </div>
+    <div class="grid grid-3">
+      <div class="card reveal">
+        <span class="card-icon">◆</span>
+        <h3>Safe to retry, by default</h3>
+        <p>An agent retries on timeout without asking a human first. Every write endpoint accepts an idempotency key, so a retried request is recognized and returns the original result instead of creating a duplicate payment or payout.</p>
+      </div>
+      <div class="card reveal">
+        <span class="card-icon">◆</span>
+        <h3>Structured, machine-readable errors</h3>
+        <p>Error responses carry a stable code and category an agent can branch on programmatically — insufficient_funds vs. invalid_method vs. rate_limited — not just a human-readable message an agent has to guess at.</p>
+      </div>
+      <div class="card reveal">
+        <span class="card-icon">◆</span>
+        <h3>Event-driven, not poll-driven</h3>
+        <p>Webhooks push payment, payout, refund and settlement events as they happen, so an agent orchestrating a workflow reacts to state changes in real time instead of polling on a schedule.</p>
+      </div>
+    </div>
+    <div class="code-panel reveal" style="margin-top:32px;">
+      <div class="code-tabs">
+        <button class="code-tab is-active" data-lang="php">PHP</button>
+        <button class="code-tab" data-lang="curl">cURL</button>
+      </div>
+      <div class="code-body">
+        <button class="copy-btn" type="button">Copy</button>
+        <pre data-code-block="php"><code>// An agent-safe payout: the idempotency key means a retried
+// call after a timeout returns the original result, not a
+// second payout.
+$payout = $client->payouts->create([
+    'beneficiary_id' => 'bene_3Kd91',
+    'amount'         => 250000, // in paise
+    'mode'           => 'upi',
+], [
+    'idempotency_key' => 'agent-payout-run-2026-08-29-0417',
+]);
+
+echo $payout->status;</code></pre>
+        <pre data-code-block="curl" style="display:none"><code>curl https://api.paynancial.com/v1/payouts \
+  -u YOUR_API_KEY: \
+  -H "Idempotency-Key: agent-payout-run-2026-08-29-0417" \
+  -d beneficiary_id=bene_3Kd91 \
+  -d amount=250000 \
+  -d mode=upi</code></pre>
+      </div>
+    </div>
+    <div class="compliance-note reveal">The sandbox is the recommended place to test any agent-driven or autonomous workflow — including retry behavior, rate limits and failure handling — before it's given a live key.</div>
   </div>
 </section>
 

@@ -16,7 +16,7 @@ $faqs = [
     <div class="section-head reveal">
       <span class="eyebrow">Support</span>
       <h1>We're here to help.</h1>
-      <p class="lead">Reach out for assistance with your Paynancial integration, account or a general question.</p>
+      <p class="lead">Reach out for assistance with your Paynancial integration, account or a general question — including how agentic AI fits into your payment operations.</p>
     </div>
   </div>
 </section>
@@ -44,7 +44,34 @@ $faqs = [
   </div>
 </section>
 
-<section id="faqs" aria-labelledby="faqs-heading">
+<section>
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">The Agentic AI Era · A Primer</span>
+      <h2>Understanding agentic AI in payments.</h2>
+      <p class="lead">A resource for teams evaluating what it means to let AI act on their behalf financially — whether that's a two-person startup or an enterprise treasury desk.</p>
+    </div>
+    <div class="ledger reveal">
+      <div class="ledger-row">
+        <span class="ledger-tag">What it is</span>
+        <h3>An agent takes an action, not just an answer</h3>
+        <p>A chatbot tells you your invoice is overdue. An agent goes and retries the failed charge, updates the invoice status, and reconciles the result — without a person clicking through each step.</p>
+      </div>
+      <div class="ledger-row">
+        <span class="ledger-tag">Why it matters here</span>
+        <h3>Payments are where "acting" gets expensive to get wrong</h3>
+        <p>A wrong answer from a chatbot is a bad sentence. A wrong action from a payment agent is a duplicate payout or a missed fraud signal — which is why idempotency, structured errors and audit trails matter more here than almost anywhere else an agent operates.</p>
+      </div>
+      <div class="ledger-row">
+        <span class="ledger-tag">Questions worth asking</span>
+        <h3>Before you let an agent move money</h3>
+        <p>What's the agent's spending or payout limit, and who's notified when it's reached? Can every action it takes be traced back to a specific request? What happens if it retries a call it shouldn't have? A platform built agent-first — idempotent by default, with real-time webhooks and clear audit trails — answers these before you have to find out the hard way.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-subtle" id="faqs" aria-labelledby="faqs-heading">
   <div class="container">
     <div class="section-head reveal">
       <span class="eyebrow">FAQs</span>

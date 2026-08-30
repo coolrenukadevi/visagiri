@@ -26,6 +26,7 @@ $page_meta = [
       <div class="reveal">
         <p>Paynancial was founded to give businesses a payment gateway that treats security and usability as the same problem, not competing priorities — robust processing, encrypted by default, without the integration friction that slows teams down.</p>
         <p>Today that means a platform that spans collecting payments, moving payouts, tracking settlements and understanding transaction data end to end — built by a team that treats reliability and data protection as the baseline, not a premium feature.</p>
+        <p>What that platform has to be reliable <em>for</em> is changing. Increasingly the thing calling our API isn't only a developer's checkout page — it's an AI agent reconciling a ledger or retrying a subscription charge on a business's behalf. We built for that shift before it had a name, and we're building further into it now.</p>
       </div>
     </div>
   </div>
@@ -78,6 +79,22 @@ $page_meta = [
         <span class="ledger-tag">Trust</span>
         <h3>Security first</h3>
         <p>Encryption, access control and monitoring are part of how the platform is built, not something bolted on after launch.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-subtle">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">The Agentic AI Era</span>
+      <h2>Our view: infrastructure outlasts whoever — or whatever — is calling it.</h2>
+    </div>
+    <div class="story">
+      <p class="story-lead reveal">We don't think the interesting question is whether AI agents will initiate payments, payouts and reconciliation — for a growing number of businesses, they already do. The interesting question is what the infrastructure underneath needs to guarantee when the caller isn't a person anymore.</p>
+      <div class="reveal">
+        <p>Our answer isn't a single "AI product" bolted onto a payment gateway. It's the same discipline we started with — reliability and data protection as the baseline, not a feature — applied to a new kind of caller: idempotent by default so a retried request can't duplicate a payment, structured errors an agent can act on without a human translating them, and audit trails detailed enough that every autonomous action stays traceable back to a decision a business actually made.</p>
+        <p>That applies whether "the business" is a solo founder running one AI bookkeeping assistant or an enterprise treasury desk running a fleet of them. We'd rather be the infrastructure that was already ready for this shift than the one racing to catch up to it.</p>
       </div>
     </div>
   </div>

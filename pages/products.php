@@ -69,7 +69,7 @@ $catalog = [
     <div class="section-head reveal">
       <span class="eyebrow">Products</span>
       <h1>A complete, modular payments platform.</h1>
-      <p class="lead">Adopt one product or the full Paynancial stack — every module is built to work together.</p>
+      <p class="lead">Adopt one product or the full Paynancial stack — every module is built to work together, and to be called just as reliably by an autonomous AI agent as by a person at a keyboard.</p>
     </div>
   </div>
 </section>
@@ -111,6 +111,45 @@ $catalog = [
         </div>
       <?php endforeach; ?>
     </div>
+  </div>
+</section>
+
+<section class="section-subtle">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">The Agentic AI Era</span>
+      <h2>Built for infrastructure a human calls — and infrastructure an agent calls.</h2>
+    </div>
+    <div class="story">
+      <p class="story-lead reveal">A growing share of the requests hitting a payment platform in the next few years won't come from a person clicking a button. They'll come from an AI agent — a bookkeeping assistant reconciling a ledger, a procurement bot approving a vendor invoice, a customer-support agent issuing a refund — acting on a business's behalf, inside limits the business set.</p>
+      <div class="reveal">
+        <p>That shift changes what "good API design" means. An agent retries a failed request without a human noticing, so idempotency has to be correct, not just documented. An agent parses an error programmatically, so error codes have to be structured and consistent, not prose written for a person to read once. An agent acts continuously, not in business-hours bursts, so webhooks and rate limits have to assume always-on traffic. Every product on this page — Payment Gateway through Payouts, Reconciliation through the AI &amp; Intelligence catalog above — is built API-first for exactly that reason, whether the caller today is a developer's script or tomorrow's autonomous finance agent.</p>
+        <p>What that looks like changes with the size of the business behind it — the products stay the same, only how much of the work an agent is trusted to do on its own scales up.</p>
+      </div>
+    </div>
+    <div class="journey reveal" style="margin-top:36px;">
+      <div class="journey-step">
+        <div class="num">1</div>
+        <strong>Solo &amp; small business</strong>
+        <span>An AI bookkeeping assistant reconciles the day's transactions against the bank feed and flags what looks wrong — the owner still approves anything unusual.</span>
+      </div>
+      <div class="journey-step">
+        <div class="num">2</div>
+        <strong>Growing business</strong>
+        <span>An AI ops assistant routes and initiates vendor payouts within a pre-set limit, escalating anything above it — Payouts and AI Reconciliation doing the repetitive work.</span>
+      </div>
+      <div class="journey-step">
+        <div class="num">3</div>
+        <strong>Platform &amp; SaaS</strong>
+        <span>Embedded, agent-driven billing recovers failed subscription payments and reconciles revenue automatically, end to end, across every customer on the platform.</span>
+      </div>
+      <div class="journey-step">
+        <div class="num">4</div>
+        <strong>Enterprise</strong>
+        <span>Fleets of treasury and procurement agents call Payment, Payout and Reconciliation APIs directly, with AI Fraud Detection acting as the standing safety layer underneath.</span>
+      </div>
+    </div>
+    <div class="compliance-note reveal">Paynancial's AI &amp; Intelligence products assist with detection, reconciliation and forecasting — they support a human or agent decision, they do not replace approval controls a business chooses to keep in place, and they do not guarantee fraud prevention or a specific financial outcome.</div>
   </div>
 </section>
 

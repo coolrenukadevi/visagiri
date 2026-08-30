@@ -33,7 +33,7 @@ $industries = [
     <div class="section-head reveal">
       <span class="eyebrow">Solutions</span>
       <h1>AI-powered financial infrastructure, shaped by your business.</h1>
-      <p class="lead">Payments, payouts, billing, reconciliation and financial intelligence — connected through one platform, whichever business model or industry you run.</p>
+      <p class="lead">Payments, payouts, billing, reconciliation and financial intelligence — connected through one platform, built for a world where agentic AI is starting to run a growing share of the work in between.</p>
     </div>
   </div>
 </section>
@@ -74,6 +74,44 @@ $industries = [
         </div>
       <?php endforeach; ?>
     </div>
+  </div>
+</section>
+
+<section class="section-subtle">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">The Agentic AI Era</span>
+      <h2>What changes when AI agents start acting on a business's behalf.</h2>
+      <p>Agentic AI — software that doesn't just answer a question but takes an action, like approving an invoice or retrying a failed charge — is moving from experiment to default across every business model on this page. What it disrupts, and how much a business lets it do unsupervised, scales with the size and shape of the business.</p>
+    </div>
+    <div class="ledger reveal">
+      <div class="ledger-row">
+        <span class="ledger-tag">Startups</span>
+        <h3>Speed becomes the default, not the risk</h3>
+        <p>A founder without a finance team can run an AI assistant that reconciles Stripe-style transaction noise and flags what needs a human — turning a chore that used to eat a weekend into a standing background process.</p>
+      </div>
+      <div class="ledger-row">
+        <span class="ledger-tag">SaaS &amp; Subscription</span>
+        <h3>Billing stops being a support ticket</h3>
+        <p>Failed-payment retries, dunning emails and revenue reconciliation move from a support queue to an agent that acts within rules the business sets — freeing the team to build product instead of chasing renewals.</p>
+      </div>
+      <div class="ledger-row">
+        <span class="ledger-tag">SMEs &amp; Growing Businesses</span>
+        <h3>The finance team's job shifts from doing to approving</h3>
+        <p>An AI ops assistant routes vendor payouts and flags anomalies; the owner or finance lead spends their time on the exceptions an agent surfaces, not the routine transactions an agent already handled.</p>
+      </div>
+      <div class="ledger-row">
+        <span class="ledger-tag">Marketplaces &amp; Platforms</span>
+        <h3>Every seller gets a finance department they never hired</h3>
+        <p>Automated split payments, payouts and reconciliation, running per transaction across thousands of sellers, are the kind of scale that was previously reserved for platforms big enough to build it themselves.</p>
+      </div>
+      <div class="ledger-row">
+        <span class="ledger-tag">Enterprise</span>
+        <h3>Treasury and procurement start running on standing agents</h3>
+        <p>Fleets of AI agents initiate payouts, run reconciliation and monitor cash flow continuously against policy limits a business defines — with fraud detection and audit trails as the non-negotiable layer underneath.</p>
+      </div>
+    </div>
+    <div class="compliance-note reveal">Paynancial's AI-assisted capabilities support the decisions a business or its agents make — they do not replace a business's own approval controls, and they do not guarantee a specific fraud, revenue or approval outcome.</div>
   </div>
 </section>
 
