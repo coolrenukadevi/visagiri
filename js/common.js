@@ -311,6 +311,40 @@
     });
   })();
 
+  // ---- Customer / employee account dialogs (utility bar) ----
+  // Same fixed-overlay + centered-panel pattern as site search above; opening
+  // one closes the other rather than letting both stack.
+  (() => {
+    const closers = [];
+    function wireDialog(boxId, triggerId) {
+      const box = document.getElementById(boxId);
+      const trigger = document.getElementById(triggerId);
+      if (!box || !trigger) return;
+
+      function close() {
+        if (box.hidden) return;
+        box.hidden = true;
+        document.body.classList.remove("no-scroll");
+        trigger.setAttribute("aria-expanded", "false");
+      }
+      function open() {
+        closers.forEach((c) => c !== close && c());
+        box.hidden = false;
+        document.body.classList.add("no-scroll");
+        trigger.setAttribute("aria-expanded", "true");
+        box.querySelector(".auth-menu-item, .auth-dialog-close")?.focus();
+      }
+      closers.push(close);
+
+      trigger.addEventListener("click", () => (box.hidden ? open() : close()));
+      box.querySelectorAll("[data-close-dialog]").forEach((btn) => btn.addEventListener("click", close));
+      box.addEventListener("mousedown", (e) => { if (e.target === box) close(); });
+      document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !box.hidden) close(); });
+    }
+    wireDialog("customerLoginDialog", "customerLoginBtn");
+    wireDialog("employeeLoginDialog", "employeeLoginBtn");
+  })();
+
   // ---- Generic <select> populators, reused by hero search + sticky search ----
   function populateSelect(select, items, placeholder) {
     if (!select) return;

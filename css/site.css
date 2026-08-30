@@ -88,13 +88,14 @@ h1, h2, h3, p { margin: 0; }
 .utility-left a:hover { color: white; }
 .utility-left svg { opacity: 0.85; flex-shrink: 0; }
 .utility-right { display: flex; align-items: center; gap: 16px; }
-.utility-signin, .utility-account {
-  display: inline-flex; align-items: center; gap: 7px; color: inherit;
-  font-weight: 600; padding: 4px 10px; border-radius: var(--radius-full);
-  border: 1px solid rgba(255, 255, 255, 0.22); white-space: nowrap;
+.utility-login-group { display: flex; align-items: center; gap: 8px; }
+.utility-pill {
+  display: inline-flex; align-items: center; gap: 7px; color: inherit; background: none;
+  font: inherit; font-weight: 600; padding: 4px 10px; border-radius: var(--radius-full);
+  border: 1px solid rgba(255, 255, 255, 0.22); white-space: nowrap; cursor: pointer;
 }
-.utility-signin:hover, .utility-account:hover { color: white; border-color: var(--brand-light, #29b6f6); background: rgba(255, 255, 255, 0.08); }
-.utility-account img { border-radius: 50%; object-fit: cover; }
+.utility-pill:hover, .utility-pill[aria-expanded="true"] { color: white; border-color: var(--brand-blue-light); background: rgba(255, 255, 255, 0.08); }
+.utility-pill img { border-radius: 50%; object-fit: cover; }
 .utility-account-initial {
   width: 20px; height: 20px; border-radius: 50%; background: var(--brand-blue); color: white;
   display: inline-flex; align-items: center; justify-content: center; font-size: 0.66rem; font-weight: 800;
@@ -241,6 +242,66 @@ body.no-scroll { overflow: hidden; }
   .site-search { padding-top: 6vh; }
   .ss-group { display: none; }
 }
+
+/* Customer / employee account dialogs — same floating-modal pattern as
+   .site-search above (fixed overlay, centered panel, body.no-scroll). */
+.auth-dialog {
+  position: fixed; inset: 0; z-index: 200; background: rgba(15, 27, 61, 0.55);
+  backdrop-filter: blur(3px); padding: 12vh 16px 16px; overflow-y: auto;
+}
+.auth-dialog-panel {
+  width: 100%; max-width: 380px; margin-inline: auto;
+  background: var(--paper); border-radius: var(--radius-md); box-shadow: var(--shadow-lg);
+  border: 1px solid var(--ink-100); overflow: hidden;
+}
+.auth-dialog-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; border-bottom: 1px solid var(--ink-100); }
+.auth-dialog-head h2 { font-size: 1.02rem; margin: 0; }
+.auth-dialog-close { flex-shrink: 0; color: var(--ink-500); background: none; border: none; padding: 4px; display: inline-flex; border-radius: 6px; cursor: pointer; }
+.auth-dialog-close:hover { color: var(--ink-900); background: var(--paper-alt); }
+
+.auth-menu { list-style: none; margin: 0; padding: 8px; }
+.auth-menu-item {
+  display: flex; align-items: center; gap: 10px; width: 100%; text-align: left;
+  padding: 10px 12px; border-radius: 9px; font-size: 0.88rem; font-weight: 600;
+  color: var(--ink-900); background: none; border: none; font-family: inherit; cursor: pointer;
+}
+.auth-menu-item::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--brand-blue-light); flex-shrink: 0; }
+a.auth-menu-item:hover { background: var(--paper-alt); }
+.auth-menu-item.is-todo { color: var(--ink-500); cursor: default; font-weight: 500; }
+.auth-menu-item.is-todo::before { background: var(--ink-300); }
+.auth-menu-form { margin: 0; }
+.auth-menu-danger { color: #c22e3f; }
+.auth-menu-danger::before { background: #c22e3f; }
+.auth-menu-danger:hover { background: rgba(194, 46, 63, 0.08); }
+.auth-dialog-note { font-size: 0.78rem; color: var(--ink-500); padding: 4px 18px 16px; margin: 0; }
+
+.auth-dialog-body { padding: 18px; }
+.auth-dialog-status { font-size: 0.82rem; color: var(--ink-700); background: var(--paper-alt); border-radius: var(--radius-sm); padding: 12px 14px; margin: 0 0 16px; }
+.auth-form { display: flex; flex-direction: column; gap: 12px; }
+.auth-form .field label { display: block; font-size: 0.76rem; font-weight: 700; color: var(--ink-700); margin-bottom: 5px; }
+.auth-form input:disabled { opacity: 0.6; cursor: not-allowed; }
+.auth-form button:disabled { opacity: 0.55; cursor: not-allowed; box-shadow: none; transform: none; }
+.auth-form-row { display: flex; align-items: center; justify-content: space-between; margin-top: 2px; }
+.auth-forgot { font-size: 0.78rem; color: var(--ink-500); }
+
+@media (max-width: 480px) {
+  .auth-dialog { padding-top: 8vh; }
+  .hide-xs { display: none; }
+  /* Two pills + the phone number don't fit this narrow even abbreviated —
+     the icon is the part a reader can afford to lose, not the label. */
+  .utility-pill svg { display: none; }
+  .utility-login-group { gap: 6px; }
+  .utility-pill { padding: 4px 8px; }
+}
+@media (max-width: 340px) {
+  /* Below this, even the abbreviated label doesn't fit — icon only, with
+     the full label still read by screen readers via aria-label. */
+  .utility-pill svg { display: block; }
+  .utility-pill .pill-label { display: none; }
+  .utility-login-group { gap: 4px; }
+  .utility-pill { padding: 5px; }
+}
+
 .header-phone { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.9rem; color: var(--ink-900); }
 .header-phone svg { color: var(--brand-blue); }
 .nav-toggle { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 40px; height: 40px; background: transparent; border: none; border-radius: 8px; }
