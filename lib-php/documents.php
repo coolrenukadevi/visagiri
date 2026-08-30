@@ -224,6 +224,40 @@ function document_upload(int $enquiryId, int $customerId, int $documentTypeId, a
     return [document_find_by_uid($uid), ''];
 }
 
+const DOCUMENT_VERIFICATION_STATUSES = ['Under Review', 'Accepted', 'Rejected', 'Replacement Required'];
+
+/** Employee document verification (Phase 7). A reason is required for
+ *  anything short of acceptance — the customer sees exactly why, in the
+ *  same doc-item-reason spot Phase 5 already renders it in. */
+function document_set_status(array $document, string $status, string $reason = ''): bool
+{
+    if (!in_array($status, DOCUMENT_VERIFICATION_STATUSES, true)) return false;
+    $reason = trim($reason);
+    if ($status !== 'Accepted' && $reason === '') return false;
+    if ($status === 'Accepted') $reason = '';
+
+    $pdo = document_db();
+    if (!$pdo) return false;
+    $pdo->prepare('UPDATE documents SET status = ?, rejection_reason = ? WHERE id = ?')
+        ->execute([$status, $reason, $document['id']]);
+    return true;
+}
+
+/** Documents still awaiting a decision across enquiries assigned to one
+ *  employee (by name — see enquiries.php's docblock on why assignment is
+ *  name-keyed). Used for the "Awaiting Verification" KPI tile. */
+function documents_awaiting_review_count_for(string $employeeName): int
+{
+    $pdo = document_db();
+    if (!$pdo || $employeeName === '') return 0;
+    $st = $pdo->prepare("
+        SELECT COUNT(*) FROM documents d
+        JOIN enquiries e ON e.id = d.enquiry_id
+        WHERE e.assigned_employee = ? AND d.status = 'Under Review'");
+    $st->execute([$employeeName]);
+    return (int) $st->fetchColumn();
+}
+
 function document_delete(array $document): bool
 {
     $pdo = document_db();

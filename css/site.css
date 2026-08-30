@@ -1094,6 +1094,12 @@ a.auth-menu-item:hover { background: var(--paper-alt); }
 .enq-status-badge.status-in-progress { background: rgba(245, 166, 35, 0.15); color: #a4650f; }
 .enq-status-badge.status-completed { background: rgba(26, 138, 95, 0.14); color: #1a8a5f; }
 .enq-status-badge.status-cancelled { background: var(--paper-alt); color: var(--ink-500); }
+/* Document verification statuses (Phase 7) — same badge, reused for the
+   documents list rather than a parallel component. */
+.enq-status-badge.status-under-review { background: rgba(41, 182, 246, 0.14); color: var(--brand-blue); }
+.enq-status-badge.status-accepted { background: rgba(26, 138, 95, 0.14); color: #1a8a5f; }
+.enq-status-badge.status-rejected { background: rgba(194, 46, 63, 0.12); color: #c22e3f; }
+.enq-status-badge.status-replacement-required { background: rgba(245, 166, 35, 0.15); color: #a4650f; }
 .enq-detail-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px 24px; margin-bottom: 20px; }
 .enq-detail-grid > div { display: flex; flex-direction: column; gap: 4px; }
 .enq-detail-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-500); }
@@ -1404,3 +1410,21 @@ a.auth-menu-item:hover { background: var(--paper-alt); }
    to the applicant's passport rather than the destination's rules. */
 .doc-tag-india { color: var(--brand-blue); border-color: var(--brand-blue); }
 .doc-section.is-india h3 { color: var(--brand-blue); }
+
+/* =====================================================================
+   Employee console (Phase 7)
+   ===================================================================== */
+/* Per-document verify form (employee-enquiry.php) — a 4th flex child
+   alongside .doc-item-main / the status badge / (on the customer page) the
+   remove button, so it always takes its own full-width row rather than
+   squeezing into whatever space is left. */
+.emp-doc-verify { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; flex-basis: 100%; margin-top: 8px; }
+.emp-doc-verify select,
+.emp-doc-verify input[type="text"] {
+  font: inherit; font-size: 0.82rem; padding: 7px 9px; border-radius: var(--radius-sm);
+  border: 1px solid var(--ink-300); background: var(--paper); color: var(--ink-900);
+}
+.emp-doc-verify input[type="text"] { flex: 1; min-width: 160px; }
+@media (max-width: 480px) {
+  .emp-doc-verify select, .emp-doc-verify input[type="text"] { flex-basis: 100%; }
+}

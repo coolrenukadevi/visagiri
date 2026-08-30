@@ -5,17 +5,26 @@
  * human-readable code (CV-2026-000001) generated the same way
  * customer_code_for() works.
  *
- * What's deliberately NOT here yet, and why: enquiry_assignments as its own
- * history table, internal_notes, and a communication/message thread are all
- * real fields in the original spec, but nothing in the codebase can read or
- * write them yet — there is no employee console (that's Phase 7) to assign
- * an enquiry to, view an internal note, or reply in a thread. Building that
- * storage now, with zero UI ever touching it, is exactly the kind of
- * unused-until-later machinery this project avoids elsewhere. `enquiries`
- * carries nullable assigned_employee/assigned_department/sla_due_at columns
- * so Phase 7 can start writing to THIS table rather than migrating data into
- * a new one; the history/notes/messages tables get built when something
- * exists to use them.
+ * Assignment is keyed by the employee's name, not an id: `assigned_employee`
+ * is the same nullable TEXT column the customer-facing pages have rendered
+ * since Phase 4 ("Assigned Consultant: <name>"), and Phase 7 (the employee
+ * console — lib-php/employee_auth.php) now writes to it rather than adding a
+ * parallel id column. For a small internal ops team this is a deliberate
+ * trade — simple, and matches what was already pre-built and shipped for
+ * display — not a scalability position; a large team would want a real FK
+ * plus the role-based access Phase 8 (Admin & compliance configuration) is
+ * scoped to add.
+ *
+ * internal_notes is new in Phase 7 for the same reason it was withheld
+ * before: the docblock here used to say it stays out until a real consumer
+ * exists to read or write it. The employee console is that consumer.
+ * Employee identity is denormalized onto each note (employee_name) rather
+ * than a foreign key, so this file still has no dependency on
+ * employee_auth.php — the caller (employee-enquiry.php) passes the name in,
+ * the same way it already does for `assigned_employee`.
+ *
+ * A communication/message thread with the customer is still NOT here —
+ * nothing reads or writes one yet (that's Phase 9, customer redressal/support).
  */
 declare(strict_types=1);
 
@@ -59,6 +68,15 @@ function enquiry_migrate(PDO $pdo): void
             created_at   INTEGER NOT NULL
         )");
     $pdo->exec('CREATE INDEX IF NOT EXISTS idx_status_history_enquiry ON enquiry_status_history(enquiry_id)');
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS internal_notes (
+            id             INTEGER PRIMARY KEY AUTOINCREMENT,
+            enquiry_id     INTEGER NOT NULL REFERENCES enquiries(id) ON DELETE CASCADE,
+            employee_name  TEXT NOT NULL,
+            note           TEXT NOT NULL,
+            created_at     INTEGER NOT NULL
+        )");
+    $pdo->exec('CREATE INDEX IF NOT EXISTS idx_internal_notes_enquiry ON internal_notes(enquiry_id)');
 
     // Seed once. INSERT OR IGNORE on the UNIQUE code makes this idempotent —
     // safe to run on every request the same way the table-create calls are.
@@ -194,4 +212,103 @@ function enquiry_set_customer_notes(int $enquiryId, string $notes): void
 function enquiry_is_active(array $enquiry): bool
 {
     return !in_array($enquiry['status'], ['Completed', 'Cancelled'], true);
+}
+
+const ENQUIRY_STATUSES = ['New', 'In Progress', 'Completed', 'Cancelled'];
+
+// ---------------------------------------------------------------------
+// Employee console (Phase 7) — queue, assignment, status, internal notes
+// ---------------------------------------------------------------------
+
+/** Open enquiries nobody has claimed yet, newest first. Bounded rather than
+ *  paginated — a real pager belongs with the reporting work in Phase 10, not
+ *  bolted on here for a queue that's meant to be worked down, not browsed. */
+function enquiries_unassigned(int $limit = 50): array
+{
+    $pdo = enquiry_db();
+    if (!$pdo) return [];
+    $st = $pdo->prepare("
+        SELECT e.*, s.label AS service_label, s.code AS service_code, c.full_name AS customer_name, c.customer_code
+        FROM enquiries e JOIN service_types s ON s.id = e.service_type_id
+        JOIN customers c ON c.id = e.customer_id
+        WHERE e.assigned_employee IS NULL AND e.status NOT IN ('Completed', 'Cancelled')
+        ORDER BY e.created_at DESC LIMIT ?");
+    $st->execute([$limit]);
+    return $st->fetchAll();
+}
+
+/** Every enquiry currently assigned to one employee (by name — see the
+ *  docblock above), newest first. */
+function enquiries_assigned_to(string $employeeName, int $limit = 50): array
+{
+    $pdo = enquiry_db();
+    if (!$pdo || $employeeName === '') return [];
+    $st = $pdo->prepare("
+        SELECT e.*, s.label AS service_label, s.code AS service_code, c.full_name AS customer_name, c.customer_code
+        FROM enquiries e JOIN service_types s ON s.id = e.service_type_id
+        JOIN customers c ON c.id = e.customer_id
+        WHERE e.assigned_employee = ?
+        ORDER BY e.created_at DESC LIMIT ?");
+    $st->execute([$employeeName, $limit]);
+    return $st->fetchAll();
+}
+
+function enquiry_assign(int $enquiryId, string $employeeName, string $department = ''): void
+{
+    $pdo = enquiry_db();
+    if (!$pdo) return;
+    $pdo->prepare('UPDATE enquiries SET assigned_employee = ?, assigned_department = ?, updated_at = ? WHERE id = ?')
+        ->execute([$employeeName, $department ?: null, time(), $enquiryId]);
+}
+
+function enquiry_unassign(int $enquiryId): void
+{
+    $pdo = enquiry_db();
+    if (!$pdo) return;
+    $pdo->prepare('UPDATE enquiries SET assigned_employee = NULL, assigned_department = NULL, updated_at = ? WHERE id = ?')
+        ->execute([time(), $enquiryId]);
+}
+
+/** Sets the enquiry's status and appends a row to the same history table the
+ *  customer's Status timeline already reads — an employee action shows up
+ *  there with no template change needed on that page. */
+function enquiry_set_status(int $enquiryId, string $status, string $actorName, string $note = ''): bool
+{
+    if (!in_array($status, ENQUIRY_STATUSES, true)) return false;
+    $pdo = enquiry_db();
+    if (!$pdo) return false;
+    $now = time();
+    $historyNote = "Status set to {$status} by {$actorName}." . ($note !== '' ? ' ' . $note : '');
+    try {
+        $pdo->beginTransaction();
+        $pdo->prepare('UPDATE enquiries SET status = ?, updated_at = ? WHERE id = ?')->execute([$status, $now, $enquiryId]);
+        $pdo->prepare('INSERT INTO enquiry_status_history (enquiry_id, status, note, created_at) VALUES (?, ?, ?, ?)')
+            ->execute([$enquiryId, $status, $historyNote, $now]);
+        $pdo->commit();
+        return true;
+    } catch (Throwable $e) {
+        if ($pdo->inTransaction()) $pdo->rollBack();
+        log_error('enquiries: set_status failed — ' . $e->getMessage());
+        return false;
+    }
+}
+
+function internal_note_add(int $enquiryId, string $employeeName, string $note): bool
+{
+    $note = trim($note);
+    if ($note === '') return false;
+    $pdo = enquiry_db();
+    if (!$pdo) return false;
+    $pdo->prepare('INSERT INTO internal_notes (enquiry_id, employee_name, note, created_at) VALUES (?, ?, ?, ?)')
+        ->execute([$enquiryId, $employeeName, $note, time()]);
+    return true;
+}
+
+function internal_notes_for(int $enquiryId): array
+{
+    $pdo = enquiry_db();
+    if (!$pdo) return [];
+    $st = $pdo->prepare('SELECT * FROM internal_notes WHERE enquiry_id = ? ORDER BY created_at DESC, id DESC');
+    $st->execute([$enquiryId]);
+    return $st->fetchAll();
 }

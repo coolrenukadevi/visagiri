@@ -2,6 +2,7 @@
 require_once __DIR__ . '/nav.php';
 require_once __DIR__ . '/../lib-php/auth.php';
 require_once __DIR__ . '/../lib-php/customer_auth.php';
+require_once __DIR__ . '/../lib-php/employee_auth.php';
 $NAV = nav_data()['nav'];
 $REGIONS = regions_data();
 // Two independent sign-in systems can be active — see customer_auth.php.
@@ -10,6 +11,9 @@ $REGIONS = regions_data();
 $cvUser = auth_user();
 $cvCustomer = customer_current();
 $cvSignedIn = $cvCustomer ?: $cvUser;
+// Employee is a third, fully independent identity (see employee_auth.php) —
+// its own pill, its own dialog, never merged into the customer/OAuth one.
+$cvEmployee = employee_current();
 $cvSignedInName = $cvCustomer ? (explode(' ', trim((string) $cvCustomer['full_name']))[0] ?: 'Account') : auth_display_name($cvUser);
 // Send an anonymous visitor back to the page they were on after signing in.
 $cvNext = auth_safe_next($_SERVER['REQUEST_URI'] ?? '/');
@@ -44,9 +48,15 @@ $cvNext = auth_safe_next($_SERVER['REQUEST_URI'] ?? '/');
             <span class="pill-label">Customer<span class="hide-xs"> Login</span></span>
           <?php endif; ?>
         </button>
-        <button type="button" class="utility-pill" id="employeeLoginBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="employeeLoginDialog" aria-label="Employee Login">
+        <button type="button" class="utility-pill" id="employeeLoginBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="employeeLoginDialog"
+                aria-label="<?= $cvEmployee ? e($cvEmployee['full_name'] . ' — employee console') : 'Employee Login' ?>">
+          <?php if ($cvEmployee): ?>
+          <span class="utility-account-initial" aria-hidden="true"><?= e(mb_strtoupper(mb_substr($cvEmployee['full_name'], 0, 1))) ?></span>
+          <span class="pill-label"><?= e(explode(' ', trim((string) $cvEmployee['full_name']))[0]) ?></span>
+          <?php else: ?>
           <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M12 12.75c-2.5 0-7.5 1.25-7.5 3.75V19h15v-2.5c0-2.5-5-3.75-7.5-3.75z"/><circle cx="12" cy="7" r="3.5" fill="currentColor"/></svg>
           <span class="pill-label">Employee<span class="hide-xs"> Login</span></span>
+          <?php endif; ?>
         </button>
       </div>
       <div class="utility-social">
@@ -195,10 +205,11 @@ $cvNext = auth_safe_next($_SERVER['REQUEST_URI'] ?? '/');
   </div>
 </div>
 
-<?php /* Employee console has no backend yet — no table, no credentials, no
-         session. Showing a form that silently failed (or worse, faked
-         success) would be worse than showing nothing, so the status note is
-         permanent and the fields stay disabled until Phase 7/8 wire this up. */ ?>
+<?php /* Employee console (Phase 7): real accounts, real session, same dialog
+         shape as the customer one above — a menu that adapts to sign-in
+         state rather than an embedded form, consistent with how
+         customerLoginDialog links out to a full sign-in page instead of
+         trying to authenticate inline. */ ?>
 <div class="auth-dialog" id="employeeLoginDialog" role="dialog" aria-modal="true" aria-label="Employee login" hidden>
   <div class="auth-dialog-panel">
     <div class="auth-dialog-head">
@@ -207,19 +218,22 @@ $cvNext = auth_safe_next($_SERVER['REQUEST_URI'] ?? '/');
         <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12 19 6.4 17.6 5 12 10.6z"/></svg>
       </button>
     </div>
-    <div class="auth-dialog-body">
-      <p class="auth-dialog-status">
-        <strong>Employee accounts are not switched on yet.</strong>
-        The console ships later in the CRM rollout. If you're on the Convercession team and need interim access, <a href="<?= url('/contact') ?>">contact the admin team</a>.
-      </p>
-      <form class="auth-form">
-        <div class="field"><label for="empId">Employee ID or Email</label><input type="text" id="empId" name="empId" disabled placeholder="EMP102 or you@convercession.com"></div>
-        <div class="field"><label for="empPass">Password</label><input type="password" id="empPass" name="empPass" disabled placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"></div>
-        <div class="auth-form-row">
-          <span class="auth-forgot">Forgot password?</span>
-          <button type="submit" class="btn btn-primary btn-sm" disabled title="Coming soon">Sign in</button>
-        </div>
-      </form>
-    </div>
+    <ul class="auth-menu">
+      <?php if ($cvEmployee): ?>
+      <li><a class="auth-menu-item" href="<?= url('/employee') ?>">Employee Console</a></li>
+      <li>
+        <form method="post" action="<?= url('/employee') ?>" class="auth-menu-form">
+          <input type="hidden" name="csrf" value="<?= e(auth_csrf_token()) ?>">
+          <input type="hidden" name="action" value="employee_logout">
+          <button type="submit" class="auth-menu-item auth-menu-danger">Logout</button>
+        </form>
+      </li>
+      <?php else: ?>
+      <li><a class="auth-menu-item" href="<?= url('/employee-login') ?>?next=<?= rawurlencode($cvNext) ?>">Employee Sign In</a></li>
+      <?php endif; ?>
+    </ul>
+    <?php if (!$cvEmployee): ?>
+    <p class="auth-dialog-note">Employee accounts are created by an administrator, not self-registered. If you're on the Convercession team and don't have credentials yet, <a href="<?= url('/contact') ?>">contact the admin team</a>.</p>
+    <?php endif; ?>
   </div>
 </div>
