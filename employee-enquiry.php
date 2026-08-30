@@ -68,6 +68,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $enquiry['assigned_employee'] = null;
         $enquiry['assigned_department'] = null;
         $actionMsg = 'Unassigned.';
+    } elseif ($action === 'reassign_to' && $employee['is_admin']) {
+        $target = employee_find((int) ($_POST['target_employee_id'] ?? 0));
+        if (!$target) {
+            $actionMsg = 'Choose an employee to reassign to.';
+        } else {
+            enquiry_assign((int) $enquiry['id'], $target['full_name'], $target['role']);
+            $enquiry['assigned_employee'] = $target['full_name'];
+            $enquiry['assigned_department'] = $target['role'];
+            $actionMsg = 'Reassigned to ' . $target['full_name'] . '.';
+        }
     } elseif ($action === 'set_status') {
         $status = (string) ($_POST['status'] ?? '');
         $note = trim((string) ($_POST['status_note'] ?? ''));
@@ -109,6 +119,7 @@ $forexTransaction = $isForex ? forex_transaction_ensure((int) $enquiry['id']) : 
 $forexReadyForDelivery = $isForex ? forex_ready_for_delivery($forexChecklist, $documents) : false;
 $history = enquiry_status_history_for((int) $enquiry['id']);
 $internalNotes = internal_notes_for((int) $enquiry['id']);
+$reassignTargets = $employee['is_admin'] ? array_filter(employees_active(), static fn($e) => $e['full_name'] !== ($enquiry['assigned_employee'] ?? null)) : [];
 
 $statusLabels = ['New' => 'Received', 'In Progress' => 'In Progress', 'Completed' => 'Completed', 'Cancelled' => 'Cancelled'];
 $statusLabel = $statusLabels[$enquiry['status']] ?? $enquiry['status'];
@@ -184,6 +195,23 @@ $page = [
           </form>
           <?php endif; ?>
         </div>
+
+        <?php if ($employee['is_admin'] && $reassignTargets): ?>
+        <form method="post" action="<?= url('/employee/enquiry/' . $enquiry['enquiry_code']) ?>" class="enquiry-grid" style="margin-top:14px">
+          <input type="hidden" name="csrf" value="<?= e(auth_csrf_token()) ?>">
+          <input type="hidden" name="action" value="reassign_to">
+          <div class="enquiry-field">
+            <label for="target_employee_id">Reassign to <span class="auth-note" style="display:inline">(admin)</span></label>
+            <select id="target_employee_id" name="target_employee_id">
+              <option value="">Choose an employee&hellip;</option>
+              <?php foreach ($reassignTargets as $t): ?>
+              <option value="<?= (int) $t['id'] ?>"><?= e($t['full_name'] . ' — ' . $t['role']) ?></option>
+              <?php endforeach; ?>
+            </select>
+          </div>
+          <div class="wizard-actions" style="grid-column:1/-1"><span></span><button type="submit" class="btn btn-outline-brand btn-sm">Reassign</button></div>
+        </form>
+        <?php endif; ?>
 
         <h2 class="account-section-title" style="margin-top:32px">Status</h2>
         <form method="post" action="<?= url('/employee/enquiry/' . $enquiry['enquiry_code']) ?>" class="enquiry-grid">

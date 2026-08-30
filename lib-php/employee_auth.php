@@ -6,12 +6,18 @@
  * shared session and same shared SQLite file.
  *
  * There is no self-registration. Nothing in the spec wants a public sign-up
- * form for staff accounts, and Phase 8 (Admin & compliance configuration) is
- * where an admin console for managing employees eventually lives. Until
- * then, accounts are bootstrapped from the command line — see
- * tools/create-employee.php — which is the same "real but manual until the
- * real UI exists" approach already used for exchange-rate refresh
- * (tools/refresh-currency.php).
+ * form for staff accounts. The CLI bootstrap (tools/create-employee.php)
+ * remains the only way to create the FIRST admin — the same "real but
+ * manual until the real UI exists" approach already used for exchange-rate
+ * refresh (tools/refresh-currency.php) — but every account after that can
+ * be created from the admin console (employee-admin.php) once one admin
+ * exists, which is what `is_admin` gates.
+ *
+ * `is_admin` is deliberately a separate column from `role`: role is a job
+ * title for display (e.g. "Visa Consultant"), is_admin is a permission.
+ * Conflating them would mean either every consultant becomes an admin or
+ * "Admin" has to be invented as a fake job title — this keeps the two
+ * questions ("what do you do" vs "what can you configure") independent.
  */
 declare(strict_types=1);
 
@@ -28,9 +34,17 @@ function employee_migrate(PDO $pdo): void
             password_hash   TEXT NOT NULL,
             role            TEXT NOT NULL DEFAULT 'Consultant',
             status          TEXT NOT NULL DEFAULT 'active',
+            is_admin        INTEGER NOT NULL DEFAULT 0,
             created_at      INTEGER NOT NULL,
             last_login_at   INTEGER
         )");
+    // is_admin shipped in Phase 8, after Phase 7's employees table was
+    // already live — add it to a database created before this column
+    // existed, rather than requiring anyone to wipe and restart.
+    $cols = $pdo->query('PRAGMA table_info(employees)')->fetchAll(PDO::FETCH_COLUMN, 1);
+    if (!in_array('is_admin', $cols, true)) {
+        $pdo->exec('ALTER TABLE employees ADD COLUMN is_admin INTEGER NOT NULL DEFAULT 0');
+    }
 }
 
 /** Same SQLite file as everything else — just more tables in it. */
@@ -100,7 +114,7 @@ function employee_find_by_login(string $identifier): ?array
  *
  * @return array{0:?int,1:string,2:string} [employee id, plaintext password, error]
  */
-function employee_create(string $fullName, string $email, string $role = 'Consultant'): array
+function employee_create(string $fullName, string $email, string $role = 'Consultant', bool $isAdmin = false): array
 {
     $pdo = employee_db();
     if (!$pdo) return [null, '', 'Database unavailable.'];
@@ -113,9 +127,9 @@ function employee_create(string $fullName, string $email, string $role = 'Consul
         $pdo->beginTransaction();
         $now = time();
         $pdo->prepare('
-            INSERT INTO employees (employee_code, full_name, email, password_hash, role, status, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?)')
-            ->execute(['PENDING', $fullName, mb_strtolower($email), password_hash($password, PASSWORD_DEFAULT), $role, 'active', $now]);
+            INSERT INTO employees (employee_code, full_name, email, password_hash, role, status, is_admin, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
+            ->execute(['PENDING', $fullName, mb_strtolower($email), password_hash($password, PASSWORD_DEFAULT), $role, 'active', $isAdmin ? 1 : 0, $now]);
         $id = (int) $pdo->lastInsertId();
         $pdo->prepare('UPDATE employees SET employee_code = ? WHERE id = ?')->execute([employee_code_for($id), $id]);
         $pdo->commit();
@@ -169,4 +183,42 @@ function employee_current(): ?array
 function employee_verify_password(array $employee, string $password): bool
 {
     return password_verify($password, $employee['password_hash']);
+}
+
+// ---------------------------------------------------------------------
+// Admin console (Phase 8) — employee directory, activation, admin grants
+// ---------------------------------------------------------------------
+
+function employees_all(): array
+{
+    $pdo = employee_db();
+    if (!$pdo) return [];
+    return $pdo->query('SELECT * FROM employees ORDER BY full_name')->fetchAll();
+}
+
+function employees_active(): array
+{
+    return array_values(array_filter(employees_all(), static fn($e) => $e['status'] === 'active'));
+}
+
+function employee_count_admins(): int
+{
+    $pdo = employee_db();
+    if (!$pdo) return 0;
+    return (int) $pdo->query("SELECT COUNT(*) FROM employees WHERE is_admin = 1 AND status = 'active'")->fetchColumn();
+}
+
+function employee_set_status(int $id, string $status): void
+{
+    $pdo = employee_db();
+    if (!$pdo) return;
+    $status = in_array($status, ['active', 'inactive'], true) ? $status : 'active';
+    $pdo->prepare('UPDATE employees SET status = ? WHERE id = ?')->execute([$status, $id]);
+}
+
+function employee_set_admin(int $id, bool $isAdmin): void
+{
+    $pdo = employee_db();
+    if (!$pdo) return;
+    $pdo->prepare('UPDATE employees SET is_admin = ? WHERE id = ?')->execute([$isAdmin ? 1 : 0, $id]);
 }

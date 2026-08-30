@@ -221,6 +221,9 @@ $cvNext = auth_safe_next($_SERVER['REQUEST_URI'] ?? '/');
     <ul class="auth-menu">
       <?php if ($cvEmployee): ?>
       <li><a class="auth-menu-item" href="<?= url('/employee') ?>">Employee Console</a></li>
+      <?php if ($cvEmployee['is_admin']): ?>
+      <li><a class="auth-menu-item" href="<?= url('/employee/admin') ?>">Admin</a></li>
+      <?php endif; ?>
       <li>
         <form method="post" action="<?= url('/employee') ?>" class="auth-menu-form">
           <input type="hidden" name="csrf" value="<?= e(auth_csrf_token()) ?>">

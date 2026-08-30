@@ -82,11 +82,16 @@ $empQueueRow = static function (array $enq): void { ?>
             <?= e($myName) ?> · <span class="mono"><?= e($employee['employee_code']) ?></span> · <?= e($employee['role']) ?>
           </p>
         </div>
-        <form method="post" action="<?= url('/employee') ?>" class="account-signout">
-          <input type="hidden" name="csrf" value="<?= e(auth_csrf_token()) ?>">
-          <input type="hidden" name="action" value="employee_logout">
-          <button type="submit" class="btn btn-sm btn-outline-brand">Sign out</button>
-        </form>
+        <div class="account-signout" style="display:flex; gap:8px">
+          <?php if ($employee['is_admin']): ?>
+          <a href="<?= url('/employee/admin') ?>" class="btn btn-sm btn-outline-brand">Admin</a>
+          <?php endif; ?>
+          <form method="post" action="<?= url('/employee') ?>">
+            <input type="hidden" name="csrf" value="<?= e(auth_csrf_token()) ?>">
+            <input type="hidden" name="action" value="employee_logout">
+            <button type="submit" class="btn btn-sm btn-outline-brand">Sign out</button>
+          </form>
+        </div>
       </div>
 
       <div class="fact-strip">

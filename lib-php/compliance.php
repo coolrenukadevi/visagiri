@@ -89,6 +89,24 @@ function compliance_is_placeholder(array $row): bool
 }
 
 /**
+ * The admin editor (Phase 8, employee-admin-guidelines.php) writing a real,
+ * source-checked figure over a placeholder — or editing one that's already
+ * real. Nothing here validates or generates the CONTENT beyond requiring it
+ * non-empty: the content is exactly the thing no code in this repo is
+ * allowed to invent, so this function's only job is to save what an
+ * authorized admin actually typed.
+ */
+function compliance_guideline_update(string $code, string $title, string $summary, string $source, ?int $lastReviewedAt): bool
+{
+    if ($title === '' || $summary === '') return false;
+    $pdo = compliance_db();
+    if (!$pdo) return false;
+    $pdo->prepare('UPDATE compliance_guidelines SET title = ?, summary = ?, source = ?, last_reviewed_at = ? WHERE code = ?')
+        ->execute([$title, $summary, $source, $lastReviewedAt, $code]);
+    return true;
+}
+
+/**
  * Forex checklist against what's actually been uploaded for this enquiry.
  * @return array<int, array{code:string,label:string,mandatory:bool,uploaded:bool}>
  */
