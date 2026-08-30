@@ -1,0 +1,22 @@
+# Convercession — https://www.convercession.com
+User-agent: *
+Allow: /
+
+# Rendering resources must stay crawlable (Google needs CSS+JS to render).
+Allow: /css/
+Allow: /js/
+
+# Server-side internals: never useful to a crawler.
+Disallow: /includes/
+Disallow: /lib-php/
+Disallow: /cache/
+Disallow: /tools/
+Disallow: /data/
+
+# Signed-in and sign-in-flow URLs. Per-user or single-use — nothing to index,
+# and crawling them would just burn crawl budget on redirects.
+Disallow: /account
+Disallow: /auth/
+Disallow: /logout
+
+Sitemap: https://www.convercession.com/sitemap.xml

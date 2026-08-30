@@ -1,0 +1,27 @@
+[
+  {
+    "country": "REPLACE_ME Country Name",
+    "visaType": "REPLACE_ME Visa Type",
+    "flag": "🏳️",
+    "verified": true,
+    "heroSummary": "One sentence shown under the page heading — REPLACE with a real summary",
+    "overview": "The Visa Overview paragraph — REPLACE with verified content",
+    "categories": ["REPLACE", "Category two", "Category three"],
+    "eligibility": ["REPLACE requirement one", "Requirement two", "Requirement three"],
+    "processingTime": "e.g. 5-10 business days — REPLACE with verified figure",
+    "visaFee": "e.g. USD 50 — REPLACE with verified figure",
+    "validity": "e.g. 90 days — REPLACE with verified figure",
+    "entryType": "e.g. Single entry — REPLACE",
+    "embassyName": "Embassy/Consulate name — REPLACE",
+    "embassyPhone": "Phone — REPLACE",
+    "embassyEmail": "Email — REPLACE",
+    "appointmentInfo": "How/where applicants apply — REPLACE",
+    "procedureSteps": ["Step one", "Step two", "Step three — REPLACE"],
+    "importantNotes": ["Note one", "Note two — REPLACE"],
+    "travelAdvisory": "Current government travel advisory summary — REPLACE",
+    "faqs": [
+      { "q": "REPLACE with a real FAQ question", "a": "REPLACE with the real answer" },
+      { "q": "REPLACE with a second FAQ question", "a": "REPLACE with the real answer" }
+    ]
+  }
+]
