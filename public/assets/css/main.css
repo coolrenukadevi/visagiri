@@ -523,7 +523,7 @@ section:last-of-type { border-bottom: none; }
 
 .footer-grid { display: grid; gap: 32px; grid-template-columns: repeat(2, 1fr); padding: 48px 0 56px; }
 @media (min-width: 720px) { .footer-grid { grid-template-columns: repeat(3, 1fr); } }
-@media (min-width: 1080px) { .footer-grid { grid-template-columns: 1.2fr repeat(7, 1fr); } }
+@media (min-width: 1080px) { .footer-grid { grid-template-columns: 1.2fr repeat(5, 1fr); } }
 .footer-grid h4 { font-family: var(--font-mono); color: var(--paper); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 16px; font-weight: 500; }
 .footer-grid li { margin-bottom: 10px; font-size: 0.86rem; }
 .footer-grid a:hover { color: var(--teal-300); }

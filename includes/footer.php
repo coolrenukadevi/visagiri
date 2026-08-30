@@ -95,24 +95,6 @@
           <li><a href="/security">Security</a></li>
         </ul>
       </div>
-      <div>
-        <h4>Legal</h4>
-        <ul>
-          <li><a href="/legal/privacy-policy">Privacy Policy</a></li>
-          <li><a href="/legal/terms-conditions">Terms &amp; Conditions</a></li>
-          <li><a href="/legal/refund-policy">Refund Policy</a></li>
-          <li><a href="/legal/cookie-policy">Cookie Policy</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4>Login</h4>
-        <ul>
-          <li><button type="button" class="btn-link-like" data-login-open="customer" style="background:none;border:none;color:inherit;padding:0;font:inherit;cursor:pointer;">Customer Login</button></li>
-          <li><button type="button" data-login-open="partner" style="background:none;border:none;color:inherit;padding:0;font:inherit;cursor:pointer;">Partner Login</button></li>
-          <li><button type="button" data-login-open="employee" style="background:none;border:none;color:inherit;padding:0;font:inherit;cursor:pointer;">Employee Login</button></li>
-          <li><button type="button" data-login-open="hr" style="background:none;border:none;color:inherit;padding:0;font:inherit;cursor:pointer;">HRMS Login</button></li>
-        </ul>
-      </div>
     </div>
   </div>
 
