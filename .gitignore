@@ -10,6 +10,10 @@ cache/*.sqlite
 cache/*.sqlite-wal
 cache/*.sqlite-shm
 
+# Uploaded customer documents (passports, bank statements, ...). Real user
+# data with its own retention/backup policy — never commit.
+cache/documents/
+
 node_modules/
 *.log
 *.tmp

@@ -419,6 +419,121 @@
     });
   })();
 
+  // ---- Document upload (enquiry detail page) ----
+  (() => {
+    const root = document.querySelector(".doc-upload");
+    const zone = document.getElementById("docDropZone");
+    if (!root || !zone) return;
+    const enquiryCode = root.dataset.enquiryCode;
+    const csrf = root.dataset.csrf;
+    const fileInput = document.getElementById("docFileInput");
+    const typeSelect = document.getElementById("docTypeSelect");
+    const msgBox = document.getElementById("docUploadMsg");
+    const countEl = document.getElementById("docCount");
+    const sizeEl = document.getElementById("docSize");
+    const fillEl = document.getElementById("docProgressFill");
+    const listEl = document.getElementById("docList");
+    const passportStatus = root.querySelector(".doc-passport-status");
+    const MAX_TOTAL_BYTES = 30 * 1048576;
+
+    function esc(s) {
+      const d = document.createElement("div");
+      d.textContent = s;
+      return d.innerHTML;
+    }
+    function setMsg(text, isError) {
+      msgBox.textContent = text;
+      msgBox.className = text ? (isError ? "auth-error" : "notice-inline") : "";
+    }
+    function updateCounters(countNonPassport, totalBytes, hasPassport) {
+      countEl.textContent = countNonPassport;
+      sizeEl.textContent = (totalBytes / 1048576).toFixed(1);
+      fillEl.style.width = Math.min(100, (totalBytes / MAX_TOTAL_BYTES) * 100) + "%";
+      if (passportStatus) {
+        passportStatus.classList.toggle("is-ok", hasPassport);
+        passportStatus.classList.toggle("is-missing", !hasPassport);
+        passportStatus.innerHTML = hasPassport
+          ? "&check; Passport uploaded"
+          : "&#9888; Passport required — upload the first &amp; last page, or a combined copy";
+      }
+    }
+    function addDocItem(doc) {
+      const div = document.createElement("div");
+      div.className = "doc-item";
+      div.dataset.uid = doc.uid;
+      div.innerHTML = `
+        <div class="doc-item-main">
+          <a href="${doc.url}" target="_blank" rel="noopener">${esc(doc.original_filename)}</a>
+          <span class="doc-item-meta">${esc(doc.type_label)} &middot; ${Math.round(doc.size_bytes / 1024)} KB</span>
+        </div>
+        <span class="enq-status-badge status-${doc.status.toLowerCase().replace(/ /g, "-")}">${esc(doc.status)}</span>
+        <button type="button" class="doc-item-remove" data-uid="${doc.uid}" aria-label="Remove ${esc(doc.original_filename)}">&times;</button>`;
+      listEl.appendChild(div);
+    }
+
+    async function upload(file) {
+      setMsg("", false);
+      const fd = new FormData();
+      fd.append("csrf", csrf);
+      fd.append("enquiry_code", enquiryCode);
+      fd.append("document_type_id", typeSelect.value);
+      fd.append("file", file);
+      try {
+        const res = await fetch("/document-upload", { method: "POST", body: fd });
+        const data = await res.json();
+        if (data.ok) {
+          addDocItem(data.document);
+          updateCounters(data.count_non_passport, data.total_bytes, data.has_passport);
+          setMsg(`Uploaded ${data.document.original_filename}.`, false);
+        } else {
+          setMsg(data.error || "Upload failed.", true);
+        }
+      } catch {
+        setMsg("Couldn't reach the server. Check your connection and try again.", true);
+      }
+    }
+
+    document.getElementById("docChooseBtn")?.addEventListener("click", () => fileInput.click());
+    fileInput.addEventListener("change", () => {
+      if (fileInput.files[0]) upload(fileInput.files[0]);
+      fileInput.value = "";
+    });
+    ["dragenter", "dragover"].forEach((evt) =>
+      zone.addEventListener(evt, (e) => { e.preventDefault(); zone.classList.add("is-dragover"); })
+    );
+    ["dragleave", "drop"].forEach((evt) =>
+      zone.addEventListener(evt, (e) => { e.preventDefault(); zone.classList.remove("is-dragover"); })
+    );
+    zone.addEventListener("drop", (e) => {
+      const file = e.dataTransfer?.files?.[0];
+      if (file) upload(file);
+    });
+
+    listEl.addEventListener("click", async (e) => {
+      const btn = e.target.closest(".doc-item-remove");
+      if (!btn) return;
+      const item = btn.closest(".doc-item");
+      btn.disabled = true;
+      try {
+        const fd = new FormData();
+        fd.append("csrf", csrf);
+        fd.append("uid", btn.dataset.uid);
+        const res = await fetch("/document-delete", { method: "POST", body: fd });
+        const data = await res.json();
+        if (data.ok) {
+          item.remove();
+          updateCounters(data.count_non_passport, data.total_bytes, data.has_passport);
+        } else {
+          setMsg(data.error || "Couldn't remove that file.", true);
+          btn.disabled = false;
+        }
+      } catch {
+        setMsg("Couldn't reach the server.", true);
+        btn.disabled = false;
+      }
+    });
+  })();
+
   // ---- Generic <select> populators, reused by hero search + sticky search ----
   function populateSelect(select, items, placeholder) {
     if (!select) return;

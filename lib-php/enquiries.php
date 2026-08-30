@@ -152,7 +152,7 @@ function enquiries_for_customer(int $customerId): array
     $pdo = enquiry_db();
     if (!$pdo) return [];
     $st = $pdo->prepare('
-        SELECT e.*, s.label AS service_label
+        SELECT e.*, s.label AS service_label, s.code AS service_code
         FROM enquiries e JOIN service_types s ON s.id = e.service_type_id
         WHERE e.customer_id = ?
         ORDER BY e.created_at DESC');
@@ -165,7 +165,7 @@ function enquiry_find_by_code(string $code): ?array
     $pdo = enquiry_db();
     if (!$pdo) return null;
     $st = $pdo->prepare('
-        SELECT e.*, s.label AS service_label
+        SELECT e.*, s.label AS service_label, s.code AS service_code
         FROM enquiries e JOIN service_types s ON s.id = e.service_type_id
         WHERE e.enquiry_code = ?');
     $st->execute([$code]);
