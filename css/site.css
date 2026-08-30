@@ -1044,6 +1044,75 @@ a.auth-menu-item:hover { background: var(--paper-alt); }
 .enquiries-empty h3 { font-size: 1.05rem; margin-bottom: 8px; }
 .enquiries-empty p { font-size: 0.88rem; color: var(--ink-500); margin: 0 auto 22px; }
 .enquiries-empty-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+/* Real "My Enquiries" cards (Phase 4 — vs. the empty state above) */
+.enquiry-card-row { display: flex; flex-direction: column; gap: 12px; }
+.enquiry-card {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  background: var(--paper); border: 1px solid var(--ink-100); border-radius: var(--radius-md); padding: 16px 20px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.enquiry-card:hover { border-color: var(--brand-blue); box-shadow: var(--shadow-sm); }
+.enquiry-card-main { min-width: 0; }
+.enquiry-card-code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.74rem; color: var(--ink-500); display: block; margin-bottom: 3px; }
+.enquiry-card-title { font-weight: 700; font-size: 0.95rem; color: var(--ink-900); }
+.enquiry-card-meta { font-size: 0.8rem; color: var(--ink-500); margin-top: 3px; }
+
+/* Enquire Now floating button */
+.enquire-fab {
+  position: fixed; right: 22px; bottom: 22px; z-index: 90;
+  display: inline-flex; align-items: center; gap: 9px;
+  background: var(--grad-brand); color: white; border: none; border-radius: var(--radius-full);
+  padding: 13px 20px 13px 16px; font-weight: 700; font-size: 0.9rem; box-shadow: var(--shadow-glow);
+  cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.enquire-fab:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(47, 127, 242, 0.42); }
+@media (max-width: 480px) {
+  .enquire-fab { right: 14px; bottom: 14px; padding: 13px; }
+  .enquire-fab-label { display: none; }
+}
+
+/* Service picker (step 1 of Enquire Now) */
+.enq-service-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 4px 20px 0; }
+.enq-service-card {
+  border: 1.5px solid var(--ink-100); border-radius: var(--radius-md); background: var(--paper);
+  padding: 16px 10px; text-align: center; font-size: 0.82rem; font-weight: 700; color: var(--ink-700);
+  cursor: pointer; transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+.enq-service-card:hover { border-color: var(--brand-blue); }
+.enq-service-card.is-picked { border-color: var(--brand-blue); background: rgba(41, 182, 246, 0.09); color: var(--brand-blue); }
+@media (max-width: 560px) { .enq-service-grid { grid-template-columns: repeat(2, 1fr); } }
+#enquireNowMsg:empty { display: none; }
+#enquireNowMsg { margin: 0 20px 16px; }
+
+/* Enquiry detail page */
+.enq-detail-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 22px; }
+.enq-detail-code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.76rem; color: var(--ink-500); display: block; margin-bottom: 4px; }
+.enq-detail-head h1 { font-size: 1.3rem; }
+.enq-status-badge { flex-shrink: 0; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 5px 13px; border-radius: var(--radius-full); }
+.enq-status-badge.status-new { background: rgba(41, 182, 246, 0.14); color: var(--brand-blue); }
+.enq-status-badge.status-in-progress { background: rgba(245, 166, 35, 0.15); color: #a4650f; }
+.enq-status-badge.status-completed { background: rgba(26, 138, 95, 0.14); color: #1a8a5f; }
+.enq-status-badge.status-cancelled { background: var(--paper-alt); color: var(--ink-500); }
+.enq-detail-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px 24px; margin-bottom: 20px; }
+.enq-detail-grid > div { display: flex; flex-direction: column; gap: 4px; }
+.enq-detail-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-500); }
+.enq-detail-grid > div > span:last-child, .enq-detail-message p { font-size: 0.92rem; color: var(--ink-900); }
+.enq-detail-message { margin-bottom: 8px; }
+.enq-detail-message p { margin: 4px 0 0; line-height: 1.6; }
+@media (max-width: 560px) { .enq-detail-grid { grid-template-columns: 1fr; } }
+
+/* Status timeline (enquiry detail page) */
+.enq-timeline { display: flex; flex-direction: column; }
+.enq-tl-item { display: flex; gap: 14px; padding-bottom: 20px; position: relative; }
+.enq-tl-item::before { content: ""; position: absolute; left: 5px; top: 18px; bottom: -4px; width: 1px; background: var(--ink-100); }
+.enq-tl-item:last-child::before { display: none; }
+.enq-tl-dot { width: 11px; height: 11px; border-radius: 50%; background: var(--brand-blue); margin-top: 4px; flex-shrink: 0; }
+.enq-tl-dot.is-pending { background: var(--ink-300); }
+.enq-tl-body b { display: block; font-size: 0.9rem; color: var(--ink-900); }
+.enq-tl-body b.is-pending { color: var(--ink-500); font-weight: 600; }
+.enq-tl-body p { font-size: 0.85rem; color: var(--ink-700); margin: 3px 0 0; }
+.enq-tl-body span { font-size: 0.76rem; color: var(--ink-500); display: block; margin-top: 3px; }
 .account-panel {
   background: var(--paper); border: 1px solid var(--ink-100); border-radius: var(--radius-md);
   padding: 22px; min-width: 0;

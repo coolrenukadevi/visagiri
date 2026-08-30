@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/nav.php';
 require_once __DIR__ . '/../data/pages.php';
+require_once __DIR__ . '/../lib-php/customer_auth.php';
+require_once __DIR__ . '/../lib-php/enquiries.php';
 $FOOTER = nav_data()['footer'];
 // Currency strip sits immediately above the footer, site-wide, from one include.
 include __DIR__ . '/currency-widget.php';
@@ -69,6 +71,13 @@ include __DIR__ . '/currency-widget.php';
     <p><?= e(SITE['tagline']) ?></p>
   </div>
 </footer>
+
+<?php
+$cvCustomer = customer_current();
+$cvCountries = json_decode((string) file_get_contents(ROOT_PATH . '/data/all-countries.json'), true) ?: [];
+include __DIR__ . '/enquire-now.php';
+?>
+
 <script src="/js/data.js"></script>
 <script src="/js/common.js" defer></script>
 <?= $extraScripts ?? '' ?>

@@ -16,6 +16,7 @@ require_once __DIR__ . '/includes/partials.php';
 require_once __DIR__ . '/lib-php/auth.php';
 require_once __DIR__ . '/lib-php/oauth.php';
 require_once __DIR__ . '/lib-php/customer_auth.php';
+require_once __DIR__ . '/lib-php/enquiries.php';
 
 header('Cache-Control: no-store, private');
 auth_session_start();
@@ -98,6 +99,13 @@ $actions = [
     ['Talk to a consultant', 'Get a person on your specific case.', '/contact'],
     ['Visa FAQs', 'Common questions, answered.', '/visa-faqs'],
 ];
+
+// Enquiries are tied to a customers row (see enquiries.php's docblock) — an
+// OAuth-only session has none yet, so it sees the empty state with a nudge
+// toward getting a Customer ID rather than a query against an id it doesn't have.
+$enquiries = $isCustomer ? enquiries_for_customer((int) $cvCustomer['id']) : [];
+$activeCount = count(array_filter($enquiries, 'enquiry_is_active'));
+$completedCount = count($enquiries) - $activeCount;
 ?><!DOCTYPE html>
 <html lang="en">
 <head><?php include __DIR__ . '/includes/head.php'; ?></head>
@@ -146,20 +154,33 @@ $actions = [
       <p class="notice-inline">Your account is ready. Nothing is linked to it yet — start by tracking an application or checking a visa requirement below.</p>
       <?php endif; ?>
 
-      <?php /* All four honestly zero: there is no enquiry, document or
-               notification backend yet (that's Phase 4+) — this row exists so
-               the dashboard has the right SHAPE now and starts showing real
-               counts the moment that backend lands, with no template change
-               needed later. .fact-strip/.fact-tile already existed in the
-               stylesheet, unused anywhere on the site until now. */ ?>
+      <?php /* Active/Completed Enquiries are now real counts from the
+               enquiries table (Phase 4). Pending Documents and Notifications
+               stay honestly zero — there is still no document-upload or
+               notification backend to count from (later phases). */ ?>
       <div class="fact-strip">
-        <div class="fact-tile"><strong>0</strong><span>Active Enquiries</span></div>
+        <div class="fact-tile"><strong><?= $activeCount ?></strong><span>Active Enquiries</span></div>
         <div class="fact-tile"><strong>0</strong><span>Pending Documents</span></div>
-        <div class="fact-tile"><strong>0</strong><span>Completed Services</span></div>
+        <div class="fact-tile"><strong><?= $completedCount ?></strong><span>Completed Services</span></div>
         <div class="fact-tile"><strong>0</strong><span>Notifications</span></div>
       </div>
 
       <h2 class="account-section-title" style="margin-top:32px">My Enquiries</h2>
+      <?php if ($enquiries): ?>
+      <div class="enquiry-card-row">
+        <?php foreach ($enquiries as $enq): ?>
+        <a class="enquiry-card" href="<?= url('/enquiry/' . $enq['enquiry_code']) ?>">
+          <div class="enquiry-card-main">
+            <span class="enquiry-card-code"><?= e($enq['enquiry_code']) ?></span>
+            <div class="enquiry-card-title"><?= e($enq['service_label']) ?> — <?= e($enq['country']) ?></div>
+            <div class="enquiry-card-meta">Submitted <?= e(date('j M Y', (int) $enq['created_at'])) ?><?= $enq['assigned_employee'] ? ' · ' . e($enq['assigned_employee']) : '' ?></div>
+          </div>
+          <span class="enq-status-badge status-<?= e(strtolower(str_replace(' ', '-', $enq['status']))) ?>"><?= $enq['status'] === 'New' ? 'Received' : e($enq['status']) ?></span>
+        </a>
+        <?php endforeach; ?>
+      </div>
+      <p class="auth-note" style="margin-top:2px">Need to submit another? Use the <strong>Enquire Now</strong> button, bottom-right of any page.</p>
+      <?php else: ?>
       <div class="enquiries-panel">
         <div class="enquiries-empty">
           <svg class="enquiries-empty-icon" viewBox="0 0 48 48" width="40" height="40" aria-hidden="true">
@@ -167,14 +188,23 @@ $actions = [
             <path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M8 16 12 6h24l4 10"/>
             <path fill="none" stroke="currentColor" stroke-width="2" d="M18 24h12"/>
           </svg>
+          <?php if ($isCustomer): ?>
           <h3>No enquiries yet</h3>
-          <p>Start a visa or forex enquiry and it'll show up here with live status, your assigned consultant and what's still needed from you.</p>
+          <p>Use the <strong>Enquire Now</strong> button (bottom-right of any page) to start a visa or forex enquiry — it'll show up here with live status, your assigned consultant and what's still needed from you.</p>
           <div class="enquiries-empty-actions">
-            <a href="<?= url('/visa-finder') ?>" class="btn btn-primary btn-sm">Start a Visa Enquiry</a>
+            <a href="<?= url('/visa-finder') ?>" class="btn btn-primary btn-sm">Find a Visa</a>
             <a href="<?= url('/track-visa') ?>" class="btn btn-outline-brand btn-sm">Track an existing application</a>
           </div>
+          <?php else: ?>
+          <h3>No enquiries yet</h3>
+          <p>Enquiries need a Convercession Customer ID. You're signed in with Google/Facebook/X — create a customer account to submit and track enquiries here.</p>
+          <div class="enquiries-empty-actions">
+            <a href="<?= url('/register') ?>" class="btn btn-primary btn-sm">Create a Customer ID</a>
+          </div>
+          <?php endif; ?>
         </div>
       </div>
+      <?php endif; ?>
 
       <div class="account-grid">
         <!-- Documents -->

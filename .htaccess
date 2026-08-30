@@ -82,6 +82,7 @@ RewriteRule ^index\.html$ / [R=301,L,NE]
 RewriteRule ^auth/callback/(google|facebook|x)/?$ /auth.php?action=callback&provider=$1 [L,QSA]
 RewriteRule ^auth/(google|facebook|x)/?$ /auth.php?action=start&provider=$1 [L,QSA]
 RewriteRule ^logout/?$ /auth.php?action=logout [L,QSA]
+RewriteRule ^enquiry/(CV-[0-9]{4}-[0-9]{6})/?$ /enquiry.php?code=$1 [L,QSA]
 
 # Visa CATEGORY pages must be matched BEFORE the country rule, otherwise
 # /visa/tourist would be looked up as a country slug and 404.

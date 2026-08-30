@@ -343,6 +343,80 @@
     }
     wireDialog("customerLoginDialog", "customerLoginBtn");
     wireDialog("employeeLoginDialog", "employeeLoginBtn");
+    wireDialog("enquireNowDialog", "enquireNowBtn");
+  })();
+
+  // ---- Enquire Now: service picker + 2-step wizard + AJAX submit ----
+  (() => {
+    const form = document.getElementById("enquireNowForm");
+    if (!form) return; // not signed in — the dialog shows a sign-in prompt instead
+    const dialog = document.getElementById("enquireNowDialog");
+    const steps = [...form.querySelectorAll(".wizard-step")];
+    const dots = [...dialog.querySelectorAll(".wizard-step-dot")];
+    const serviceInput = document.getElementById("enqServiceTypeId");
+    const nextBtn = form.querySelector(".enq-next");
+    const msgBox = document.getElementById("enquireNowMsg");
+    let current = 1;
+
+    function show(n) {
+      current = n;
+      steps.forEach((s) => { s.hidden = parseInt(s.dataset.step, 10) !== n; });
+      dots.forEach((d) => {
+        const dn = parseInt(d.dataset.dot, 10);
+        d.classList.toggle("is-done", dn < n);
+        d.classList.toggle("is-current", dn === n);
+      });
+    }
+
+    form.querySelectorAll(".enq-service-card").forEach((card) => {
+      card.addEventListener("click", () => {
+        form.querySelectorAll(".enq-service-card").forEach((c) => c.classList.remove("is-picked"));
+        card.classList.add("is-picked");
+        serviceInput.value = card.dataset.serviceId;
+        nextBtn.disabled = false;
+      });
+    });
+    nextBtn?.addEventListener("click", () => { if (serviceInput.value) show(2); });
+    form.querySelector(".wizard-back")?.addEventListener("click", () => show(1));
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      msgBox.textContent = "";
+      msgBox.className = "";
+      const submitBtn = form.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      try {
+        const res = await fetch("/enquire", { method: "POST", body: new FormData(form) });
+        const data = await res.json();
+        if (data.ok) {
+          form.hidden = true;
+          msgBox.className = "notice-inline";
+          msgBox.innerHTML = `Enquiry submitted — reference <strong>${data.code}</strong>. <a href="${data.url}">View it</a> or find it anytime under My Account.`;
+        } else {
+          msgBox.className = "auth-error";
+          msgBox.textContent = data.error || "Something went wrong. Please try again.";
+        }
+      } catch {
+        msgBox.className = "auth-error";
+        msgBox.textContent = "Couldn't reach the server. Check your connection and try again.";
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+
+    // Reset to a clean step-1 state each time the dialog opens, including
+    // after a previous successful submission.
+    document.getElementById("enquireNowBtn")?.addEventListener("click", () => {
+      if (!form.hidden && current === 2 && !serviceInput.value) return;
+      form.hidden = false;
+      form.reset();
+      form.querySelectorAll(".enq-service-card").forEach((c) => c.classList.remove("is-picked"));
+      serviceInput.value = "";
+      nextBtn.disabled = true;
+      msgBox.textContent = "";
+      msgBox.className = "";
+      show(1);
+    });
   })();
 
   // ---- Generic <select> populators, reused by hero search + sticky search ----
