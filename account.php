@@ -146,18 +146,37 @@ $actions = [
       <p class="notice-inline">Your account is ready. Nothing is linked to it yet — start by tracking an application or checking a visa requirement below.</p>
       <?php endif; ?>
 
-      <div class="account-grid">
-        <!-- Applications -->
-        <div class="account-panel">
-          <h2>Your applications</h2>
-          <p class="account-empty">
-            No applications are linked to this account yet. If you already have a
-            case with us, use <a href="<?= url('/track-visa') ?>">Track your visa</a>
-            with the reference number on your confirmation, or
-            <a href="<?= url('/contact') ?>">ask a consultant</a> to attach it to this account.
-          </p>
-        </div>
+      <?php /* All four honestly zero: there is no enquiry, document or
+               notification backend yet (that's Phase 4+) — this row exists so
+               the dashboard has the right SHAPE now and starts showing real
+               counts the moment that backend lands, with no template change
+               needed later. .fact-strip/.fact-tile already existed in the
+               stylesheet, unused anywhere on the site until now. */ ?>
+      <div class="fact-strip">
+        <div class="fact-tile"><strong>0</strong><span>Active Enquiries</span></div>
+        <div class="fact-tile"><strong>0</strong><span>Pending Documents</span></div>
+        <div class="fact-tile"><strong>0</strong><span>Completed Services</span></div>
+        <div class="fact-tile"><strong>0</strong><span>Notifications</span></div>
+      </div>
 
+      <h2 class="account-section-title" style="margin-top:32px">My Enquiries</h2>
+      <div class="enquiries-panel">
+        <div class="enquiries-empty">
+          <svg class="enquiries-empty-icon" viewBox="0 0 48 48" width="40" height="40" aria-hidden="true">
+            <path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M8 16h32v24a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2V16Z"/>
+            <path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M8 16 12 6h24l4 10"/>
+            <path fill="none" stroke="currentColor" stroke-width="2" d="M18 24h12"/>
+          </svg>
+          <h3>No enquiries yet</h3>
+          <p>Start a visa or forex enquiry and it'll show up here with live status, your assigned consultant and what's still needed from you.</p>
+          <div class="enquiries-empty-actions">
+            <a href="<?= url('/visa-finder') ?>" class="btn btn-primary btn-sm">Start a Visa Enquiry</a>
+            <a href="<?= url('/track-visa') ?>" class="btn btn-outline-brand btn-sm">Track an existing application</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="account-grid">
         <!-- Documents -->
         <div class="account-panel">
           <h2>Your documents</h2>
