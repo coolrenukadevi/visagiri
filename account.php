@@ -17,6 +17,8 @@ require_once __DIR__ . '/lib-php/auth.php';
 require_once __DIR__ . '/lib-php/oauth.php';
 require_once __DIR__ . '/lib-php/customer_auth.php';
 require_once __DIR__ . '/lib-php/enquiries.php';
+require_once __DIR__ . '/lib-php/documents.php';
+require_once __DIR__ . '/lib-php/notifications.php';
 
 header('Cache-Control: no-store, private');
 auth_session_start();
@@ -106,6 +108,9 @@ $actions = [
 $enquiries = $isCustomer ? enquiries_for_customer((int) $cvCustomer['id']) : [];
 $activeCount = count(array_filter($enquiries, 'enquiry_is_active'));
 $completedCount = count($enquiries) - $activeCount;
+$pendingDocsCount = $isCustomer ? documents_pending_count_for_customer((int) $cvCustomer['id']) : 0;
+$notifCount = $isCustomer ? notifications_unread_count('customer', (int) $cvCustomer['id']) : 0;
+$myDocuments = $isCustomer ? documents_for_customer((int) $cvCustomer['id']) : [];
 ?><!DOCTYPE html>
 <html lang="en">
 <head><?php include __DIR__ . '/includes/head.php'; ?></head>
@@ -154,15 +159,14 @@ $completedCount = count($enquiries) - $activeCount;
       <p class="notice-inline">Your account is ready. Nothing is linked to it yet — start by tracking an application or checking a visa requirement below.</p>
       <?php endif; ?>
 
-      <?php /* Active/Completed Enquiries are now real counts from the
-               enquiries table (Phase 4). Pending Documents and Notifications
-               stay honestly zero — there is still no document-upload or
-               notification backend to count from (later phases). */ ?>
+      <?php /* All four are real counts now: enquiries (Phase 4), documents
+               awaiting verification (Phase 7) and unread notifications
+               (Phase 11) each have a real backend to count from. */ ?>
       <div class="fact-strip">
         <div class="fact-tile"><strong><?= $activeCount ?></strong><span>Active Enquiries</span></div>
-        <div class="fact-tile"><strong>0</strong><span>Pending Documents</span></div>
+        <div class="fact-tile"><strong><?= $pendingDocsCount ?></strong><span>Pending Documents</span></div>
         <div class="fact-tile"><strong><?= $completedCount ?></strong><span>Completed Services</span></div>
-        <div class="fact-tile"><strong>0</strong><span>Notifications</span></div>
+        <div class="fact-tile"><strong><?= $notifCount ?></strong><span>Notifications</span></div>
       </div>
 
       <h2 class="account-section-title" style="margin-top:32px">My Enquiries</h2>
@@ -210,11 +214,24 @@ $completedCount = count($enquiries) - $activeCount;
         <!-- Documents -->
         <div class="account-panel">
           <h2>Your documents</h2>
+          <?php if ($myDocuments): ?>
+          <ul class="account-identities">
+            <?php foreach (array_slice($myDocuments, 0, 5) as $doc): ?>
+            <li>
+              <span class="ai-name"><?= e($doc['type_label']) ?> <span style="font-weight:400;color:var(--ink-500)">&middot; <?= e($doc['enquiry_code']) ?></span></span>
+              <span class="enq-status-badge status-<?= e(strtolower(str_replace(' ', '-', $doc['status']))) ?>"><?= e($doc['status']) ?></span>
+            </li>
+            <?php endforeach; ?>
+          </ul>
+          <?php if (count($myDocuments) > 5): ?>
+          <p class="account-note">+<?= count($myDocuments) - 5 ?> more — open the enquiry each one belongs to below.</p>
+          <?php endif; ?>
+          <?php else: ?>
           <p class="account-empty">
-            Document storage is not switched on for this account yet. Until it
-            is, send documents through your consultant — never by unencrypted
-            email attachment to an address you were not given directly by us.
+            No documents uploaded yet. Open an enquiry below to upload one, or send it through your
+            consultant — never by unencrypted email attachment to an address you were not given directly by us.
           </p>
+          <?php endif; ?>
         </div>
 
         <!-- Sign-in methods -->

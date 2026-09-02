@@ -17,6 +17,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/enquiries.php';
+require_once __DIR__ . '/notify_channels.php';
 
 const DOCUMENT_MAX_COUNT      = 10;   // beyond the mandatory passport slot
 const DOCUMENT_MAX_TOTAL_MB   = 30;
@@ -240,7 +241,44 @@ function document_set_status(array $document, string $status, string $reason = '
     if (!$pdo) return false;
     $pdo->prepare('UPDATE documents SET status = ?, rejection_reason = ? WHERE id = ?')
         ->execute([$status, $reason, $document['id']]);
+
+    $enquiry = enquiry_find_by_id((int) $document['enquiry_id']);
+    if ($enquiry) {
+        $body = 'Your document "' . $document['type_label'] . '" on ' . $enquiry['enquiry_code'] . ' was marked ' . $status . '.'
+            . ($reason !== '' ? ' Reason: ' . $reason : '');
+        notify_customer((int) $document['customer_id'], 'document_status',
+            'Document ' . $status . ': ' . $document['type_label'], $body, '/enquiry/' . $enquiry['enquiry_code']);
+    }
     return true;
+}
+
+/** A customer's own documents still awaiting a decision, across every
+ *  enquiry they have — the account.php dashboard's "Pending Documents"
+ *  tile, which was honestly hardcoded to 0 before verification existed
+ *  to count (Phase 7). */
+function documents_pending_count_for_customer(int $customerId): int
+{
+    $pdo = document_db();
+    if (!$pdo) return 0;
+    $st = $pdo->prepare("SELECT COUNT(*) FROM documents WHERE customer_id = ? AND status = 'Under Review'");
+    $st->execute([$customerId]);
+    return (int) $st->fetchColumn();
+}
+
+/** Every document a customer has ever uploaded, across all their
+ *  enquiries, newest first — for the account.php dashboard summary. */
+function documents_for_customer(int $customerId): array
+{
+    $pdo = document_db();
+    if (!$pdo) return [];
+    $st = $pdo->prepare("
+        SELECT d.*, t.label AS type_label, e.enquiry_code
+        FROM documents d
+        JOIN document_types t ON t.id = d.document_type_id
+        JOIN enquiries e ON e.id = d.enquiry_id
+        WHERE d.customer_id = ? ORDER BY d.uploaded_at DESC");
+    $st->execute([$customerId]);
+    return $st->fetchAll();
 }
 
 /** Documents still awaiting a decision across enquiries assigned to one

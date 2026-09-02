@@ -23,12 +23,23 @@
  * employee_auth.php — the caller (employee-enquiry.php) passes the name in,
  * the same way it already does for `assigned_employee`.
  *
- * A communication/message thread with the customer is still NOT here —
- * nothing reads or writes one yet (that's Phase 9, customer redressal/support).
+ * A communication/message thread with the customer is a real thing now too
+ * (Phase 9, lib-php/support.php) — a genuinely separate object from an
+ * enquiry, not built here.
+ *
+ * Phase 11 wires enquiry_set_status()/enquiry_assign() to notify_channels.php.
+ * That does mean employee_auth.php now loads transitively whenever this
+ * file does (notify_channels.php -> notifications.php -> employee_auth.php)
+ * — worth being accurate about since an earlier version of this docblock
+ * said the opposite. The boundary that actually matters still holds: no
+ * function in THIS file ever resolves an employee by name itself — it
+ * still just passes assigned_employee's string through, the same way it
+ * always has for internal_notes.
  */
 declare(strict_types=1);
 
 require_once __DIR__ . '/customer_auth.php';
+require_once __DIR__ . '/notify_channels.php';
 
 function enquiry_migrate(PDO $pdo): void
 {
@@ -271,6 +282,14 @@ function enquiry_assign(int $enquiryId, string $employeeName, string $department
     if (!$pdo) return;
     $pdo->prepare('UPDATE enquiries SET assigned_employee = ?, assigned_department = ?, updated_at = ? WHERE id = ?')
         ->execute([$employeeName, $department ?: null, time(), $enquiryId]);
+
+    $enquiry = enquiry_find_by_id($enquiryId);
+    if ($enquiry) {
+        notify_employee_by_name($employeeName, 'enquiry_assigned',
+            'Enquiry assigned: ' . $enquiry['enquiry_code'],
+            'You were assigned ' . $enquiry['enquiry_code'] . ' (' . $enquiry['service_label'] . ', ' . $enquiry['country'] . ').',
+            '/employee/enquiry/' . $enquiry['enquiry_code']);
+    }
 }
 
 function enquiry_unassign(int $enquiryId): void
@@ -297,12 +316,20 @@ function enquiry_set_status(int $enquiryId, string $status, string $actorName, s
         $pdo->prepare('INSERT INTO enquiry_status_history (enquiry_id, status, note, created_at) VALUES (?, ?, ?, ?)')
             ->execute([$enquiryId, $status, $historyNote, $now]);
         $pdo->commit();
-        return true;
     } catch (Throwable $e) {
         if ($pdo->inTransaction()) $pdo->rollBack();
         log_error('enquiries: set_status failed — ' . $e->getMessage());
         return false;
     }
+
+    $enquiry = enquiry_find_by_id($enquiryId);
+    if ($enquiry) {
+        notify_customer((int) $enquiry['customer_id'], 'enquiry_status',
+            'Enquiry ' . $enquiry['enquiry_code'] . ': ' . $status,
+            'Your enquiry ' . $enquiry['enquiry_code'] . ' (' . $enquiry['service_label'] . ', ' . $enquiry['country'] . ') is now ' . $status . '.',
+            '/enquiry/' . $enquiry['enquiry_code']);
+    }
+    return true;
 }
 
 function internal_note_add(int $enquiryId, string $employeeName, string $note): bool

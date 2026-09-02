@@ -78,6 +78,18 @@ function employee_find(int $id): ?array
     return $st->fetch() ?: null;
 }
 
+/** For the name-keyed assignment pattern (see enquiries.php's docblock) —
+ *  used only to route a notification to whoever currently holds that name,
+ *  so a stale/renamed match is treated as "no one," never an error. */
+function employee_find_by_name(string $fullName): ?array
+{
+    $pdo = employee_db();
+    if (!$pdo || $fullName === '') return null;
+    $st = $pdo->prepare("SELECT * FROM employees WHERE full_name = ? AND status = 'active' LIMIT 1");
+    $st->execute([$fullName]);
+    return $st->fetch() ?: null;
+}
+
 function employee_find_by_email(string $email): ?array
 {
     $pdo = employee_db();

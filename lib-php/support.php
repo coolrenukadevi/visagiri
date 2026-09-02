@@ -20,6 +20,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/enquiries.php';
+require_once __DIR__ . '/notify_channels.php';
 
 const TICKET_CATEGORIES = ['Complaint', 'Query', 'Document Issue', 'Refund Request', 'Service Delay', 'Other'];
 const TICKET_STATUSES = ['Open', 'In Progress', 'Resolved', 'Closed'];
@@ -123,6 +124,15 @@ function ticket_find_by_code(string $code): ?array
     return $st->fetch() ?: null;
 }
 
+function ticket_find_by_id(int $id): ?array
+{
+    $pdo = support_db();
+    if (!$pdo) return null;
+    $st = $pdo->prepare('SELECT * FROM support_tickets WHERE id = ?');
+    $st->execute([$id]);
+    return $st->fetch() ?: null;
+}
+
 function ticket_messages_for(int $ticketId): array
 {
     $pdo = support_db();
@@ -149,13 +159,22 @@ function ticket_message_add(int $ticketId, string $authorType, string $authorNam
         ->execute([$ticketId, $authorType, $authorName, $message, $now]);
     $pdo->prepare('UPDATE support_tickets SET updated_at = ? WHERE id = ?')->execute([$now, $ticketId]);
 
-    if ($authorType === 'customer') {
-        $ticket = $pdo->prepare('SELECT status FROM support_tickets WHERE id = ?');
-        $ticket->execute([$ticketId]);
-        $status = $ticket->fetchColumn();
-        if (in_array($status, ['Resolved', 'Closed'], true)) {
-            ticket_set_status($ticketId, 'Open', $authorName, true);
-        }
+    $ticket = ticket_find_by_id($ticketId);
+    if ($ticket && $authorType === 'customer' && in_array($ticket['status'], ['Resolved', 'Closed'], true)) {
+        ticket_set_status($ticketId, 'Open', $authorName, true);
+    }
+
+    // Notify whoever didn't just write this message — never the author.
+    if ($ticket && $authorType === 'employee') {
+        notify_customer((int) $ticket['customer_id'], 'ticket_reply',
+            'New reply on ' . $ticket['ticket_code'],
+            $authorName . ' replied on your ticket "' . $ticket['subject'] . '".',
+            '/support/' . $ticket['ticket_code']);
+    } elseif ($ticket && $authorType === 'customer' && $ticket['assigned_employee']) {
+        notify_employee_by_name($ticket['assigned_employee'], 'ticket_reply',
+            'New message on ' . $ticket['ticket_code'],
+            $authorName . ' posted on ticket "' . $ticket['subject'] . '".',
+            '/employee/ticket/' . $ticket['ticket_code']);
     }
     return true;
 }
@@ -174,6 +193,17 @@ function ticket_set_status(int $ticketId, string $status, string $actorName, boo
     if (!$silent) {
         $pdo->prepare('INSERT INTO ticket_messages (ticket_id, author_type, author_name, message, created_at) VALUES (?, ?, ?, ?, ?)')
             ->execute([$ticketId, 'system', $actorName, "Status changed to {$status} by {$actorName}.", $now]);
+
+        // $silent is only ever true for the customer's own reopen-on-reply
+        // (see ticket_message_add()) — notifying them about their own
+        // action isn't useful, so this stays inside the !$silent branch.
+        $ticket = ticket_find_by_id($ticketId);
+        if ($ticket) {
+            notify_customer((int) $ticket['customer_id'], 'ticket_status',
+                'Ticket ' . $ticket['ticket_code'] . ': ' . $status,
+                'Your ticket "' . $ticket['subject'] . '" is now ' . $status . '.',
+                '/support/' . $ticket['ticket_code']);
+        }
     }
     return true;
 }
@@ -184,6 +214,14 @@ function ticket_assign(int $ticketId, string $employeeName, string $department =
     if (!$pdo) return;
     $pdo->prepare('UPDATE support_tickets SET assigned_employee = ?, assigned_department = ?, updated_at = ? WHERE id = ?')
         ->execute([$employeeName, $department ?: null, time(), $ticketId]);
+
+    $ticket = ticket_find_by_id($ticketId);
+    if ($ticket) {
+        notify_employee_by_name($employeeName, 'ticket_assigned',
+            'Ticket assigned: ' . $ticket['ticket_code'],
+            'You were assigned "' . $ticket['subject'] . '" (' . $ticket['ticket_code'] . ').',
+            '/employee/ticket/' . $ticket['ticket_code']);
+    }
 }
 
 function ticket_unassign(int $ticketId): void

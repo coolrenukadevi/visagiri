@@ -3,6 +3,7 @@ require_once __DIR__ . '/nav.php';
 require_once __DIR__ . '/../lib-php/auth.php';
 require_once __DIR__ . '/../lib-php/customer_auth.php';
 require_once __DIR__ . '/../lib-php/employee_auth.php';
+require_once __DIR__ . '/../lib-php/notify_channels.php';
 $NAV = nav_data()['nav'];
 $REGIONS = regions_data();
 // Two independent sign-in systems can be active — see customer_auth.php.
@@ -17,6 +18,13 @@ $cvEmployee = employee_current();
 $cvSignedInName = $cvCustomer ? (explode(' ', trim((string) $cvCustomer['full_name']))[0] ?: 'Account') : auth_display_name($cvUser);
 // Send an anonymous visitor back to the page they were on after signing in.
 $cvNext = auth_safe_next($_SERVER['REQUEST_URI'] ?? '/');
+
+// Notifications (Phase 11) — computed per identity, independently, since
+// a customer and an employee can be signed in at once (see above).
+$cvCustomerNotifs = $cvCustomer ? notifications_for('customer', (int) $cvCustomer['id']) : [];
+$cvCustomerUnread = $cvCustomer ? notifications_unread_count('customer', (int) $cvCustomer['id']) : 0;
+$cvEmployeeNotifs = $cvEmployee ? notifications_for('employee', (int) $cvEmployee['id']) : [];
+$cvEmployeeUnread = $cvEmployee ? notifications_unread_count('employee', (int) $cvEmployee['id']) : 0;
 ?>
 <div class="utility-bar">
   <div class="container utility-bar-inner">
@@ -43,6 +51,7 @@ $cvNext = auth_safe_next($_SERVER['REQUEST_URI'] ?? '/');
             <span class="utility-account-initial" aria-hidden="true"><?= e($cvInitial) ?></span>
             <?php endif; ?>
             <span class="pill-label"><?= e($cvSignedInName) ?></span>
+            <?php if ($cvCustomerUnread > 0): ?><span class="utility-notif-badge"><?= $cvCustomerUnread > 9 ? '9+' : $cvCustomerUnread ?></span><?php endif; ?>
           <?php else: ?>
             <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-4 0-9 2-9 5v3h18v-3c0-3-5-5-9-5z"/></svg>
             <span class="pill-label">Customer<span class="hide-xs"> Login</span></span>
@@ -53,6 +62,7 @@ $cvNext = auth_safe_next($_SERVER['REQUEST_URI'] ?? '/');
           <?php if ($cvEmployee): ?>
           <span class="utility-account-initial" aria-hidden="true"><?= e(mb_strtoupper(mb_substr($cvEmployee['full_name'], 0, 1))) ?></span>
           <span class="pill-label"><?= e(explode(' ', trim((string) $cvEmployee['full_name']))[0]) ?></span>
+          <?php if ($cvEmployeeUnread > 0): ?><span class="utility-notif-badge"><?= $cvEmployeeUnread > 9 ? '9+' : $cvEmployeeUnread ?></span><?php endif; ?>
           <?php else: ?>
           <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M12 12.75c-2.5 0-7.5 1.25-7.5 3.75V19h15v-2.5c0-2.5-5-3.75-7.5-3.75z"/><circle cx="12" cy="7" r="3.5" fill="currentColor"/></svg>
           <span class="pill-label">Employee<span class="hide-xs"> Login</span></span>
@@ -170,6 +180,28 @@ $cvNext = auth_safe_next($_SERVER['REQUEST_URI'] ?? '/');
         <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12 19 6.4 17.6 5 12 10.6z"/></svg>
       </button>
     </div>
+    <?php if ($cvCustomer && $cvCustomerNotifs): ?>
+    <div class="notif-list">
+      <div class="notif-list-head">
+        <h3>Notifications</h3>
+        <?php if ($cvCustomerUnread > 0): ?>
+        <form method="post" action="<?= url('/mark-notifications-read') ?>">
+          <input type="hidden" name="csrf" value="<?= e(auth_csrf_token()) ?>">
+          <input type="hidden" name="for" value="customer">
+          <input type="hidden" name="next" value="<?= e($cvNext) ?>">
+          <button type="submit" class="notif-mark-read">Mark all read</button>
+        </form>
+        <?php endif; ?>
+      </div>
+      <?php foreach ($cvCustomerNotifs as $n): ?>
+      <a class="notif-item <?= $n['read_at'] ? '' : 'is-unread' ?>" href="<?= $n['link'] ? url($n['link']) : url('/account') ?>">
+        <span class="notif-item-title"><?= e($n['title']) ?></span>
+        <span class="notif-item-body"><?= e($n['body']) ?></span>
+        <span class="notif-item-time"><?= e(date('j M Y, g:i a', (int) $n['created_at'])) ?></span>
+      </a>
+      <?php endforeach; ?>
+    </div>
+    <?php endif; ?>
     <ul class="auth-menu">
       <?php if ($cvSignedIn): ?>
       <li><a class="auth-menu-item" href="<?= url('/account') ?>">My Account</a></li>
@@ -219,6 +251,28 @@ $cvNext = auth_safe_next($_SERVER['REQUEST_URI'] ?? '/');
         <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12 19 6.4 17.6 5 12 10.6z"/></svg>
       </button>
     </div>
+    <?php if ($cvEmployee && $cvEmployeeNotifs): ?>
+    <div class="notif-list">
+      <div class="notif-list-head">
+        <h3>Notifications</h3>
+        <?php if ($cvEmployeeUnread > 0): ?>
+        <form method="post" action="<?= url('/mark-notifications-read') ?>">
+          <input type="hidden" name="csrf" value="<?= e(auth_csrf_token()) ?>">
+          <input type="hidden" name="for" value="employee">
+          <input type="hidden" name="next" value="<?= e($cvNext) ?>">
+          <button type="submit" class="notif-mark-read">Mark all read</button>
+        </form>
+        <?php endif; ?>
+      </div>
+      <?php foreach ($cvEmployeeNotifs as $n): ?>
+      <a class="notif-item <?= $n['read_at'] ? '' : 'is-unread' ?>" href="<?= $n['link'] ? url($n['link']) : url('/employee') ?>">
+        <span class="notif-item-title"><?= e($n['title']) ?></span>
+        <span class="notif-item-body"><?= e($n['body']) ?></span>
+        <span class="notif-item-time"><?= e(date('j M Y, g:i a', (int) $n['created_at'])) ?></span>
+      </a>
+      <?php endforeach; ?>
+    </div>
+    <?php endif; ?>
     <ul class="auth-menu">
       <?php if ($cvEmployee): ?>
       <li><a class="auth-menu-item" href="<?= url('/employee') ?>">Employee Console</a></li>
