@@ -226,3 +226,37 @@ function ticket_is_active(array $ticket): bool
 {
     return !in_array($ticket['status'], ['Resolved', 'Closed'], true);
 }
+
+// ---------------------------------------------------------------------
+// Reports (Phase 10) — uncapped, same reasoning as enquiries_all().
+// ---------------------------------------------------------------------
+
+function tickets_all(): array
+{
+    $pdo = support_db();
+    if (!$pdo) return [];
+    return $pdo->query("
+        SELECT t.*, c.full_name AS customer_name, c.customer_code
+        FROM support_tickets t JOIN customers c ON c.id = t.customer_id
+        ORDER BY t.created_at DESC")->fetchAll();
+}
+
+function tickets_count_by_status(): array
+{
+    $pdo = support_db();
+    if (!$pdo) return [];
+    $rows = $pdo->query('SELECT status, COUNT(*) AS n FROM support_tickets GROUP BY status')->fetchAll();
+    $out = [];
+    foreach ($rows as $r) $out[$r['status']] = (int) $r['n'];
+    return $out;
+}
+
+function tickets_count_by_category(): array
+{
+    $pdo = support_db();
+    if (!$pdo) return [];
+    $rows = $pdo->query('SELECT category, COUNT(*) AS n FROM support_tickets GROUP BY category ORDER BY n DESC')->fetchAll();
+    $out = [];
+    foreach ($rows as $r) $out[$r['category']] = (int) $r['n'];
+    return $out;
+}

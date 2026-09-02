@@ -324,3 +324,46 @@ function internal_notes_for(int $enquiryId): array
     $st->execute([$enquiryId]);
     return $st->fetchAll();
 }
+
+// ---------------------------------------------------------------------
+// Reports (Phase 10) — deliberately UNCAPPED, unlike the employee queue
+// helpers above. A queue is "what's actionable now" and stays bounded;
+// a report is an explicit request for the full historical record, so
+// silently truncating it would misrepresent the export as complete.
+// ---------------------------------------------------------------------
+
+function enquiries_all(): array
+{
+    $pdo = enquiry_db();
+    if (!$pdo) return [];
+    return $pdo->query("
+        SELECT e.*, s.label AS service_label, c.full_name AS customer_name, c.customer_code
+        FROM enquiries e
+        JOIN service_types s ON s.id = e.service_type_id
+        JOIN customers c ON c.id = e.customer_id
+        ORDER BY e.created_at DESC")->fetchAll();
+}
+
+/** @return array<string,int> status => count, only statuses with rows. */
+function enquiries_count_by_status(): array
+{
+    $pdo = enquiry_db();
+    if (!$pdo) return [];
+    $rows = $pdo->query('SELECT status, COUNT(*) AS n FROM enquiries GROUP BY status')->fetchAll();
+    $out = [];
+    foreach ($rows as $r) $out[$r['status']] = (int) $r['n'];
+    return $out;
+}
+
+/** @return array<string,int> service label => count. */
+function enquiries_count_by_service(): array
+{
+    $pdo = enquiry_db();
+    if (!$pdo) return [];
+    $rows = $pdo->query("
+        SELECT s.label, COUNT(*) AS n FROM enquiries e JOIN service_types s ON s.id = e.service_type_id
+        GROUP BY s.label ORDER BY n DESC")->fetchAll();
+    $out = [];
+    foreach ($rows as $r) $out[$r['label']] = (int) $r['n'];
+    return $out;
+}

@@ -224,6 +224,7 @@ $cvNext = auth_safe_next($_SERVER['REQUEST_URI'] ?? '/');
       <li><a class="auth-menu-item" href="<?= url('/employee') ?>">Employee Console</a></li>
       <?php if ($cvEmployee['is_admin']): ?>
       <li><a class="auth-menu-item" href="<?= url('/employee/admin') ?>">Admin</a></li>
+      <li><a class="auth-menu-item" href="<?= url('/employee/reports') ?>">Reports</a></li>
       <?php endif; ?>
       <li>
         <form method="post" action="<?= url('/employee') ?>" class="auth-menu-form">

@@ -52,6 +52,8 @@ if (preg_match('#^/support/(TK-\d{4}-\d{6})$#', $uri, $m)) { $_GET['code'] = $m[
 if (preg_match('#^/employee/ticket/(TK-\d{4}-\d{6})$#', $uri, $m)) { $_GET['code'] = $m[1]; require __DIR__ . '/../employee-ticket.php'; return true; }
 if ($uri === '/employee/admin/guidelines') { require __DIR__ . '/../employee-admin-guidelines.php'; return true; }
 if ($uri === '/employee/admin') { require __DIR__ . '/../employee-admin.php'; return true; }
+if ($uri === '/employee/reports/export') { require __DIR__ . '/../employee-reports-export.php'; return true; }
+if ($uri === '/employee/reports') { require __DIR__ . '/../employee-reports.php'; return true; }
 // Visa CATEGORY before country, same ordering as .htaccess
 $types = 'tourist|business|student|employment|family-dependent|transit|medical|conference|official-diplomatic|renewal|schengen';
 if (preg_match("#^/visa/($types)$#", $uri, $m)) { $_GET['type'] = $m[1]; require __DIR__ . '/../visa-type.php'; return true; }

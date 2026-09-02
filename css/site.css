@@ -1438,3 +1438,15 @@ a.auth-menu-item:hover { background: var(--paper-alt); }
 .enq-tl-item.is-mine .enq-tl-dot { background: #1a8a5f; }
 .enq-tl-item.is-system .enq-tl-dot { background: var(--ink-300); }
 .enq-tl-item.is-system .enq-tl-body p { color: var(--ink-500); font-style: italic; }
+
+/* =====================================================================
+   Reports (Phase 10)
+   ===================================================================== */
+.report-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; margin-top: 20px; }
+.report-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+.report-table tr { border-top: 1px solid var(--ink-100); }
+.report-table tr:first-child { border-top: none; }
+.report-table td { padding: 7px 0; color: var(--ink-700); }
+.report-table-num { text-align: right; font-weight: 700; color: var(--ink-900); white-space: nowrap; }
+.report-export-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; margin-top: 20px; }
+.report-export-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }

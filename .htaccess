@@ -88,6 +88,8 @@ RewriteRule ^support/(TK-[0-9]{4}-[0-9]{6})/?$ /support-ticket.php?code=$1 [L,QS
 RewriteRule ^employee/ticket/(TK-[0-9]{4}-[0-9]{6})/?$ /employee-ticket.php?code=$1 [L,QSA]
 RewriteRule ^employee/admin/guidelines/?$ /employee-admin-guidelines.php [L,QSA]
 RewriteRule ^employee/admin/?$ /employee-admin.php [L,QSA]
+RewriteRule ^employee/reports/export/?$ /employee-reports-export.php [L,QSA]
+RewriteRule ^employee/reports/?$ /employee-reports.php [L,QSA]
 
 # Visa CATEGORY pages must be matched BEFORE the country rule, otherwise
 # /visa/tourist would be looked up as a country slug and 404.

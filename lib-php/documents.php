@@ -258,6 +258,17 @@ function documents_awaiting_review_count_for(string $employeeName): int
     return (int) $st->fetchColumn();
 }
 
+/** @return array<string,int> status => count, for reports (Phase 10). */
+function documents_count_by_status(): array
+{
+    $pdo = document_db();
+    if (!$pdo) return [];
+    $rows = $pdo->query('SELECT status, COUNT(*) AS n FROM documents GROUP BY status')->fetchAll();
+    $out = [];
+    foreach ($rows as $r) $out[$r['status']] = (int) $r['n'];
+    return $out;
+}
+
 function document_delete(array $document): bool
 {
     $pdo = document_db();

@@ -298,3 +298,14 @@ function customer_verify_password(array $customer, string $password): bool
 {
     return password_verify($password, $customer['password_hash']);
 }
+
+/** @return array<string,int> status => count, for reports (Phase 10). */
+function customers_count_by_status(): array
+{
+    $pdo = customer_db();
+    if (!$pdo) return [];
+    $rows = $pdo->query('SELECT status, COUNT(*) AS n FROM customers GROUP BY status')->fetchAll();
+    $out = [];
+    foreach ($rows as $r) $out[$r['status']] = (int) $r['n'];
+    return $out;
+}

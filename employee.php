@@ -101,6 +101,7 @@ $empTicketRow = static function (array $t): void { ?>
         <div class="account-signout" style="display:flex; gap:8px">
           <?php if ($employee['is_admin']): ?>
           <a href="<?= url('/employee/admin') ?>" class="btn btn-sm btn-outline-brand">Admin</a>
+          <a href="<?= url('/employee/reports') ?>" class="btn btn-sm btn-outline-brand">Reports</a>
           <?php endif; ?>
           <form method="post" action="<?= url('/employee') ?>">
             <input type="hidden" name="csrf" value="<?= e(auth_csrf_token()) ?>">

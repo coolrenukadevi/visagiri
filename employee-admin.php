@@ -115,7 +115,10 @@ $page = [
           <h1>Admin — Employees</h1>
           <p class="account-sub">Create staff accounts, and control who's active and who has admin access.</p>
         </div>
-        <a href="<?= url('/employee/admin/guidelines') ?>" class="btn btn-sm btn-outline-brand">FEMA/RBI Guideline Editor &rarr;</a>
+        <div style="display:flex; gap:8px; flex-wrap:wrap">
+          <a href="<?= url('/employee/reports') ?>" class="btn btn-sm btn-outline-brand">Reports &rarr;</a>
+          <a href="<?= url('/employee/admin/guidelines') ?>" class="btn btn-sm btn-outline-brand">FEMA/RBI Guideline Editor &rarr;</a>
+        </div>
       </div>
 
       <?php if ($actionMsg !== ''): ?><p class="notice-inline"><?= e($actionMsg) ?></p><?php endif; ?>
