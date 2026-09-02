@@ -14,6 +14,7 @@ require_once __DIR__ . '/lib-php/auth.php';
 require_once __DIR__ . '/lib-php/employee_auth.php';
 require_once __DIR__ . '/lib-php/enquiries.php';
 require_once __DIR__ . '/lib-php/documents.php';
+require_once __DIR__ . '/lib-php/support.php';
 
 header('Cache-Control: no-store, private');
 auth_session_start();
@@ -39,6 +40,10 @@ $myActiveCount = count(array_filter($myQueue, 'enquiry_is_active'));
 $myCompletedCount = count($myQueue) - $myActiveCount;
 $awaitingReview = documents_awaiting_review_count_for($myName);
 
+$unassignedTickets = tickets_unassigned();
+$myTickets = tickets_assigned_to($myName);
+$myOpenTicketCount = count(array_filter($myTickets, 'ticket_is_active'));
+
 $crumb = [['label' => 'Home', 'href' => url('/')], ['label' => 'Employee Console']];
 $page = [
     'title'       => 'Employee Console | Convercession',
@@ -61,6 +66,17 @@ $empQueueRow = static function (array $enq): void { ?>
       <div class="enquiry-card-meta"><?= e($enq['customer_name']) ?> (<?= e($enq['customer_code']) ?>) · Submitted <?= e(date('j M Y', (int) $enq['created_at'])) ?></div>
     </div>
     <span class="enq-status-badge status-<?= e(strtolower(str_replace(' ', '-', $enq['status']))) ?>"><?= $enq['status'] === 'New' ? 'Received' : e($enq['status']) ?></span>
+  </a>
+<?php };
+/** Same card, for tickets — code/subject/category+date, status badge. */
+$empTicketRow = static function (array $t): void { ?>
+  <a class="enquiry-card" href="<?= url('/employee/ticket/' . $t['ticket_code']) ?>">
+    <div class="enquiry-card-main">
+      <span class="enquiry-card-code"><?= e($t['ticket_code']) ?></span>
+      <div class="enquiry-card-title"><?= e($t['subject']) ?></div>
+      <div class="enquiry-card-meta"><?= e($t['customer_name']) ?> (<?= e($t['customer_code']) ?>) &middot; <?= e($t['category']) ?> &middot; <?= e(date('j M Y', (int) $t['created_at'])) ?></div>
+    </div>
+    <span class="enq-status-badge status-<?= e(strtolower(str_replace(' ', '-', $t['status']))) ?>"><?= e($t['status']) ?></span>
   </a>
 <?php };
 ?><!DOCTYPE html>
@@ -118,6 +134,26 @@ $empQueueRow = static function (array $enq): void { ?>
       <div class="enquiries-panel"><div class="enquiries-empty">
         <h3>Nothing assigned to you yet</h3>
         <p>Open an enquiry from the Unassigned Queue above and assign it to yourself to start working it.</p>
+      </div></div>
+      <?php endif; ?>
+
+      <h2 class="account-section-title" style="margin-top:32px">Support Tickets — Unassigned (<?= count($unassignedTickets) ?>)</h2>
+      <?php if ($unassignedTickets): ?>
+      <div class="enquiry-card-row"><?php foreach ($unassignedTickets as $t) $empTicketRow($t); ?></div>
+      <?php else: ?>
+      <div class="enquiries-panel"><div class="enquiries-empty">
+        <h3>Nothing unassigned</h3>
+        <p>Every open ticket currently has a consultant.</p>
+      </div></div>
+      <?php endif; ?>
+
+      <h2 class="account-section-title" style="margin-top:32px">Support Tickets — Mine (<?= $myOpenTicketCount ?> open)</h2>
+      <?php if ($myTickets): ?>
+      <div class="enquiry-card-row"><?php foreach ($myTickets as $t) $empTicketRow($t); ?></div>
+      <?php else: ?>
+      <div class="enquiries-panel"><div class="enquiries-empty">
+        <h3>No tickets assigned to you</h3>
+        <p>Claim one from the Unassigned queue above.</p>
       </div></div>
       <?php endif; ?>
     </div>

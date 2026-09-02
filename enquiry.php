@@ -403,6 +403,9 @@ $page = [
         </form>
 
         <p class="auth-note account-note-wide" style="margin-top:28px">
+          Having an issue with this enquiry? <a href="<?= url('/support') ?>?enquiry=<?= rawurlencode($enquiry['enquiry_code']) ?>">Raise a support ticket</a> about it.
+        </p>
+        <p class="auth-note account-note-wide" style="margin-top:8px">
           <a href="<?= url('/account') ?>">&larr; Back to My Account</a>
         </p>
       </div>

@@ -178,6 +178,7 @@ $cvNext = auth_safe_next($_SERVER['REQUEST_URI'] ?? '/');
       <li><a class="auth-menu-item" href="<?= url('/register') ?>">New Customer Registration</a></li>
       <?php endif; ?>
       <li><a class="auth-menu-item" href="<?= url('/track-visa') ?>">Track Enquiry</a></li>
+      <li><a class="auth-menu-item" href="<?= url('/support') ?>">Support Tickets</a></li>
       <li><span class="auth-menu-item is-todo" title="Coming soon">Upload Additional Documents</span></li>
       <li><span class="auth-menu-item is-todo" title="Coming soon">View Enquiry Status</span></li>
       <li><span class="auth-menu-item is-todo" title="Coming soon">Download Documents / Receipts</span></li>

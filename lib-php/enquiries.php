@@ -190,6 +190,18 @@ function enquiry_find_by_code(string $code): ?array
     return $st->fetch() ?: null;
 }
 
+function enquiry_find_by_id(int $id): ?array
+{
+    $pdo = enquiry_db();
+    if (!$pdo) return null;
+    $st = $pdo->prepare('
+        SELECT e.*, s.label AS service_label, s.code AS service_code
+        FROM enquiries e JOIN service_types s ON s.id = e.service_type_id
+        WHERE e.id = ?');
+    $st->execute([$id]);
+    return $st->fetch() ?: null;
+}
+
 function enquiry_status_history_for(int $enquiryId): array
 {
     $pdo = enquiry_db();

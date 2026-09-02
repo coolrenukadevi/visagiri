@@ -1002,7 +1002,7 @@ a.auth-menu-item:hover { background: var(--paper-alt); }
 .wizard-step-dot.is-current .dot-num { background: var(--brand-blue); color: white; }
 .wizard-step-dot.is-done .dot-num { background: var(--brand-blue); color: white; }
 .wizard-step-line { flex: 1; height: 2px; background: var(--ink-100); min-width: 20px; }
-.wizard-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; }
+.wizard-actions { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 12px; margin-top: 8px; }
 .field-error { display: block; font-size: 0.76rem; color: #c22e3f; margin-top: 4px; }
 .consent-list { display: flex; flex-direction: column; gap: 12px; margin: 18px 0; }
 .consent-row { display: flex; align-items: flex-start; gap: 10px; font-size: 0.86rem; color: var(--ink-700); line-height: 1.5; cursor: pointer; }
@@ -1428,3 +1428,13 @@ a.auth-menu-item:hover { background: var(--paper-alt); }
 @media (max-width: 480px) {
   .emp-doc-verify select, .emp-doc-verify input[type="text"] { flex-basis: 100%; }
 }
+
+/* =====================================================================
+   Support ticket threads (Phase 9) — reuses .enq-timeline/.enq-tl-item
+   wholesale; these modifiers just tint the dot per speaker so a thread
+   reads at a glance without a whole separate chat-bubble component.
+   ===================================================================== */
+.enq-tl-item.is-staff .enq-tl-dot { background: var(--brand-blue); }
+.enq-tl-item.is-mine .enq-tl-dot { background: #1a8a5f; }
+.enq-tl-item.is-system .enq-tl-dot { background: var(--ink-300); }
+.enq-tl-item.is-system .enq-tl-body p { color: var(--ink-500); font-style: italic; }

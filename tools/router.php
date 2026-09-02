@@ -48,6 +48,8 @@ if (preg_match('#^/auth/(google|facebook|x)$#', $uri, $m)) {
 if ($uri === '/logout') { $_GET['action'] = 'logout'; require __DIR__ . '/../auth.php'; return true; }
 if (preg_match('#^/enquiry/(CV-\d{4}-\d{6})$#', $uri, $m)) { $_GET['code'] = $m[1]; require __DIR__ . '/../enquiry.php'; return true; }
 if (preg_match('#^/employee/enquiry/(CV-\d{4}-\d{6})$#', $uri, $m)) { $_GET['code'] = $m[1]; require __DIR__ . '/../employee-enquiry.php'; return true; }
+if (preg_match('#^/support/(TK-\d{4}-\d{6})$#', $uri, $m)) { $_GET['code'] = $m[1]; require __DIR__ . '/../support-ticket.php'; return true; }
+if (preg_match('#^/employee/ticket/(TK-\d{4}-\d{6})$#', $uri, $m)) { $_GET['code'] = $m[1]; require __DIR__ . '/../employee-ticket.php'; return true; }
 if ($uri === '/employee/admin/guidelines') { require __DIR__ . '/../employee-admin-guidelines.php'; return true; }
 if ($uri === '/employee/admin') { require __DIR__ . '/../employee-admin.php'; return true; }
 // Visa CATEGORY before country, same ordering as .htaccess
