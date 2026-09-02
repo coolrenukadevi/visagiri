@@ -2,6 +2,11 @@
 declare(strict_types=1);
 require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/includes/partials.php';
+require_once __DIR__ . '/lib-php/auth.php';
+
+// Must run before any output — see index.php for why.
+auth_session_start();
+
 http_response_code(404);
 $page = [
   'title' => 'Page not found | ' . SITE['name'],

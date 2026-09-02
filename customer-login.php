@@ -33,17 +33,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $identifier = trim((string) ($_POST['identifier'] ?? ''));
         $password = (string) ($_POST['password'] ?? '');
         $oldIdentifier = $identifier;
-        $customer = $identifier !== '' ? customer_find_by_login($identifier) : null;
+        $wait = login_throttle_seconds_remaining('customer', $identifier);
 
-        if (!$customer || !customer_verify_password($customer, $password)) {
-            $error = 'That Customer ID/email and password don\'t match.';
-        } elseif ($customer['status'] !== 'active') {
-            $error = 'This account hasn\'t been verified yet. Check your email for a verification code, or ';
-            $error .= 'start again from Create Account.';
+        if ($wait > 0) {
+            $error = 'Too many attempts. Try again in ' . (int) ceil($wait / 60) . ' minute(s).';
         } else {
-            customer_login((int) $customer['id']);
-            header('Location: ' . url($next), true, 302);
-            exit;
+            $customer = $identifier !== '' ? customer_find_by_login($identifier) : null;
+
+            if (!$customer || !customer_verify_password($customer, $password)) {
+                login_throttle_record_failure('customer', $identifier);
+                $error = 'That Customer ID/email and password don\'t match.';
+            } elseif ($customer['status'] !== 'active') {
+                $error = 'This account hasn\'t been verified yet. Check your email for a verification code, or ';
+                $error .= 'start again from Create Account.';
+            } else {
+                login_throttle_clear('customer', $identifier);
+                customer_login((int) $customer['id']);
+                header('Location: ' . url($next), true, 302);
+                exit;
+            }
         }
     }
 }

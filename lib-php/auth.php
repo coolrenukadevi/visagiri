@@ -144,6 +144,69 @@ function auth_migrate(PDO $pdo): void
             UNIQUE (provider, provider_user_id)
         )");
     $pdo->exec('CREATE INDEX IF NOT EXISTS idx_identities_user ON identities(user_id)');
+
+    // Password-login throttling (Phase 12) — shared by customer-login.php
+    // and employee-login.php, which is why it lives at this base layer
+    // rather than in customer_auth.php or employee_auth.php individually.
+    // One row per failed attempt, same "append, don't update-in-place"
+    // shape customer_otp uses, rather than a single row with a running
+    // counter — simpler to reason about, and login attempts are rare
+    // enough that row count is a non-issue.
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS login_attempts (
+            id           INTEGER PRIMARY KEY AUTOINCREMENT,
+            login_type   TEXT NOT NULL,
+            identifier   TEXT NOT NULL,
+            created_at   INTEGER NOT NULL
+        )");
+    $pdo->exec('CREATE INDEX IF NOT EXISTS idx_login_attempts ON login_attempts(login_type, identifier, created_at)');
+}
+
+const LOGIN_MAX_ATTEMPTS = 5;
+const LOGIN_LOCKOUT_SECONDS = 300; // 5 minutes
+
+/**
+ * Seconds until this identifier may try again, 0 if allowed right now.
+ * Deliberately keyed by identifier (the same login_type/identifier a wrong
+ * password was tried against), not by IP — matching the account-keyed
+ * lockout OTP already uses (CUSTOMER_OTP_MAX_ATTEMPTS in customer_auth.php)
+ * rather than adding a second, differently-shaped throttling mechanism.
+ */
+function login_throttle_seconds_remaining(string $loginType, string $identifier): int
+{
+    $identifier = mb_strtolower(trim($identifier));
+    if ($identifier === '') return 0;
+    $pdo = auth_db();
+    if (!$pdo) return 0;
+    $since = time() - LOGIN_LOCKOUT_SECONDS;
+    $st = $pdo->prepare('SELECT COUNT(*), MAX(created_at) FROM login_attempts WHERE login_type = ? AND identifier = ? AND created_at > ?');
+    $st->execute([$loginType, $identifier, $since]);
+    [$count, $lastAttempt] = $st->fetch(PDO::FETCH_NUM);
+    if ((int) $count < LOGIN_MAX_ATTEMPTS) return 0;
+    return max(0, ((int) $lastAttempt + LOGIN_LOCKOUT_SECONDS) - time());
+}
+
+/** Called only for a genuine wrong-password attempt — never while already
+ *  locked out (the caller checks login_throttle_seconds_remaining() first
+ *  and skips verify_password() entirely), so a locked-out visitor hammering
+ *  the form can't keep the lockout window rolling forward indefinitely. */
+function login_throttle_record_failure(string $loginType, string $identifier): void
+{
+    $identifier = mb_strtolower(trim($identifier));
+    if ($identifier === '') return;
+    $pdo = auth_db();
+    if (!$pdo) return;
+    $pdo->prepare('INSERT INTO login_attempts (login_type, identifier, created_at) VALUES (?, ?, ?)')
+        ->execute([$loginType, $identifier, time()]);
+}
+
+function login_throttle_clear(string $loginType, string $identifier): void
+{
+    $identifier = mb_strtolower(trim($identifier));
+    if ($identifier === '') return;
+    $pdo = auth_db();
+    if (!$pdo) return;
+    $pdo->prepare('DELETE FROM login_attempts WHERE login_type = ? AND identifier = ?')->execute([$loginType, $identifier]);
 }
 
 /**

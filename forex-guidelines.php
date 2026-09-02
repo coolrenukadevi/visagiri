@@ -14,6 +14,10 @@ declare(strict_types=1);
 require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/includes/partials.php';
 require_once __DIR__ . '/lib-php/compliance.php';
+require_once __DIR__ . '/lib-php/auth.php';
+
+// Must run before any output — see index.php for why.
+auth_session_start();
 
 $guidelines = compliance_guidelines_all();
 

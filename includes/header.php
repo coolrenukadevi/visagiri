@@ -194,7 +194,7 @@ $cvEmployeeUnread = $cvEmployee ? notifications_unread_count('employee', (int) $
         <?php endif; ?>
       </div>
       <?php foreach ($cvCustomerNotifs as $n): ?>
-      <a class="notif-item <?= $n['read_at'] ? '' : 'is-unread' ?>" href="<?= $n['link'] ? url($n['link']) : url('/account') ?>">
+      <a class="notif-item <?= $n['read_at'] ? '' : 'is-unread' ?>" href="<?= e($n['link'] ? url($n['link']) : url('/account')) ?>">
         <span class="notif-item-title"><?= e($n['title']) ?></span>
         <span class="notif-item-body"><?= e($n['body']) ?></span>
         <span class="notif-item-time"><?= e(date('j M Y, g:i a', (int) $n['created_at'])) ?></span>
@@ -265,7 +265,7 @@ $cvEmployeeUnread = $cvEmployee ? notifications_unread_count('employee', (int) $
         <?php endif; ?>
       </div>
       <?php foreach ($cvEmployeeNotifs as $n): ?>
-      <a class="notif-item <?= $n['read_at'] ? '' : 'is-unread' ?>" href="<?= $n['link'] ? url($n['link']) : url('/employee') ?>">
+      <a class="notif-item <?= $n['read_at'] ? '' : 'is-unread' ?>" href="<?= e($n['link'] ? url($n['link']) : url('/employee')) ?>">
         <span class="notif-item-title"><?= e($n['title']) ?></span>
         <span class="notif-item-body"><?= e($n['body']) ?></span>
         <span class="notif-item-time"><?= e(date('j M Y, g:i a', (int) $n['created_at'])) ?></span>

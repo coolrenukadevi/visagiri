@@ -6,6 +6,12 @@
 declare(strict_types=1);
 require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/includes/partials.php';
+require_once __DIR__ . '/lib-php/auth.php';
+
+// Every page that renders header.php must start the session itself, before
+// any output — header.php only reads it lazily (customer_current() etc.),
+// which is too late once head.php has already flushed HTML.
+auth_session_start();
 
 $page = [
   'title'       => SITE['name'] . ' | ' . SITE['tagline'],

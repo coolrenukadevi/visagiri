@@ -33,16 +33,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $identifier = trim((string) ($_POST['identifier'] ?? ''));
         $password = (string) ($_POST['password'] ?? '');
         $oldIdentifier = $identifier;
-        $employee = $identifier !== '' ? employee_find_by_login($identifier) : null;
+        $wait = login_throttle_seconds_remaining('employee', $identifier);
 
-        if (!$employee || !employee_verify_password($employee, $password)) {
-            $error = 'That Employee ID/email and password don\'t match.';
-        } elseif ($employee['status'] !== 'active') {
-            $error = 'This account is not active. Contact the admin team.';
+        if ($wait > 0) {
+            $error = 'Too many attempts. Try again in ' . (int) ceil($wait / 60) . ' minute(s).';
         } else {
-            employee_login((int) $employee['id']);
-            header('Location: ' . url($next === '/account' ? '/employee' : $next), true, 302);
-            exit;
+            $employee = $identifier !== '' ? employee_find_by_login($identifier) : null;
+
+            if (!$employee || !employee_verify_password($employee, $password)) {
+                login_throttle_record_failure('employee', $identifier);
+                $error = 'That Employee ID/email and password don\'t match.';
+            } elseif ($employee['status'] !== 'active') {
+                $error = 'This account is not active. Contact the admin team.';
+            } else {
+                login_throttle_clear('employee', $identifier);
+                employee_login((int) $employee['id']);
+                header('Location: ' . url($next === '/account' ? '/employee' : $next), true, 302);
+                exit;
+            }
         }
     }
 }

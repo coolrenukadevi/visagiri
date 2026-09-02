@@ -62,6 +62,15 @@ require_once __DIR__ . '/../data/pages.php';
 $slug = ltrim($uri, '/');
 if (isset(page_definitions()[$slug])) { $_GET['p'] = $slug; require __DIR__ . '/../page.php'; return true; }
 
+// Deliberately narrower than .htaccess's equivalent fallback (any depth,
+// any case, as long as {path}.php exists and isn't a directory): every
+// page file in this repo today is a single lowercase-hyphenated segment,
+// so this never diverges in practice (confirmed in the Phase 12 audit).
+// Widening this to match .htaccess exactly would mean deriving a path
+// from $uri with more shapes to it, which needs a real traversal guard
+// (reject "..", realpath-contain the result) to stay as safe as this
+// version already is by construction — worth doing WHEN a page file
+// actually needs a multi-segment or uppercase route, not speculatively.
 $candidate = __DIR__ . '/..' . $uri . '.php';
 if (preg_match('#^/[a-z0-9-]+$#', $uri) && file_exists($candidate)) { require $candidate; return true; }
 

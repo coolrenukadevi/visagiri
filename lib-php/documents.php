@@ -57,6 +57,7 @@ function document_migrate(PDO $pdo): void
             uploaded_at         INTEGER NOT NULL
         )");
     $pdo->exec('CREATE INDEX IF NOT EXISTS idx_documents_enquiry ON documents(enquiry_id)');
+    $pdo->exec('CREATE INDEX IF NOT EXISTS idx_documents_customer ON documents(customer_id)');
 
     $seed = $pdo->prepare('INSERT OR IGNORE INTO document_types (code, label, is_passport, sort_order) VALUES (?, ?, ?, ?)');
     $order = 0;

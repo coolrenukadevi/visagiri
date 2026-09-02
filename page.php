@@ -11,6 +11,10 @@ declare(strict_types=1);
 require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/includes/partials.php';
 require_once __DIR__ . '/data/pages.php';
+require_once __DIR__ . '/lib-php/auth.php';
+
+// Must run before any output — see index.php for why.
+auth_session_start();
 
 $slug = (string) ($_GET['p'] ?? '');
 $defs = page_definitions();

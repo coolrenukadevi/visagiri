@@ -70,6 +70,7 @@ function enquiry_migrate(PDO $pdo): void
             updated_at           INTEGER NOT NULL
         )");
     $pdo->exec('CREATE INDEX IF NOT EXISTS idx_enquiries_customer ON enquiries(customer_id)');
+    $pdo->exec('CREATE INDEX IF NOT EXISTS idx_enquiries_assigned ON enquiries(assigned_employee)');
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS enquiry_status_history (
             id           INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -42,6 +42,7 @@ function support_migrate(PDO $pdo): void
             updated_at          INTEGER NOT NULL
         )");
     $pdo->exec('CREATE INDEX IF NOT EXISTS idx_tickets_customer ON support_tickets(customer_id)');
+    $pdo->exec('CREATE INDEX IF NOT EXISTS idx_tickets_assigned ON support_tickets(assigned_employee)');
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS ticket_messages (
             id            INTEGER PRIMARY KEY AUTOINCREMENT,
