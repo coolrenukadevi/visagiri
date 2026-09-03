@@ -15,7 +15,15 @@ require_once __DIR__ . '/exchange-rates.php';
 $headerFx = exchange_rate_get_cached_only('USD_INR');
 $headerWhatsappMsg = rawurlencode('Hello VisaAgency.in, I need assistance with my travel/visa requirement.');
 ?>
-<span class="header-topbar-tagline">Smart Travel. Seamless Visas.</span>
+<div class="header-topbar-left">
+    <span class="header-topbar-tagline">Smart Travel. Seamless Visas.</span>
+    <span class="header-topbar-divider header-topbar-divider-trust" aria-hidden="true"></span>
+    <div class="header-trust-rotator" id="headerTrustRotator" aria-live="polite">
+        <span class="trust-item is-active"><i class="fa-solid fa-earth-americas" aria-hidden="true"></i> 200+ Countries</span>
+        <span class="trust-item"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Trusted Visa Assistance</span>
+        <span class="trust-item"><i class="fa-solid fa-bolt" aria-hidden="true"></i> Fast Processing Support</span>
+    </div>
+</div>
 
 <div class="header-fx-widget" id="headerFxWidget" data-pair="USD_INR">
     <?php if ($headerFx): ?>
@@ -64,3 +72,15 @@ $headerWhatsappMsg = rawurlencode('Hello VisaAgency.in, I need assistance with m
         <a href="<?php echo htmlspecialchars($site_social['linkedin']); ?>" target="_blank" rel="noopener" aria-label="Visit our LinkedIn page"><i class="fa-brands fa-linkedin-in" aria-hidden="true"></i></a>
     </div>
 </div>
+<script>
+(function () {
+    var items = document.querySelectorAll('#headerTrustRotator .trust-item');
+    if (items.length < 2) { return; }
+    var i = 0;
+    setInterval(function () {
+        items[i].classList.remove('is-active');
+        i = (i + 1) % items.length;
+        items[i].classList.add('is-active');
+    }, 3200);
+})();
+</script>
