@@ -890,7 +890,7 @@
     color: var(--header);
     margin-bottom: 2px;
 }
-.mega-bottom a.mega-cta-btn {
+.header-main .main-menu ul li .submenu .mega-bottom a.mega-cta-btn {
     width: auto !important;
     flex: 0 0 auto !important;
     justify-content: center !important;
@@ -913,6 +913,68 @@
 /* Restrained gold accent: thin top stripe on every mega panel */
 .mega-panel {
     border-top: 3px solid var(--va-gold-muted) !important;
+}
+
+/* ---- Forex mega panel: premium 2x2 icon-card grid, distinct from the
+   plain text-link panels used elsewhere ---- */
+.mega-panel-forex {
+    width: 600px !important;
+}
+.mega-panel-inner-icons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    padding: 22px 22px 6px;
+}
+.mega-icon-link {
+    display: flex !important;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 12px !important;
+    width: auto !important;
+    border-radius: 12px;
+    text-transform: none !important;
+    white-space: normal !important;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+.mega-icon-link:hover {
+    background: var(--bg);
+    transform: translateY(-2px);
+}
+.mega-icon-badge {
+    flex: none;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--theme-2) 0%, var(--theme) 100%);
+    color: var(--white);
+    font-size: 16px;
+    box-shadow: 0 8px 18px rgba(6, 43, 92, 0.22);
+}
+.mega-icon-text {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+.mega-icon-text strong {
+    font-size: 13.5px !important;
+    font-weight: 700 !important;
+    text-transform: none !important;
+    color: var(--header);
+    line-height: 1.3;
+}
+.mega-icon-text small {
+    display: block;
+    font-size: 11.5px !important;
+    font-weight: 400 !important;
+    text-transform: none !important;
+    color: var(--text);
+    line-height: 1.4;
+    white-space: normal !important;
 }
 
 /* ---- Countries mega panel ---- */

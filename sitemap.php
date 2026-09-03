@@ -131,7 +131,7 @@ foreach ($VISA_AGENCY_COUNTRIES as $c) {
                                     <h3>Other Services</h3>
                                     <ul>
                                         <li><a href="other-services">Travel Insurance</a></li>
-                                        <li><a href="other-services">Forex Assistance</a></li>
+                                        <li><a href="forex">Forex Services</a></li>
                                         <li><a href="other-services">Flight &amp; Hotel Reservation</a></li>
                                         <li><a href="other-services">Corporate Visa Assistance</a></li>
                                     </ul>

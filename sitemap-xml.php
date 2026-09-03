@@ -38,6 +38,7 @@ $staticPages = [
     ['apostille-certificate-attestation', 'monthly', '0.7'],
     ['apostille-document-legalisation', 'monthly', '0.7'],
     ['apostille-translation-services', 'monthly', '0.7'],
+    ['forex', 'monthly', '0.8'],
     ['other-services', 'monthly', '0.6'],
     ['pricing', 'monthly', '0.7'],
     ['appointment', 'monthly', '0.7'],

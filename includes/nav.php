@@ -118,6 +118,36 @@
         </li>
 
         <li class="has-dropdown">
+            <a href="forex">Forex</a>
+            <ul class="submenu has-homemenu mega-panel mega-panel-forex">
+                <li>
+                    <div class="mega-panel-inner-icons">
+                        <a href="forex#currency" class="mega-icon-link">
+                            <span class="mega-icon-badge"><i class="fa-solid fa-money-bill-wave"></i></span>
+                            <span class="mega-icon-text"><strong>Foreign Currency</strong><small>Buy currency notes for your trip</small></span>
+                        </a>
+                        <a href="forex#forex-card" class="mega-icon-link">
+                            <span class="mega-icon-badge"><i class="fa-solid fa-credit-card"></i></span>
+                            <span class="mega-icon-text"><strong>Forex Card</strong><small>Prepaid travel card, loaded &amp; ready</small></span>
+                        </a>
+                        <a href="forex#currency-exchange" class="mega-icon-link">
+                            <span class="mega-icon-badge"><i class="fa-solid fa-right-left"></i></span>
+                            <span class="mega-icon-text"><strong>Currency Exchange</strong><small>Exchange for your specific need</small></span>
+                        </a>
+                        <a href="forex#travel-forex" class="mega-icon-link">
+                            <span class="mega-icon-badge"><i class="fa-solid fa-earth-americas"></i></span>
+                            <span class="mega-icon-text"><strong>Travel Forex</strong><small>Not sure what fits? We'll guide you</small></span>
+                        </a>
+                    </div>
+                    <div class="mega-bottom">
+                        <div class="mega-bottom-text"><strong>Already have a request?</strong>Track its status anytime with your reference number.</div>
+                        <a href="forex-track" class="mega-cta-btn">Track Forex Request <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </li>
+            </ul>
+        </li>
+
+        <li class="has-dropdown">
             <a href="visa-news">Resources</a>
             <ul class="submenu simple-dropdown">
                 <li><a href="news">Visa Blog</a></li>
