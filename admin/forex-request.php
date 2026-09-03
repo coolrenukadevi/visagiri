@@ -385,12 +385,16 @@ function fx_fmt($v) { $v = trim((string) $v); return $v === '' ? '<span style="c
 <div class="crm-card">
     <h3>Forex Requirement</h3>
     <div class="crm-panel-grid">
+        <div class="crm-panel-item"><label>Service Type</label><div class="val"><?php echo fx_fmt($request['service_type']); ?></div></div>
         <div class="crm-panel-item"><label>Currency</label><div class="val"><?php echo fx_fmt($request['currency_code']); ?></div></div>
         <div class="crm-panel-item"><label>Amount Required</label><div class="val"><?php echo fx_fmt(number_format((float) $request['amount_required'], 2)); ?></div></div>
         <div class="crm-panel-item"><label>Approx. INR</label><div class="val"><?php echo $request['approx_inr'] ? fx_fmt('₹' . number_format((float) $request['approx_inr'], 2)) : fx_fmt(''); ?></div></div>
         <div class="crm-panel-item"><label>Preferred Date</label><div class="val"><?php echo fx_fmt($request['preferred_delivery_date']); ?></div></div>
         <div class="crm-panel-item"><label>Collection Location</label><div class="val"><?php echo fx_fmt($request['collection_location']); ?></div></div>
         <div class="crm-panel-item"><label>Delivery Method</label><div class="val"><?php echo fx_fmt($request['delivery_method']); ?></div></div>
+        <?php if (!empty($request['special_requirement'])): ?>
+        <div class="crm-panel-item full"><label>Special Requirement</label><div class="val"><?php echo nl2br(fx_fmt($request['special_requirement'])); ?></div></div>
+        <?php endif; ?>
     </div>
 </div>
 

@@ -119,7 +119,7 @@ include __DIR__ . '/includes/header.php';
                     <h2>Ready To Get A Forex Quotation?</h2>
                     <p>Tell us your currency, amount and travel date &mdash; we'll confirm the rate and next steps.</p>
                     <div class="cta-buttons">
-                        <a href="contact" class="theme-btn" data-open-quick-enquiry data-qe-service="forex">Start Your Forex Enquiry <i class="fa-solid fa-arrow-right"></i></a>
+                        <a href="forex-enquiry" class="theme-btn">Start Your Forex Enquiry <i class="fa-solid fa-arrow-right"></i></a>
                         <a href="forex-track" class="theme-btn style-2">Track Your Forex Request</a>
                     </div>
                 </div>

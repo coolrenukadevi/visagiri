@@ -5323,6 +5323,14 @@ html.va-qe-modal-open {
 .b2b-doc-verified { background: #E7F6EC; color: #16A34A; }
 .b2b-doc-rejected { background: #FCE8E6; color: #C0392B; }
 .b2b-doc-expired { background: var(--bg); color: var(--text); }
+/* Forex document statuses (forex_doc_status_class()) reuse the same
+   badge shell as .b2b-doc-badge — just the color mapping differs
+   slightly since Forex has an extra "Under Verification" state. */
+.forex-doc-not-uploaded { background: var(--bg); color: var(--text); }
+.forex-doc-uploaded { background: #FDF1DF; color: #A9720F; }
+.forex-doc-under-verification { background: #FDF1DF; color: #A9720F; }
+.forex-doc-verified { background: #E7F6EC; color: #16A34A; }
+.forex-doc-rejected { background: #FCE8E6; color: #C0392B; }
 .b2b-doc-reject-note { font-size: 11.5px; color: #C0392B; background: #FDEDEC; border-radius: 8px; padding: 6px 10px; margin: 0 0 10px; }
 .b2b-doc-box-body { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .b2b-doc-filename { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--theme); text-decoration: none; text-transform: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

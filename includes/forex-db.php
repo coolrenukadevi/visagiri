@@ -29,6 +29,14 @@ const FOREX_VISA_STATUSES = [
 /** Visa statuses where a Visa-on-Arrival/Visa-Free style declaration is required instead of a visa copy. */
 const FOREX_VISA_STATUSES_NEEDING_DECLARATION = ['Visa on Arrival', 'Visa-Free / No Visa Required'];
 
+/** What the customer is asking for — distinct from FOREX_TRAVEL_PURPOSES
+ * (why they need it). Admin-editable later via forex_settings if this
+ * list needs to grow; not wired to a settings override yet since no
+ * admin screen asks for it. */
+const FOREX_SERVICE_TYPES = [
+    'Foreign Currency', 'Forex Card', 'Travel Forex', 'Business Travel Forex',
+    'Education Remittance', 'Medical Remittance', 'Corporate Forex', 'Other',
+];
 const FOREX_TRAVELLER_TYPES = ['Individual', 'Family', 'Corporate', 'Student', 'Other'];
 const FOREX_TRAVEL_PURPOSES = [
     'Tourism', 'Business', 'Medical', 'Education', 'Employment', 'Conference',
@@ -295,6 +303,15 @@ function forex_db(): PDO
     // NOT EXISTS above doesn't retrofit new columns onto an already-created
     // table on environments that bootstrapped forex_documents before this.
     forex_ensure_column($pdo, 'forex_documents', 'verification_remarks', 'TEXT');
+    // Public post-submission document upload link (mirrors b2b_partners.upload_token) —
+    // lets a customer who just submitted a public enquiry upload documents without an account.
+    forex_ensure_column($pdo, 'forex_requests', 'upload_token', 'TEXT');
+    forex_ensure_column($pdo, 'forex_requests', 'ip_address', 'TEXT');
+    // What the customer asked for (Foreign Currency / Forex Card / Travel
+    // Forex / etc.) — distinct from the existing `purpose` column, which
+    // captures why (Tourism/Business/Medical/...).
+    forex_ensure_column($pdo, 'forex_requests', 'service_type', 'TEXT');
+    forex_ensure_column($pdo, 'forex_requests', 'special_requirement', 'TEXT');
 
     forex_seed_default_settings($pdo);
     forex_seed_default_declaration_template($pdo);
@@ -592,6 +609,136 @@ function forex_pdf_safe(?string $text): string
     $text = (string) $text;
     $converted = @iconv('UTF-8', 'CP1252//TRANSLIT//IGNORE', $text);
     return $converted !== false ? $converted : preg_replace('/[^\x20-\x7E]/', '', $text);
+}
+
+/**
+ * Looks up a forex request by reference + upload token (the pre-login
+ * document upload gate for a customer who just submitted a public
+ * enquiry — mirrors b2b_partner_by_token() exactly). Returns null on any
+ * mismatch, deliberately the same generic failure for "ref doesn't
+ * exist" and "wrong token" so a bad token can't be used to probe
+ * whether a given reference exists.
+ */
+function forex_request_by_token(PDO $pdo, string $forexRef, string $token): ?array
+{
+    if ($token === '') {
+        return null;
+    }
+    $stmt = $pdo->prepare('SELECT * FROM forex_requests WHERE forex_ref = ? AND archived_at IS NULL');
+    $stmt->execute([$forexRef]);
+    $request = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$request || !$request['upload_token'] || !hash_equals($request['upload_token'], $token)) {
+        return null;
+    }
+    return $request;
+}
+
+/**
+ * Which documents apply to a forex request's destination country, and
+ * whether each is required — driven by forex_country_rules so this is
+ * configurable per country rather than one hard-coded checklist for
+ * every destination (spec: document requirements must not be uniformly
+ * mandatory). Falls back to "Required" for the core KYC docs (Passport,
+ * PAN) when the destination has no country_rules row yet.
+ *
+ * @return array<string,bool> doc_type => required
+ */
+function forex_required_docs_for_country(PDO $pdo, ?string $country): array
+{
+    $rule = null;
+    if ($country) {
+        $stmt = $pdo->prepare('SELECT * FROM forex_country_rules WHERE country = ?');
+        $stmt->execute([$country]);
+        $rule = $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    }
+
+    if (!$rule) {
+        return [
+            'Passport' => true, 'PAN' => true, 'AirTicket' => true,
+            'Hotel' => false, 'Visa' => false, 'Declaration' => false,
+        ];
+    }
+
+    return [
+        'Passport' => (bool) $rule['requires_passport'],
+        'PAN' => (bool) $rule['requires_pan'],
+        'AirTicket' => (bool) $rule['requires_air_ticket'],
+        'Hotel' => (bool) $rule['requires_hotel'],
+        'Visa' => (bool) $rule['requires_visa_copy'],
+        'Declaration' => (bool) $rule['requires_declaration'],
+    ];
+}
+
+/**
+ * Shared validation + storage for a public (pre-login, token-gated)
+ * forex document upload — mirrors admin/forex-document-upload.php's
+ * exact extension/MIME whitelist, size cap and human-traceable
+ * filename pattern so both paths behave identically, just gated
+ * differently (token here, admin_require_login() there).
+ *
+ * @param array $file One element of $_FILES, e.g. $_FILES['document'].
+ * @return array{success:bool,code?:int,message?:string,doc_id?:int,filename?:string,status?:string}
+ */
+function forex_save_uploaded_document(PDO $pdo, array $request, string $docType, array $file): array
+{
+    if (!array_key_exists($docType, FOREX_DOC_TYPES)) {
+        return ['success' => false, 'code' => 422, 'message' => 'Unknown document type.'];
+    }
+    if (empty($file) || ($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
+        return ['success' => false, 'code' => 422, 'message' => 'Please choose a file to upload.'];
+    }
+
+    $allowedExt = ['pdf', 'jpg', 'jpeg', 'png'];
+    $allowedMime = ['application/pdf', 'image/jpeg', 'image/png'];
+    $maxBytes = 5 * 1024 * 1024;
+
+    if ((int) $file['size'] > $maxBytes) {
+        return ['success' => false, 'code' => 422, 'message' => 'File is too large. Maximum size is 5 MB.'];
+    }
+
+    $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    if (!in_array($ext, $allowedExt, true)) {
+        return ['success' => false, 'code' => 422, 'message' => 'Unsupported file type. Allowed: PDF, JPG, PNG.'];
+    }
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $mime = $finfo->file($file['tmp_name']) ?: '';
+    if (!in_array($mime, $allowedMime, true)) {
+        return ['success' => false, 'code' => 422, 'message' => 'The file content does not match its extension. Please upload a genuine file.'];
+    }
+
+    $requestId = (int) $request['id'];
+    $targetDir = __DIR__ . '/../uploads/forex/' . $request['forex_ref'];
+    if (!is_dir($targetDir) && !mkdir($targetDir, 0770, true) && !is_dir($targetDir)) {
+        return ['success' => false, 'code' => 500, 'message' => 'Could not create the storage folder for this request.'];
+    }
+    $storedName = $request['forex_ref'] . '-' . strtoupper($docType) . '-' . time() . '.' . $ext;
+    if (!move_uploaded_file($file['tmp_name'], $targetDir . '/' . $storedName)) {
+        return ['success' => false, 'code' => 500, 'message' => 'Could not save the uploaded file. Please try again.'];
+    }
+
+    $now = gmdate('c');
+    $existingStmt = $pdo->prepare('SELECT id, stored_filename FROM forex_documents WHERE forex_request_id = ? AND doc_type = ? ORDER BY id DESC LIMIT 1');
+    $existingStmt->execute([$requestId, $docType]);
+    $existing = $existingStmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($existing && $existing['stored_filename'] === null) {
+        $pdo->prepare("UPDATE forex_documents SET original_filename = ?, stored_filename = ?, mime = ?, size = ?, status = 'Uploaded', rejection_reason = NULL, uploaded_at = ? WHERE id = ?")
+            ->execute([$file['name'], $storedName, $mime, (int) $file['size'], $now, $existing['id']]);
+        $docId = (int) $existing['id'];
+    } else {
+        $pdo->prepare("INSERT INTO forex_documents (forex_request_id, doc_type, original_filename, stored_filename, mime, size, status, replaces_document_id, uploaded_at) VALUES (?, ?, ?, ?, ?, ?, 'Uploaded', ?, ?)")
+            ->execute([$requestId, $docType, $file['name'], $storedName, $mime, (int) $file['size'], $existing['id'] ?? null, $now]);
+        $docId = (int) $pdo->lastInsertId();
+    }
+
+    if ($docType === 'Declaration') {
+        $pdo->prepare('UPDATE forex_declarations SET stored_filename = ?, uploaded_at = ? WHERE forex_request_id = ?')
+            ->execute([$storedName, $now, $requestId]);
+    }
+
+    forex_log_audit($pdo, $requestId, 'Customer', 'Customer', 'Uploaded document: ' . FOREX_DOC_TYPES[$docType], '', $file['name']);
+
+    return ['success' => true, 'doc_id' => $docId, 'filename' => $file['name'], 'status' => 'Uploaded'];
 }
 
 function forex_render_declaration(string $bodyHtml, array $vars): string
