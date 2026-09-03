@@ -9,8 +9,8 @@
 <stop offset="1" stop-color="#0F2557"/>
 </linearGradient>
 <linearGradient id="blobGrad" x1="0" y1="0" x2="1" y2="1">
-<stop offset="0" stop-color="#EAF0FF"/>
-<stop offset="1" stop-color="#F7E6E4"/>
+<stop offset="0" stop-color="#F7D488"/>
+<stop offset="1" stop-color="#F0A93E"/>
 </linearGradient>
 </defs>
 
@@ -88,7 +88,7 @@
 
 <!-- small globe accent -->
 <g transform="translate(560,340)">
-<circle cx="0" cy="0" r="26" fill="#163C99"/>
+<circle cx="0" cy="0" r="26" fill="#0EA5A0"/>
 <path d="M-26 0 H26 M0 -26 V26 M-18 -18 C -8 -8, 8 -8, 18 -18 M-18 18 C -8 8, 8 8, 18 18" stroke="#FFFFFF" stroke-opacity="0.55" stroke-width="1.4" fill="none"/>
 </g>
 </svg>

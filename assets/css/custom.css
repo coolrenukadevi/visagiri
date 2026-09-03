@@ -16,9 +16,14 @@
     --gold: #F0A93E;
 }
 
-/* ---- Redesigned homepage hero (no stock photography) ---- */
+/* ---- Redesigned homepage hero (no stock photography): light
+   background with a dotted world-map texture, text on the left,
+   illustration on the right — the illustration's own backdrop blob
+   is recolored gold (see hero-illustration.svg) to read as the
+   "photo behind a colored circle" composition, without needing a
+   stock photo. ---- */
 .va-hero {
-    background: linear-gradient(135deg, var(--theme-2-dark) 0%, var(--theme-2) 55%, var(--theme-2-light) 100%);
+    background: var(--white);
     overflow: hidden;
 }
 .va-hero::before {
@@ -28,24 +33,92 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background:
-        radial-gradient(560px circle at 82% 15%, rgba(14, 165, 160, 0.28), transparent 60%),
-        radial-gradient(700px circle at 15% 85%, rgba(255, 255, 255, 0.08), transparent 60%);
+    background-image: radial-gradient(rgba(11, 110, 103, 0.18) 1.6px, transparent 1.6px);
+    background-size: 22px 22px;
+    -webkit-mask-image: radial-gradient(ellipse 70% 100% at 15% 40%, #000 0%, transparent 80%);
+    mask-image: radial-gradient(ellipse 70% 100% at 15% 40%, #000 0%, transparent 80%);
+}
+.va-hero .hero-content h6 {
+    color: var(--theme-2) !important;
+}
+.va-hero .hero-content h1 {
+    color: var(--header) !important;
+}
+.va-hero .hero-content p {
+    color: var(--text) !important;
+    max-width: 460px;
+    border-left: none !important;
+    padding-left: 0 !important;
 }
 .va-hero-image {
     position: relative;
     z-index: 2;
 }
 .va-hero-image img {
-    filter: drop-shadow(0 30px 60px rgba(6, 12, 30, 0.45));
-    max-width: 62%;
+    filter: drop-shadow(0 30px 60px rgba(16, 24, 40, 0.14));
+    max-width: 78%;
     display: block;
     margin: 0 auto;
 }
 @media (max-width: 991px) {
     .va-hero-image img {
-        max-width: 55%;
+        max-width: 62%;
     }
+}
+.va-hero-badge {
+    position: absolute;
+    top: 6%;
+    right: 12%;
+    z-index: 3;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--theme);
+    color: var(--white);
+    font-size: 22px;
+    box-shadow: 0 14px 30px rgba(14, 165, 160, 0.4);
+}
+@media (max-width: 991px) {
+    .va-hero-badge {
+        width: 44px;
+        height: 44px;
+        font-size: 17px;
+    }
+}
+
+/* Hero buttons: the theme's white-fill button (designed to pop
+   against the old dark hero) is invisible against this light one. */
+.va-hero .hero-content .hero-button .theme-btn {
+    background-color: var(--theme) !important;
+    color: var(--white) !important;
+}
+.va-hero .hero-content .hero-button .theme-btn i {
+    background-color: var(--white) !important;
+    color: var(--theme) !important;
+}
+.va-hero .hero-content .hero-button .theme-btn:hover {
+    background-color: var(--theme-2) !important;
+}
+.va-hero .hero-content .hero-button .theme-btn.style-2 {
+    background-color: transparent !important;
+    color: var(--header) !important;
+    border: 1px solid var(--border) !important;
+}
+.va-hero .hero-content .hero-button .theme-btn.style-2 i {
+    background-color: var(--theme) !important;
+    color: var(--white) !important;
+}
+.va-hero .hero-content .hero-button .theme-btn.style-2:hover {
+    background-color: var(--theme) !important;
+    color: var(--white) !important;
+    border-color: var(--theme) !important;
+}
+.va-hero .hero-content .hero-button .theme-btn.style-2:hover i {
+    background-color: var(--white) !important;
+    color: var(--theme) !important;
 }
 
 /* ---- Compact hero: keeps the visa-search widget visible on the first

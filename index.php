@@ -11,14 +11,9 @@ include __DIR__ . '/includes/header-home.php';
             <div class="va-hero-glow"></div>
             <div class="container-fluid">
                 <div class="row g-4 align-items-center">
-                    <div class="col-lg-6 order-2 order-lg-1">
-                        <div class="hero-image va-hero-image">
-                            <img src="assets/img/home-2/hero/hero-illustration.svg" alt="Passport, boarding pass and visa approval illustration">
-                        </div>
-                    </div>
-                    <div class="col-lg-6 order-1 order-lg-2">
+                    <div class="col-lg-6">
                         <div class="hero-content">
-                            <h6 class="wow fadeInUp" data-wow-delay=".3s">Smart Visa Assistance. Human Expertise.</h6>
+                            <h6 class="wow fadeInUp" data-wow-delay=".3s">Explore The World</h6>
                             <h1 class="split-text-right split-text-in-right">
                                 Your Visa Journey, Simplified.
                             </h1>
@@ -36,6 +31,12 @@ include __DIR__ . '/includes/header-home.php';
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </a>
                             </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="hero-image va-hero-image">
+                            <div class="va-hero-badge"><i class="fa-solid fa-plane"></i></div>
+                            <img src="assets/img/home-2/hero/hero-illustration.svg" alt="Passport, boarding pass and visa approval illustration">
                         </div>
                     </div>
                 </div>
