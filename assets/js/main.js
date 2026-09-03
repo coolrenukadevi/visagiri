@@ -63,6 +63,27 @@ document.addEventListener('DOMContentLoaded', function () {
     if (requestedService) activateTab(requestedService);
   }
 
+  // Floating contact widget
+  var chatWidget = document.getElementById('chatWidget');
+  var chatFab = document.getElementById('chatFab');
+  if (chatWidget && chatFab) {
+    var setChatOpen = function (open) {
+      chatWidget.classList.toggle('is-open', open);
+      chatFab.setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
+    chatFab.addEventListener('click', function () {
+      setChatOpen(!chatWidget.classList.contains('is-open'));
+    });
+    document.addEventListener('click', function (e) {
+      if (chatWidget.classList.contains('is-open') && !chatWidget.contains(e.target)) {
+        setChatOpen(false);
+      }
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') setChatOpen(false);
+    });
+  }
+
   // Basic client-side required-field affordance (server still validates)
   document.querySelectorAll('form[data-validate]').forEach(function (form) {
     form.addEventListener('submit', function (e) {

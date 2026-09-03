@@ -72,12 +72,17 @@ require __DIR__ . '/includes/header.php';
             <div class="card" style="margin-bottom:20px">
                 <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M22 6l-10 7L2 6"/></svg></div>
                 <h3>Email</h3>
-                <p><a href="mailto:hello@videshia.com" style="color:var(--teal-500);font-weight:600">hello@videshia.com</a></p>
+                <p><a href="mailto:info@tripgation.com" style="color:var(--teal-500);font-weight:600">info@tripgation.com</a></p>
             </div>
             <div class="card" style="margin-bottom:20px">
                 <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6 19.8 19.8 0 01-3.1-8.7A2 2 0 014.1 2h3a2 2 0 012 1.7c.1 1 .3 2 .6 2.9a2 2 0 01-.5 2.1L8 10a16 16 0 006 6l1.3-1.2a2 2 0 012.1-.5c.9.3 1.9.5 2.9.6a2 2 0 011.7 2z"/></svg></div>
                 <h3>Phone</h3>
                 <p><a href="tel:+911140840000" style="color:var(--teal-500);font-weight:600">+91 11 4084 0000</a></p>
+            </div>
+            <div class="card" style="margin-bottom:20px">
+                <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 00-8.6 15L2 22l5.2-1.4A10 10 0 1012 2zm5.8 14.3c-.3.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5.1-4.5-.1-.2-1.2-1.6-1.2-3.1s.8-2.2 1.1-2.5c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .6.5.2.5.8 1.9.8 2 .1.2.1.3 0 .5-.1.2-.1.3-.3.5l-.4.5c-.1.2-.3.3-.1.6.2.3.9 1.4 1.9 2.3 1.3 1.1 2.3 1.5 2.7 1.7.3.1.5.1.6-.1.2-.2.7-.8.9-1.1.2-.3.4-.2.6-.1l1.8.9c.2.1.4.2.4.3.1.3.1.9-.2 1.5z"/></svg></div>
+                <h3>WhatsApp</h3>
+                <p><a href="https://wa.me/917844819819" style="color:var(--teal-500);font-weight:600">+91 78448 19819</a></p>
             </div>
             <div class="card">
                 <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>

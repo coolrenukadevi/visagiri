@@ -23,7 +23,7 @@ require __DIR__ . '/includes/header.php';
             <h2>Privacy Policy</h2>
             <p>Videshia ("we", "us") collects the information you submit through our enquiry forms and CRM — including name, contact details, passport and travel details, and uploaded documents — solely to process your visa, travel, forex or insurance request.</p>
             <p>We do not sell your personal data. Information is shared only with the relevant embassy, consulate, airline, hotel, forex partner or insurer required to fulfil your specific request, and with Videshia staff assigned to your case.</p>
-            <p>Documents you upload are stored securely and access-controlled; only staff assigned to your enquiry, or administrators for audit purposes, can view them. You may request a copy or deletion of your data by contacting <a href="mailto:hello@videshia.com" style="color:var(--teal-500)">hello@videshia.com</a>, subject to records we're legally required to retain.</p>
+            <p>Documents you upload are stored securely and access-controlled; only staff assigned to your enquiry, or administrators for audit purposes, can view them. You may request a copy or deletion of your data by contacting <a href="mailto:info@tripgation.com" style="color:var(--teal-500)">info@tripgation.com</a>, subject to records we're legally required to retain.</p>
             <p>We use cookies for essential site functionality and to keep you signed in. We do not use third-party advertising trackers.</p>
         </div>
 
@@ -38,7 +38,7 @@ require __DIR__ . '/includes/header.php';
             <h2>Refund Policy</h2>
             <p>Videshia's service fee is refundable in full if we have not yet begun work on your case (document review, appointment booking, or submission). Once an application has been submitted to an embassy, airline, hotel, forex partner or insurer, our service fee is non-refundable, though any refundable third-party amount (e.g. a cancellable hotel booking) will be passed on per that partner's own policy.</p>
             <p>Government visa fees, once paid to an embassy or consulate, are governed by that authority's own refund policy and are typically non-refundable regardless of application outcome.</p>
-            <p>For a refund request, contact <a href="mailto:hello@videshia.com" style="color:var(--teal-500)">hello@videshia.com</a> with your enquiry reference number.</p>
+            <p>For a refund request, contact <a href="mailto:info@tripgation.com" style="color:var(--teal-500)">info@tripgation.com</a> with your enquiry reference number.</p>
         </div>
 
         <p style="font-size:13px;color:var(--muted-soft)">This page is a general summary and not exhaustive legal advice. For questions about a specific case, contact our team directly.</p>

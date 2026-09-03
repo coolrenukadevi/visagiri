@@ -15,7 +15,7 @@ function organization_schema(): array
             '@type' => 'ContactPoint',
             'telephone' => '+91-11-4084-0000',
             'contactType' => 'customer service',
-            'email' => 'hello@videshia.com',
+            'email' => 'info@tripgation.com',
         ],
     ];
 }

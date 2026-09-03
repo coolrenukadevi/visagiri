@@ -62,9 +62,9 @@ $footerCountries = array_slice($megaCountries ?? [], 0, 8);
                 <div class="footer-col">
                     <h4>Get in touch</h4>
                     <ul>
-                        <li><a href="mailto:hello@videshia.com">hello@videshia.com</a></li>
+                        <li><a href="mailto:info@tripgation.com">info@tripgation.com</a></li>
                         <li><a href="tel:+911140840000">+91 11 4084 0000</a></li>
-                        <li><a href="https://wa.me/911140840000">WhatsApp us</a></li>
+                        <li><a href="https://wa.me/917844819819">WhatsApp us</a></li>
                         <li><a href="<?= url('contact.php') ?>">Contact form</a></li>
                         <li>Cyber Hub, Gurugram, India</li>
                     </ul>
@@ -80,6 +80,8 @@ $footerCountries = array_slice($megaCountries ?? [], 0, 8);
             </div>
         </div>
     </footer>
+
+    <?php require __DIR__ . '/chat-widget.php'; ?>
 
     <script src="<?= asset('js/main.js') ?>"></script>
 </body>
