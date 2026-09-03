@@ -38,7 +38,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <span>&copy; <?= date('Y') ?> Videshia Technologies. All rights reserved.</span>
+                <span>&copy; 2015-<?= date('Y') ?>, Videshia - a unit of Tripgation. All rights reserved.</span>
                 <div>
                     <a href="#">Privacy</a>
                     <a href="#">Terms</a>
