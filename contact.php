@@ -131,12 +131,6 @@ include __DIR__ . '/includes/header.php';
                         <p>Send a message directly for a quick response during office hours.</p>
                         <a class="tcard-link" href="https://wa.me/917844819819">Message us &rarr;</a>
                     </div>
-                    <div class="console-tcard">
-                        <div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l2.5 2.5L16 9"/></svg></div>
-                        <h3>Visa FAQs</h3>
-                        <p>Check if your question is already answered before reaching out.</p>
-                        <a class="tcard-link" href="/#faq">Browse FAQs &rarr;</a>
-                    </div>
                 </div>
             </div>
         </section>

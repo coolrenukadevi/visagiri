@@ -1060,48 +1060,6 @@ include __DIR__ . '/includes/header-home.php';
             </div>
         </section>
 
-        <!-- FAQ Start -->
-        <section id="faq" class="section-padding fix section-bg-1">
-            <div class="container">
-                <div class="row g-5 align-items-start">
-                    <div class="col-lg-4">
-                        <div class="section-title mb-0">
-                            <span class="sub-title-2 wow fadeInUp">Got Questions?</span>
-                            <h2 class="split-text-right split-text-in-right">Frequently Asked Questions</h2>
-                        </div>
-                        <p class="text mt-3">
-                            Answers to common questions about visa assistance from Visa Agency. Still have a
-                            question? <a href="contact">Talk to a consultant</a>.
-                        </p>
-                    </div>
-                    <div class="col-lg-8">
-                        <div class="faq-accordion">
-                            <div class="faq-item active">
-                                <div class="faq-question">Do you guarantee visa approval? <i class="fa-solid fa-plus"></i></div>
-                                <div class="faq-answer"><p>No. Visa Agency provides professional guidance, documentation support and application assistance — the final decision always rests with the relevant embassy, consulate or immigration authority.</p></div>
-                            </div>
-                            <div class="faq-item">
-                                <div class="faq-question">Which countries do you cover? <i class="fa-solid fa-plus"></i></div>
-                                <div class="faq-answer"><p>We currently provide guidance for 20+ popular visa destinations across Asia, Europe, North America, the Middle East and Oceania, with plans to expand our coverage further.</p></div>
-                            </div>
-                            <div class="faq-item">
-                                <div class="faq-question">Do you offer apostille and attestation services? <i class="fa-solid fa-plus"></i></div>
-                                <div class="faq-answer"><p>Yes. Alongside visa assistance, we help with MEA apostille, embassy attestation, certificate attestation and translation services.</p></div>
-                            </div>
-                            <div class="faq-item">
-                                <div class="faq-question">How do I start my application? <i class="fa-solid fa-plus"></i></div>
-                                <div class="faq-answer"><p>Use the visa search widget above or the "Enquire Now" button to share your travel details — a consultant will get in touch to guide you through the next steps.</p></div>
-                            </div>
-                            <div class="faq-item">
-                                <div class="faq-question">Is Visa Agency a technology-enabled consultancy? <i class="fa-solid fa-plus"></i></div>
-                                <div class="faq-answer"><p>Yes. Visa Agency combines experienced visa consultants with a centralised visa search, digital document checklists and online enquiry management to make the process simpler.</p></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <!-- Final CTA Start -->
         <section class="section-padding fix">
             <div class="container">

@@ -103,7 +103,6 @@
                                 <li><a href="visa-checklist">Document Checklist</a></li>
                                 <li><a href="visa-appointment">Appointment / Interview Support</a></li>
                                 <li><a href="visa-refusal">Visa Refusal Guidance</a></li>
-                                <li><a href="/#faq">Visa FAQs</a></li>
                             </ul>
                         </div>
                     </div>
@@ -167,7 +166,6 @@
                                 <li><a href="country-list">Country Search</a></li>
                                 <li><a href="visa-checklist">Visa Checklist</a></li>
                                 <li><a href="visa-appointment">Book an Appointment</a></li>
-                                <li><a href="/#faq">FAQs</a></li>
                             </ul>
                         </div>
                         <div class="mega-col">

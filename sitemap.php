@@ -193,7 +193,6 @@ foreach ($VISA_AGENCY_COUNTRIES as $c) {
                                         <li><a href="visa-requirements">Visa Requirements Checker</a></li>
                                         <li><a href="visa-appointment">Book an Appointment</a></li>
                                         <li><a href="visa-refusal">Visa Refusal Guidance</a></li>
-                                        <li><a href="/#faq">FAQs</a></li>
                                     </ul>
                                 </div>
                             </div>

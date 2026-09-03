@@ -38,22 +38,58 @@
 }
 .va-hero-image img {
     filter: drop-shadow(0 30px 60px rgba(6, 12, 30, 0.45));
-    max-width: 92%;
+    max-width: 62%;
     display: block;
     margin: 0 auto;
 }
 @media (max-width: 991px) {
     .va-hero-image img {
-        max-width: 78%;
+        max-width: 55%;
     }
 }
 
-/* ---- Nav spacing: fit 7 top-level items comfortably ---- */
+/* ---- Compact hero: keeps the visa-search widget visible on the first
+   screen instead of requiring a scroll. Overrides the template's huge
+   default h1 (72px) and generous section padding (100px), both of which
+   pushed everything below the widget past a typical laptop viewport. ---- */
+.va-hero {
+    padding-top: 34px !important;
+    padding-bottom: 16px !important;
+}
+.va-hero .hero-content h6 {
+    font-size: 14px !important;
+    letter-spacing: 3px !important;
+    margin-bottom: 8px !important;
+}
+.va-hero .hero-content h1 {
+    font-size: clamp(28px, 3vw, 42px) !important;
+    line-height: 1.18 !important;
+    margin-bottom: 10px !important;
+}
+.va-hero .hero-content p {
+    margin-bottom: 0 !important;
+    font-size: 15px !important;
+}
+.va-hero .hero-content .hero-button {
+    margin-top: 20px !important;
+    gap: 16px !important;
+}
+.visa-search-widget {
+    margin-top: -18px !important;
+    padding: 20px !important;
+}
+
+/* ---- Nav spacing: fit 7 top-level items comfortably, at roughly half
+   the template's default row height for a tighter, premium feel. ---- */
+.header-main {
+    padding: 6px 0 !important;
+}
 .header-main .main-menu ul li {
     margin-inline-end: 26px !important;
 }
 .header-main .main-menu ul li a {
     font-size: 14.5px !important;
+    padding: 10px 0 !important;
 }
 @media (max-width: 1500px) {
     .header-main .main-menu ul li {
@@ -529,11 +565,14 @@
     gap: 1px;
 }
 .mega-links li a {
-    display: block;
+    display: block !important;
+    width: auto !important;
+    white-space: normal !important;
+    text-transform: none !important;
     padding: 6px 8px !important;
     margin: 0 -8px !important;
     border-radius: 8px;
-    font-size: 13.5px;
+    font-size: 13.5px !important;
     line-height: 1.5 !important;
     color: var(--header) !important;
 }

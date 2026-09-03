@@ -75,7 +75,6 @@
                                 <li><a href="other-services#flight-hotel-assistance">Flight &amp; Hotel Assistance</a></li>
                                 <li><a href="visa-checklist">Document Checklist</a></li>
                                 <li><a href="track-application">Track Your Enquiry</a></li>
-                                <li><a href="/#faq">Frequently Asked Questions</a></li>
                             </ul>
                         </details>
                     </nav>
