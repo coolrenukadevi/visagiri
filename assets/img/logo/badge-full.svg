@@ -1,28 +1,29 @@
 <svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Visa Agency badge">
 <defs>
 <linearGradient id="ringGradFull" x1="30" y1="30" x2="210" y2="210" gradientUnits="userSpaceOnUse">
-<stop offset="0" stop-color="#073B37"/>
-<stop offset="0.5" stop-color="#0EA5A0"/>
-<stop offset="1" stop-color="#F0A93E"/>
+<stop offset="0" stop-color="#062B5C"/>
+<stop offset="0.6" stop-color="#0B4DB6"/>
+<stop offset="1" stop-color="#F5B800"/>
 </linearGradient>
-<clipPath id="badgeClipFull">
-<circle cx="120" cy="120" r="97"/>
-</clipPath>
+<linearGradient id="globeGradFull" x1="40" y1="50" x2="180" y2="190" gradientUnits="userSpaceOnUse">
+<stop offset="0" stop-color="#0B4DB6"/>
+<stop offset="1" stop-color="#062B5C"/>
+</linearGradient>
 <filter id="badgeShadowFull" x="-40%" y="-40%" width="180%" height="180%">
-<feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#031A17" flood-opacity="0.35"/>
+<feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#031428" flood-opacity="0.35"/>
 </filter>
 </defs>
 
-<circle cx="120" cy="120" r="107" fill="#FFFFFF"/>
-<circle cx="120" cy="120" r="107" stroke="url(#ringGradFull)" stroke-width="5"/>
-
-<g clip-path="url(#badgeClipFull)">
-<rect x="-30" y="46" width="300" height="70" fill="#0EA5A0" transform="rotate(-9 120 81)"/>
-<rect x="-30" y="120" width="300" height="70" fill="#0B6E67" transform="rotate(-9 120 155)"/>
-</g>
-
 <g filter="url(#badgeShadowFull)">
-<text x="120" y="93" font-family="'Space Grotesk', Arial, 'Helvetica Neue', sans-serif" font-size="46" font-weight="800" letter-spacing="2" fill="#FFFFFF" text-anchor="middle" transform="rotate(-9 120 93)">VISA</text>
-<text x="120" y="167" font-family="'Space Grotesk', Arial, 'Helvetica Neue', sans-serif" font-size="34" font-weight="800" letter-spacing="4" fill="#FFFFFF" text-anchor="middle" transform="rotate(-9 120 167)">AGENCY</text>
+<circle cx="120" cy="120" r="107" fill="#FFFFFF"/>
+<circle cx="120" cy="120" r="107" stroke="url(#ringGradFull)" stroke-width="12"/>
+<circle cx="105" cy="120" r="80" fill="url(#globeGradFull)"/>
+<ellipse cx="105" cy="120" rx="27.5" ry="80" stroke="#FFFFFF" stroke-opacity="0.55" stroke-width="4" fill="none"/>
+<line x1="26.5" y1="120" x2="183.5" y2="120" stroke="#FFFFFF" stroke-opacity="0.55" stroke-width="4"/>
+<line x1="40" y1="82.5" x2="170" y2="82.5" stroke="#FFFFFF" stroke-opacity="0.3" stroke-width="3"/>
+<line x1="40" y1="157.5" x2="170" y2="157.5" stroke="#FFFFFF" stroke-opacity="0.3" stroke-width="3"/>
+<circle cx="175" cy="170" r="40" fill="#FFFFFF"/>
+<circle cx="175" cy="170" r="32.5" fill="#F5B800"/>
+<path d="M157.5 170 L170 182.5 L192.5 152.5" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
 </g>
 </svg>

@@ -73,7 +73,7 @@ button { font-family: inherit; }
 .admin-login-brand {
     position: relative;
     overflow: hidden;
-    background: linear-gradient(155deg, #052825 0%, #073B37 30%, #0B6E67 65%, #0FA399 100%);
+    background: linear-gradient(155deg, #041D3D 0%, #062B5C 30%, #0B4DB6 65%, #1769D2 100%);
     display: flex;
     align-items: center;
     padding: 52px 46px;
@@ -161,8 +161,8 @@ button { font-family: inherit; }
 }
 .admin-field-input:focus-within {
     background: var(--c-white);
-    border-color: #0EA5A0;
-    box-shadow: 0 0 0 4px #E1F5F3;
+    border-color: var(--c-blue);
+    box-shadow: 0 0 0 4px rgba(11, 77, 182, 0.14);
 }
 .admin-field-input i { color: var(--c-muted); font-size: 13.5px; flex: none; }
 .admin-field-input input {
@@ -189,7 +189,7 @@ button { font-family: inherit; }
     padding: 14px;
     border: none;
     border-radius: 100px;
-    background: linear-gradient(135deg, #0FA399 0%, #0B6E67 100%);
+    background: linear-gradient(135deg, #1769D2 0%, #0B4DB6 100%);
     color: #fff;
     font-weight: 700;
     cursor: pointer;
@@ -199,10 +199,10 @@ button { font-family: inherit; }
     justify-content: center;
     gap: 8px;
     margin-top: 10px;
-    box-shadow: 0 10px 24px rgba(11, 110, 103, 0.3);
+    box-shadow: 0 10px 24px rgba(11, 77, 182, 0.3);
     transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
-.admin-btn:hover { box-shadow: 0 14px 30px rgba(11, 110, 103, 0.4); transform: translateY(-1px); }
+.admin-btn:hover { box-shadow: 0 14px 30px rgba(11, 77, 182, 0.4); transform: translateY(-1px); }
 .admin-btn:active { transform: translateY(0); }
 .admin-error {
     background: var(--c-red-bg);
@@ -226,8 +226,7 @@ button { font-family: inherit; }
     color: var(--c-muted);
     transition: color 0.15s ease, gap 0.15s ease;
 }
-.admin-login-back:hover { color: var(--c-teal); gap: 10px; }
-.admin-login-back:hover { color: #0EA5A0; }
+.admin-login-back:hover { color: var(--c-blue); gap: 10px; }
 @media (prefers-reduced-motion: reduce) {
     .admin-field-input, .admin-btn { transition: none !important; }
 }

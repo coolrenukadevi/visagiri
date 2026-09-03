@@ -1,16 +1,16 @@
 <svg width="700" height="620" viewBox="0 0 700 620" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Passport, boarding pass and visa approval illustration">
 <defs>
 <linearGradient id="passportGrad" x1="0" y1="0" x2="1" y2="1">
-<stop offset="0" stop-color="#E4222A"/>
-<stop offset="1" stop-color="#B81A21"/>
+<stop offset="0" stop-color="#0B4DB6"/>
+<stop offset="1" stop-color="#062B5C"/>
 </linearGradient>
 <linearGradient id="cardGrad" x1="0" y1="0" x2="1" y2="1">
-<stop offset="0" stop-color="#1B3F93"/>
-<stop offset="1" stop-color="#0F2557"/>
+<stop offset="0" stop-color="#1769D2"/>
+<stop offset="1" stop-color="#062B5C"/>
 </linearGradient>
 <linearGradient id="blobGrad" x1="0" y1="0" x2="1" y2="1">
-<stop offset="0" stop-color="#F7D488"/>
-<stop offset="1" stop-color="#F0A93E"/>
+<stop offset="0" stop-color="#EAF3FF"/>
+<stop offset="1" stop-color="#BBD6FB"/>
 </linearGradient>
 </defs>
 
@@ -22,8 +22,8 @@
 
 <!-- paper airplane -->
 <g transform="translate(430,90) rotate(28)">
-<path d="M0 30 L70 0 L18 14 L10 44 L0 30Z" fill="#163C99"/>
-<path d="M18 14 L70 0 L18 32 Z" fill="#2C57B8"/>
+<path d="M0 30 L70 0 L18 14 L10 44 L0 30Z" fill="#062B5C"/>
+<path d="M18 14 L70 0 L18 32 Z" fill="#0B4DB6"/>
 </g>
 
 <!-- small cloud shapes -->
@@ -50,11 +50,11 @@
 <g transform="translate(150,240) rotate(-8)">
 <rect x="0" y="0" width="230" height="300" rx="14" fill="url(#passportGrad)"/>
 <rect x="0" y="0" width="230" height="300" rx="14" fill="black" opacity="0.05"/>
-<rect x="14" y="14" width="202" height="272" rx="8" fill="none" stroke="#F2C46B" stroke-width="1.4" opacity="0.7"/>
-<circle cx="115" cy="110" r="42" fill="none" stroke="#F2C46B" stroke-width="3"/>
-<circle cx="115" cy="110" r="26" fill="#F2C46B" opacity="0.18"/>
-<path d="M100 112 L111 123 L133 98" stroke="#F2C46B" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-<text x="115" y="180" text-anchor="middle" font-family="'Space Grotesk', Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="3" fill="#F7E6E4">PASSPORT</text>
+<rect x="14" y="14" width="202" height="272" rx="8" fill="none" stroke="#F5B800" stroke-width="1.4" opacity="0.7"/>
+<circle cx="115" cy="110" r="42" fill="none" stroke="#F5B800" stroke-width="3"/>
+<circle cx="115" cy="110" r="26" fill="#F5B800" opacity="0.18"/>
+<path d="M100 112 L111 123 L133 98" stroke="#F5B800" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+<text x="115" y="180" text-anchor="middle" font-family="'Space Grotesk', Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="3" fill="#FFFFFF">PASSPORT</text>
 <rect x="45" y="200" width="140" height="6" rx="3" fill="#FFFFFF" opacity="0.35"/>
 <rect x="65" y="216" width="100" height="6" rx="3" fill="#FFFFFF" opacity="0.25"/>
 </g>
@@ -75,10 +75,10 @@
 <rect x="0" y="0" width="190" height="96" rx="18" fill="none" stroke="#E3E8F5" stroke-width="1.5"/>
 <text x="18" y="26" font-family="Arial, sans-serif" font-size="11.5" font-weight="700" fill="#101828">Document Checklist</text>
 <g font-family="Arial, sans-serif" font-size="10.5" fill="#374151">
-<circle cx="22" cy="44" r="6" fill="#E4222A"/>
+<circle cx="22" cy="44" r="6" fill="#0B4DB6"/>
 <path d="M19 44 L21.3 46.3 L26 41" stroke="#FFFFFF" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <text x="34" y="48">Passport</text>
-<circle cx="22" cy="64" r="6" fill="#E4222A"/>
+<circle cx="22" cy="64" r="6" fill="#0B4DB6"/>
 <path d="M19 64 L21.3 66.3 L26 61" stroke="#FFFFFF" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 <text x="34" y="68">Photographs</text>
 <circle cx="22" cy="84" r="6" fill="none" stroke="#CBD5E1" stroke-width="1.6"/>
@@ -88,7 +88,7 @@
 
 <!-- small globe accent -->
 <g transform="translate(560,340)">
-<circle cx="0" cy="0" r="26" fill="#0EA5A0"/>
+<circle cx="0" cy="0" r="26" fill="#0B4DB6"/>
 <path d="M-26 0 H26 M0 -26 V26 M-18 -18 C -8 -8, 8 -8, 18 -18 M-18 18 C -8 8, 8 8, 18 18" stroke="#FFFFFF" stroke-opacity="0.55" stroke-width="1.4" fill="none"/>
 </g>
 </svg>

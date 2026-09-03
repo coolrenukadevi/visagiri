@@ -25,10 +25,10 @@ if (!$enquiry) {
 <title>Enquiry Confirmation &ndash; <?php echo htmlspecialchars($enquiry['tracking_code']); ?></title>
 <style>
     body { font-family: Arial, sans-serif; color: #1A1A1A; max-width: 680px; margin: 40px auto; padding: 0 20px; }
-    .cf-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid #0EA5A0; padding-bottom: 20px; margin-bottom: 26px; }
-    .cf-header h1 { font-size: 20px; margin: 0 0 4px; color: #0B6E67; }
+    .cf-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid #0B4DB6; padding-bottom: 20px; margin-bottom: 26px; }
+    .cf-header h1 { font-size: 20px; margin: 0 0 4px; color: #062B5C; }
     .cf-header .meta { font-size: 12.5px; color: #666; }
-    .cf-code-box { background: linear-gradient(135deg, #0B6E67 0%, #073B37 100%); border-radius: 12px; padding: 18px 24px; margin-bottom: 26px; color: #fff; }
+    .cf-code-box { background: linear-gradient(135deg, #0B4DB6 0%, #062B5C 100%); border-radius: 12px; padding: 18px 24px; margin-bottom: 26px; color: #fff; }
     .cf-code-box .lbl { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.8; }
     .cf-code-box .val { font-size: 22px; font-weight: 700; letter-spacing: 0.02em; }
     .cf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 24px; margin-bottom: 26px; }
@@ -37,7 +37,7 @@ if (!$enquiry) {
     .cf-note { background: #FBF0DE; color: #A9720F; font-size: 12.5px; border-radius: 8px; padding: 12px 16px; margin-bottom: 26px; }
     .cf-footer { margin-top: 40px; font-size: 11px; color: #94A0BD; text-align: center; line-height: 1.6; }
     .print-btn { margin-bottom: 20px; }
-    .print-btn button { padding: 10px 20px; border-radius: 8px; border: none; background: #0EA5A0; color: #fff; font-size: 13px; cursor: pointer; }
+    .print-btn button { padding: 10px 20px; border-radius: 8px; border: none; background: #0B4DB6; color: #fff; font-size: 13px; cursor: pointer; }
     @media print { .print-btn { display: none; } body { margin: 0; } }
 </style>
 </head>
