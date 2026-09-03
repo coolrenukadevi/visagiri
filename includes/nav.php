@@ -6,7 +6,7 @@
         </li>
 
         <li class="has-dropdown">
-            <a href="our-services">Visa Services</a>
+            <a href="our-services">Services</a>
             <ul class="submenu has-homemenu mega-panel">
                 <li>
                     <div class="mega-panel-inner">
@@ -33,17 +33,6 @@
                                 <li><a href="visa-refusal">Refusal &amp; Re-Application Guidance</a></li>
                             </ul>
                         </div>
-                        <div class="mega-col">
-                            <h5>Apostille &amp; Attestation</h5>
-                            <ul class="mega-links">
-                                <li><a href="apostille">Apostille Overview</a></li>
-                                <li><a href="apostille-mea">MEA Apostille</a></li>
-                                <li><a href="apostille-certificate-attestation">Certificate Attestation</a></li>
-                                <li><a href="apostille-embassy-attestation">Embassy Attestation</a></li>
-                                <li><a href="apostille-document-legalisation">Document Legalisation</a></li>
-                                <li><a href="apostille-translation-services">Translation &amp; Notary Assistance</a></li>
-                            </ul>
-                        </div>
                     </div>
                     <div class="mega-bottom">
                         <div class="mega-bottom-text"><strong>Need help choosing?</strong>Get a free 10-minute expert consultation.</div>
@@ -54,7 +43,7 @@
         </li>
 
         <li class="has-dropdown">
-            <a href="country-list">Visa by Country</a>
+            <a href="country-list">Countries</a>
             <ul class="submenu has-homemenu mega-panel mega-panel-countries">
                 <li>
                     <div class="country-explorer-menu">
@@ -90,7 +79,7 @@
         </li>
 
         <li class="has-dropdown">
-            <a href="visa-requirements">Visa Information</a>
+            <a href="visa-consultancy-services">Visa Solutions</a>
             <ul class="submenu has-homemenu mega-panel mega-panel-2col">
                 <li>
                     <div class="mega-panel-inner">
@@ -114,9 +103,21 @@
                     </div>
                     <div class="mega-bottom">
                         <div class="mega-bottom-text"><strong>Not sure what you need?</strong>We'll match you to the right visa category and documents.</div>
-                        <a href="visa-requirements" class="mega-cta-btn">Check Visa Requirements <i class="fa-solid fa-arrow-right"></i></a>
+                        <a href="visa-consultancy-services" class="mega-cta-btn">Talk To A Visa Expert <i class="fa-solid fa-arrow-right"></i></a>
                     </div>
                 </li>
+            </ul>
+        </li>
+
+        <li class="has-dropdown">
+            <a href="apostille">Apostille</a>
+            <ul class="submenu simple-dropdown">
+                <li><a href="apostille">Apostille Overview</a></li>
+                <li><a href="apostille-mea">MEA Apostille</a></li>
+                <li><a href="apostille-certificate-attestation">Certificate Attestation</a></li>
+                <li><a href="apostille-embassy-attestation">Embassy Attestation</a></li>
+                <li><a href="apostille-document-legalisation">Document Legalisation</a></li>
+                <li><a href="apostille-translation-services">Translation &amp; Notary Assistance</a></li>
             </ul>
         </li>
 
