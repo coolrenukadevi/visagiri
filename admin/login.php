@@ -34,8 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="admin-login-card">
         <div class="admin-login-brand">
             <div class="admin-login-brand-inner">
-                <a href="/" class="admin-login-logo">
-                    <img src="../assets/img/logo/white-logo.svg" alt="Visa Agency">
+                <a href="/" class="admin-login-logo admin-login-logo-badge">
+                    <img src="../assets/img/logo/badge-full.svg" alt="Visa Agency">
                 </a>
                 <h1>Staff &amp; Partner Sign In</h1>
                 <p>Manage visa enquiries, applications, documents, forex requests and payments from one console.</p>
