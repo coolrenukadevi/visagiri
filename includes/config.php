@@ -10,9 +10,10 @@ define('SITE_DOMAIN', 'videshia.com');
 define('SITE_TAGLINE', 'AI-Powered Visa Management');
 define('SITE_URL', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https://' : 'http://') . ($_SERVER['HTTP_HOST'] ?? 'videshia.com'));
 
-// Base path so links work whether the app sits at the domain root or a sub-folder.
-$scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/'));
-define('BASE_PATH', $scriptDir === '/' ? '' : rtrim($scriptDir, '/'));
+// The app is deployed at the domain root. If it ever moves under a sub-folder,
+// set that prefix here once rather than deriving it per-script (which breaks
+// for nested pages like crm/login.php).
+define('BASE_PATH', '');
 
 date_default_timezone_set('Asia/Kolkata');
 

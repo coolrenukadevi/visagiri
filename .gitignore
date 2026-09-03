@@ -9,3 +9,6 @@
 .env
 .env.local
 vendor/
+
+# Runtime SQLite database — auto-created by includes/db.php on first request.
+/data/

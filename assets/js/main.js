@@ -33,6 +33,36 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
+  // Hero enquiry widget: tab switching + field panel toggling
+  var enquiryWidget = document.querySelector('.enquiry-widget');
+  if (enquiryWidget) {
+    var tabs = enquiryWidget.querySelectorAll('.enquiry-tab');
+    var panels = enquiryWidget.querySelectorAll('.enquiry-fields');
+    var serviceInput = document.getElementById('serviceTypeInput');
+
+    var activateTab = function (service) {
+      var matched = false;
+      tabs.forEach(function (tab) {
+        var isMatch = tab.getAttribute('data-tab') === service;
+        tab.classList.toggle('active', isMatch);
+        if (isMatch) matched = true;
+      });
+      panels.forEach(function (panel) {
+        panel.hidden = panel.getAttribute('data-panel') !== service;
+      });
+      if (matched && serviceInput) serviceInput.value = service;
+    };
+
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        activateTab(tab.getAttribute('data-tab'));
+      });
+    });
+
+    var requestedService = new URLSearchParams(window.location.search).get('service');
+    if (requestedService) activateTab(requestedService);
+  }
+
   // Basic client-side required-field affordance (server still validates)
   document.querySelectorAll('form[data-validate]').forEach(function (form) {
     form.addEventListener('submit', function (e) {

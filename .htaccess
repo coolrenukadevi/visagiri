@@ -2,13 +2,32 @@ Options -Indexes
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
+
+    # /visa/ clean URL architecture — most specific pattern first.
+    RewriteRule ^visa/?$ visa.php [L,QSA]
+    RewriteRule ^visa/type/([a-z0-9-]+)/?$ visa.php?view=type&category=$1 [L,QSA]
+    RewriteRule ^visa/([a-z0-9-]+)/([a-z0-9-]+)/?$ visa.php?view=category&country=$1&category=$2 [L,QSA]
+    RewriteRule ^visa/([a-z0-9-]+)/?$ visa.php?view=country&country=$1 [L,QSA]
+
+    # Sitemaps served dynamically from the database.
+    RewriteRule ^sitemap\.xml$ sitemap.php [L]
+    RewriteRule ^sitemap-pages\.xml$ sitemap-pages.php [L]
+    RewriteRule ^sitemap-visa\.xml$ sitemap-visa.php [L]
 </IfModule>
 
-# Block direct browser access to shared PHP partials.
+# Block direct browser access to shared PHP partials and data files.
 <IfModule mod_alias.c>
     RedirectMatch 404 ^/includes/.*\.php$
+    RedirectMatch 404 ^/database/.*$
 </IfModule>
 
 <FilesMatch "\.(env|log|sql|md)$">
     Require all denied
 </FilesMatch>
+
+# CRM is a separate, non-indexable application area.
+<IfModule mod_headers.c>
+    <If "%{REQUEST_URI} =~ m#^/crm/#">
+        Header set X-Robots-Tag "noindex, nofollow"
+    </If>
+</IfModule>
