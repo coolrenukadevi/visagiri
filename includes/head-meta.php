@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/partner-nav-state.php';
+require_once __DIR__ . '/forex-customer-nav-state.php';
 if (!isset($page_title)) { $page_title = "Visa Agency &ndash; Trusted Visa Consultant in Patna, Ranchi, Raipur & Bhopal"; }
 if (!isset($page_description)) { $page_description = "Visa Agency &ndash; Trusted Visa Consultant in Patna, Ranchi, Raipur & Bhopal."; }
 if (!isset($page_canonical)) { $page_canonical = ''; }

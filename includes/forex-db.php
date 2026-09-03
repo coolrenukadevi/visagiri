@@ -66,6 +66,10 @@ const FOREX_DEFAULT_CURRENCIES = [
     'THB', 'MYR', 'SAR', 'QAR', 'NZD', 'CNY',
 ];
 
+/** Customer portal login OTP — mirrors B2B_OTP_TTL_SECONDS/B2B_OTP_MAX_ATTEMPTS (includes/b2b-otp.php). */
+const FOREX_CUSTOMER_OTP_TTL_SECONDS = 600; // 10 minutes
+const FOREX_CUSTOMER_OTP_MAX_ATTEMPTS = 5;
+
 function forex_db(): PDO
 {
     static $migrated = false;
@@ -293,6 +297,22 @@ function forex_db(): PDO
     $pdo->exec("CREATE TABLE IF NOT EXISTS forex_settings (
         key TEXT PRIMARY KEY,
         value TEXT
+    )");
+
+    // Customer portal login — passwordless, mobile-scoped OTP emailed to the
+    // address already on file (mirrors b2b_otp_codes but keyed by mobile
+    // rather than an account row, since a forex customer has no separate
+    // account until they log in for the first time).
+    $pdo->exec("CREATE TABLE IF NOT EXISTS forex_customer_otps (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        mobile TEXT NOT NULL,
+        email TEXT NOT NULL,
+        code_hash TEXT NOT NULL,
+        expires_at TEXT NOT NULL,
+        consumed_at TEXT,
+        attempts INTEGER NOT NULL DEFAULT 0,
+        ip_address TEXT,
+        created_at TEXT NOT NULL
     )");
 
     // Additive column on the existing notifications table so the Forex module
@@ -609,6 +629,107 @@ function forex_pdf_safe(?string $text): string
     $text = (string) $text;
     $converted = @iconv('UTF-8', 'CP1252//TRANSLIT//IGNORE', $text);
     return $converted !== false ? $converted : preg_replace('/[^\x20-\x7E]/', '', $text);
+}
+
+/** Normalizes any mobile input to its last 10 digits — the same comparison
+ * forex-track.php already uses to verify a submitted mobile number. */
+function forex_normalize_mobile(string $raw): string
+{
+    return substr(preg_replace('/\D/', '', $raw), -10);
+}
+
+/**
+ * Most recent non-archived forex request's email for a given mobile
+ * number — where the customer-portal login OTP gets sent. Returns null if
+ * this mobile has no forex request on file with an email, in which case
+ * the caller must still respond as if a code might have been sent (see
+ * forex-otp-send.php) so the response itself can't be used to enumerate
+ * which mobile numbers have requests.
+ */
+function forex_customer_email_for_mobile(PDO $pdo, string $mobile): ?string
+{
+    $digits = forex_normalize_mobile($mobile);
+    if ($digits === '') {
+        return null;
+    }
+    $stmt = $pdo->prepare("SELECT email FROM forex_requests
+        WHERE substr(mobile, -10) = ? AND archived_at IS NULL AND email IS NOT NULL AND email != ''
+        ORDER BY created_at DESC LIMIT 1");
+    $stmt->execute([$digits]);
+    $email = $stmt->fetchColumn();
+    return $email !== false && $email !== '' ? (string) $email : null;
+}
+
+/** Most recent full_name on file for a mobile — greets the customer once
+ * logged in; there is no separate customer-profile table to read from. */
+function forex_customer_display_name(PDO $pdo, string $mobile): string
+{
+    $digits = forex_normalize_mobile($mobile);
+    if ($digits === '') {
+        return 'Customer';
+    }
+    $stmt = $pdo->prepare("SELECT full_name FROM forex_requests
+        WHERE substr(mobile, -10) = ? AND archived_at IS NULL
+        ORDER BY created_at DESC LIMIT 1");
+    $stmt->execute([$digits]);
+    $name = $stmt->fetchColumn();
+    return $name !== false && $name !== '' ? (string) $name : 'Customer';
+}
+
+/**
+ * Generates a 6-digit code, stores its hash (never the plaintext) with a
+ * 10-minute expiry, and emails it to $email — mirrors b2b_send_otp()
+ * exactly. The caller resolves $email via forex_customer_email_for_mobile()
+ * first, so this function itself never decides whether an "account"
+ * exists. Returns true if the email send succeeded.
+ */
+function forex_send_customer_otp(PDO $pdo, string $mobile, string $email): bool
+{
+    $digits = forex_normalize_mobile($mobile);
+    $code = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+    $codeHash = password_hash($code, PASSWORD_DEFAULT);
+    $expiresAt = gmdate('c', time() + FOREX_CUSTOMER_OTP_TTL_SECONDS);
+
+    $pdo->prepare('INSERT INTO forex_customer_otps (mobile, email, code_hash, expires_at, created_at, ip_address) VALUES (?, ?, ?, ?, ?, ?)')
+        ->execute([$digits, $email, $codeHash, $expiresAt, gmdate('c'), $_SERVER['REMOTE_ADDR'] ?? null]);
+
+    return crm_send_applicant_email(
+        $email,
+        'Your VisaAgency.in Forex Portal Login Code',
+        "Your verification code is: $code\n\nThis code expires in " . (FOREX_CUSTOMER_OTP_TTL_SECONDS / 60) . " minutes. If you did not request this, you can safely ignore this email.\n\nRegards,\nVisaAgency.in Forex Team"
+    );
+}
+
+/**
+ * Verifies a submitted code against the most recent unconsumed code for
+ * this mobile — mirrors b2b_verify_otp() exactly (expiry check,
+ * max-attempts lockout, consume-on-success so it can't be replayed).
+ */
+function forex_verify_customer_otp(PDO $pdo, string $mobile, string $code): bool
+{
+    $digits = forex_normalize_mobile($mobile);
+    $stmt = $pdo->prepare('SELECT * FROM forex_customer_otps WHERE mobile = ? AND consumed_at IS NULL ORDER BY id DESC LIMIT 1');
+    $stmt->execute([$digits]);
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$row) {
+        return false;
+    }
+    if (strtotime($row['expires_at']) < time()) {
+        return false;
+    }
+    if ((int) $row['attempts'] >= FOREX_CUSTOMER_OTP_MAX_ATTEMPTS) {
+        return false;
+    }
+
+    $pdo->prepare('UPDATE forex_customer_otps SET attempts = attempts + 1 WHERE id = ?')->execute([$row['id']]);
+
+    if (!password_verify($code, $row['code_hash'])) {
+        return false;
+    }
+
+    $pdo->prepare('UPDATE forex_customer_otps SET consumed_at = ? WHERE id = ?')->execute([gmdate('c'), $row['id']]);
+    return true;
 }
 
 /**

@@ -56,6 +56,11 @@ $headerWhatsappMsg = rawurlencode('Hello VisaAgency.in, I need assistance with m
         </button>
         <div class="header-login-panel" id="headerLoginPanel" role="menu" aria-label="Login options">
             <a href="customer-login" role="menuitem"><i class="fa-solid fa-user" aria-hidden="true"></i> Customer Login</a>
+            <?php if (!empty($forexCustomerLoggedIn)): ?>
+            <a href="forex-my-requests" role="menuitem"><i class="fa-solid fa-money-bill-wave" aria-hidden="true"></i> My Forex Requests</a>
+            <?php else: ?>
+            <a href="forex-login" role="menuitem"><i class="fa-solid fa-money-bill-wave" aria-hidden="true"></i> Forex Login</a>
+            <?php endif; ?>
             <a href="employee-login" role="menuitem"><i class="fa-solid fa-briefcase" aria-hidden="true"></i> Employee Login</a>
             <?php if (!empty($b2bPartnerLoggedIn)): ?>
             <a href="b2b-dashboard" role="menuitem"><i class="fa-solid fa-handshake" aria-hidden="true"></i> Partner Dashboard</a>

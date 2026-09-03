@@ -140,8 +140,11 @@
                         </a>
                     </div>
                     <div class="mega-bottom">
-                        <div class="mega-bottom-text"><strong>Already have a request?</strong>Track its status anytime with your reference number.</div>
-                        <a href="forex-track" class="mega-cta-btn">Track Forex Request <i class="fa-solid fa-arrow-right"></i></a>
+                        <div class="mega-bottom-text"><strong>Already have a request?</strong>Track its status, or log in to see all your requests.</div>
+                        <div class="mega-bottom-actions">
+                            <a href="forex-my-requests" class="mega-cta-btn mega-cta-btn-ghost">My Requests</a>
+                            <a href="forex-track" class="mega-cta-btn">Track Forex Request <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
                     </div>
                 </li>
             </ul>

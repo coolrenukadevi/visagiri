@@ -182,6 +182,7 @@ include __DIR__ . '/includes/header.php';
                             <a href="forex-track" class="b2b-btn-secondary">Track This Request</a>
                             <a href="/" class="b2b-btn-ghost">Back to Website</a>
                         </div>
+                        <p class="fx-login-hint">Submitted a Forex request before? <a href="forex-login">Log in with your mobile number</a> to see all your requests in one place.</p>
                     </div>
                 </div>
             </div>

@@ -5935,3 +5935,127 @@ table.pp-table tr:hover td { background: var(--bg); }
     border-radius: 8px;
     font-size: 20px;
 }
+
+/* ---- Forex customer portal: login (OTP) + My Requests list ---- */
+.fx-login-hint {
+    margin-top: 18px;
+    font-size: 13px;
+    color: var(--text);
+    text-align: center;
+}
+.fx-login-hint a { color: var(--theme); font-weight: 600; }
+.fx-login-otp-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+}
+.fx-login-link-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--theme);
+    cursor: pointer;
+    text-decoration: underline;
+}
+.fx-login-link-btn:hover { color: var(--theme-2); }
+
+.fx-portal-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+}
+.fx-portal-header h2 { margin: 0 0 4px; font-size: 26px; color: var(--header); }
+.fx-portal-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+.fx-portal-empty {
+    text-align: center;
+    max-width: 520px;
+    margin: 0 auto;
+}
+.fx-portal-empty p { margin-bottom: 18px; color: var(--text); }
+
+.fx-portal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+.fx-portal-card {
+    display: block;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 22px;
+    box-shadow: 0 6px 18px rgba(16, 24, 40, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.fx-portal-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px rgba(16, 24, 40, 0.1);
+    border-color: var(--theme);
+}
+.fx-portal-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+.fx-portal-ref { font-weight: 700; color: var(--header); font-size: 14px; letter-spacing: 0.02em; }
+.fx-portal-card-body { display: flex; flex-direction: column; gap: 4px; margin-bottom: 16px; }
+.fx-portal-service { font-weight: 600; color: var(--header); font-size: 15px; }
+.fx-portal-meta { font-size: 13px; color: var(--text); }
+.fx-portal-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 14px;
+    border-top: 1px dashed var(--border);
+    font-size: 12.5px;
+    color: var(--text);
+}
+.fx-portal-card-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--bg);
+    color: var(--theme);
+    font-size: 11px;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+.fx-portal-card:hover .fx-portal-card-arrow { background: var(--theme); color: var(--white); }
+
+@media (max-width: 767px) {
+    .fx-portal-header { flex-direction: column; align-items: flex-start; }
+    .fx-portal-grid { grid-template-columns: 1fr; }
+}
+
+/* Secondary "My Requests" link alongside the Forex mega-panel's primary CTA */
+.mega-bottom-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
+}
+.header-main .main-menu ul li .submenu .mega-bottom a.mega-cta-btn.mega-cta-btn-ghost {
+    background: transparent !important;
+    color: var(--va-navy) !important;
+    border: 1.5px solid var(--border);
+}
+.header-main .main-menu ul li .submenu .mega-bottom a.mega-cta-btn.mega-cta-btn-ghost:hover {
+    background: var(--bg) !important;
+}
