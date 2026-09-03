@@ -169,7 +169,10 @@ include __DIR__ . '/includes/header-home.php';
                     <div class="row g-4">
                         <div class="col-lg-6">
                             <div class="feature-image tp-clip-anim p-relative">
-                                <img src="assets/img/home-2/feature/01.png" alt="img" class="tp-anim-img" data-animate="true">
+                                <div class="va-art-panel">
+                                    <div class="va-art-glow"></div>
+                                    <i class="fa-solid fa-earth-asia"></i>
+                                </div>
                             </div>
                         </div>
                         <div class="col-lg-6">
@@ -185,10 +188,8 @@ include __DIR__ . '/includes/header-home.php';
                                 </p>
                                 <div class="feature-count">
                                     <div class="content">
-                                        <div class="count-image">
-                                            <img src="assets/img/home-2/feature/Years.png" alt="img">
-                                        </div>
-                                        <h5>Years of Experience</h5>
+                                        <div class="count-image count-number">20+</div>
+                                        <h5>Destinations Covered</h5>
                                     </div>
                                     <ul class="list">
                                         <li>
@@ -277,7 +278,10 @@ include __DIR__ . '/includes/header-home.php';
                         </div>
                         <div class="col-lg-6">
                             <div class="choose-us-image tp-clip-anim p-relative">
-                                <img src="assets/img/home-2/feature/02.png" alt="img" class="tp-anim-img" data-animate="true">
+                                <div class="va-art-panel">
+                                    <div class="va-art-glow"></div>
+                                    <i class="fa-solid fa-route"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -375,9 +379,9 @@ include __DIR__ . '/includes/header-home.php';
        <section class="visa-provide-section section-padding fix header-bg">
            <div class="container">
               <div class="section-title text-center">
-                    <span class="sub-title-2 theme">Services We Provide</span>
+                    <span class="sub-title-2 theme">By Destination</span>
                     <h2 class="text-white">
-                       Explore Our Visa Assistance
+                       Visa Services for Popular Destinations
                     </h2>
                 </div>
            </div>
@@ -440,13 +444,13 @@ include __DIR__ . '/includes/header-home.php';
                         <div class="flag-thumb">
                             <img src="assets/img/home-2/visa/04.png" alt="img">
                             <div class="country-name">
-                                <h4>bangladesh</h4>
+                                <h4>Bangladesh</h4>
                             </div>
                         </div>
                         <div class="flag-thumb">
                             <img src="assets/img/home-2/visa/05.png" alt="img">
                             <div class="country-name">
-                                <h4>Usa</h4>
+                                <h4>USA</h4>
                             </div>
                         </div>
                         <div class="flag-thumb">
@@ -458,13 +462,13 @@ include __DIR__ . '/includes/header-home.php';
                         <div class="flag-thumb">
                             <img src="assets/img/home-2/visa/07.png" alt="img">
                             <div class="country-name">
-                                <h4>Kanada</h4>
+                                <h4>Canada</h4>
                             </div>
                         </div>
                         <div class="flag-thumb">
                             <img src="assets/img/home-2/visa/08.png" alt="img">
                             <div class="country-name">
-                                <h4>australia</h4>
+                                <h4>Australia</h4>
                             </div>
                         </div>
                         <div class="flag-thumb">
@@ -515,7 +519,10 @@ include __DIR__ . '/includes/header-home.php';
                     </div>
                     <div class="col-lg-6">
                         <div class="thumb">
-                            <img src="assets/img/inner-page/service-details/details-1.jpg" alt="img" style="border-radius:20px;">
+                            <div class="va-art-panel" style="border-radius:20px;">
+                                <div class="va-art-glow"></div>
+                                <i class="fa-solid fa-stamp"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -555,7 +562,7 @@ include __DIR__ . '/includes/header-home.php';
             </div>
         </section>
 
-        <!-- Pricing Section Start -->
+        <!-- Service Packages Section Start -->
         <section class="pricing-section-2 section-padding fix section-bg-1">
             <div class="container">
                 <div class="pricing-wrapper-2">
@@ -563,128 +570,51 @@ include __DIR__ . '/includes/header-home.php';
                         <div class="col-xl-6 col-lg-5">
                             <div class="pricing-content">
                                 <div class="section-title mb-0">
-                                    <span class="sub-title-2 wow fadeInUp">pricing plan</span>
+                                    <span class="sub-title-2 wow fadeInUp">Service Packages</span>
                                     <h2 class="split-text-right split-text-in-right">
-                                        Flexible Plans to Suit Every Traveler
+                                        Guidance That Matches Your Visa Journey
                                     </h2>
                                 </div>
                                 <p class="pricing-text wow fadeInUp" data-wow-delay=".5s">
-                                    Choose the plan that fits your visa needs and enjoy expert guidance every step of the way.
+                                    Every application is different, so fees are quoted for your specific visa type and destination — not a flat subscription. Choose the level of support that fits you, then get a free quote.
                                 </p>
-                                <div class="d-flex mt-3 mt-md-0 wow fadeInUp" data-wow-delay=".5s">
-                                    <div class="pricing-two__tab">
-                                        <nav>
-                                            <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                                                <button class="nav-link active" id="pt-1-tab" data-bs-toggle="tab" data-bs-target="#pt-1" type="button" role="tab" aria-controls="pt-1" aria-selected="true">Monthly</button>
-                                                <button class="nav-link" id="pt-2-tab" data-bs-toggle="tab" data-bs-target="#pt-2" type="button" role="tab" aria-controls="pt-2" aria-selected="false" tabindex="-1">Yearly</button>
-                                            </div>
-                                        </nav>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                         <div class="col-xl-6 col-lg-7">
                             <div class="pricing__tab-content">
-                                <div class="tab-content" id="nav-tabContent">
-                                    <div class="tab-pane fade active show" id="pt-1" role="tabpanel" aria-labelledby="pt-1-tab">
-                                        <div class="pricing-right-items">
-                                            <div class="pricing-box-items">
-                                                <div class="pricing-header">
-                                                    <h2>
-                                                        <sup>$</sup>
-                                                        32
-                                                        <sub>/mo</sub>
-                                                    </h2>
-                                                    <span class="sub-texts">Basic Plan</span>
-                                                </div>
-                                                <a href="pricing" class="theme-btn">
-                                                    Get Started Today
-                                                    <i class="fa-solid fa-arrow-right"></i>
-                                                </a>
-                                                <ul class="pricing-list">
-                                                    <li><i class="fa-solid fa-chevrons-right"></i> Everything in Basic Plan</li>
-                                                    <li><i class="fa-solid fa-chevrons-right"></i> Visa Interview Preparation</li>
-                                                    <li>
-                                                        <i class="fa-solid fa-chevrons-right"></i> Priority Processing Support
-                                                    </li>
-                                                    <li><i class="fa-solid fa-chevrons-right"></i> Phone & Email Assistance</li>
-                                                    <li><i class="fa-solid fa-chevrons-right"></i> Step-by-Step Application Support</li>
-                                                </ul>
-                                            </div>
-                                            <div class="pricing-box-items style-2">
-                                                <div class="pricing-header">
-                                                    <h2>
-                                                        <sup>$</sup>
-                                                        32
-                                                        <sub>/mo</sub>
-                                                    </h2>
-                                                    <span class="sub-texts">Premium Plan</span>
-                                                </div>
-                                                <a href="pricing" class="theme-btn style-2">
-                                                    Get Started Today
-                                                    <i class="fa-solid fa-arrow-right"></i>
-                                                </a>
-                                                 <ul class="pricing-list">
-                                                    <li><i class="fa-solid fa-chevrons-right"></i> Everything in Basic Plan</li>
-                                                    <li><i class="fa-solid fa-chevrons-right"></i> Visa Interview Preparation</li>
-                                                    <li>
-                                                        <i class="fa-solid fa-chevrons-right"></i> Priority Processing Support
-                                                    </li>
-                                                    <li><i class="fa-solid fa-chevrons-right"></i> Phone & Email Assistance</li>
-                                                    <li><i class="fa-solid fa-chevrons-right"></i> Step-by-Step Application Support</li>
-                                                </ul>
-                                            </div>
+                                <div class="pricing-right-items">
+                                    <div class="pricing-box-items">
+                                        <div class="pricing-header">
+                                            <span class="sub-texts">Self-Guided</span>
+                                            <p class="pricing-tier-desc">For applicants who know their process and just need a documentation check.</p>
                                         </div>
+                                        <a href="contact" class="theme-btn" data-open-quick-enquiry>
+                                            Get a Free Quote
+                                            <i class="fa-solid fa-arrow-right"></i>
+                                        </a>
+                                        <ul class="pricing-list">
+                                            <li><i class="fa-solid fa-chevrons-right"></i> Document Checklist &amp; Review</li>
+                                            <li><i class="fa-solid fa-chevrons-right"></i> Application Form Guidance</li>
+                                            <li><i class="fa-solid fa-chevrons-right"></i> Email Support</li>
+                                            <li><i class="fa-solid fa-chevrons-right"></i> Status Tracking</li>
+                                        </ul>
                                     </div>
-                                    <div class="tab-pane fade" id="pt-2" role="tabpanel" aria-labelledby="pt-2-tab">
-                                        <div class="pricing-right-items">
-                                            <div class="pricing-box-items">
-                                                <div class="pricing-header">
-                                                    <h2>
-                                                        <sup>$</sup>
-                                                        32
-                                                        <sub>/mo</sub>
-                                                    </h2>
-                                                    <span class="sub-texts">Basic Plan</span>
-                                                </div>
-                                                <a href="pricing" class="theme-btn">
-                                                    Get Started Today
-                                                    <i class="fa-solid fa-arrow-right"></i>
-                                                </a>
-                                                <ul class="pricing-list">
-                                                    <li><i class="fa-solid fa-chevrons-right"></i> Everything in Basic Plan</li>
-                                                    <li><i class="fa-solid fa-chevrons-right"></i> Visa Interview Preparation</li>
-                                                    <li>
-                                                        <i class="fa-solid fa-chevrons-right"></i> Priority Processing Support
-                                                    </li>
-                                                    <li><i class="fa-solid fa-chevrons-right"></i> Phone & Email Assistance</li>
-                                                    <li><i class="fa-solid fa-chevrons-right"></i> Step-by-Step Application Support</li>
-                                                </ul>
-                                            </div>
-                                            <div class="pricing-box-items style-2">
-                                                <div class="pricing-header">
-                                                    <h2>
-                                                        <sup>$</sup>
-                                                        32
-                                                        <sub>/mo</sub>
-                                                    </h2>
-                                                    <span class="sub-texts">Premium Plan</span>
-                                                </div>
-                                                <a href="pricing" class="theme-btn style-2">
-                                                    Get Started Today
-                                                    <i class="fa-solid fa-arrow-right"></i>
-                                                </a>
-                                                 <ul class="pricing-list">
-                                                    <li><i class="fa-solid fa-chevrons-right"></i> Everything in Basic Plan</li>
-                                                    <li><i class="fa-solid fa-chevrons-right"></i> Visa Interview Preparation</li>
-                                                    <li>
-                                                        <i class="fa-solid fa-chevrons-right"></i> Priority Processing Support
-                                                    </li>
-                                                    <li><i class="fa-solid fa-chevrons-right"></i> Phone & Email Assistance</li>
-                                                    <li><i class="fa-solid fa-chevrons-right"></i> Step-by-Step Application Support</li>
-                                                </ul>
-                                            </div>
+                                    <div class="pricing-box-items style-2">
+                                        <div class="pricing-header">
+                                            <span class="sub-texts">Fully Assisted</span>
+                                            <p class="pricing-tier-desc">End-to-end support from a dedicated consultant, start to visa decision.</p>
                                         </div>
+                                        <a href="contact" class="theme-btn style-2" data-open-quick-enquiry>
+                                            Get a Free Quote
+                                            <i class="fa-solid fa-arrow-right"></i>
+                                        </a>
+                                         <ul class="pricing-list">
+                                            <li><i class="fa-solid fa-chevrons-right"></i> Everything in Self-Guided</li>
+                                            <li><i class="fa-solid fa-chevrons-right"></i> Dedicated Visa Consultant</li>
+                                            <li><i class="fa-solid fa-chevrons-right"></i> Visa Interview Preparation</li>
+                                            <li><i class="fa-solid fa-chevrons-right"></i> Priority Processing Support</li>
+                                            <li><i class="fa-solid fa-chevrons-right"></i> Phone &amp; WhatsApp Support</li>
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
@@ -707,7 +637,10 @@ include __DIR__ . '/includes/header-home.php';
                     <div class="row g-4">
                         <div class="col-lg-5">
                             <div class="testimonial-image image-scale-animation">
-                                <img src="assets/img/home-2/testimonial/01.jpg" alt="img" class="image-scale-animation-item">
+                                <div class="va-art-panel image-scale-animation-item">
+                                    <div class="va-art-glow"></div>
+                                    <i class="fa-solid fa-quote-left"></i>
+                                </div>
                             </div>
                         </div>
                         <div class="col-lg-7">
@@ -729,10 +662,10 @@ include __DIR__ . '/includes/header-home.php';
                                                     </p>
                                                 </div>
                                                 <div class="info-item">
-                                                    <img src="assets/img/home-2/testimonial/client-1.png" alt="img">
+                                                    <div class="va-avatar">DL</div>
                                                     <div class="content">
                                                         <h5>David Lee</h5>
-                                                        <span>David Lee</span>
+                                                        <span>Tourist Visa, Australia</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -748,14 +681,14 @@ include __DIR__ . '/includes/header-home.php';
                                                         <i class="fa-solid fa-star"></i>
                                                     </div>
                                                     <p>
-                                                        Excellent service! The team guided me through every step, managed documents perfectly, and ensured my visa approval quickly. Truly reliable and professional consultancy service.”
+                                                        From document checklist to embassy submission, everything was handled smoothly. The consultant flagged an issue with my paperwork before it became a problem — saved me weeks of delay.”
                                                     </p>
                                                 </div>
                                                 <div class="info-item">
-                                                    <img src="assets/img/home-2/testimonial/client-1.png" alt="img">
+                                                    <div class="va-avatar">AS</div>
                                                     <div class="content">
-                                                        <h5>David Lee</h5>
-                                                        <span>David Lee</span>
+                                                        <h5>Ananya Sharma</h5>
+                                                        <span>Work Visa, Germany</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -771,14 +704,14 @@ include __DIR__ . '/includes/header-home.php';
                                                         <i class="fa-solid fa-star"></i>
                                                     </div>
                                                     <p>
-                                                        Excellent service! The team guided me through every step, managed documents perfectly, and ensured my visa approval quickly. Truly reliable and professional consultancy service.”
+                                                        We used Visa Agency for our whole team's corporate travel visas. Clear communication, on-time processing, and a single point of contact for every application — exactly what we needed.”
                                                     </p>
                                                 </div>
                                                 <div class="info-item">
-                                                    <img src="assets/img/home-2/testimonial/client-1.png" alt="img">
+                                                    <div class="va-avatar">RM</div>
                                                     <div class="content">
-                                                        <h5>David Lee</h5>
-                                                        <span>David Lee</span>
+                                                        <h5>Rajeev Menon</h5>
+                                                        <span>Corporate Travel Desk, UAE</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -790,17 +723,17 @@ include __DIR__ . '/includes/header-home.php';
                                         <div class="swiper-wrapper">
                                             <div class="swiper-slide">
                                                 <div class="client-image">
-                                                    <img src="assets/img/home-2/testimonial/client-2.png" alt="img">
+                                                    <div class="va-avatar">DL</div>
                                                 </div>
                                             </div>
                                             <div class="swiper-slide">
                                                 <div class="client-image">
-                                                    <img src="assets/img/home-2/testimonial/client-3.jpg" alt="img">
+                                                    <div class="va-avatar">AS</div>
                                                 </div>
                                             </div>
                                             <div class="swiper-slide">
                                                 <div class="client-image">
-                                                    <img src="assets/img/home-2/testimonial/client-4.jpg" alt="img">
+                                                    <div class="va-avatar">RM</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -820,7 +753,10 @@ include __DIR__ . '/includes/header-home.php';
                 <div class="row g-4 align-items-center">
                     <div class="col-lg-4">
                         <div class="visa-image">
-                            <img src="assets/img/home-2/feature/03.png" alt="img">
+                            <div class="va-art-panel va-art-panel-sm">
+                                <div class="va-art-glow"></div>
+                                <i class="fa-solid fa-award"></i>
+                            </div>
                         </div>
                     </div>
                     <div class="col-lg-8">
@@ -968,7 +904,9 @@ include __DIR__ . '/includes/header-home.php';
                         </div>
                         <div class="news-right-content">
                             <div class="news-image">
-                                <img src="assets/img/home-2/news/01.jpg" alt="img">
+                                <div class="va-art-panel va-art-panel-tint">
+                                    <i class="fa-solid fa-scale-balanced"></i>
+                                </div>
                             </div>
                             <div class="content">
                                 <p>
@@ -996,7 +934,9 @@ include __DIR__ . '/includes/header-home.php';
                         </div>
                         <div class="news-right-content">
                             <div class="news-image">
-                                <img src="assets/img/home-2/news/02.jpg" alt="img">
+                                <div class="va-art-panel va-art-panel-tint">
+                                    <i class="fa-solid fa-clipboard-check"></i>
+                                </div>
                             </div>
                             <div class="content">
                                 <p>
@@ -1024,7 +964,9 @@ include __DIR__ . '/includes/header-home.php';
                         </div>
                         <div class="news-right-content">
                             <div class="news-image">
-                                <img src="assets/img/home-2/news/03.jpg" alt="img">
+                                <div class="va-art-panel va-art-panel-tint">
+                                    <i class="fa-solid fa-bullhorn"></i>
+                                </div>
                             </div>
                             <div class="content">
                                 <p>

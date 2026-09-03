@@ -5128,3 +5128,354 @@ table.pp-table tr:hover td { background: var(--bg); }
     table.pp-table tr { border-bottom: 1px solid var(--border); padding: 10px 16px; }
     table.pp-table td { border-bottom: none; padding: 3px 0; white-space: normal; }
 }
+
+/* ================================================================
+   PREMIUM HOMEPAGE REDESIGN — shared rhythm + per-section polish.
+   Deliberately CSS-only (no markup restructuring) so every existing
+   section keeps its current HTML/JS (swipers, tabs, forms) working
+   exactly as-is; only the visual treatment changes.
+   ================================================================ */
+
+/* ---- Section-title system: refined eyebrow pill used by every
+   section on the page, replacing the template's plain uppercase
+   label with a tinted, rounded badge + a leading dot. ---- */
+.section-title .sub-title,
+.section-title .sub-title-2 {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 8px;
+    background: rgba(14, 165, 160, 0.1);
+    color: var(--theme-2) !important;
+    font-size: 12.5px !important;
+    font-weight: 700 !important;
+    letter-spacing: 1.1px;
+    text-transform: uppercase;
+    padding: 7px 16px 7px 14px;
+    border-radius: 30px;
+    margin-bottom: 16px;
+}
+.section-title .sub-title::before,
+.section-title .sub-title-2::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--theme);
+}
+/* Dark section variant (the "Visa Services for Popular Destinations"
+   band, which sits on the theme-2 gradient — .header-bg) needs a
+   light-on-dark pill instead of the default tinted one. */
+.header-bg .section-title .sub-title-2 {
+    background: rgba(255, 255, 255, 0.14) !important;
+    color: var(--white) !important;
+}
+.header-bg .section-title .sub-title-2::before {
+    background: var(--gold);
+}
+.section-title h2 {
+    letter-spacing: -0.5px;
+}
+
+/* ---- Buttons: consistent premium hover-lift across every .theme-btn
+   on the page (hero, cards, CTAs) instead of the template's flat
+   color-swap hover. ---- */
+.theme-btn {
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease !important;
+}
+.theme-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(14, 165, 160, 0.28);
+}
+.theme-btn.style-2:hover,
+.hero-2 .hero-content .hero-button .theme-btn.style-2:hover {
+    box-shadow: 0 14px 30px rgba(6, 12, 30, 0.22);
+}
+
+/* ---- Trust strip: icon badges instead of bare Font Awesome glyphs ---- */
+.trust-item {
+    padding: 4px 0;
+}
+.trust-item i {
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(14, 165, 160, 0.1);
+    border-radius: 10px;
+    font-size: 16px !important;
+}
+
+/* ---- Service slider cards: turn the flat, radius-less grid cells
+   into proper elevated cards (the hover image-reveal effect and all
+   its JS/swiper wiring is untouched — overflow:hidden on the card
+   clips the reveal to the new rounded corners automatically). ---- */
+.service-wrapper-2 .service-box-item {
+    border-radius: 20px !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: 0 10px 30px rgba(16, 24, 40, 0.06);
+    transition: box-shadow 0.35s ease, transform 0.35s ease, border-color 0.35s ease;
+}
+.service-wrapper-2 .service-box-item:hover {
+    box-shadow: 0 24px 55px rgba(16, 24, 40, 0.16);
+    transform: translateY(-6px);
+    border-color: transparent !important;
+}
+
+/* ---- Feature stat callout: the template shipped with a broken
+   placeholder graphic here (a real file that just renders its own
+   "251 X 124" pixel dimensions as text — never swapped for an actual
+   number). Replaced with a real CSS number instead of another image. ---- */
+.count-number {
+    font-family: "Space Grotesk", serif;
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--theme-2);
+    background: rgba(14, 165, 160, 0.1);
+    border-radius: 14px;
+    padding: 14px 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 90px;
+}
+
+/* ---- Feature "destinations covered" + choose-us icon rows: add
+   depth on hover to the already-decent circular icon badges. ---- */
+.feature-wrapper-2 .feature-content .feature-count {
+    box-shadow: 0 10px 30px rgba(16, 24, 40, 0.05);
+    border-radius: 16px;
+}
+.choose-us-wrapper-2 .feature-content .choose-us-box {
+    box-shadow: 0 6px 20px rgba(16, 24, 40, 0.04);
+}
+.choose-us-wrapper-2 .feature-content .choose-us-box:hover {
+    box-shadow: 0 16px 36px rgba(16, 24, 40, 0.1);
+    transform: translateY(-3px);
+}
+.feature-image img,
+.choose-us-image img {
+    border-radius: 24px;
+    box-shadow: 0 30px 70px rgba(16, 24, 40, 0.14);
+}
+
+/* ---- How-it-works: numbered badge gets a soft ring + gradient ---- */
+.how-it-works-step .step-num {
+    background: linear-gradient(135deg, var(--theme) 0%, var(--theme-2) 100%);
+    box-shadow: 0 0 0 6px rgba(14, 165, 160, 0.08);
+}
+
+/* ---- Visa-by-destination slider cards (on the dark band) + the
+   flag-thumb strip beneath it ---- */
+.visa-provide-box {
+    box-shadow: 0 20px 50px rgba(6, 12, 30, 0.35);
+}
+.flag-thumb {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.flag-thumb:hover {
+    transform: translateY(-4px);
+}
+.flag-thumb img {
+    border-radius: 50%;
+    box-shadow: 0 8px 20px rgba(6, 12, 30, 0.25);
+}
+
+/* ---- Apostille section image ---- */
+.section-padding .thumb img {
+    box-shadow: 0 24px 60px rgba(16, 24, 40, 0.16);
+}
+
+/* ---- Service packages: the template's second card used a negative
+   z-index + negative-margin "fan" trick to peek out from behind the
+   first card — but z-index applies to flex items even at
+   position:static, and it ended up stacking the whole card below
+   paint level, making the "Fully Assisted" plan invisible/unreachable.
+   Laid out as two plain side-by-side cards instead, which is both
+   more robust and reads cleaner anyway. ---- */
+.pricing-wrapper-2 .pricing-right-items {
+    gap: 24px;
+    flex-wrap: wrap;
+}
+.pricing-wrapper-2 .pricing-right-items .pricing-box-items.style-2 {
+    margin-left: 0 !important;
+    z-index: auto !important;
+    border: 1px solid var(--border);
+}
+
+/* ---- Service packages (formerly "pricing plans"): the markup no
+   longer includes a giant $NN/mo price (a visa consultancy's real
+   fees vary per case, quoted individually — see the admin B2B
+   quotation builder), just a plan name + one-line description, so
+   the template's price-driven header layout (absolutely-positioned
+   plan name expecting a big <h2> price next to it) needs resetting
+   to a normal flow. ---- */
+.pricing-wrapper-2 .pricing-right-items .pricing-box-items {
+    box-shadow: 0 20px 50px rgba(6, 12, 30, 0.28);
+}
+.pricing-wrapper-2 .pricing-right-items .pricing-box-items .pricing-header {
+    padding-bottom: 20px !important;
+}
+.pricing-wrapper-2 .pricing-right-items .pricing-box-items .pricing-header .sub-texts {
+    position: static !important;
+    display: block !important;
+    font-size: 26px !important;
+    margin-bottom: 10px;
+}
+.pricing-tier-desc {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0;
+}
+.pricing-box-items.style-2 .pricing-tier-desc {
+    color: var(--text);
+}
+
+/* ---- Testimonials: add depth to the already-branded speech box ---- */
+.testimonial-wrapper-2 .testimonial-item .testimonial-left .testimonial-box {
+    box-shadow: 0 24px 60px rgba(11, 110, 103, 0.22);
+}
+.testimonial-image img {
+    border-radius: 24px;
+    box-shadow: 0 24px 60px rgba(16, 24, 40, 0.16);
+}
+
+/* ---- Certification tabs: segmented-control look instead of plain
+   underlined nav links ---- */
+.visa-certification-content .visa-item > .nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    background: var(--bg);
+    padding: 6px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+}
+.visa-certification-content .visa-item > .nav .nav-link {
+    border-radius: 8px !important;
+    padding: 9px 16px !important;
+    font-size: 13.5px;
+    font-weight: 600;
+}
+.visa-certification-content .visa-item > .nav .nav-link.active {
+    background: var(--white);
+    box-shadow: 0 6px 16px rgba(16, 24, 40, 0.08);
+    color: var(--theme) !important;
+}
+.visa-image img {
+    border-radius: 24px;
+    box-shadow: 0 24px 60px rgba(16, 24, 40, 0.14);
+}
+
+/* ---- News / blog cards ---- */
+.news-main-item {
+    border-radius: 20px;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+.news-main-item:hover {
+    box-shadow: 0 20px 50px rgba(16, 24, 40, 0.1);
+    transform: translateY(-4px);
+}
+.news-main-item .news-right-content .news-image img {
+    border-radius: 16px;
+}
+
+/* ---- Country explorer chips: light hover-lift to match the rest
+   of the page's card language ---- */
+.country-explorer-section .country-chip {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.country-explorer-section .country-chip:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(16, 24, 40, 0.08);
+    border-color: var(--theme) !important;
+}
+
+/* ---- Decorative art panels: several stock-photo slots across this
+   template (feature/choose-us images, the testimonial photo, the
+   apostille thumb, the certification image, the three blog thumbs)
+   shipped with broken placeholder graphics — real image files that
+   just render their own pixel dimensions as text (e.g. "612X547"),
+   never swapped for real photography. Rather than leave a visibly
+   broken image on a "premium" page, or fabricate stock photos, these
+   slots use a drawn gradient panel + icon, matching the same
+   illustration-led treatment already used successfully in the hero. ---- */
+.va-art-panel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 320px;
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--theme-2-dark) 0%, var(--theme-2) 55%, var(--theme-2-light) 100%);
+}
+.va-art-panel i {
+    position: relative;
+    z-index: 2;
+    font-size: 72px;
+    color: rgba(255, 255, 255, 0.92);
+}
+.va-art-glow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(420px circle at 75% 20%, rgba(255, 255, 255, 0.16), transparent 60%),
+        radial-gradient(360px circle at 20% 85%, rgba(255, 255, 255, 0.08), transparent 60%);
+}
+.va-art-panel-sm {
+    min-height: 220px;
+    border-radius: 24px;
+}
+.va-art-panel-sm i {
+    font-size: 52px;
+}
+/* News/blog thumbs: lighter tinted variant (three identical dark
+   gradient blocks in a row would look repetitive at that size). */
+.va-art-panel-tint {
+    min-height: 200px;
+    background: var(--bg);
+    border-radius: 16px;
+}
+.va-art-panel-tint i {
+    color: var(--theme);
+    font-size: 48px;
+}
+.testimonial-wrapper-2 .testimonial-image .va-art-panel {
+    border-radius: 16px;
+    min-height: 0;
+}
+
+/* ---- Testimonial avatars: the client photo assets (client-1..4)
+   are the same kind of broken placeholder ("80X80" rendered as
+   text) as the panel images above — replaced with initials avatars. ---- */
+.va-avatar {
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--theme) 0%, var(--theme-2) 100%);
+    color: var(--white);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+}
+.testimonial-wrapper-2 .testimonial-item .testimonial-left .info-item .va-avatar {
+    border: 1px solid var(--theme);
+}
+.testimonial-wrapper-2 .testimonial-item .right-item .client-image .va-avatar {
+    width: 80px;
+    height: 80px;
+    min-width: 0;
+    border-radius: 8px;
+    font-size: 20px;
+}
