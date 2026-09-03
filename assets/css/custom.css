@@ -2400,10 +2400,14 @@ summary:focus-visible {
     }
 }
 
-/* ---- Footer brand description: justified ---- */
+/* ---- Footer brand description: justified, and explicitly light —
+   this paragraph has no theme wrapper class to inherit a footer-aware
+   color from, so without this it falls back to the generic dark body
+   text color and becomes nearly unreadable on the dark footer. ---- */
 .footer-brand-desc {
     text-align: justify;
     text-align-last: left;
+    color: rgba(255, 255, 255, 0.7);
 }
 .footer-connect-label {
     font-size: 11px;
@@ -2951,7 +2955,7 @@ summary:focus-visible {
     color: rgba(255, 255, 255, 0.5);
 }
 .footer-legal-line .footer-copyright span {
-    color: var(--theme);
+    color: var(--brand-gold);
     text-transform: uppercase;
 }
 .footer-legal-links {
