@@ -56,4 +56,11 @@ $headerWhatsappMsg = rawurlencode('Hello VisaAgency.in, I need assistance with m
             <?php endif; ?>
         </div>
     </div>
+    <span class="header-topbar-divider header-topbar-divider-social" aria-hidden="true"></span>
+    <div class="header-topbar-social" role="list" aria-label="Social media">
+        <a href="<?php echo htmlspecialchars($site_social['facebook']); ?>" target="_blank" rel="noopener" aria-label="Visit our Facebook page"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+        <a href="<?php echo htmlspecialchars($site_social['twitter']); ?>" target="_blank" rel="noopener" aria-label="Visit our X (Twitter) page"><i class="fa-brands fa-twitter" aria-hidden="true"></i></a>
+        <a href="<?php echo htmlspecialchars($site_social['instagram']); ?>" target="_blank" rel="noopener" aria-label="Visit our Instagram page"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+        <a href="<?php echo htmlspecialchars($site_social['linkedin']); ?>" target="_blank" rel="noopener" aria-label="Visit our LinkedIn page"><i class="fa-brands fa-linkedin-in" aria-hidden="true"></i></a>
+    </div>
 </div>
