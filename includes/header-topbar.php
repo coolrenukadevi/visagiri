@@ -43,7 +43,7 @@ $headerWhatsappMsg = rawurlencode('Hello VisaAgency.in, I need assistance with m
     <div class="header-login-dropdown" id="headerLoginDropdown">
         <button type="button" class="header-login-toggle" id="headerLoginToggle" aria-haspopup="true" aria-expanded="false" aria-controls="headerLoginPanel">
             <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>
-            <span>Login</span>
+            <span>Login / Sign Up</span>
             <i class="fa-solid fa-chevron-down header-login-caret" aria-hidden="true"></i>
         </button>
         <div class="header-login-panel" id="headerLoginPanel" role="menu" aria-label="Login options">

@@ -16,6 +16,11 @@
                             </div>
                         </div>
                         <div class="mobile-menu fix mb-3"></div>
+                        <div class="offcanvas-mobile-cta">
+                            <a href="contact" class="offcanvas-cta-primary" data-open-quick-enquiry>Enquire Now <i class="fa-solid fa-arrow-right"></i></a>
+                            <a href="track-application" class="offcanvas-cta-secondary"><i class="fa-solid fa-magnifying-glass-location"></i> Track Application</a>
+                            <a href="customer-login" class="offcanvas-cta-secondary"><i class="fa-solid fa-right-to-bracket"></i> Login / Sign Up</a>
+                        </div>
                     </div>
                 </div>
             </div>

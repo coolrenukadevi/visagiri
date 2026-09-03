@@ -14,6 +14,15 @@
     --theme-2-dark: #073B37;
     --theme-2-light: #0C8880;
     --gold: #F0A93E;
+
+    /* Header-only palette: premium navy / royal-blue / white, restrained
+       gold accents. Scoped to header/mega-menu/mobile-drawer selectors
+       only — the rest of the site keeps its teal/gold identity above. */
+    --va-navy: #0A1B3D;
+    --va-navy-2: #12275A;
+    --va-royal: #1B3E8C;
+    --va-royal-light: #2E56B8;
+    --va-gold-muted: #B8902E;
 }
 
 /* ---- Redesigned homepage hero (no stock photography): light
@@ -155,7 +164,12 @@
 /* ---- Nav spacing: fit 7 top-level items comfortably, at roughly half
    the template's default row height for a tighter, premium feel. ---- */
 .header-main {
-    padding: 6px 0 !important;
+    min-height: 80px;
+    padding: 0 !important;
+    transition: min-height 0.25s ease;
+}
+.header-1.sticky .header-main {
+    min-height: 66px;
 }
 .header-main .main-menu ul li {
     margin-inline-end: 26px !important;
@@ -163,6 +177,11 @@
 .header-main .main-menu ul li a {
     font-size: 14.5px !important;
     padding: 10px 0 !important;
+    color: var(--va-navy) !important;
+}
+.header-main .main-menu ul li a:hover,
+.header-main .main-menu ul li.active > a {
+    color: var(--va-royal) !important;
 }
 @media (max-width: 1500px) {
     .header-main .main-menu ul li {
@@ -170,6 +189,18 @@
     }
     .header-main .main-menu ul li a {
         font-size: 13.5px !important;
+    }
+}
+.header-main .logo img {
+    max-height: 44px;
+    width: auto;
+}
+@media (max-width: 991px) {
+    .header-main {
+        min-height: 64px;
+    }
+    .header-main .logo img {
+        max-height: 36px;
     }
 }
 
@@ -186,7 +217,7 @@
    solid red block on the homepage variant) ---- */
 .header-top-section,
 .header-top-section-2 {
-    background: linear-gradient(120deg, var(--theme-2-dark) 0%, var(--theme-2) 60%, var(--theme-2-light) 100%) !important;
+    background: linear-gradient(120deg, var(--va-navy) 0%, var(--va-navy-2) 55%, var(--va-royal) 100%) !important;
     /* The homepage variant carries the theme's generic ".fix" (overflow:
        hidden) utility class for its old background-shape trick. The Login
        dropdown panel below needs to overflow past the topbar's own height,
@@ -230,8 +261,8 @@
     justify-content: space-between;
     gap: 12px;
     flex-wrap: wrap;
-    min-height: 34px;
-    padding: 7px 0 !important;
+    min-height: 24px;
+    padding: 8px 0 !important;
 }
 .header-top-section-2 .container-fluid {
     padding: 0 40px !important;
@@ -424,7 +455,7 @@
     background: rgba(255, 255, 255, 0.12);
     color: var(--white);
 }
-.header-login-toggle i:first-child { color: var(--gold, #F0A93E); font-size: 12.5px; }
+.header-login-toggle i:first-child { color: var(--va-gold-muted); font-size: 12.5px; }
 .header-login-caret {
     font-size: 9px;
     transition: transform 0.2s ease;
@@ -475,14 +506,14 @@
 }
 .header-login-panel a i {
     width: 18px;
-    color: var(--theme);
+    color: var(--va-royal);
     font-size: 14px;
     text-align: center;
 }
 .header-login-panel a:hover,
 .header-login-panel a:focus-visible {
     background: var(--bg);
-    color: var(--theme) !important;
+    color: var(--va-royal) !important;
 }
 
 
@@ -534,31 +565,51 @@
 .header-1.header-2 .header-logo { display: inline-block !important; }
 .header-1.header-2 .main-menu > ul > li > a,
 .header-1.header-2 .header-search-toggle,
-.header-1.header-2 .header-track-link,
 .header-1.header-2 .header-right .header-call-item .theme-btn,
 .header-1.header-2 .header-right .header-call-item .sidebar__toggle {
-    color: var(--header) !important;
+    color: var(--va-navy) !important;
 }
 .header-1.header-2 .header-right .header-call-item .theme-btn i {
-    background-color: var(--theme) !important;
+    background-color: var(--va-royal) !important;
     color: var(--white) !important;
 }
 
-/* ---- Track Application: secondary header link, plain text so it
-   doesn't compete visually with the primary Enquire Now button ---- */
+/* ---- Track Application: secondary CTA pill (bordered, royal-blue) —
+   distinct from the filled primary Enquire Now button ---- */
 .header-track-link {
-    font-size: 13.5px;
+    display: inline-flex;
+    align-items: center;
+    font-size: 13px;
     font-weight: 600;
-    color: var(--header);
+    color: var(--va-royal) !important;
     white-space: nowrap;
     margin-right: 18px;
-    transition: color 0.2s ease;
+    padding: 9px 18px;
+    border: 1.5px solid var(--va-royal);
+    border-radius: 100px;
+    transition: background 0.2s ease, color 0.2s ease;
 }
 .header-track-link:hover {
-    color: var(--theme);
+    background: var(--va-royal);
+    color: var(--white) !important;
 }
 @media (max-width: 1300px) {
     .header-track-link { display: none; }
+}
+
+/* ---- Enquire Now: primary CTA — header-scoped royal-blue treatment
+   (the rest of the site keeps the teal .theme-btn for hero/pricing/etc). ---- */
+.header-call-item .theme-btn {
+    color: var(--va-navy);
+    border-color: var(--va-royal);
+}
+.header-call-item .theme-btn i {
+    background-color: var(--va-royal) !important;
+    color: var(--white) !important;
+}
+.header-call-item .theme-btn:hover {
+    background-color: var(--va-royal) !important;
+    color: var(--white) !important;
 }
 
 /* ---- Search toggle: circular icon button matching topbar style ---- */
@@ -574,7 +625,7 @@
     transition: background 0.2s ease, color 0.2s ease;
 }
 .header-search-toggle:hover {
-    background: var(--theme);
+    background: var(--va-royal);
     color: var(--white);
 }
 
@@ -592,7 +643,7 @@
     transition: background 0.2s ease, color 0.2s ease;
 }
 .sidebar__toggle:hover {
-    background: var(--theme);
+    background: var(--va-royal);
     color: var(--white);
 }
 /* Above the theme's meanmenu breakpoint (1199px) the full nav is already
@@ -610,6 +661,83 @@
         transition: none !important;
     }
     .fx-live-dot { animation: none !important; }
+}
+
+/* ---- Mobile navigation drawer: navy/royal-blue/gold, matching the
+   desktop header instead of the theme's default teal accent ---- */
+.offcanvas__info {
+    border-left: 3px solid var(--va-gold-muted);
+}
+.offcanvas__wrapper .offcanvas__content .offcanvas__close {
+    background-color: var(--va-navy);
+}
+.mean-container .mean-nav ul li a {
+    color: var(--va-navy);
+    border-bottom: 1px solid rgba(10, 27, 61, 0.1) !important;
+}
+.mean-container .mean-nav ul li a:hover {
+    color: var(--va-royal);
+}
+.mean-container .mean-nav ul li .submenu li a {
+    color: var(--text);
+}
+.mean-container .mean-nav ul li > a.mean-expand {
+    color: var(--va-royal);
+}
+.mean-container .mean-nav ul li > a.mean-expand i {
+    color: var(--va-gold-muted);
+}
+
+.offcanvas-mobile-cta {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+.offcanvas-cta-primary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--va-royal);
+    color: var(--white) !important;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 13px 20px;
+    border-radius: 100px;
+    transition: background 0.2s ease;
+}
+.offcanvas-cta-primary:hover {
+    background: var(--va-navy);
+}
+.offcanvas-cta-secondary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: transparent;
+    color: var(--va-navy) !important;
+    font-size: 13.5px;
+    font-weight: 600;
+    padding: 11px 20px;
+    border: 1.5px solid var(--va-royal);
+    border-radius: 100px;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+.offcanvas-cta-secondary i {
+    color: var(--va-royal);
+    font-size: 13px;
+    transition: color 0.2s ease;
+}
+.offcanvas-cta-secondary:hover {
+    background: var(--va-royal);
+    color: var(--white) !important;
+}
+.offcanvas-cta-secondary:hover i {
+    color: var(--white);
 }
 
 /* ---- Mega menu panels: compact floating card ---- */
@@ -662,12 +790,12 @@
     font-weight: 800;
     letter-spacing: 0.6px;
     text-transform: uppercase;
-    color: var(--theme);
+    color: var(--va-royal);
     margin-bottom: 12px;
 }
 .mega-col h5 i {
     margin-right: 8px;
-    color: var(--theme);
+    color: var(--va-royal);
     font-size: 13px;
 }
 .mega-links {
@@ -689,7 +817,7 @@
 }
 .mega-links li a:hover {
     background: var(--bg);
-    color: var(--theme) !important;
+    color: var(--va-royal) !important;
     padding-left: 8px !important;
 }
 .mega-links-flags li a span {
@@ -730,7 +858,7 @@
     align-items: center;
     gap: 8px;
     white-space: nowrap;
-    background: var(--theme-2);
+    background: var(--va-navy);
     color: #fff !important;
     font-weight: 700;
     font-size: 12.5px;
@@ -740,7 +868,11 @@
     transition: background 0.2s ease;
 }
 .mega-cta-btn:hover {
-    background: var(--theme);
+    background: var(--va-royal);
+}
+/* Restrained gold accent: thin top stripe on every mega panel */
+.mega-panel {
+    border-top: 3px solid var(--va-gold-muted) !important;
 }
 
 /* ---- Countries mega panel ---- */
@@ -775,6 +907,9 @@
     border-color: var(--theme);
     color: var(--header);
 }
+.mega-panel-countries .country-explorer-search input:focus {
+    border-color: var(--va-royal);
+}
 .country-explorer-filters {
     display: flex;
     flex-wrap: wrap;
@@ -797,6 +932,11 @@
     border-color: var(--theme);
     color: var(--white);
 }
+.mega-panel-countries .country-explorer-filters button:hover,
+.mega-panel-countries .country-explorer-filters button.active {
+    background: var(--va-royal);
+    border-color: var(--va-royal);
+}
 .country-explorer-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -817,6 +957,9 @@
 .country-chip:hover {
     background: var(--bg);
     color: var(--theme) !important;
+}
+.mega-panel-countries .country-chip:hover {
+    color: var(--va-royal) !important;
 }
 .country-chip .flag {
     font-size: 16px;
