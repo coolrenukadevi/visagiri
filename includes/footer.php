@@ -25,7 +25,7 @@ require_once __DIR__ . '/site-contact.php';
             <div class="qhelp-panel" id="qhelpPanel" role="menu" aria-hidden="true">
                 <button type="button" class="qhelp-option qhelp-option-primary" data-open-quick-enquiry role="menuitem">
                     <span class="qhelp-option-icon"><i class="fa-solid fa-headset" aria-hidden="true"></i></span>
-                    <span class="qhelp-option-text"><strong>Get Assistance</strong><span>Start a quick enquiry</span></span>
+                    <span class="qhelp-option-text"><strong>Enquire Now</strong><span>Start a quick enquiry</span></span>
                 </button>
                 <a href="<?php echo $site_whatsapp_url; ?>?text=<?php echo $qeWhatsappMsg; ?>" target="_blank" rel="noopener" class="qhelp-option" role="menuitem" data-track-click="whatsapp_click">
                     <span class="qhelp-option-icon qhelp-icon-whatsapp"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i></span>
@@ -56,7 +56,7 @@ require_once __DIR__ . '/site-contact.php';
         <div class="mobile-sticky-cta">
             <a href="tel:<?php echo $site_phone_e164; ?>" data-track-click="call_click"><i class="fa-solid fa-phone"></i> Call</a>
             <a href="<?php echo $site_whatsapp_url; ?>?text=<?php echo $qeWhatsappMsg; ?>" target="_blank" rel="noopener" data-track-click="whatsapp_click"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
-            <a href="contact" data-open-quick-enquiry><i class="fa-solid fa-paper-plane"></i> Get Assistance</a>
+            <a href="contact" data-open-quick-enquiry><i class="fa-solid fa-paper-plane"></i> Enquire Now</a>
         </div>
 
 

@@ -534,6 +534,7 @@
 .header-1.header-2 .header-logo { display: inline-block !important; }
 .header-1.header-2 .main-menu > ul > li > a,
 .header-1.header-2 .header-search-toggle,
+.header-1.header-2 .header-track-link,
 .header-1.header-2 .header-right .header-call-item .theme-btn,
 .header-1.header-2 .header-right .header-call-item .sidebar__toggle {
     color: var(--header) !important;
@@ -541,6 +542,23 @@
 .header-1.header-2 .header-right .header-call-item .theme-btn i {
     background-color: var(--theme) !important;
     color: var(--white) !important;
+}
+
+/* ---- Track Application: secondary header link, plain text so it
+   doesn't compete visually with the primary Enquire Now button ---- */
+.header-track-link {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--header);
+    white-space: nowrap;
+    margin-right: 18px;
+    transition: color 0.2s ease;
+}
+.header-track-link:hover {
+    color: var(--theme);
+}
+@media (max-width: 1300px) {
+    .header-track-link { display: none; }
 }
 
 /* ---- Search toggle: circular icon button matching topbar style ---- */

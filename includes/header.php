@@ -33,10 +33,11 @@
                             </div>
                         </div>
                         <div class="header-right d-flex align-items-center mt-0">
+                            <a href="track-application" class="header-track-link">Track Application</a>
                             <?php include __DIR__ . '/header-search.php'; ?>
                             <div class="header-call-item">
                                 <a href="contact" class="theme-btn" data-open-quick-enquiry>
-                                    Get Assistance
+                                    Enquire Now
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </a>
                                 <div class="header__hamburger my-auto">
