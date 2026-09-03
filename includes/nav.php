@@ -1,10 +1,6 @@
 <?php require_once __DIR__ . '/countries-data.php'; ?>
 <nav id="mobile-menu">
     <ul>
-        <li>
-            <a href="/">Home</a>
-        </li>
-
         <li class="has-dropdown">
             <a href="our-services">Services</a>
             <ul class="submenu has-homemenu mega-panel">
@@ -133,9 +129,11 @@
         <li class="has-dropdown">
             <a href="about">Company</a>
             <ul class="submenu simple-dropdown">
-                <li><a href="about">About VisaAgency.in</a></li>
-                <li><a href="about#our-team">Our Team</a></li>
-                <li><a href="careers">Careers</a></li>
+                <li><a href="about#overview">About Us</a></li>
+                <li><a href="about#why-choose-us">Why Choose Us?</a></li>
+                <li><a href="about#vision-mission">Vision &amp; Mission</a></li>
+                <li><a href="about#leadership">Leadership Partners</a></li>
+                <li><a href="contact#support">Support 24x7</a></li>
             </ul>
         </li>
     </ul>

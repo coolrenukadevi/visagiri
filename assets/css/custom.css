@@ -3352,11 +3352,6 @@ summary:focus-visible {
         white-space: nowrap;
     }
 }
-@media (min-width: 1200px) and (max-width: 1799px) {
-    .header-main .main-menu > #mobile-menu > ul > li:last-child {
-        display: none;
-    }
-}
 .header-main .main-menu ul li a .nav-top-icon {
     margin-right: 8px;
     margin-left: 0;

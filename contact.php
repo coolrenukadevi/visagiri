@@ -20,7 +20,7 @@ include __DIR__ . '/includes/header.php';
             </div>
         </section>
 
-        <section class="console-intro">
+        <section class="console-intro" id="support">
             <div class="console-intro-inner">
                 <div class="console-tag"><span class="blink"></span> contact.reach() &middot; Patna &middot; Ranchi &middot; Raipur &middot; Bhopal</div>
                 <p class="lede">Send us your case details and we'll respond with next steps &mdash; or reach out directly by phone or WhatsApp during office hours.</p>

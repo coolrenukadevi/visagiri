@@ -24,9 +24,11 @@ include __DIR__ . '/includes/header.php';
             <div class="svc-sibling-inner">
                 <a href="about#overview" class="current">About Us</a>
                 <a href="about#journey">Our Journey</a>
+                <a href="about#vision-mission">Vision &amp; Mission</a>
                 <a href="about#leadership">Leadership</a>
                 <a href="about#our-team">Our Team</a>
                 <a href="about#partners">Partners</a>
+                <a href="about#why-choose-us">Why Choose Us</a>
                 <a href="careers">Careers</a>
                 <a href="visa-news">News &amp; Updates</a>
             </div>
@@ -86,6 +88,27 @@ include __DIR__ . '/includes/header.php';
                     <div>
                         <h4>Our company timeline is coming soon</h4>
                         <p>We're putting together the key milestones in Visa Agency's history &mdash; founding, city expansions and major service launches &mdash; for this section. Check back soon, or read about what we do today above.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-padding fix" id="vision-mission">
+            <div class="container">
+                <div class="console-section-head">
+                    <p class="console-eyebrow">Vision &amp; Mission</p>
+                    <h2>Why We Do This Work</h2>
+                </div>
+                <div class="console-card-grid">
+                    <div class="console-tcard">
+                        <div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
+                        <h3>Vision</h3>
+                        <p>To make visa, apostille and documentation processes clear and predictable for every applicant we serve &mdash; replacing guesswork with a tracked, transparent process, city by city.</p>
+                    </div>
+                    <div class="console-tcard">
+                        <div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 5-3.5 8-7 9-3.5-1-7-4-7-9V6l7-3z"/><path d="M9.5 12l1.8 1.8L15 10"/></svg></div>
+                        <h3>Mission</h3>
+                        <p>Give applicants across Patna, Ranchi, Raipur and Bhopal a single, dependable point of contact for eligibility checks, documentation and application support &mdash; while being upfront that final decisions rest with the relevant embassy or authority.</p>
                     </div>
                 </div>
             </div>
@@ -164,7 +187,7 @@ include __DIR__ . '/includes/header.php';
             </div>
         </section>
 
-        <section class="section-padding fix">
+        <section class="section-padding fix" id="why-choose-us">
             <div class="container">
                 <div class="console-section-head">
                     <p class="console-eyebrow">Why choose us</p>
