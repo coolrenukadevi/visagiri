@@ -1041,7 +1041,7 @@
 }
 .country-explorer-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 6px;
     max-height: 260px;
     overflow-y: auto;
@@ -1050,11 +1050,17 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    min-width: 0;
     padding: 7px 10px;
     border-radius: 8px;
     font-size: 13.5px;
     color: var(--header) !important;
     transition: background 0.2s ease;
+}
+.country-chip span:last-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .country-chip:hover {
     background: var(--bg);
@@ -2205,14 +2211,35 @@ summary:focus-visible {
     outline-offset: 2px;
 }
 
-/* ---- Simple dropdown polish (nav redesign) ---- */
+/* ---- Simple dropdown: same premium card treatment as the mega
+   panels (rounded corners, soft shadow, gold top stripe) so every
+   header dropdown — mega-panel or plain list — belongs to one
+   consistent design language. ---- */
 .submenu.simple-dropdown {
     min-width: 260px;
+    margin-top: 14px !important;
+    padding: 10px !important;
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--va-gold-muted) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 20px 50px rgba(16, 24, 40, 0.16) !important;
+    overflow: hidden;
 }
 .submenu.simple-dropdown li a {
-    display: flex;
+    display: flex !important;
     align-items: center;
     gap: 10px;
+    width: auto !important;
+    padding: 11px 14px !important;
+    border-radius: 10px;
+    font-size: 13.5px !important;
+    text-transform: none !important;
+    color: var(--header) !important;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+.submenu.simple-dropdown li a:hover {
+    background: var(--bg);
+    color: var(--va-royal) !important;
 }
 .submenu.simple-dropdown li a i {
     color: var(--theme);
