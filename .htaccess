@@ -1,0 +1,14 @@
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+</IfModule>
+
+# Block direct browser access to shared PHP partials.
+<IfModule mod_alias.c>
+    RedirectMatch 404 ^/includes/.*\.php$
+</IfModule>
+
+<FilesMatch "\.(env|log|sql|md)$">
+    Require all denied
+</FilesMatch>

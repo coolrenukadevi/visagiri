@@ -1,0 +1,53 @@
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <?= videshia_logo('sm', 'dark') ?>
+                    <p><?= e(SITE_TAGLINE) ?>. Videshia routes every application through AI-driven checks and autonomous agents so travellers, students and enterprises move across borders without the paperwork drag.</p>
+                    <div class="social-row" aria-label="Social links">
+                        <a href="#" aria-label="LinkedIn"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 11-.02 5 2.5 2.5 0 01.02-5zM.5 8.98h9V23.5h-9zM8.5 8.98h8.6v2h.12c1.2-2.1 4.13-2.16 6.03-.5 1.9 1.65 2.02 4.9 2.02 6.62V23.5h-8V17.7c0-1.38-.02-3.16-1.93-3.16-1.93 0-2.22 1.5-2.22 3.06v5.9h-8z"/></svg></a>
+                        <a href="#" aria-label="Twitter / X"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.6 8.7L23.4 22h-7.1l-5.6-6.9L4.3 22H1.2l8.2-9.4L.9 2h7.3l5 6.3L18.9 2zm-1.2 18h1.9L7.4 4H5.4l12.3 16z"/></svg></a>
+                        <a href="#" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.2c3.2 0 3.6 0 4.9.07 3.3.15 4.8 1.7 4.96 4.96.06 1.3.07 1.65.07 4.87 0 3.23 0 3.58-.07 4.87-.15 3.25-1.7 4.8-4.96 4.96-1.3.06-1.64.07-4.9.07-3.2 0-3.6 0-4.87-.07-3.28-.15-4.8-1.72-4.96-4.97-.06-1.3-.07-1.64-.07-4.87 0-3.22 0-3.57.07-4.87C2.32 3.97 3.86 2.4 7.13 2.27 8.4 2.2 8.8 2.2 12 2.2zm0 3.55a6.25 6.25 0 100 12.5 6.25 6.25 0 000-12.5zm0 10.3a4.05 4.05 0 110-8.1 4.05 4.05 0 010 8.1zm6.5-10.55a1.46 1.46 0 11-2.92 0 1.46 1.46 0 012.92 0z"/></svg></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="<?= url('about.php') ?>">About Videshia</a></li>
+                        <li><a href="<?= url('services.php') ?>">Services</a></li>
+                        <li><a href="<?= url('contact.php') ?>">Careers</a></li>
+                        <li><a href="<?= url('contact.php') ?>">Partner with us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="<?= url('services.php') ?>#tourist">Tourist visa</a></li>
+                        <li><a href="<?= url('services.php') ?>#work">Work visa</a></li>
+                        <li><a href="<?= url('services.php') ?>#student">Student visa</a></li>
+                        <li><a href="<?= url('services.php') ?>#business">Business visa</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Get in touch</h4>
+                    <ul>
+                        <li><a href="mailto:hello@videshia.com">hello@videshia.com</a></li>
+                        <li><a href="tel:+911140840000">+91 11 4084 0000</a></li>
+                        <li><a href="<?= url('contact.php') ?>">Contact form</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>&copy; <?= date('Y') ?> Videshia Technologies. All rights reserved.</span>
+                <div>
+                    <a href="#">Privacy</a>
+                    <a href="#">Terms</a>
+                    <a href="#">Security</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="<?= asset('js/main.js') ?>"></script>
+</body>
+</html>

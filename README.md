@@ -1,16 +1,38 @@
-# React + Vite
+# Videshia — AI-Powered Visa Management
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Marketing site and auth screens for videshia.com, built in plain PHP (no framework, no build step).
 
-Currently, two official plugins are available:
+## Structure
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```
+index.php, about.php, services.php, contact.php   Public pages
+login.php, signup.php, forgot-password.php        Auth screens (right-side login panel)
+dashboard.php, logout.php                         Session-gated demo landing
+includes/                                          Shared header, footer, config, auth, brand mark
+assets/css/style.css                               Site-wide styles & design tokens
+assets/css/auth.css                                Split-screen auth layout
+assets/js/main.js                                  Nav toggle, password visibility, form UX
+```
 
-## React Compiler
+## Running locally
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+php -S localhost:8000
+```
 
-## Expanding the Oxlint configuration
+Then open `http://localhost:8000`.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+## Demo login
+
+The auth flow uses an in-memory demo account (no database wired up yet):
+
+- Email: `demo@videshia.com`
+- Password: `Videshia@123`
+
+Sign-up submissions are validated but not persisted — replace `includes/auth.php` with real
+user storage when a database is introduced.
+
+## Brand
+
+Colors and the logo mark in `includes/functions.php` (`videshia_logo()`) are sourced directly
+from the Videshia brand mark: deep navy (`#0A1B3D`) to bright teal (`#17C3C9`).
