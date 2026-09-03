@@ -19,9 +19,9 @@ $headerWhatsappMsg = rawurlencode('Hello VisaAgency.in, I need assistance with m
     <span class="header-topbar-tagline">Smart Travel. Seamless Visas.</span>
     <span class="header-topbar-divider header-topbar-divider-trust" aria-hidden="true"></span>
     <div class="header-trust-rotator" id="headerTrustRotator" aria-live="polite">
-        <span class="trust-item is-active"><i class="fa-solid fa-earth-americas" aria-hidden="true"></i> 200+ Countries</span>
-        <span class="trust-item"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Trusted Visa Assistance</span>
-        <span class="trust-item"><i class="fa-solid fa-bolt" aria-hidden="true"></i> Fast Processing Support</span>
+        <span class="header-trust-item is-active"><i class="fa-solid fa-earth-americas" aria-hidden="true"></i> 200+ Countries</span>
+        <span class="header-trust-item"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Trusted Visa Assistance</span>
+        <span class="header-trust-item"><i class="fa-solid fa-bolt" aria-hidden="true"></i> Fast Processing Support</span>
     </div>
 </div>
 
@@ -74,7 +74,7 @@ $headerWhatsappMsg = rawurlencode('Hello VisaAgency.in, I need assistance with m
 </div>
 <script>
 (function () {
-    var items = document.querySelectorAll('#headerTrustRotator .trust-item');
+    var items = document.querySelectorAll('#headerTrustRotator .header-trust-item');
     if (items.length < 2) { return; }
     var i = 0;
     setInterval(function () {
