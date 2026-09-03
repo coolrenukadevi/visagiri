@@ -34,7 +34,6 @@
                         </div>
                         <div class="header-right d-flex align-items-center mt-0">
                             <a href="track-application" class="header-track-link">Track Application</a>
-                            <?php include __DIR__ . '/header-search.php'; ?>
                             <div class="header-call-item">
                                 <a href="contact" class="theme-btn" data-open-quick-enquiry>
                                     Enquire Now
