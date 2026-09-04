@@ -1,6 +1,7 @@
 <?php
-$page_title = "Visa Requirements Checker &ndash; Visa Agency";
-$page_description = "Check indicative entry requirements for Indian passport holders by destination &ndash; e-visa, visa-on-arrival or embassy application. By Visa Agency, Patna.";
+$page_title = "Visa Eligibility &amp; Requirements Checker &ndash; Visa Agency";
+$page_description = "Check indicative entry requirements and eligibility for Indian passport holders by destination &ndash; e-visa, visa-on-arrival or embassy application. By Visa Agency, Patna.";
+$page_canonical = 'https://visaagency.in/visa-requirements';
 include __DIR__ . '/includes/header.php';
 ?>
         <!-- Breadcrumb-Wrapper Section Start -->
@@ -10,11 +11,13 @@ include __DIR__ . '/includes/header.php';
             </div>
             <div class="container">
                 <div class="page-heading">
-                    <h1 class="breadcrumb-title">Visa Requirements Checker</h1>
+                    <h1 class="breadcrumb-title">Visa Eligibility &amp; Requirements Checker</h1>
                     <ul class="breadcrumb-list">
                         <li><a href="/">Home</a></li>
                         <li><i class="fa-solid fa-chevron-right"></i></li>
-                        <li>Visa Requirements</li>
+                        <li><a href="resources">Resources</a></li>
+                        <li><i class="fa-solid fa-chevron-right"></i></li>
+                        <li>Eligibility Checker</li>
                     </ul>
                 </div>
             </div>

@@ -155,11 +155,104 @@
         </li>
 
         <li class="has-dropdown">
-            <a href="visa-news">Resources</a>
-            <ul class="submenu simple-dropdown">
-                <li><a href="news">Visa Blog</a></li>
-                <li><a href="visa-news">Visa News &amp; Updates</a></li>
-                <li><a href="contact">Contact Us</a></li>
+            <a href="resources">Resources</a>
+            <ul class="submenu has-homemenu mega-panel mega-panel-resources mega-align-right">
+                <li>
+                    <div class="mega-panel-inner-resources">
+                        <div class="mega-col-icons">
+                            <h5><i class="fa-solid fa-book-open"></i> Guides</h5>
+                            <div class="mega-icon-links-vert">
+                                <a href="visa-guides" class="mega-icon-link-sm">
+                                    <span class="mega-icon-badge-sm"><i class="fa-solid fa-passport"></i></span>
+                                    <span class="mega-icon-text-sm"><strong>Visa Guides</strong><small>Country &amp; visa-type guidance</small></span>
+                                </a>
+                                <a href="visa-requirements-guide" class="mega-icon-link-sm">
+                                    <span class="mega-icon-badge-sm"><i class="fa-solid fa-clipboard-check"></i></span>
+                                    <span class="mega-icon-text-sm"><strong>Visa Requirements</strong><small>Documents &amp; eligibility basics</small></span>
+                                </a>
+                                <a href="visa-application-process" class="mega-icon-link-sm">
+                                    <span class="mega-icon-badge-sm"><i class="fa-solid fa-file-signature"></i></span>
+                                    <span class="mega-icon-text-sm"><strong>Application Process</strong><small>Step-by-step, biometrics &amp; more</small></span>
+                                </a>
+                                <a href="visa-interview-guide" class="mega-icon-link-sm">
+                                    <span class="mega-icon-badge-sm"><i class="fa-solid fa-comments"></i></span>
+                                    <span class="mega-icon-text-sm"><strong>Interview Guide</strong><small>Preparation &amp; common questions</small></span>
+                                </a>
+                                <a href="visa-refusal" class="mega-icon-link-sm">
+                                    <span class="mega-icon-badge-sm"><i class="fa-solid fa-file-circle-xmark"></i></span>
+                                    <span class="mega-icon-text-sm"><strong>Rejection Guide</strong><small>Common reasons &amp; reapplying</small></span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="mega-col-icons">
+                            <h5><i class="fa-solid fa-arrows-rotate"></i> Updates</h5>
+                            <div class="mega-icon-links-vert">
+                                <a href="visa-updates" class="mega-icon-link-sm">
+                                    <span class="mega-icon-badge-sm"><i class="fa-solid fa-arrows-rotate"></i></span>
+                                    <span class="mega-icon-text-sm"><strong>Visa Updates</strong><small>Policy &amp; fee changes</small></span>
+                                </a>
+                                <a href="embassy-news" class="mega-icon-link-sm">
+                                    <span class="mega-icon-badge-sm"><i class="fa-solid fa-building-columns"></i></span>
+                                    <span class="mega-icon-text-sm"><strong>Embassy News</strong><small>Announcements &amp; closures</small></span>
+                                </a>
+                                <a href="visa-alerts" class="mega-icon-link-sm">
+                                    <span class="mega-icon-badge-sm"><i class="fa-solid fa-bell"></i></span>
+                                    <span class="mega-icon-text-sm"><strong>Visa Alerts</strong><small>Urgent, time-sensitive changes</small></span>
+                                </a>
+                                <a href="entry-requirements" class="mega-icon-link-sm">
+                                    <span class="mega-icon-badge-sm"><i class="fa-solid fa-plane-arrival"></i></span>
+                                    <span class="mega-icon-text-sm"><strong>Entry Requirements</strong><small>Country entry &amp; arrival rules</small></span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="mega-col-icons mega-col-tools">
+                            <h5><i class="fa-solid fa-toolbox"></i> Tools</h5>
+                            <div class="mega-icon-links-vert">
+                                <a href="visa-requirements" class="mega-icon-link-sm">
+                                    <span class="mega-icon-badge-sm"><i class="fa-solid fa-circle-check"></i></span>
+                                    <span class="mega-icon-text-sm"><strong>Eligibility Checker</strong><small>Check requirements by destination</small></span>
+                                </a>
+                                <a href="visa-fee-calculator" class="mega-icon-link-sm">
+                                    <span class="mega-icon-badge-sm"><i class="fa-solid fa-calculator"></i></span>
+                                    <span class="mega-icon-text-sm"><strong>Fee Calculator</strong><small>Estimate government &amp; service fees</small></span>
+                                </a>
+                                <a href="visa-processing-time-checker" class="mega-icon-link-sm">
+                                    <span class="mega-icon-badge-sm"><i class="fa-solid fa-clock"></i></span>
+                                    <span class="mega-icon-text-sm"><strong>Processing Time</strong><small>Typical timelines by category</small></span>
+                                </a>
+                                <a href="visa-checklist" class="mega-icon-link-sm">
+                                    <span class="mega-icon-badge-sm"><i class="fa-solid fa-clipboard-list"></i></span>
+                                    <span class="mega-icon-text-sm"><strong>Document Checklist</strong><small>Personalised &amp; printable</small></span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="mega-col-icons">
+                            <h5><i class="fa-solid fa-circle-question"></i> Help</h5>
+                            <div class="mega-icon-links-vert">
+                                <a href="visa-faqs" class="mega-icon-link-sm">
+                                    <span class="mega-icon-badge-sm"><i class="fa-solid fa-circle-question"></i></span>
+                                    <span class="mega-icon-text-sm"><strong>Visa FAQs</strong><small>Common questions, answered</small></span>
+                                </a>
+                                <a href="visa-tips" class="mega-icon-link-sm">
+                                    <span class="mega-icon-badge-sm"><i class="fa-solid fa-lightbulb"></i></span>
+                                    <span class="mega-icon-text-sm"><strong>Visa Tips</strong><small>Practical application tips</small></span>
+                                </a>
+                                <a href="consultant-help" class="mega-icon-link-sm">
+                                    <span class="mega-icon-badge-sm"><i class="fa-solid fa-headset"></i></span>
+                                    <span class="mega-icon-text-sm"><strong>Consultant Help</strong><small>Talk to a Visa Agency expert</small></span>
+                                </a>
+                                <a href="downloads" class="mega-icon-link-sm">
+                                    <span class="mega-icon-badge-sm"><i class="fa-solid fa-download"></i></span>
+                                    <span class="mega-icon-text-sm"><strong>Download Center</strong><small>Checklists &amp; letter templates</small></span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mega-bottom">
+                        <div class="mega-bottom-text"><strong>New to visa applications?</strong>Start with our guides, or talk to a consultant directly.</div>
+                        <a href="resources" class="mega-cta-btn">Explore All Resources <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </li>
             </ul>
         </li>
 

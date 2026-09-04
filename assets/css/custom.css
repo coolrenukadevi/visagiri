@@ -933,6 +933,122 @@
     white-space: normal !important;
 }
 
+/* ---- Resources mega panel: 4-column Guides / Updates / Tools / Help ---- */
+.mega-panel-resources {
+    width: 780px !important;
+}
+.mega-panel-inner-resources {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    padding: 22px 20px 8px;
+}
+.mega-col-icons {
+    padding: 0 10px;
+    border-right: 1px solid var(--border);
+}
+.mega-col-icons:first-child {
+    padding-left: 0;
+}
+.mega-col-icons:last-child {
+    padding-right: 0;
+    border-right: none;
+}
+.mega-col-icons h5 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.mega-icon-links-vert {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+.mega-icon-link-sm {
+    display: flex !important;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 7px 8px !important;
+    margin: 0 -8px !important;
+    width: auto !important;
+    border-radius: 10px;
+    text-transform: none !important;
+    white-space: normal !important;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+.mega-icon-link-sm:hover {
+    background: var(--bg);
+    transform: translateX(2px);
+}
+.mega-icon-badge-sm {
+    flex: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--theme-2) 0%, var(--theme) 100%);
+    color: var(--white);
+    font-size: 12px;
+    margin-top: 1px;
+}
+.mega-icon-text-sm {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+}
+.mega-icon-text-sm strong {
+    font-size: 12.5px !important;
+    font-weight: 700 !important;
+    text-transform: none !important;
+    color: var(--header);
+    line-height: 1.3;
+}
+.mega-icon-text-sm small {
+    display: block;
+    font-size: 10.5px !important;
+    font-weight: 400 !important;
+    text-transform: none !important;
+    color: var(--text);
+    line-height: 1.35;
+    white-space: normal !important;
+}
+/* Tools column: visually stronger per spec, to draw the eye to the interactive tools */
+.mega-col-tools {
+    background: linear-gradient(180deg, rgba(6, 43, 92, 0.05), rgba(6, 43, 92, 0.015));
+    border: 1px solid rgba(6, 43, 92, 0.09);
+    border-radius: 14px;
+    padding: 12px 12px !important;
+}
+.mega-col-tools .mega-icon-badge-sm {
+    width: 32px;
+    height: 32px;
+    box-shadow: 0 6px 14px rgba(6, 43, 92, 0.22);
+}
+.mega-col-tools .mega-icon-link-sm:hover {
+    background: rgba(255, 255, 255, 0.7);
+}
+@media (max-width: 1024px) {
+    .mega-panel-resources {
+        width: calc(100vw - 48px) !important;
+    }
+    .mega-panel-inner-resources {
+        grid-template-columns: 1fr 1fr;
+        gap: 18px 0;
+    }
+    .mega-col-icons {
+        border-right: none;
+        padding: 0 !important;
+    }
+}
+@media (max-width: 600px) {
+    .mega-panel-inner-resources {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* ---- Countries mega panel ---- */
 .mega-panel-countries {
     width: 640px !important;
@@ -6035,3 +6151,58 @@ table.pp-table tr:hover td { background: var(--bg); }
 .location-dir-card ul a { font-size: 13.5px; color: var(--text); }
 .location-dir-card ul a:hover { color: var(--theme); }
 .location-dir-card p { margin: 0; color: var(--text); font-size: 14px; }
+
+/* ---- Download Center: printable on-page templates ---- */
+.dl-template-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 30px;
+    margin-bottom: 28px;
+}
+.dl-template-card .dl-template-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+.dl-template-card .dl-template-body {
+    font-size: 14.5px;
+    line-height: 1.8;
+    color: var(--header);
+    white-space: pre-line;
+    font-family: Georgia, 'Times New Roman', serif;
+}
+.dl-print-btn {
+    background: var(--va-navy);
+    color: var(--white) !important;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s ease;
+}
+.dl-print-btn:hover {
+    background: var(--va-royal);
+}
+@media print {
+    .no-print, header, .header-top-section, footer, .qhelp-fab, .back-to-top, .mobile-sticky-cta,
+    .breadcrumb-wrapper, #preloader {
+        display: none !important;
+    }
+    .dl-template-card {
+        border: none;
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+    body {
+        background: #fff !important;
+    }
+}

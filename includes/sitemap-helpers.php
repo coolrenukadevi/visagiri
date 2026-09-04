@@ -65,6 +65,21 @@ function sitemap_static_pages(): array
         ['visa-medical', 'monthly', '0.7'],
         ['visa-crew', 'monthly', '0.7'],
         ['visa-extension', 'monthly', '0.7'],
+        ['resources', 'weekly', '0.85'],
+        ['visa-guides', 'monthly', '0.8'],
+        ['visa-requirements-guide', 'monthly', '0.7'],
+        ['visa-application-process', 'monthly', '0.7'],
+        ['visa-interview-guide', 'monthly', '0.7'],
+        ['visa-updates', 'weekly', '0.7'],
+        ['embassy-news', 'weekly', '0.6'],
+        ['visa-alerts', 'weekly', '0.6'],
+        ['entry-requirements', 'monthly', '0.7'],
+        ['visa-fee-calculator', 'monthly', '0.75'],
+        ['visa-processing-time-checker', 'monthly', '0.75'],
+        ['visa-faqs', 'monthly', '0.7'],
+        ['visa-tips', 'monthly', '0.6'],
+        ['consultant-help', 'monthly', '0.6'],
+        ['downloads', 'monthly', '0.6'],
     ];
 }
 
