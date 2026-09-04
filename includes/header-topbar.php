@@ -2,17 +2,12 @@
 /**
  * Shared topbar (utility bar) content for both header variants
  * (header.php's solid header and header-home.php's homepage variant)
- * — brand tagline, live currency ticker, 24x7 WhatsApp support and the
- * Login dropdown. Included from inside each variant's own
- * .header-top-section(-2) wrapper so the outer class names (and
- * therefore the existing gradient/positioning CSS) stay exactly as
- * before; only the inner content is now written once.
+ * — brand tagline, 24x7 WhatsApp support and the Login dropdown.
+ * Included from inside each variant's own .header-top-section(-2)
+ * wrapper so the outer class names (and therefore the existing
+ * gradient/positioning CSS) stay exactly as before; only the inner
+ * content is now written once.
  */
-require_once __DIR__ . '/exchange-rates.php';
-// Cache-only read — never blocks the page on an outbound call. The
-// live fetch (when the cache is missing/stale) happens asynchronously
-// via currency-rate.js polling exchange-rate.php after page load.
-$headerFx = exchange_rate_get_cached_only('USD_INR');
 $headerWhatsappMsg = rawurlencode('Hello VisaAgency.in, I need assistance with my travel/visa requirement.');
 ?>
 <div class="header-topbar-left">
@@ -23,23 +18,6 @@ $headerWhatsappMsg = rawurlencode('Hello VisaAgency.in, I need assistance with m
         <span class="header-trust-item"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Trusted Visa Assistance</span>
         <span class="header-trust-item"><i class="fa-solid fa-bolt" aria-hidden="true"></i> Fast Processing Support</span>
     </div>
-</div>
-
-<div class="header-fx-widget" id="headerFxWidget" data-pair="USD_INR">
-    <?php if ($headerFx): ?>
-    <span class="fx-pair"><?php echo $headerFx['label']; ?></span>
-    <span class="fx-rate" id="fxRateValue">&#8377;<?php echo number_format((float) $headerFx['rate'], 2); ?></span>
-    <span class="fx-live-dot <?php echo $headerFx['stale'] ? 'is-stale' : 'is-live'; ?>" id="fxLiveDot" aria-hidden="true"></span>
-    <span class="fx-live-label" id="fxLiveLabel"><?php echo $headerFx['stale'] ? 'Updated' : 'Live'; ?></span>
-    <?php else: ?>
-    <span class="fx-rate" id="fxRateValue" hidden></span>
-    <span class="fx-live-dot" id="fxLiveDot" hidden aria-hidden="true"></span>
-    <span class="fx-live-label" id="fxLiveLabel" hidden></span>
-    <span class="fx-pair" id="fxPairLabel">USD &rarr; INR</span>
-    <?php endif; ?>
-    <button type="button" class="fx-info-btn" id="fxInfoBtn" aria-label="About this exchange rate" data-tooltip="Indicative USD to INR exchange rate. Actual card/bank/forex rates may vary.">
-        <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
-    </button>
 </div>
 
 <div class="header-support-login">

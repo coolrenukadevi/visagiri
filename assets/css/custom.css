@@ -370,100 +370,6 @@
     .header-trust-item { transition: none; }
 }
 
-/* ---- Live currency ticker ---- */
-.header-fx-widget {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.9);
-}
-.header-fx-widget .fx-pair {
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.75);
-}
-.header-fx-widget .fx-rate {
-    font-weight: 700;
-    color: var(--white);
-    letter-spacing: 0.01em;
-}
-.header-fx-widget .fx-unavailable {
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.6);
-    font-style: italic;
-}
-.fx-live-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #3DDC7A;
-    box-shadow: 0 0 0 0 rgba(61, 220, 122, 0.6);
-    animation: fxLivePulse 2s ease-out infinite;
-}
-.fx-live-dot.is-stale {
-    background: var(--gold, #F5B800);
-    animation: none;
-    box-shadow: none;
-}
-@keyframes fxLivePulse {
-    0% { box-shadow: 0 0 0 0 rgba(61, 220, 122, 0.55); }
-    70% { box-shadow: 0 0 0 5px rgba(61, 220, 122, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(61, 220, 122, 0); }
-}
-.fx-live-label {
-    font-size: 10.5px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: rgba(255, 255, 255, 0.75);
-}
-.fx-info-btn {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 18px;
-    height: 18px;
-    border: none;
-    background: none;
-    color: rgba(255, 255, 255, 0.55);
-    font-size: 12px;
-    cursor: pointer;
-    padding: 0;
-}
-.fx-info-btn:hover,
-.fx-info-btn:focus-visible {
-    color: var(--white);
-}
-.fx-info-btn::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    top: calc(100% + 10px);
-    left: 50%;
-    transform: translateX(-50%) translateY(-4px);
-    width: 240px;
-    background: var(--header);
-    color: var(--white);
-    font-size: 11.5px;
-    font-weight: 400;
-    line-height: 1.5;
-    text-transform: none;
-    letter-spacing: normal;
-    padding: 10px 12px;
-    border-radius: 8px;
-    box-shadow: 0 12px 30px rgba(11, 18, 32, 0.3);
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transition: opacity 0.18s ease, transform 0.18s ease;
-    z-index: 20;
-}
-.fx-info-btn:hover::after,
-.fx-info-btn:focus-visible::after {
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(-50%) translateY(0);
-}
 
 /* ---- WhatsApp support + Login dropdown ---- */
 .header-support-login {
@@ -615,9 +521,6 @@
         gap: 8px;
         min-height: 30px;
     }
-    .header-fx-widget { font-size: 11px; gap: 4px; }
-    .header-fx-widget .fx-pair { display: none; }
-    .fx-live-label { display: none; }
     .header-support-link span { display: none; }
     .header-support-link { padding: 5px 7px; }
 }
@@ -754,7 +657,6 @@
     .header-search-toggle, .sidebar__toggle, .header-main .logo img {
         transition: none !important;
     }
-    .fx-live-dot { animation: none !important; }
 }
 
 /* ---- Mobile navigation drawer: navy/royal-blue/gold, matching the
