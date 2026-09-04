@@ -88,7 +88,7 @@ $navItems = [
     <button type="button" class="crm-sidebar-toggle" id="crmSidebarToggle" aria-label="Toggle menu"><i class="fa-solid fa-bars"></i></button>
     <div class="crm-sidebar" id="crmSidebar">
         <div class="crm-brand">
-            <img src="../assets/img/logo/white-logo.svg" alt="Visa Agency">
+            <img src="../assets/img/logo/visaagency-logo-dark.png" alt="Visa Agency">
         </div>
         <nav class="crm-nav">
             <?php foreach ($navItems as $item): ?>

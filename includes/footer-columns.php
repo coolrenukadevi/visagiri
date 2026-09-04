@@ -1,6 +1,6 @@
                     <nav class="va-footer-columns" aria-label="Footer navigation">
                         <div class="footer-col-brand">
-                            <a href="/" class="footer-brand-logo"><img src="assets/img/logo/white-logo.svg" alt="Visa Agency logo"></a>
+                            <a href="/" class="footer-brand-logo"><img src="assets/img/logo/visaagency-logo-dark.png" alt="Visa Agency logo"></a>
                             <p class="footer-brand-desc">
                                 Your trusted partner for Visa, Apostille, Travel &amp; Documentation Services.
                             </p>

@@ -20,8 +20,8 @@ $site_social = [
     'facebook'  => 'https://www.facebook.com/visaagencyofficial',
 ];
 
-$site_logo_black = 'assets/img/logo/black-logo.svg';
-$site_logo_white = 'assets/img/logo/white-logo.svg';
+$site_logo_black = 'assets/img/logo/visaagency-logo-light.png';
+$site_logo_white = 'assets/img/logo/visaagency-logo-dark.png';
 
 /**
  * Bank transfer / UPI details shown on the public "Make a Payment" page

@@ -62,7 +62,7 @@ $ppNavItems = [
     <button type="button" class="pp-sidebar-toggle" id="ppSidebarToggle" aria-label="Toggle menu"><i class="fa-solid fa-bars"></i></button>
     <div class="pp-sidebar" id="ppSidebar">
         <div class="pp-brand">
-            <img src="assets/img/logo/white-logo.svg" alt="Visa Agency">
+            <img src="assets/img/logo/visaagency-logo-dark.png" alt="Visa Agency">
             <span>B2B Partner Portal</span>
         </div>
         <nav class="pp-nav">
