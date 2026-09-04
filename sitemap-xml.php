@@ -14,6 +14,7 @@
  */
 require_once __DIR__ . '/includes/visa-content-db.php';
 require_once __DIR__ . '/includes/countries-data.php';
+require_once __DIR__ . '/includes/location-db.php';
 
 header('Content-Type: application/xml; charset=UTF-8');
 
@@ -55,8 +56,9 @@ $staticPages = [
     ['news', 'weekly', '0.6'],
     ['news-grid', 'weekly', '0.5'],
     ['news-details', 'monthly', '0.5'],
-    ['customer-login', 'yearly', '0.3'],
     ['forex-track', 'monthly', '0.4'],
+    ['locations', 'monthly', '0.7'],
+    ['visa-consultant', 'monthly', '0.8'],
     ['payment', 'monthly', '0.5'],
     ['visa-refusal', 'monthly', '0.5'],
     ['visa-consultancy-services', 'weekly', '0.9'],
@@ -103,6 +105,21 @@ $pageStmt = $pdo->query("SELECT page_slug, updated_at FROM country_visa_pages WH
 foreach ($pageStmt->fetchAll(PDO::FETCH_ASSOC) as $p) {
     $lastmod = substr($p['updated_at'] ?: $today, 0, 10);
     echo sitemap_url($base . '/' . visa_country_page_url($p['page_slug']), $lastmod, 'monthly', '0.85');
+}
+
+// /visa-consultant/{state}/ and /visa-consultant/{state}/{city}/ location pages — published only.
+$locDb = location_db();
+$stateStmt = $locDb->query("SELECT id, slug, updated_at FROM states WHERE status = 'published' ORDER BY slug");
+foreach ($stateStmt->fetchAll(PDO::FETCH_ASSOC) as $s) {
+    $lastmod = substr($s['updated_at'] ?: $today, 0, 10);
+    echo sitemap_url($base . '/' . location_state_url($s['slug']), $lastmod, 'monthly', '0.7');
+
+    $cityStmt = $locDb->prepare("SELECT slug, updated_at FROM cities WHERE state_id = ? AND status = 'published' ORDER BY slug");
+    $cityStmt->execute([$s['id']]);
+    foreach ($cityStmt->fetchAll(PDO::FETCH_ASSOC) as $c) {
+        $cityLastmod = substr($c['updated_at'] ?: $today, 0, 10);
+        echo sitemap_url($base . '/' . location_city_url($s['slug'], $c['slug']), $cityLastmod, 'monthly', '0.75');
+    }
 }
 
 echo '</urlset>' . "\n";

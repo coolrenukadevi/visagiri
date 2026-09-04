@@ -37,6 +37,11 @@ RewriteRule ^sitemap\.xml$ sitemap-xml.php [L]
 # which resolves the slug against the DB and renders the hub or content page.
 RewriteRule ^countries/([a-z0-9-]+)/?$ countries.php?slug=$1 [L,QSA]
 
+# State/city visa-consultant location pages: /visa-consultant/{state}/ and
+# /visa-consultant/{state}/{city}/.
+RewriteRule ^visa-consultant/([a-z0-9-]+)/([a-z0-9-]+)/?$ visa-consultant-city.php?state=$1&city=$2 [L,QSA]
+RewriteRule ^visa-consultant/([a-z0-9-]+)/?$ visa-consultant-state.php?state=$1 [L,QSA]
+
 # Map a clean URL to its .php file when the file exists and no real
 # file/directory already matches the request.
 RewriteCond %{REQUEST_FILENAME} !-f
