@@ -13,7 +13,7 @@ function organization_schema(): array
         'sameAs' => [],
         'contactPoint' => [
             '@type' => 'ContactPoint',
-            'telephone' => '+91-11-4084-0000',
+            'telephone' => '+91-78448-19819',
             'contactType' => 'customer service',
             'email' => 'info@tripgation.com',
         ],

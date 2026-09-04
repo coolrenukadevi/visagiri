@@ -63,7 +63,7 @@ $footerCountries = array_slice($megaCountries ?? [], 0, 8);
                     <h4>Get in touch</h4>
                     <ul>
                         <li><a href="mailto:info@tripgation.com">info@tripgation.com</a></li>
-                        <li><a href="tel:+911140840000">+91 11 4084 0000</a></li>
+                        <li><a href="tel:+917844819819">+91 78448 19819</a></li>
                         <li><a href="https://wa.me/917844819819">WhatsApp us</a></li>
                         <li><a href="<?= url('contact.php') ?>">Contact form</a></li>
                         <li>Cyber Hub, Gurugram, India</li>
