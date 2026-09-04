@@ -7,6 +7,7 @@ if (forex_customer_logged_in()) {
     exit;
 }
 
+$page_noindex = true;
 $page_title = "Forex Customer Login &ndash; Visa Agency";
 $page_description = "Log in with your registered mobile number to view all your Forex requests, quotations and documents in one place.";
 include __DIR__ . '/includes/header.php';

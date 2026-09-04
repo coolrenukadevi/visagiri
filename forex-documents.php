@@ -1,4 +1,5 @@
 <?php
+$page_noindex = true;
 $page_title = "Upload Forex Documents &ndash; Visa Agency";
 $page_description = "Upload your supporting documents for your VisaAgency.in forex request.";
 require_once __DIR__ . '/includes/forex-db.php';

@@ -7,6 +7,7 @@ $stmt = $pdo->prepare("SELECT * FROM forex_requests WHERE substr(mobile, -10) = 
 $stmt->execute([forex_customer_mobile()]);
 $requests = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+$page_noindex = true;
 $page_title = "My Forex Requests &ndash; Visa Agency";
 $page_description = "View the status, quotations and documents for every Forex request you've submitted.";
 include __DIR__ . '/includes/header.php';

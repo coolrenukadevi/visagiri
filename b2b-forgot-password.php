@@ -1,4 +1,5 @@
 <?php
+$page_noindex = true;
 $page_title = "Forgot Password &ndash; B2B Partner Portal &ndash; Visa Agency";
 $page_description = "Reset the password for your VisaAgency.in B2B Partner Portal account.";
 require_once __DIR__ . '/includes/partner-auth.php';

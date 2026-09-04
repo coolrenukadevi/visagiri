@@ -1,4 +1,5 @@
 <?php
+$page_noindex = true;
 $page_title = "B2B Partner Login &ndash; Visa Agency";
 $page_description = "Log in to your VisaAgency.in B2B Partner Portal to manage visa applications, quotations, invoices and documents.";
 require_once __DIR__ . '/includes/partner-auth.php';

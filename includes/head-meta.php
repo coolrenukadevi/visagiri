@@ -4,6 +4,7 @@ require_once __DIR__ . '/forex-customer-nav-state.php';
 if (!isset($page_title)) { $page_title = "Visa Agency &ndash; Trusted Visa Consultant in Patna, Ranchi, Raipur & Bhopal"; }
 if (!isset($page_description)) { $page_description = "Visa Agency &ndash; Trusted Visa Consultant in Patna, Ranchi, Raipur & Bhopal."; }
 if (!isset($page_canonical)) { $page_canonical = ''; }
+if (!isset($page_noindex)) { $page_noindex = false; }
 if (!isset($page_og_title)) { $page_og_title = $page_title; }
 if (!isset($page_og_description)) { $page_og_description = $page_description; }
 require_once __DIR__ . '/site-contact.php';
@@ -30,6 +31,7 @@ require_once __DIR__ . '/site-contact.php';
         <meta name="author" content="Visa Agency">
         <meta name="description" content="<?php echo $page_description; ?>">
         <?php if ($page_canonical): ?><link rel="canonical" href="<?php echo $page_canonical; ?>"><?php endif; ?>
+        <?php if ($page_noindex): ?><meta name="robots" content="noindex, nofollow"><?php endif; ?>
         <meta property="og:type" content="website">
         <meta property="og:title" content="<?php echo $page_og_title; ?>">
         <meta property="og:description" content="<?php echo $page_og_description; ?>">

@@ -25,6 +25,7 @@ if ($request) {
     $isCancelled = in_array($request['status'], ['Cancelled', 'Rejected'], true);
 }
 
+$page_noindex = true;
 $page_title = ($request ? htmlspecialchars($request['forex_ref']) . ' &ndash; ' : '') . "My Forex Requests &ndash; Visa Agency";
 $page_description = "Status, timeline and documents for your Forex request.";
 include __DIR__ . '/includes/header.php';

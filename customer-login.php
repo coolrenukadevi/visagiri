@@ -1,4 +1,5 @@
 <?php
+$page_noindex = true;
 $page_title = "Customer Login &ndash; Visa Agency";
 $page_description = "Customer portal for Visa Agency clients.";
 include __DIR__ . '/includes/header.php';
