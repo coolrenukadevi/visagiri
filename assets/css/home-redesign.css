@@ -1,0 +1,187 @@
+/**
+ * Homepage redesign — "case file" visual system for index.php only.
+ * Deliberately reuses the site's existing brand tokens (--brand-navy,
+ * --brand-blue, --brand-gold, --bg, --white, --text, --border-color from
+ * custom.css/main.css) rather than introducing new colors, so every hover
+ * state and accent here matches the header/topbar/footer exactly. All
+ * classes are prefixed hr- (home-redesign) to avoid colliding with
+ * sitewide classes; the visa search widget (.vsw-*), checklist widget
+ * (#checklist-form/.cl-*) and country explorer (.country-explorer-*)
+ * keep their original IDs/classes untouched — only re-skinned here.
+ */
+
+.hr-section{padding-block:64px;}
+@media (min-width:900px){ .hr-section{padding-block:96px;} }
+.hr-head{max-width:640px; margin-bottom:40px;}
+.hr-eyebrow{
+    font-family:'Courier New', monospace; font-size:11.5px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--brand-blue-secondary); display:flex; align-items:center; gap:10px; margin-bottom:14px; font-weight:700;
+}
+.hr-eyebrow::before{content:""; width:16px; height:1px; background:var(--brand-gold);}
+.hr-head h2{font-size:clamp(26px,3.6vw,38px); line-height:1.18; color:var(--header); margin:0;}
+.hr-head p{color:var(--text); margin-top:14px; font-size:16.5px; max-width:56ch;}
+
+.hr-link{
+    font-weight:700; font-size:14.5px; border-bottom:1px solid var(--border-color); padding-bottom:2px;
+    text-decoration:none; display:inline-flex; align-items:center; gap:6px; color:var(--header);
+}
+.hr-link:hover{border-color:var(--brand-gold); color:var(--brand-blue);}
+.hr-btn-primary{background:var(--brand-navy); color:#fff !important;}
+.hr-btn-primary:hover{background:var(--brand-blue) !important; color:#fff !important;}
+.hr-btn-gold{background:var(--brand-gold); color:#231A00 !important; border-color:var(--brand-gold);}
+.hr-btn-gold:hover{background:#D9A400 !important; color:#231A00 !important;}
+
+/* ============ HERO ============ */
+.hr-hero{padding-block:44px 60px;}
+@media (min-width:900px){ .hr-hero{padding-block:60px 80px;} }
+.hr-hero-grid{display:grid; gap:40px;}
+@media (min-width:980px){ .hr-hero-grid{grid-template-columns:0.92fr 1.08fr; align-items:start; gap:52px;} }
+.hr-hero h1{font-size:clamp(32px,5.2vw,54px); line-height:1.08; letter-spacing:-.01em; color:var(--header); margin:0; font-family:var(--display-font,inherit);}
+.hr-hero h1 em{font-style:italic; color:var(--brand-blue);}
+.hr-hero-sub{margin-top:18px; font-size:17.5px; color:var(--text); max-width:46ch;}
+.hr-hero-meta{display:flex; flex-wrap:wrap; gap:20px; margin-top:26px; font-family:'Courier New', monospace; font-size:12.5px; color:#8891A0;}
+.hr-hero-meta strong{color:var(--header); font-weight:700;}
+
+.hr-checker{
+    background:#fff; border:1px solid var(--border-color); border-radius:18px;
+    box-shadow:0 1px 1px rgba(6,43,92,.04), 0 20px 44px -22px rgba(6,43,92,.28); overflow:hidden;
+}
+.hr-checker-top{border-top:4px solid var(--brand-gold); padding:24px 24px 0;}
+.hr-checker-tab{display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;}
+.hr-checker-tab .hr-tag{font-family:'Courier New', monospace; font-size:11px; letter-spacing:.08em; color:#8891A0;}
+.hr-checker-tab .hr-stamp{
+    font-family:'Courier New', monospace; font-size:10.5px; letter-spacing:.1em; color:#8A6A00;
+    border:1px solid #FBE9AD; background:#FDF3D4; padding:4px 9px; border-radius:999px;
+}
+.hr-checker h3{font-size:22px; margin:0 0 6px; color:var(--header);}
+.hr-checker-intro{color:var(--text); font-size:14.5px; margin-bottom:6px;}
+.hr-checker-body{padding:0 24px 24px;}
+
+/* re-skin the existing .visa-search-widget form so it fits inside the checker card
+   (it ships with a -56px top margin meant to float it over the old hero image —
+   neutralised here since it now sits in normal flow inside this card) */
+.hr-checker .visa-search-widget{background:none; box-shadow:none; padding:0 !important; border-radius:0; margin-top:0 !important;}
+.hr-checker .vsw-title, .hr-checker .vsw-sub{display:none;}
+.hr-checker .vsw-grid{display:grid; gap:14px; grid-template-columns:1fr; margin-top:8px;}
+@media (min-width:520px){ .hr-checker .vsw-grid{grid-template-columns:1fr 1fr;} }
+.hr-checker .vsw-field{position:relative;}
+.hr-checker .vsw-field label{display:block; font-size:12px; font-weight:700; color:var(--text); margin-bottom:7px; text-transform:uppercase; letter-spacing:.05em;}
+.hr-checker .vsw-field input, .hr-checker .vsw-field select{
+    width:100%; padding:12px 14px; border:1px solid var(--border-color); border-radius:6px;
+    background:var(--bg); color:var(--header); font-size:14.5px;
+}
+.hr-checker .vsw-field-error{color:#C0392B; font-size:12px; display:block; margin-top:5px;}
+.hr-checker .vsw-submit{
+    width:100%; margin-top:6px; padding:13px 20px; border-radius:999px; border:none;
+    background:var(--brand-gold); color:#231A00; font-weight:700; font-size:14.5px; cursor:pointer;
+    transition:background .15s ease;
+}
+.hr-checker .vsw-submit:hover{background:#D9A400;}
+.hr-checker .vsw-result{margin-top:18px; border-top:1px dashed var(--border-color); padding-top:16px; font-size:14px; color:var(--text); display:none;}
+.hr-checker .vsw-result.show{display:block;}
+.hr-checker .vsw-result-actions{display:flex; flex-wrap:wrap; gap:14px; margin-top:10px;}
+.hr-checker .vsw-result-actions a{font-weight:700; font-size:13.5px; color:var(--brand-blue); text-decoration:none;}
+.hr-checker .vsw-result-actions a:hover{color:var(--brand-navy);}
+.hr-checker-fine{font-size:12px; color:#8891A0; margin-top:14px;}
+
+/* ============ CREDIBILITY BAND ============ */
+.hr-cred{border-top:1px solid var(--border-color); border-bottom:1px solid var(--border-color); background:#fff;}
+.hr-cred-grid{display:grid; gap:28px; padding-block:30px; align-items:center;}
+@media (min-width:900px){ .hr-cred-grid{grid-template-columns:1.1fr 1.5fr 1fr; gap:36px;} }
+.hr-cred-seal{display:flex; align-items:center; gap:14px;}
+.hr-cred-seal p{font-size:13px; color:var(--text); line-height:1.45; margin:0;}
+.hr-cred-seal strong{display:block; color:var(--header); font-size:14.5px; margin-bottom:2px;}
+.hr-plaques{display:flex; flex-wrap:wrap; gap:9px 20px;}
+.hr-plaque{font-family:'Courier New', monospace; font-size:11.5px; letter-spacing:.03em; color:#8891A0; white-space:nowrap;}
+.hr-plaque b{color:var(--text); font-weight:700;}
+.hr-cred-stat{text-align:left; border-left:1px solid var(--border-color); padding-left:26px;}
+@media (max-width:899px){ .hr-cred-stat{border-left:none; padding-left:0; border-top:1px solid var(--border-color); padding-top:16px;} }
+.hr-cred-stat .hr-num{font-family:'Courier New', monospace; font-size:28px; font-weight:700; color:var(--header); font-variant-numeric:tabular-nums;}
+.hr-cred-stat .hr-lbl{font-size:12.5px; color:var(--text); margin-top:2px;}
+
+/* ============ SERVICES ============ */
+.hr-svc-grid{display:grid; gap:20px; grid-template-columns:1fr;}
+@media (min-width:640px){ .hr-svc-grid{grid-template-columns:1fr 1fr;} }
+@media (min-width:1040px){ .hr-svc-grid{grid-template-columns:repeat(3,1fr);} }
+.hr-svc-card{
+    background:#fff; border:1px solid var(--border-color); border-radius:12px;
+    padding:24px; display:flex; flex-direction:column; gap:14px; transition:border-color .2s ease, transform .2s ease;
+}
+.hr-svc-card:hover{border-color:var(--brand-gold); transform:translateY(-3px);}
+.hr-svc-card svg{width:52px; height:52px;}
+.hr-svc-card h3{font-size:19px; color:var(--header); margin:0;}
+.hr-svc-card p{font-size:14.5px; color:var(--text); flex:1; margin:0;}
+
+/* ============ WHY US ============ */
+.hr-why-grid{display:grid; gap:36px;}
+@media (min-width:900px){ .hr-why-grid{grid-template-columns:0.85fr 1.15fr; gap:60px;} }
+.hr-why-copy p{color:var(--text); font-size:16px; margin-top:14px;}
+.hr-why-copy h2{font-size:clamp(26px,3.6vw,36px); color:var(--header); margin:0;}
+.hr-diff-item{display:grid; grid-template-columns:auto 1fr; gap:16px; padding-block:20px; border-top:1px solid var(--border-color);}
+.hr-diff-item:last-child{border-bottom:1px solid var(--border-color);}
+.hr-diff-index{font-family:'Courier New', monospace; font-size:13px; color:#8A6A00; padding-top:3px; font-weight:700;}
+.hr-diff-item h4{font-size:16.5px; margin:0 0 6px; color:var(--header);}
+.hr-diff-item p{font-size:14.5px; color:var(--text); margin:0;}
+
+/* ============ PROCESS ============ */
+.hr-timeline{display:grid; gap:0;}
+@media (min-width:940px){ .hr-timeline{grid-template-columns:repeat(6,1fr); gap:18px;} }
+.hr-tl-step{padding-block:20px; border-top:1px solid var(--border-color); position:relative;}
+@media (min-width:940px){
+    .hr-tl-step{border-top:none; padding-block:0; padding-top:28px;}
+    .hr-tl-step::before{content:""; position:absolute; top:0; left:0; right:0; height:1px; background:var(--border-color);}
+    .hr-tl-step::after{content:""; position:absolute; top:-4px; left:0; width:9px; height:9px; border-radius:50%; background:var(--brand-gold);}
+}
+.hr-tl-step .hr-n{font-family:'Courier New', monospace; font-size:12.5px; color:#8A6A00; display:block; margin-bottom:8px; font-weight:700;}
+.hr-tl-step h4{font-size:15.5px; margin:0 0 6px; color:var(--header);}
+.hr-tl-step p{font-size:13.5px; color:var(--text); margin:0;}
+
+/* ============ DESTINATION EXPLORER (re-skin of existing .country-explorer-*) ============ */
+.hr-dest .country-explorer-search{max-width:420px; margin-bottom:18px;}
+.hr-dest .country-explorer-filters{margin-bottom:22px;}
+
+/* ============ CHECKLIST TOOL (re-skin of existing checklist widget) ============ */
+.hr-checklist-wrap{
+    background:#fff; border:1px solid var(--border-color); border-radius:18px;
+    box-shadow:0 1px 1px rgba(6,43,92,.04), 0 20px 44px -22px rgba(6,43,92,.2); padding:28px;
+}
+@media (min-width:900px){ .hr-checklist-wrap{padding:38px;} }
+.hr-checklist-wrap .checklist-widget{background:none; box-shadow:none; padding:0;}
+
+/* ============ PRICING ============ */
+.hr-pricing-grid{display:grid; gap:22px;}
+@media (min-width:800px){ .hr-pricing-grid{grid-template-columns:1fr 1fr;} }
+.hr-price-card{border:1px solid var(--border-color); border-radius:16px; padding:30px; background:#fff; display:flex; flex-direction:column; gap:18px;}
+.hr-price-card.is-primary{border-color:var(--brand-gold); box-shadow:0 1px 1px rgba(6,43,92,.04), 0 20px 44px -22px rgba(6,43,92,.28); position:relative;}
+.hr-price-card .hr-tag{position:absolute; top:-13px; left:26px; background:var(--brand-gold); color:#231A00; font-family:'Courier New', monospace; font-size:11px; letter-spacing:.06em; padding:5px 11px; border-radius:999px; font-weight:700;}
+.hr-price-card h3{font-size:21px; margin:0; color:var(--header);}
+.hr-price-card .hr-amount{font-family:'Courier New', monospace; font-size:30px; font-weight:700; margin-top:4px; color:var(--header);}
+.hr-price-card .hr-amount span{font-size:13.5px; color:var(--text); font-family:inherit; font-weight:500;}
+.hr-price-list{display:flex; flex-direction:column; gap:10px; flex:1; margin:0; padding:0; list-style:none;}
+.hr-price-list li{display:flex; align-items:flex-start; gap:10px; font-size:14.5px; color:var(--text);}
+.hr-price-list svg{width:16px; height:16px; flex:none; margin-top:3px; color:#1E8E52;}
+.hr-price-list li.hr-no svg{color:#B3BAC7;}
+.hr-price-card .btn.theme-btn{align-self:flex-start;}
+
+/* ============ TESTIMONIALS ============ */
+.hr-test-grid{display:grid; gap:20px;}
+@media (min-width:760px){ .hr-test-grid{grid-template-columns:repeat(3,1fr);} }
+.hr-test-card{border:1px solid var(--border-color); border-radius:12px; padding:24px; background:#fff; display:flex; flex-direction:column; gap:14px;}
+.hr-test-stamp{font-family:'Courier New', monospace; font-size:10.5px; letter-spacing:.08em; color:#1E8E52; background:#E4F5EA; padding:4px 9px; border-radius:999px; align-self:flex-start; font-weight:700;}
+.hr-test-card blockquote{font-style:italic; font-size:17px; line-height:1.4; margin:0; color:var(--header);}
+.hr-test-who{font-size:13px; color:var(--text); border-top:1px solid var(--border-color); padding-top:12px;}
+.hr-test-who b{color:var(--header); font-weight:700; display:block; font-size:14px;}
+
+/* ============ CROSS-SELL ============ */
+.hr-crosssell{background:var(--bg); border-top:1px solid var(--border-color); border-bottom:1px solid var(--border-color);}
+.hr-cross-grid{display:grid; gap:26px; padding-block:38px;}
+@media (min-width:760px){ .hr-cross-grid{grid-template-columns:1fr 1fr; gap:52px;} }
+.hr-cross-item h4{font-size:18px; margin:0 0 8px; color:var(--header);}
+.hr-cross-item p{font-size:14px; color:var(--text); margin:0 0 12px; max-width:46ch;}
+
+/* ============ FINAL CTA ============ */
+.hr-final-cta{background:var(--brand-navy); color:#fff; border-radius:18px; padding:44px 28px; text-align:center;}
+@media (min-width:900px){ .hr-final-cta{padding:60px;} }
+.hr-final-cta h2{color:#fff; font-size:clamp(26px,4vw,38px); max-width:20ch; margin:0 auto;}
+.hr-final-cta p{color:#B7C0D6; margin-top:12px; font-size:15.5px;}
+.hr-final-cta .hr-btn-gold{margin-top:22px;}

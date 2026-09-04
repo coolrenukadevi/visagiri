@@ -61,6 +61,7 @@ require_once __DIR__ . '/site-contact.php';
         <!--<< Main.css >>-->
         <link rel="stylesheet" href="assets/css/main.css">
         <link rel="stylesheet" href="assets/css/custom.css">
+        <link rel="stylesheet" href="assets/css/home-redesign.css">
 
         <?php include __DIR__ . '/schema.php'; ?>
     </head>
