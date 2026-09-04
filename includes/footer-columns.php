@@ -51,6 +51,19 @@
                         </details>
 
                         <details class="footer-accordion" open>
+                            <summary>Services &amp; Support</summary>
+                            <ul>
+                                <li><a href="contact" data-open-enquiry>Visa Enquiry</a></li>
+                                <li><a href="apostille">Apostille &amp; Attestation</a></li>
+                                <li><a href="other-services#travel-insurance">Travel Insurance</a></li>
+                                <li><a href="forex">Forex Services</a></li>
+                                <li><a href="other-services#flight-hotel-assistance">Flight &amp; Hotel Assistance</a></li>
+                                <li><a href="visa-checklist">Document Checklist</a></li>
+                                <li><a href="track-application">Track Your Enquiry</a></li>
+                            </ul>
+                        </details>
+
+                        <details class="footer-accordion" open>
                             <summary>Company</summary>
                             <ul>
                                 <li><a href="contact">Contact Us</a></li>
@@ -63,19 +76,6 @@
                                 <li><a href="payment">Payment Link</a></li>
                                 <li><a href="b2b-partners">Become a B2B Partner</a></li>
                                 <li><a href="b2b-login">B2B Partner Login</a></li>
-                            </ul>
-                        </details>
-
-                        <details class="footer-accordion" open>
-                            <summary>Services &amp; Support</summary>
-                            <ul>
-                                <li><a href="contact" data-open-enquiry>Visa Enquiry</a></li>
-                                <li><a href="apostille">Apostille &amp; Attestation</a></li>
-                                <li><a href="other-services#travel-insurance">Travel Insurance</a></li>
-                                <li><a href="forex">Forex Services</a></li>
-                                <li><a href="other-services#flight-hotel-assistance">Flight &amp; Hotel Assistance</a></li>
-                                <li><a href="visa-checklist">Document Checklist</a></li>
-                                <li><a href="track-application">Track Your Enquiry</a></li>
                             </ul>
                         </details>
                     </nav>
