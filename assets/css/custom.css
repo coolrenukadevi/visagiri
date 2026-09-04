@@ -3462,6 +3462,10 @@ summary:focus-visible {
 .console-news-card .date { font-family: monospace; font-size: 11px; color: var(--text); }
 .console-news-card h3 { font-size: 16.5px; color: var(--header); margin: 12px 18px 8px; line-height: 1.35; }
 .console-news-card p { font-size: 13.5px; color: var(--text); margin: 0 18px 18px; line-height: 1.55; }
+.console-news-card.is-linked { display: block; text-decoration: none; transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease; }
+.console-news-card.is-linked:hover { box-shadow: 0 12px 26px rgba(16,24,40,0.1); transform: translateY(-2px); border-color: var(--theme); }
+.console-news-card.is-linked p { margin-bottom: 10px; }
+.console-news-card .read-more { display: flex; align-items: center; gap: 6px; margin: 0 18px 16px; font-size: 12.5px; font-weight: 700; color: var(--theme); }
 
 .console-cta-band { background: var(--console-ink); color: #fff; border-radius: 24px; }
 .console-cta-inner { padding: 50px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 22px; }

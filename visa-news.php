@@ -72,13 +72,13 @@ include __DIR__ . '/includes/header.php';
 <script>
 var ARTICLES = [
   {cat:"visa", tag:"Visa Updates", title:"Step-by-Step Guide to Applying for a Business Visa", desc:"What documents and invitation letters embassies typically expect for business travel.", date:"Aug 2026"},
-  {cat:"documents", tag:"Documentation", title:"Tips to Prepare Financial Documents for Visa Approval", desc:"How to present bank statements and proof of funds clearly for your application.", date:"Aug 2026"},
+  {cat:"documents", tag:"Documentation", title:"Tips to Prepare Financial Documents for Visa Approval", desc:"How to present bank statements and proof of funds clearly for your application.", date:"Aug 2026", url:"visa-bank-statement-guide"},
   {cat:"tips", tag:"Travel Tips", title:"Post-Arrival Guide: What Every Traveller Should Know", desc:"Practical steps to take in your first few days after arriving on a new visa.", date:"Jul 2026"},
-  {cat:"country", tag:"Country Guides", title:"UK Visitor Visa: Common Interview Questions Explained", desc:"What to expect and how to prepare if your application requires an interview.", date:"Jul 2026"},
+  {cat:"country", tag:"Country Guides", title:"UK Visitor Visa: Common Interview Questions Explained", desc:"What to expect and how to prepare if your application requires an interview.", date:"Jul 2026", url:"uk-visa-interview-questions"},
   {cat:"documents", tag:"Documentation", title:"MEA Apostille vs Embassy Attestation: What's the Difference", desc:"A plain-language breakdown of when you need which document process.", date:"Jun 2026"},
   {cat:"visa", tag:"Visa Updates", title:"Understanding Multiple-Entry Tourist Visas", desc:"Which destinations offer multi-entry options and how eligibility is assessed.", date:"Jun 2026"},
   {cat:"country", tag:"Country Guides", title:"Schengen Visa: Documents Checklist for First-Time Applicants", desc:"A category-by-category look at what a Schengen application typically requires.", date:"May 2026"},
-  {cat:"tips", tag:"Travel Tips", title:"How Far in Advance Should You Apply for a Visa?", desc:"General timing guidance across tourist, business and family visa categories.", date:"May 2026"}
+  {cat:"tips", tag:"Travel Tips", title:"How Far in Advance Should You Apply for a Visa?", desc:"General timing guidance across tourist, business and family visa categories.", date:"May 2026", url:"visa-application-timing"}
 ];
 
 (function(){
@@ -97,9 +97,10 @@ var ARTICLES = [
       var matchesQ = !q || a.title.toLowerCase().indexOf(q) !== -1 || a.desc.toLowerCase().indexOf(q) !== -1;
       if(matchesCat && matchesQ){
         shown++;
-        var card = document.createElement('article');
-        card.className = 'console-news-card';
-        card.innerHTML = '<div class="tag-row"><span class="tag">'+a.tag+'</span><span class="date">'+a.date+'</span></div><h3>'+a.title+'</h3><p>'+a.desc+'</p>';
+        var card = document.createElement(a.url ? 'a' : 'article');
+        card.className = 'console-news-card' + (a.url ? ' is-linked' : '');
+        if (a.url) { card.href = a.url; }
+        card.innerHTML = '<div class="tag-row"><span class="tag">'+a.tag+'</span><span class="date">'+a.date+'</span></div><h3>'+a.title+'</h3><p>'+a.desc+'</p>' + (a.url ? '<span class="read-more">Read Guide <i class="fa-solid fa-arrow-right"></i></span>' : '');
         grid.appendChild(card);
       }
     });
