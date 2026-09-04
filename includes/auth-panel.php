@@ -8,7 +8,7 @@ $authSubtext = $authSubtext ?? 'Sign in to track your applications, manage docum
 ?>
 <aside class="auth-brand">
     <div class="auth-brand-top">
-        <a href="<?= url('index.php') ?>"><?= videshia_logo('sm', 'dark') ?></a>
+        <a href="<?= url('index.php') ?>"><?= videshia_logo('sm', 'dark', true) ?></a>
     </div>
 
     <div class="auth-brand-body">

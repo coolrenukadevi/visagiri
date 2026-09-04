@@ -30,7 +30,7 @@ require __DIR__ . '/../includes/auth-head.php';
 <div class="auth-shell">
     <aside class="auth-brand">
         <div class="auth-brand-top">
-            <a href="<?= url('index.php') ?>"><?= videshia_logo('sm', 'dark') ?></a>
+            <a href="<?= url('index.php') ?>"><?= videshia_logo('sm', 'dark', true) ?></a>
         </div>
         <div class="auth-brand-body">
             <h1>Run the whole desk from one console.</h1>
