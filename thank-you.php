@@ -4,7 +4,7 @@ require __DIR__ . '/includes/functions.php';
 require __DIR__ . '/includes/auth.php';
 
 $ref = $_GET['ref'] ?? '';
-if (!preg_match('/^TRP-\d{4}-\d{6}$/', $ref)) {
+if (!preg_match('/^VDH-\d{4}-\d{6}$/', $ref)) {
     header('Location: ' . url('index.php'));
     exit;
 }
@@ -27,7 +27,7 @@ require __DIR__ . '/includes/header.php';
         </div>
         <div class="hero-actions" style="justify-content:center">
             <a href="<?= url('index.php') ?>" class="btn btn-ghost">Back to home</a>
-            <a href="<?= url('travel-services.php') ?>" class="btn btn-primary">Explore more services</a>
+            <a href="<?= url('visa-services/') ?>" class="btn btn-primary">Explore visa services</a>
         </div>
     </div>
 </section>

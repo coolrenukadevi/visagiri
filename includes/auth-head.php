@@ -5,7 +5,7 @@
  * Expects (optional) before include: $pageTitle, $pageDescription
  */
 $pageTitle = $pageTitle ?? SITE_NAME . ' — ' . SITE_TAGLINE;
-$pageDescription = $pageDescription ?? 'Sign in to Videshia, the AI-powered visa management platform.';
+$pageDescription = $pageDescription ?? 'Sign in to Videshia to track your visa applications and manage your documents.';
 ?><!doctype html>
 <html lang="en">
 <head>

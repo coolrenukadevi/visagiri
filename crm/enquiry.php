@@ -86,7 +86,7 @@ $followupsStmt = $pdo->prepare('SELECT f.*, u.name AS assigned_name FROM followu
 $followupsStmt->execute([$id]);
 $followups = $followupsStmt->fetchAll();
 
-$visaStatuses = ['New', 'Contacted', 'Documents Pending', 'Documents Received', 'Under Review', 'Appointment Pending', 'Appointment Scheduled', 'Submitted', 'Under Processing', 'Approved', 'Rejected', 'Completed', 'Cancelled'];
+$visaStatuses = ['New', 'Contacted', 'Documents Pending', 'Documents Received', 'Application Prepared', 'Appointment Pending', 'Submitted', 'Under Processing', 'Approved', 'Rejected', 'Closed'];
 
 $pageTitle = $enquiry['reference_no'];
 $crmActive = 'enquiries';

@@ -38,8 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $pageTitle = 'Create your account — Videshia';
-$authHeadline = 'Give your visa pipeline an AI co-pilot.';
-$authSubtext = 'Create a free account to start routing applications through intelligent agents today.';
+$authHeadline = 'Create your free Videshia account.';
+$authSubtext = 'Sign up to submit visa enquiries, track applications and manage your documents in one place.';
 require __DIR__ . '/includes/auth-head.php';
 ?>
 
@@ -91,7 +91,7 @@ require __DIR__ . '/includes/auth-head.php';
                 </div>
 
                 <div class="form-meta" style="margin-bottom:22px">
-                    <label class="checkbox-row"><input type="checkbox" name="terms" required> I agree to the <a href="#">Terms</a> &amp; <a href="#">Privacy Policy</a></label>
+                    <label class="checkbox-row"><input type="checkbox" name="terms" required> I agree to the <a href="<?= url('terms-and-conditions/') ?>">Terms</a> &amp; <a href="<?= url('privacy-policy/') ?>">Privacy Policy</a></label>
                 </div>
 
                 <button type="submit" class="btn btn-primary btn-block btn-lg">Create account</button>

@@ -7,7 +7,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 define('SITE_NAME', 'Videshia');
 define('SITE_DOMAIN', 'videshia.com');
-define('SITE_TAGLINE', 'AI-Powered Visa Management');
+define('SITE_TAGLINE', 'Premium Visa Consultancy');
 define('SITE_URL', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https://' : 'http://') . ($_SERVER['HTTP_HOST'] ?? 'videshia.com'));
 
 // The app is deployed at the domain root. If it ever moves under a sub-folder,

@@ -53,5 +53,5 @@ function next_enquiry_reference(PDO $pdo): string
         throw $e;
     }
 
-    return sprintf('TRP-%d-%06d', $year, $next);
+    return sprintf('VDH-%d-%06d', $year, $next);
 }

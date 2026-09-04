@@ -1,18 +1,78 @@
 Options -Indexes
+ErrorDocument 404 /404.php
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # /visa/ clean URL architecture — most specific pattern first.
-    RewriteRule ^visa/?$ visa.php [L,QSA]
-    RewriteRule ^visa/type/([a-z0-9-]+)/?$ visa.php?view=type&category=$1 [L,QSA]
-    RewriteRule ^visa/([a-z0-9-]+)/([a-z0-9-]+)/?$ visa.php?view=category&country=$1&category=$2 [L,QSA]
-    RewriteRule ^visa/([a-z0-9-]+)/?$ visa.php?view=country&country=$1 [L,QSA]
+    # ---- Canonical /visa-services/ (by visa type) ----
+    RewriteRule ^visa-services/?$ visa.php?view=services_hub [L,QSA]
+    RewriteRule ^visa-services/([a-z0-9-]+)/?$ visa.php?view=services_type&category=$1 [L,QSA]
 
-    # Sitemaps served dynamically from the database.
+    # ---- Canonical /visa-by-country/ (by country [+ type]) ----
+    RewriteRule ^visa-by-country/?$ visa.php?view=country_hub [L,QSA]
+    RewriteRule ^visa-by-country/([a-z0-9-]+)/([a-z0-9-]+)/?$ visa.php?view=category&country=$1&category=$2 [L,QSA]
+    RewriteRule ^visa-by-country/([a-z0-9-]+)/?$ visa.php?view=country&country=$1 [L,QSA]
+
+    # ---- Company & legal clean URLs ----
+    RewriteRule ^about-us/?$ about-us.php [L]
+    RewriteRule ^leadership/?$ leadership.php [L]
+    RewriteRule ^why-choose-us/?$ why-choose-us.php [L]
+    RewriteRule ^careers/?$ careers.php [L]
+    RewriteRule ^partners/?$ partners.php [L]
+    RewriteRule ^support-24x7/?$ support-24x7.php [L]
+    RewriteRule ^contact/?$ contact.php [L]
+    RewriteRule ^track-application/?$ track-application.php [L]
+    RewriteRule ^privacy-policy/?$ privacy-policy.php [L]
+    RewriteRule ^terms-and-conditions/?$ terms-and-conditions.php [L]
+    RewriteRule ^refund-policy/?$ refund-policy.php [L]
+    RewriteRule ^cookie-policy/?$ cookie-policy.php [L]
+    RewriteRule ^disclaimer/?$ disclaimer.php [L]
+    RewriteRule ^accessibility/?$ accessibility.php [L]
+    RewriteRule ^enquiry/?$ /index.php#enquiry [R=301,L]
+
+    # ---- Visa Information (educational hub + topics) ----
+    RewriteRule ^visa-information/?$ visa-information.php?view=hub [L,QSA]
+    RewriteRule ^visa-information/([a-z0-9-]+)/?$ visa-information.php?view=topic&topic=$1 [L,QSA]
+
+    # ---- Resources hub ----
+    RewriteRule ^blog/?$ blog.php [L]
+
+    # ---- Sitemaps, served dynamically from the database ----
     RewriteRule ^sitemap\.xml$ sitemap.php [L]
     RewriteRule ^sitemap-pages\.xml$ sitemap-pages.php [L]
     RewriteRule ^sitemap-visa\.xml$ sitemap-visa.php [L]
+
+    # ==== 301 redirects: old /visa/ tree -> new /visa-services/ + /visa-by-country/ ====
+    # Old bare category slugs (tourist, business, ...) -> new -visa-suffixed slugs.
+    # Type pages first (most specific), then country+category, then country, then hub.
+    RewriteRule ^visa/type/tourist/?$ /visa-services/tourist-visa/ [R=301,L]
+    RewriteRule ^visa/type/business/?$ /visa-services/business-visa/ [R=301,L]
+    RewriteRule ^visa/type/transit/?$ /visa-services/transit-visa/ [R=301,L]
+    RewriteRule ^visa/type/medical/?$ /visa-services/medical-visa/ [R=301,L]
+    RewriteRule ^visa/type/family/?$ /visa-services/family-visa/ [R=301,L]
+    RewriteRule ^visa/type/conference/?$ /visa-services/conference-visa/ [R=301,L]
+    RewriteRule ^visa/type/employment/?$ /visa-services/employment-visa/ [R=301,L]
+    RewriteRule ^visa/type/dependent/?$ /visa-services/dependent-visa/ [R=301,L]
+    RewriteRule ^visa/type/official/?$ /visa-services/official-visa/ [R=301,L]
+
+    RewriteRule ^visa/([a-z0-9-]+)/tourist/?$ /visa-by-country/$1/tourist-visa/ [R=301,L]
+    RewriteRule ^visa/([a-z0-9-]+)/business/?$ /visa-by-country/$1/business-visa/ [R=301,L]
+    RewriteRule ^visa/([a-z0-9-]+)/transit/?$ /visa-by-country/$1/transit-visa/ [R=301,L]
+    RewriteRule ^visa/([a-z0-9-]+)/medical/?$ /visa-by-country/$1/medical-visa/ [R=301,L]
+    RewriteRule ^visa/([a-z0-9-]+)/family/?$ /visa-by-country/$1/family-visa/ [R=301,L]
+    RewriteRule ^visa/([a-z0-9-]+)/conference/?$ /visa-by-country/$1/conference-visa/ [R=301,L]
+    RewriteRule ^visa/([a-z0-9-]+)/employment/?$ /visa-by-country/$1/employment-visa/ [R=301,L]
+    RewriteRule ^visa/([a-z0-9-]+)/dependent/?$ /visa-by-country/$1/dependent-visa/ [R=301,L]
+    RewriteRule ^visa/([a-z0-9-]+)/official/?$ /visa-by-country/$1/official-visa/ [R=301,L]
+
+    RewriteRule ^visa/([a-z0-9-]+)/?$ /visa-by-country/$1/ [R=301,L]
+    RewriteRule ^visa/?$ /visa-services/ [R=301,L]
+
+    # Other superseded/renamed pages.
+    RewriteRule ^services\.php/?$ /visa-services/ [R=301,L]
+    RewriteRule ^about\.php/?$ /about-us/ [R=301,L]
+    RewriteRule ^legal\.php/?$ /privacy-policy/ [R=301,L]
+    RewriteRule ^travel-services\.php/?$ /visa-services/ [R=301,L]
 </IfModule>
 
 # Block direct browser access to shared PHP partials and data files.

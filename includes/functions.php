@@ -67,7 +67,7 @@ function videshia_logo(string $size = 'md', string $theme = 'light', bool $tagli
 
     if ($tagline) {
         $tone = $theme === 'dark' ? 'rgba(243,247,252,.72)' : 'rgba(10,27,61,.68)';
-        $out .= '<p class="brand-tagline" style="color:' . $tone . '">Intelligent Routing &middot; Autonomous Agents &middot; Global Vision</p>';
+        $out .= '<p class="brand-tagline" style="color:' . $tone . '">Visa Consultancy &middot; Document Guidance &middot; 24&times;7 Support</p>';
     }
 
     return $out;

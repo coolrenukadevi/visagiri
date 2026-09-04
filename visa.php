@@ -6,44 +6,42 @@ require __DIR__ . '/includes/db.php';
 require __DIR__ . '/includes/seo.php';
 
 $pdo = db();
-$view = $_GET['view'] ?? 'hub';
+$view = $_GET['view'] ?? 'services_hub';
 
 switch ($view) {
+    case 'country_hub':
+        render_country_hub_view($pdo);
+        break;
     case 'country':
         render_country_view($pdo, $_GET['country'] ?? '');
         break;
     case 'category':
         render_category_view($pdo, $_GET['country'] ?? '', $_GET['category'] ?? '');
         break;
-    case 'type':
+    case 'services_type':
         render_type_view($pdo, $_GET['category'] ?? '');
         break;
     default:
-        render_hub_view($pdo);
+        render_services_hub_view($pdo);
 }
 
-function render_hub_view(PDO $pdo): void
+function render_services_hub_view(PDO $pdo): void
 {
-    $countries = $pdo->query('SELECT slug, name, region, indexable FROM countries ORDER BY region, name')->fetchAll();
-    $byRegion = [];
-    foreach ($countries as $c) {
-        $byRegion[$c['region']][] = $c;
-    }
     $categories = $pdo->query('SELECT slug, name, description FROM visa_categories ORDER BY name')->fetchAll();
     $generalFaqs = general_visa_faqs();
 
     $breadcrumbs = [['Home', url('index.php')], ['Visa Services', null]];
 
-    $pageTitle = 'Visa Services — Apply for Any Country from India | Videshia';
-    $pageDescription = 'Browse visa services by country or visa type. Tourist, business, work, family and more — document checklists, processing times and expert guidance from Videshia.';
+    $pageTitle = 'Visa Services — Tourist, Business, Work & Family Visas | Videshia';
+    $pageDescription = 'Browse Videshia visa services by type — tourist, business, work, transit, family and more. Document checklists, processing times and expert guidance for Indian travellers.';
     $schemaBlocks = [breadcrumb_schema($breadcrumbs), faq_schema(array_map(static fn($f) => ['question' => $f[0], 'answer' => $f[1]], $generalFaqs))];
     require __DIR__ . '/includes/header.php';
     ?>
     <section class="page-hero">
         <div class="container">
             <span class="eyebrow">Visa Services</span>
-            <h1>Visa services for every destination, from India</h1>
-            <p>Pick a country or a visa type below — every page includes real document checklists, process steps and current guidance.</p>
+            <h1>Visa services, by type</h1>
+            <p>Pick the visa type that matches your purpose of travel — every page includes real document checklists, process steps and current guidance across our supported destinations.</p>
         </div>
     </section>
 
@@ -51,28 +49,33 @@ function render_hub_view(PDO $pdo): void
 
     <section class="section" id="by-type">
         <div class="container">
-            <div class="section-head center"><span class="eyebrow">By Visa Type</span><h2>Visa by Type</h2></div>
             <div class="visa-grid">
                 <?php foreach ($categories as $cat): ?>
-                <a class="visa-chip" href="<?= url('visa/type/' . $cat['slug'] . '/') ?>"><h4><?= e($cat['name']) ?></h4></a>
+                <a class="visa-chip" href="<?= url('visa-services/' . $cat['slug'] . '/') ?>"><h4><?= e($cat['name']) ?></h4></a>
                 <?php endforeach; ?>
             </div>
+            <p style="text-align:center;margin-top:24px"><a href="<?= url('visa-by-country/') ?>" style="color:var(--teal-500);font-weight:600">Prefer to browse by destination instead? View Visa by Country &rarr;</a></p>
         </div>
     </section>
 
-    <section class="section section-alt" id="by-country">
+    <section class="section section-alt" id="support-services">
         <div class="container">
-            <div class="section-head center"><span class="eyebrow">By Country</span><h2>Visa by Country</h2></div>
-            <?php foreach ($byRegion as $region => $list): ?>
-            <div style="margin-bottom:28px">
-                <h4 style="font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted-soft);margin-bottom:12px"><?= e($region) ?></h4>
-                <div style="display:flex;flex-wrap:wrap;gap:8px">
-                    <?php foreach ($list as $c): ?>
-                    <a href="<?= url('visa/' . $c['slug'] . '/') ?>" style="padding:7px 14px;border:1px solid var(--border);border-radius:var(--radius-full);font-size:13.5px;color:var(--navy-800);background:var(--surface)"><?= e($c['name']) ?></a>
-                    <?php endforeach; ?>
+            <div class="section-head center"><span class="eyebrow">Support Services</span><h2>Beyond the application itself</h2></div>
+            <div class="grid-3">
+                <?php foreach ([
+                    ['Visa Documentation', 'Document review and preparation against your destination\'s exact checklist, before you submit.'],
+                    ['Visa Appointment Assistance', 'Help booking and preparing for biometric or in-person appointments where your destination requires one.'],
+                    ['Visa Application Support', 'End-to-end guidance completing and submitting your application correctly the first time.'],
+                    ['Visa Extension', 'Guidance on extending an existing visa where the destination country permits it.'],
+                    ['Visa Renewal', 'Support renewing a visa that\'s expired or approaching expiry, for eligible categories and destinations.'],
+                ] as [$name, $desc]): ?>
+                <div class="card">
+                    <h3 style="font-size:15.5px"><?= e($name) ?></h3>
+                    <p><?= e($desc) ?></p>
                 </div>
+                <?php endforeach; ?>
             </div>
-            <?php endforeach; ?>
+            <p style="text-align:center;margin-top:24px"><a href="<?= url('contact/') ?>" class="btn btn-primary">Ask about a support service</a></p>
         </div>
     </section>
 
@@ -81,7 +84,7 @@ function render_hub_view(PDO $pdo): void
             <div>
                 <span class="eyebrow">Requirements</span>
                 <h2>What most visa applications need</h2>
-                <p>Exact requirements vary by country and visa type — full details on each category page — but almost every application starts with:</p>
+                <p>Exact requirements vary by country and visa type — full details on each service page — but almost every application starts with:</p>
                 <ul style="display:flex;flex-direction:column;gap:10px;margin-top:16px">
                     <?php foreach (['A passport valid 6+ months beyond travel', 'Passport-size photographs meeting the destination\'s spec', 'Proof of funds — bank statements or income proof', 'A clear travel itinerary or invitation letter', 'Supporting documents specific to your visa category'] as $req): ?>
                     <li style="display:flex;gap:10px;font-size:14.5px;color:var(--navy-800)"><svg style="flex-shrink:0;margin-top:3px" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#17c3c9" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg><?= e($req) ?></li>
@@ -90,13 +93,13 @@ function render_hub_view(PDO $pdo): void
             </div>
             <div id="fees" class="card">
                 <h3>Fees &amp; processing time</h3>
-                <p id="processing-time">Government visa fees and processing times are set by each country and change without notice. Every country and category page on Videshia shows current indicative ranges, reviewed regularly — always confirm exact figures with your consultant before applying.</p>
-                <a href="<?= url('contact.php') ?>" class="btn btn-primary" style="margin-top:8px">Ask a consultant</a>
+                <p id="processing-time">Government visa fees and processing times are set by each country and change without notice. Every visa service page on Videshia shows current indicative ranges, reviewed regularly — always confirm exact figures with your consultant before applying.</p>
+                <a href="<?= url('contact/') ?>" class="btn btn-primary" style="margin-top:8px">Ask a consultant</a>
             </div>
         </div>
     </section>
 
-    <section class="section section-alt" id="faqs">
+    <section class="section" id="faqs">
         <div class="container" style="max-width:760px">
             <div class="section-head center"><span class="eyebrow">FAQs</span><h2>Visa FAQs</h2></div>
             <div style="display:flex;flex-direction:column;gap:14px">
@@ -104,6 +107,49 @@ function render_hub_view(PDO $pdo): void
                 <div class="card"><h3 style="font-size:15.5px"><?= e($q) ?></h3><p style="margin:0"><?= e($a) ?></p></div>
                 <?php endforeach; ?>
             </div>
+        </div>
+    </section>
+    <?php
+    require __DIR__ . '/includes/footer.php';
+}
+
+function render_country_hub_view(PDO $pdo): void
+{
+    $countries = $pdo->query('SELECT slug, name, region, indexable FROM countries ORDER BY region, name')->fetchAll();
+    $byRegion = [];
+    foreach ($countries as $c) {
+        $byRegion[$c['region']][] = $c;
+    }
+
+    $breadcrumbs = [['Home', url('index.php')], ['Visa by Country', null]];
+    $pageTitle = 'Visa by Country — 190+ Destinations from India | Videshia';
+    $pageDescription = 'Find visa requirements, documents and processing times for your destination country. Browse Videshia\'s visa-by-country guides for Indian travellers.';
+    $schemaBlocks = [breadcrumb_schema($breadcrumbs)];
+    require __DIR__ . '/includes/header.php';
+    ?>
+    <section class="page-hero">
+        <div class="container">
+            <span class="eyebrow">Visa by Country</span>
+            <h1>Visa services, by destination</h1>
+            <p>Choose your destination country to see the visa types we support, along with requirements, fees and processing times.</p>
+        </div>
+    </section>
+
+    <div class="container"><?= render_breadcrumbs($breadcrumbs) ?></div>
+
+    <section class="section">
+        <div class="container">
+            <?php foreach ($byRegion as $region => $list): ?>
+            <div style="margin-bottom:28px">
+                <h4 style="font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted-soft);margin-bottom:12px"><?= e($region) ?></h4>
+                <div style="display:flex;flex-wrap:wrap;gap:8px">
+                    <?php foreach ($list as $c): ?>
+                    <a href="<?= url('visa-by-country/' . $c['slug'] . '/') ?>" style="padding:7px 14px;border:1px solid var(--border);border-radius:var(--radius-full);font-size:13.5px;color:var(--navy-800);background:var(--surface)"><?= e($c['name']) ?></a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php endforeach; ?>
+            <p style="text-align:center;margin-top:8px"><a href="<?= url('visa-services/') ?>" style="color:var(--teal-500);font-weight:600">Prefer to browse by visa type instead? View Visa Services &rarr;</a></p>
         </div>
     </section>
     <?php
@@ -135,14 +181,14 @@ function render_country_view(PDO $pdo, string $slug): void
     $related = $relatedStmt->fetchAll();
 
     $isDeep = count($categories) > 0;
-    $breadcrumbs = [['Home', url('index.php')], ['Visa Services', url('visa/')], [$country['name'], null]];
+    $breadcrumbs = [['Home', url('index.php')], ['Visa by Country', url('visa-by-country/')], [$country['name'], null]];
 
     $pageTitle = $country['seo_title'] ?: ($country['name'] . ' Visa from India | Videshia');
     $pageDescription = $country['seo_description'];
     $robotsMeta = $country['indexable'] ? 'index, follow' : 'noindex, follow';
     $schemaBlocks = [breadcrumb_schema($breadcrumbs)];
     if ($isDeep) {
-        $schemaBlocks[] = service_schema($country['name'] . ' Visa Services', $country['hero_summary'], SITE_URL . '/visa/' . $country['slug'] . '/');
+        $schemaBlocks[] = service_schema($country['name'] . ' Visa Services', $country['hero_summary'], SITE_URL . '/visa-by-country/' . $country['slug'] . '/');
     }
     require __DIR__ . '/includes/header.php';
     ?>
@@ -179,7 +225,7 @@ function render_country_view(PDO $pdo, string $slug): void
                 <div class="card">
                     <h3><?= e($cat['name']) ?></h3>
                     <p><?= e(mb_strimwidth($cat['overview'], 0, 140, '…')) ?></p>
-                    <a href="<?= url('visa/' . $slug . '/' . $cat['slug'] . '/') ?>" class="btn btn-ghost" style="margin-top:8px">View details &rarr;</a>
+                    <a href="<?= url('visa-by-country/' . $slug . '/' . $cat['slug'] . '/') ?>" class="btn btn-ghost" style="margin-top:8px">View details &rarr;</a>
                 </div>
                 <?php endforeach; ?>
             </div>
@@ -203,7 +249,7 @@ function render_country_view(PDO $pdo, string $slug): void
             <h4 style="font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted-soft);margin-bottom:14px">Other countries in <?= e($country['region']) ?></h4>
             <div style="display:flex;flex-wrap:wrap;gap:8px">
                 <?php foreach ($related as $r): ?>
-                <a href="<?= url('visa/' . $r['slug'] . '/') ?>" style="padding:7px 14px;border:1px solid var(--border);border-radius:var(--radius-full);font-size:13.5px;color:var(--navy-800);background:var(--surface)"><?= e($r['name']) ?></a>
+                <a href="<?= url('visa-by-country/' . $r['slug'] . '/') ?>" style="padding:7px 14px;border:1px solid var(--border);border-radius:var(--radius-full);font-size:13.5px;color:var(--navy-800);background:var(--surface)"><?= e($r['name']) ?></a>
                 <?php endforeach; ?>
             </div>
         </div>
@@ -254,8 +300,8 @@ function render_category_view(PDO $pdo, string $countrySlug, string $categorySlu
 
     $breadcrumbs = [
         ['Home', url('index.php')],
-        ['Visa Services', url('visa/')],
-        [$page['country_name'], url('visa/' . $countrySlug . '/')],
+        ['Visa by Country', url('visa-by-country/')],
+        [$page['country_name'], url('visa-by-country/' . $countrySlug . '/')],
         [$page['category_name'], null],
     ];
 
@@ -263,7 +309,7 @@ function render_category_view(PDO $pdo, string $countrySlug, string $categorySlu
     $pageDescription = $page['seo_description'];
     $schemaBlocks = [
         breadcrumb_schema($breadcrumbs),
-        service_schema($page['country_name'] . ' ' . $page['category_name'], $page['overview'], SITE_URL . '/visa/' . $countrySlug . '/' . $categorySlug . '/'),
+        service_schema($page['country_name'] . ' ' . $page['category_name'], $page['overview'], SITE_URL . '/visa-by-country/' . $countrySlug . '/' . $categorySlug . '/'),
     ];
     if ($faqs) {
         $schemaBlocks[] = faq_schema($faqs);
@@ -353,7 +399,7 @@ function render_category_view(PDO $pdo, string $countrySlug, string $categorySlu
             <h4 style="font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted-soft);margin-bottom:12px">Other visa types for <?= e($page['country_name']) ?></h4>
             <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px">
                 <?php foreach ($otherCategories as $oc): ?>
-                <a href="<?= url('visa/' . $countrySlug . '/' . $oc['slug'] . '/') ?>" style="padding:7px 14px;border:1px solid var(--border);border-radius:var(--radius-full);font-size:13.5px;color:var(--navy-800);background:var(--surface)"><?= e($oc['name']) ?></a>
+                <a href="<?= url('visa-by-country/' . $countrySlug . '/' . $oc['slug'] . '/') ?>" style="padding:7px 14px;border:1px solid var(--border);border-radius:var(--radius-full);font-size:13.5px;color:var(--navy-800);background:var(--surface)"><?= e($oc['name']) ?></a>
                 <?php endforeach; ?>
             </div>
             <?php endif; ?>
@@ -362,7 +408,7 @@ function render_category_view(PDO $pdo, string $countrySlug, string $categorySlu
             <h4 style="font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted-soft);margin-bottom:12px"><?= e($page['category_name']) ?> for other countries</h4>
             <div style="display:flex;flex-wrap:wrap;gap:8px">
                 <?php foreach ($otherCountries as $oc): ?>
-                <a href="<?= url('visa/' . $oc['slug'] . '/' . $categorySlug . '/') ?>" style="padding:7px 14px;border:1px solid var(--border);border-radius:var(--radius-full);font-size:13.5px;color:var(--navy-800);background:var(--surface)"><?= e($oc['name']) ?></a>
+                <a href="<?= url('visa-by-country/' . $oc['slug'] . '/' . $categorySlug . '/') ?>" style="padding:7px 14px;border:1px solid var(--border);border-radius:var(--radius-full);font-size:13.5px;color:var(--navy-800);background:var(--surface)"><?= e($oc['name']) ?></a>
                 <?php endforeach; ?>
             </div>
             <?php endif; ?>
@@ -392,7 +438,7 @@ function render_type_view(PDO $pdo, string $categorySlug): void
     $countriesStmt->execute([$category['id']]);
     $countries = $countriesStmt->fetchAll();
 
-    $breadcrumbs = [['Home', url('index.php')], ['Visa Services', url('visa/')], [$category['name'], null]];
+    $breadcrumbs = [['Home', url('index.php')], ['Visa Services', url('visa-services/')], [$category['name'], null]];
     $pageTitle = $category['name'] . ' — Countries &amp; Requirements | Videshia';
     $pageDescription = "Apply for a {$category['name']} to any of Videshia's supported destinations. Compare requirements, processing time and fees by country.";
     $schemaBlocks = [breadcrumb_schema($breadcrumbs)];
@@ -417,12 +463,12 @@ function render_type_view(PDO $pdo, string $categorySlug): void
                     <span class="eyebrow" style="margin-bottom:10px"><?= e($c['region']) ?></span>
                     <h3><?= e($c['name']) ?></h3>
                     <p><?= e(mb_strimwidth($c['overview'], 0, 120, '…')) ?></p>
-                    <a href="<?= url('visa/' . $c['slug'] . '/' . $categorySlug . '/') ?>" class="btn btn-ghost">View details &rarr;</a>
+                    <a href="<?= url('visa-by-country/' . $c['slug'] . '/' . $categorySlug . '/') ?>" class="btn btn-ghost">View details &rarr;</a>
                 </div>
                 <?php endforeach; ?>
             </div>
             <?php else: ?>
-            <p style="text-align:center">Detailed guidance for this visa type is being added. <a href="<?= url('contact.php') ?>" style="color:var(--teal-500)">Contact us</a> for help today.</p>
+            <p style="text-align:center">Detailed guidance for this visa type is being added. <a href="<?= url('contact/') ?>" style="color:var(--teal-500)">Contact us</a> for help today.</p>
             <?php endif; ?>
         </div>
     </section>
@@ -433,7 +479,7 @@ function render_type_view(PDO $pdo, string $categorySlug): void
 function general_visa_faqs(): array
 {
     return [
-        ['How do I know which visa category I need?', 'It depends on your purpose of travel — tourism, business, work, study or family visit. Use the enquiry widget on our homepage and a consultant will confirm the right category for you.'],
+        ['How do I know which visa category I need?', 'It depends on your purpose of travel — tourism, business, work, study or family visit. Use the visa search widget on our homepage and a consultant will confirm the right category for you.'],
         ['Can Videshia guarantee my visa will be approved?', 'No visa agency can guarantee approval — that decision rests entirely with the embassy or consulate. We help ensure your application is complete and well-documented to give you the best chance.'],
         ['How far in advance should I apply?', 'As early as possible. Processing times vary by country and can extend significantly during peak travel seasons — check the specific country page for current guidance.'],
         ['Do visa fees get refunded if my application is rejected?', 'Government visa fees are set and refunded according to that country\'s own policy, and are typically non-refundable once submitted, regardless of outcome.'],

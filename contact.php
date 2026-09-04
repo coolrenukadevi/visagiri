@@ -2,6 +2,7 @@
 require __DIR__ . '/includes/config.php';
 require __DIR__ . '/includes/functions.php';
 require __DIR__ . '/includes/auth.php';
+require __DIR__ . '/includes/seo.php';
 
 $errors = [];
 $sent = false;
@@ -25,7 +26,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$pageTitle = 'Contact — Videshia';
+$pageTitle = 'Contact Us — Videshia';
+$pageDescription = 'Get in touch with Videshia — WhatsApp, phone, email, or the contact form. We usually reply within one business day.';
+$breadcrumbs = [['Home', url('index.php')], ['Company', null], ['Contact', null]];
+$schemaBlocks = [breadcrumb_schema($breadcrumbs)];
 require __DIR__ . '/includes/header.php';
 ?>
 
@@ -36,6 +40,8 @@ require __DIR__ . '/includes/header.php';
         <p>Questions about a case, a partnership, or the platform itself — we usually reply within one business day.</p>
     </div>
 </section>
+
+<div class="container"><?= render_breadcrumbs($breadcrumbs) ?></div>
 
 <section class="section">
     <div class="container grid-2" style="align-items:flex-start">
@@ -50,7 +56,7 @@ require __DIR__ . '/includes/header.php';
                 <div class="alert alert-success">Thanks &mdash; your message has been received. We'll be in touch soon.</div>
             <?php endif; ?>
 
-            <form method="post" action="<?= url('contact.php') ?>" data-validate novalidate>
+            <form method="post" action="<?= url('contact/') ?>" data-validate novalidate>
                 <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
                 <div class="form-row">
                     <label for="name">Full name</label>
@@ -83,7 +89,8 @@ require __DIR__ . '/includes/header.php';
             <div class="card">
                 <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
                 <h3>Office</h3>
-                <p>Videshia Technologies, Cyber Hub, Gurugram, India</p>
+                <p>Videshia — a unit of Tripgation, India</p>
+                <p style="font-size:12px;color:var(--muted-soft);margin-top:6px">Full registered office address to be added.</p>
             </div>
         </div>
     </div>

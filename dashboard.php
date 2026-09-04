@@ -27,13 +27,13 @@ require __DIR__ . '/includes/header.php';
             </div>
             <div class="card">
                 <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h13M13 6l6 6-6 6"/></svg></div>
-                <h3>Routing queue clear</h3>
-                <p>Every new application in the last 24 hours was auto-routed with no manual intervention needed.</p>
+                <h3>Consultant assigned</h3>
+                <p>Every new enquiry is reviewed and assigned to a named consultant within one business day.</p>
             </div>
             <div class="card">
                 <div class="card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 6 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-6-3.8-9s1.3-6.3 3.8-9z"/></svg></div>
-                <h3>3 embassy updates</h3>
-                <p>Autonomous agents logged rule changes for Germany, Canada and the UAE this week.</p>
+                <h3>Stay informed</h3>
+                <p>Your consultant keeps you briefed on any embassy requirement changes relevant to your case.</p>
             </div>
         </div>
 
