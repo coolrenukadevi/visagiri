@@ -6060,15 +6060,17 @@ table.pp-table tr:hover td { background: var(--bg); }
     background: var(--bg) !important;
 }
 
-/* ---- Preloader: brand icon + "VisaAgency" wordmark, replacing the old
-   oversized letter-flip "V I S A" animation (main.css .txt-loading /
-   .letters-loading) which spelled out four detached, wide-tracked
-   capital letters unrelated to the actual brand name. ---- */
+/* ---- Preloader: real brand logo artwork (icon badge + "VISA AGENCY"
+   wordmark, cropped from the supplied logo file into
+   assets/img/logo/visaagency-badge.png / visaagency-wordmark.png),
+   replacing the old oversized letter-flip "V I S A" animation
+   (main.css .txt-loading / .letters-loading) which spelled out four
+   detached, wide-tracked capital letters unrelated to the brand. ---- */
 .preloader-mark {
     position: relative;
     width: 8em;
     height: 8em;
-    margin: 0 auto 1.4em;
+    margin: 0 auto 1.2em;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -6083,6 +6085,7 @@ table.pp-table tr:hover td { background: var(--bg); }
 .preloader-badge {
     width: 54%;
     height: 54%;
+    object-fit: contain;
     animation: preloaderBadgePulse 1.8s ease-in-out infinite;
 }
 @keyframes preloaderBadgePulse {
@@ -6090,16 +6093,13 @@ table.pp-table tr:hover td { background: var(--bg); }
     50% { opacity: 1; transform: scale(1); }
 }
 .preloader-wordmark {
-    font-family: "Space Grotesk", serif, "Inter", sans-serif;
-    font-weight: 700;
-    font-size: 2.1em;
-    letter-spacing: 0.01em;
-    text-align: center;
+    display: block;
+    width: 230px;
+    height: auto;
+    margin: 0 auto 10px;
     user-select: none;
 }
-.preloader-wordmark .pw-visa { color: var(--theme); }
-.preloader-wordmark .pw-agency { color: var(--header); }
 @media (max-width: 767px) {
     .preloader-mark { width: 6.5em; height: 6.5em; margin-bottom: 1em; }
-    .preloader-wordmark { font-size: 1.5em; }
+    .preloader-wordmark { width: 170px; }
 }

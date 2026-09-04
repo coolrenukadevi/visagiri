@@ -3,9 +3,9 @@
             <div class="animation-preloader">
                 <div class="preloader-mark">
                     <div class="spinner"></div>
-                    <img class="preloader-badge" src="assets/img/logo/badge.svg" alt="" aria-hidden="true">
+                    <img class="preloader-badge" src="assets/img/logo/visaagency-badge.png" alt="" aria-hidden="true">
                 </div>
-                <div class="preloader-wordmark"><span class="pw-visa">Visa</span><span class="pw-agency">Agency</span></div>
+                <img class="preloader-wordmark" src="assets/img/logo/visaagency-wordmark.png" alt="Visa Agency">
                 <p class="text-center">Loading</p>
             </div>
             <div class="loader">
