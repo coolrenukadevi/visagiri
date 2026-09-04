@@ -1,22 +1,11 @@
         <!-- Preloader Start -->
         <div id="preloader" class="preloader">
             <div class="animation-preloader">
-                <div class="spinner">
+                <div class="preloader-mark">
+                    <div class="spinner"></div>
+                    <img class="preloader-badge" src="assets/img/logo/badge.svg" alt="" aria-hidden="true">
                 </div>
-                <div class="txt-loading">
-                    <span data-text-preloader="V" class="letters-loading">
-                        V
-                    </span>
-                     <span data-text-preloader="I" class="letters-loading">
-                        I
-                    </span>
-                     <span data-text-preloader="S" class="letters-loading">
-                        S
-                    </span>
-                    <span data-text-preloader="A" class="letters-loading">
-                        A
-                    </span>
-                </div>
+                <div class="preloader-wordmark"><span class="pw-visa">Visa</span><span class="pw-agency">Agency</span></div>
                 <p class="text-center">Loading</p>
             </div>
             <div class="loader">
