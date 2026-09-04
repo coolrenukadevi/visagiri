@@ -66,16 +66,12 @@
                         <details class="footer-accordion" open>
                             <summary>Company</summary>
                             <ul>
-                                <li><a href="contact">Contact Us</a></li>
-                                <li><a href="visa-appointment">Book a Consultation</a></li>
                                 <li><a href="about">About Us</a></li>
+                                <li><a href="about#why-choose-us">Why Us?</a></li>
                                 <li><a href="locations">Locations</a></li>
-                                <li><a href="careers">Careers</a></li>
-                                <li><a href="visa-news">Visa News &amp; Updates</a></li>
-                                <li><a href="customer-login">Customer Login</a></li>
-                                <li><a href="payment">Payment Link</a></li>
-                                <li><a href="b2b-partners">Become a B2B Partner</a></li>
-                                <li><a href="b2b-login">B2B Partner Login</a></li>
+                                <li><a href="careers">Career</a></li>
+                                <li><a href="b2b-partners">B2B Partner</a></li>
+                                <li><a href="contact">Support</a></li>
                             </ul>
                         </details>
                     </nav>
