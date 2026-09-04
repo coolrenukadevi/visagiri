@@ -1,7 +1,8 @@
 <?php
-$footerCountrySlugs = ['usa', 'uk', 'canada', 'australia', 'new-zealand', 'france', 'germany', 'italy', 'spain', 'switzerland', 'netherlands', 'singapore', 'malaysia', 'thailand', 'uae', 'saudi-arabia', 'japan', 'china', 'south-korea', 'brazil', 'south-africa', 'egypt'];
+$footerCountrySlugs = ['usa', 'uk', 'canada', 'australia', 'uae', 'singapore', 'germany', 'france'];
 $countryNameBySlug = array_column($megaCountries ?? [], 'name', 'slug');
-$footerCategories = $megaCategories ?? [];
+$footerCategorySlugs = ['tourist-visa', 'business-visa', 'employment-visa', 'family-visa', 'transit-visa'];
+$categoryNameBySlug = array_column($megaCategories ?? [], 'name', 'slug');
 $visaInfoTopics = $visaInfoTopics ?? ['visa-requirements' => 'Visa Requirements', 'visa-documents' => 'Visa Documents', 'visa-checklist' => 'Visa Checklist', 'visa-fees' => 'Visa Fees', 'processing-time' => 'Processing Time', 'visa-appointment' => 'Visa Appointment', 'visa-faqs' => 'Visa FAQs'];
 ?>    <footer class="site-footer">
 
@@ -44,14 +45,11 @@ $visaInfoTopics = $visaInfoTopics ?? ['visa-requirements' => 'Visa Requirements'
                 <details class="footer-col footer-col-accordion" open>
                     <summary>Visa Services</summary>
                     <ul>
-                        <?php foreach ($footerCategories as $cat): ?>
-                        <li><a href="<?= url('visa-services/' . $cat['slug'] . '/') ?>"><?= e($cat['name']) ?></a></li>
+                        <?php foreach ($footerCategorySlugs as $slug): if (!isset($categoryNameBySlug[$slug])) continue; ?>
+                        <li><a href="<?= url('visa-services/' . $slug . '/') ?>"><?= e($categoryNameBySlug[$slug]) ?></a></li>
                         <?php endforeach; ?>
-                        <li><a href="<?= url('visa-services/') ?>#support-services">Visa Extension</a></li>
-                        <li><a href="<?= url('visa-services/') ?>#support-services">Visa Renewal</a></li>
-                        <li><a href="<?= url('visa-services/') ?>#support-services">Visa Documentation</a></li>
-                        <li><a href="<?= url('visa-services/') ?>#support-services">Visa Application Support</a></li>
                     </ul>
+                    <a class="footer-view-all" href="<?= url('visa-services/') ?>">View All Visa Types &rarr;</a>
                 </details>
 
                 <details class="footer-col footer-col-accordion" open>
@@ -101,20 +99,6 @@ $visaInfoTopics = $visaInfoTopics ?? ['visa-requirements' => 'Visa Requirements'
                         <li><a href="<?= url('blog/') ?>#updates">Embassy Updates</a></li>
                         <li><a href="<?= url('visa-consultants-india/') ?>">Visa Consultants Across India</a></li>
                     </ul>
-                </details>
-
-                <details class="footer-col-accordion" open style="grid-column:span 1">
-                    <summary style="color:#fff;font-size:14px;margin-bottom:16px">Support</summary>
-                    <div class="footer-support-panel" style="border:none;background:none;padding:0">
-                        <p>Need Visa Assistance? Our support team is available 24&times;7.</p>
-                        <div class="support-links">
-                            <a href="https://wa.me/917844819819" target="_blank" rel="noopener">WhatsApp Us</a>
-                            <a href="tel:+917844819819">Call Us</a>
-                            <a href="mailto:info@tripgation.com">Email Us</a>
-                            <a href="<?= url('track-application/') ?>">Track Application</a>
-                            <a href="<?= url('login.php') ?>">Login</a>
-                        </div>
-                    </div>
                 </details>
             </div>
 
