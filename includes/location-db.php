@@ -110,9 +110,12 @@ function location_cities_for_state(PDO $pdo, int $stateId): array
 function location_seed_all(PDO $pdo): void
 {
     require_once __DIR__ . '/location-seed-data.php';
+    require_once __DIR__ . '/location-seed-data-phase2.php';
     $now = gmdate('c');
 
-    foreach (location_seed_states_def() as $stateDef) {
+    $allStateDefs = array_merge(location_seed_states_def(), location_seed_states_def_phase2());
+
+    foreach ($allStateDefs as $stateDef) {
         $stmt = $pdo->prepare('SELECT id FROM states WHERE slug = ?');
         $stmt->execute([$stateDef['slug']]);
         $stateId = $stmt->fetchColumn();
