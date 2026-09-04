@@ -111,9 +111,16 @@ function location_seed_all(PDO $pdo): void
 {
     require_once __DIR__ . '/location-seed-data.php';
     require_once __DIR__ . '/location-seed-data-phase2.php';
+    require_once __DIR__ . '/location-seed-data-phase3.php';
+    require_once __DIR__ . '/location-seed-data-phase4.php';
     $now = gmdate('c');
 
-    $allStateDefs = array_merge(location_seed_states_def(), location_seed_states_def_phase2());
+    $allStateDefs = array_merge(
+        location_seed_states_def(),
+        location_seed_states_def_phase2(),
+        location_seed_states_def_phase3(),
+        location_seed_states_def_phase4()
+    );
 
     foreach ($allStateDefs as $stateDef) {
         $stmt = $pdo->prepare('SELECT id FROM states WHERE slug = ?');
