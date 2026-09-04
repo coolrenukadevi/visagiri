@@ -46,7 +46,7 @@
                                 ?>
                                 <li><a href="country-<?php echo $fc['slug']; ?>"><span aria-hidden="true"><?php echo $fc['flag']; ?></span> <?php echo $fc['name']; ?></a></li>
                                 <?php if ($fc['slug'] === 'japan'): ?>
-                                <li><a href="country-list"><span aria-hidden="true">&#127466;&#127482;</span> Schengen Countries 29</a></li>
+                                <li><a href="country-schengen"><span aria-hidden="true">&#127466;&#127482;</span> Schengen Countries 29</a></li>
                                 <?php endif; ?>
                                 <?php endforeach; ?>
                             </ul>

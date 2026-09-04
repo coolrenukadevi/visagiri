@@ -24,6 +24,7 @@ function sitemap_static_pages(): array
         ['service', 'weekly', '0.9'],
         ['service-details', 'monthly', '0.7'],
         ['country-list', 'weekly', '0.9'],
+        ['country-schengen', 'monthly', '0.8'],
         ['apostille', 'monthly', '0.8'],
         ['apostille-mea', 'monthly', '0.7'],
         ['apostille-embassy-attestation', 'monthly', '0.7'],
