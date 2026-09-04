@@ -40,11 +40,14 @@
                             <summary>Popular Destinations</summary>
                             <ul>
                                 <?php
-                                $footer_popular_slugs = ['usa', 'uk', 'canada', 'australia', 'germany', 'uae', 'singapore', 'thailand', 'japan', 'hong-kong'];
+                                $footer_popular_slugs = ['australia', 'canada', 'japan', 'singapore', 'thailand', 'uae', 'uk', 'usa'];
                                 foreach ($VISA_AGENCY_COUNTRIES as $fc):
                                     if (!in_array($fc['slug'], $footer_popular_slugs, true)) continue;
                                 ?>
                                 <li><a href="country-<?php echo $fc['slug']; ?>"><span aria-hidden="true"><?php echo $fc['flag']; ?></span> <?php echo $fc['name']; ?></a></li>
+                                <?php if ($fc['slug'] === 'japan'): ?>
+                                <li><a href="country-list"><span aria-hidden="true">&#127466;&#127482;</span> Schengen Countries 29</a></li>
+                                <?php endif; ?>
                                 <?php endforeach; ?>
                             </ul>
                             <a href="country-list" class="footer-col-more">Explore All <?php echo count($VISA_AGENCY_COUNTRIES); ?>+ Countries <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
