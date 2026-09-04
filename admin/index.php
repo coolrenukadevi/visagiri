@@ -97,6 +97,11 @@ switch ($adminSegment) {
         require __DIR__ . '/pages/countries.php';
         exit;
 
+    case 'locations':
+        require_admin_login();
+        require __DIR__ . '/pages/locations.php';
+        exit;
+
     case 'visa-types':
         require_admin_login();
         require __DIR__ . '/pages/visa-types.php';

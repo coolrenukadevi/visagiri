@@ -17,7 +17,7 @@ function admin_header_start(string $pageTitle, string $activeNav): void
     // flash, and still works if JS fails to load at all.
     $navGroups = [
         'forex' => ['forex-dashboard', 'forex', 'forex-rates', 'forex-country-rules', 'forex-fema-audit'],
-        'content' => ['countries', 'visa-types', 'faqs', 'embassies'],
+        'content' => ['countries', 'visa-types', 'faqs', 'embassies', 'locations'],
         'system' => ['users', 'audit-log', 'settings'],
     ];
     $activeGroup = null;
@@ -103,6 +103,7 @@ function admin_header_start(string $pageTitle, string $activeNav): void
             <a href="/admin/visa-requirements/" class="<?= $activeNav === 'visa-requirements' ? 'is-active' : '' ?>">Visa Requirements</a>
             <a href="/admin/faqs/" class="<?= $activeNav === 'faqs' ? 'is-active' : '' ?>">FAQs</a>
             <a href="/admin/embassies/" class="<?= $activeNav === 'embassies' ? 'is-active' : '' ?>">Embassies / Consulates / VACs</a>
+            <a href="/admin/locations/" class="<?= $activeNav === 'locations' ? 'is-active' : '' ?>">Locations (States/Cities)</a>
             </div>
             <?php endif; ?>
             <?php if (has_permission('users.manage') || has_permission('settings.manage') || has_permission('audit.view')): ?>

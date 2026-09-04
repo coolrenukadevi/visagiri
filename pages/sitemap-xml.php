@@ -34,6 +34,7 @@ $staticUrls = [
     ['loc' => '/contact/', 'priority' => '0.5', 'changefreq' => 'yearly'],
     ['loc' => '/enquire/', 'priority' => '0.5', 'changefreq' => 'yearly'],
     ['loc' => '/attestation/', 'priority' => '0.7', 'changefreq' => 'monthly'],
+    ['loc' => '/visa-consultant/', 'priority' => '0.8', 'changefreq' => 'monthly'],
 ];
 foreach (array_keys(attestation_services()) as $attestationSlug) {
     $staticUrls[] = ['loc' => "/attestation/{$attestationSlug}/", 'priority' => '0.6', 'changefreq' => 'monthly'];
@@ -63,5 +64,35 @@ echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
         <priority>0.7</priority>
     </url>
 <?php endforeach; ?>
+<?php
+// Location SEO — only is_indexable = 1 rows, same "don't submit thin
+// pages" discipline as the rest of this file. Most states/cities stay
+// out of this sitemap entirely until real content is authored for
+// them (see database/schema-location-seo.sql).
+foreach (states_all() as $s):
+    if (!$s['is_indexable']) {
+        continue;
+    }
+?>
+    <url>
+        <loc><?= e(APP_URL . '/visa-consultant/' . $s['slug'] . '/') ?></loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+<?php
+    foreach (cities_by_state((int) $s['id']) as $c):
+        if (!$c['is_indexable']) {
+            continue;
+        }
+?>
+    <url>
+        <loc><?= e(APP_URL . '/visa-consultant/' . $s['slug'] . '/' . $c['slug'] . '/') ?></loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+<?php
+    endforeach;
+endforeach;
+?>
 </urlset>
 <?php exit; ?>

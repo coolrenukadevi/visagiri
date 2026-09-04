@@ -114,6 +114,14 @@ declare(strict_types=1);
                 <li><a href="/blog/">Blog</a></li>
             </ul>
         </div>
+        <div class="site-footer__col">
+            <h3><span class="site-footer__col-icon"><?= primary_nav_icon('countries') ?></span>Popular Locations</h3>
+            <ul>
+                <li><a href="/visa-consultant/">Visa Consultant in India</a></li>
+                <li><a href="/visa-consultant/bihar/">Visa Consultant in Bihar</a></li>
+                <li><a href="/visa-consultant/uttar-pradesh/">Visa Consultant in Uttar Pradesh</a></li>
+            </ul>
+        </div>
     </div>
 
     <div class="site-footer__disclaimer">

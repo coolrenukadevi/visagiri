@@ -170,6 +170,12 @@ switch ($segments[0] ?? '') {
         // visa-type slug are resolved from the DB inside the handler.
         $dispatch("$root/visa/index.php");
 
+    case 'visa-consultant':
+        // /visa-consultant/, /visa-consultant/{state}/, or
+        // /visa-consultant/{state}/{city}/ — state + optional city
+        // slug are resolved from the DB inside the handler.
+        $dispatch("$root/visa-consultant/index.php");
+
     case 'visa-type':
         $dispatch("$root/visa-type/index.php");
 

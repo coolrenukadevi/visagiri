@@ -110,6 +110,7 @@ echo "       database/schema-b2b-phase7.sql              (no seed file — schem
 echo "       database/schema-b2b-phase8.sql              (no seed file — schema only)"
 echo "       database/schema-b2b-phase9.sql              (no seed file — schema only)"
 echo "       database/schema-legal-phase1.sql           database/seed-legal-phase1.sql"
+echo "       database/schema-location-seo.sql           database/seed-location-seo.sql"
 echo "  3. config/database.php and config/encryption.php ship as their .example.php templates"
 echo "     (CHANGE-ME placeholders) — the real secrets never leave the dev sandbox. On the server:"
 echo "       - Edit config/database.php with the real DB host/name/user/password."

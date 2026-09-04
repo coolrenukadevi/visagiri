@@ -259,3 +259,92 @@ function country_mega_menu_data(): array
     ];
     return $data;
 }
+
+/**
+ * National Location SEO — states/UTs, cities, and location-scoped
+ * FAQs. Same shape/caching convention as the country lookups above.
+ * `states_all()`/`cities_by_state()` return every active row
+ * (indexable or not) so admin previews and "cities we serve" listings
+ * work; callers are responsible for checking `is_indexable` before
+ * treating a page as safe to index (see visa-consultant/state.php and
+ * city.php, which set $noindex accordingly).
+ */
+
+/** @return list<array<string,mixed>> */
+function states_all(): array
+{
+    static $states = null;
+    if ($states === null) {
+        $states = db()->query(
+            'SELECT id, name, slug, type, zone, intro_content, meta_title, meta_description,
+                    is_indexable, is_active, sort_order
+             FROM states WHERE is_active = 1 ORDER BY zone, name'
+        )->fetchAll();
+        foreach ($states as &$s) {
+            $s['is_indexable'] = (bool) $s['is_indexable'];
+            $s['is_active'] = (bool) $s['is_active'];
+        }
+        unset($s);
+    }
+    return $states;
+}
+
+function state_by_slug(string $slug): ?array
+{
+    foreach (states_all() as $s) {
+        if ($s['slug'] === $slug) {
+            return $s;
+        }
+    }
+    return null;
+}
+
+/** @return list<array<string,mixed>> */
+function cities_by_state(int $stateId): array
+{
+    static $cache = [];
+    if (!isset($cache[$stateId])) {
+        $stmt = db()->prepare(
+            'SELECT id, state_id, name, slug, is_major, intro_content, office_address,
+                    meta_title, meta_description, is_indexable, is_active, sort_order
+             FROM cities WHERE state_id = :state_id AND is_active = 1
+             ORDER BY sort_order, name'
+        );
+        $stmt->execute(['state_id' => $stateId]);
+        $rows = $stmt->fetchAll();
+        foreach ($rows as &$c) {
+            $c['is_major'] = (bool) $c['is_major'];
+            $c['is_indexable'] = (bool) $c['is_indexable'];
+            $c['is_active'] = (bool) $c['is_active'];
+        }
+        unset($c);
+        $cache[$stateId] = $rows;
+    }
+    return $cache[$stateId];
+}
+
+function city_by_slug(int $stateId, string $slug): ?array
+{
+    foreach (cities_by_state($stateId) as $c) {
+        if ($c['slug'] === $slug) {
+            return $c;
+        }
+    }
+    return null;
+}
+
+/** FAQs relevant to a state or city page: general location FAQs plus any tagged to that state or city. */
+function location_faqs_for(?int $stateId = null, ?int $cityId = null): array
+{
+    $stmt = db()->prepare(
+        'SELECT question, answer FROM location_faqs
+         WHERE is_active = 1 AND (
+             (state_id IS NULL AND city_id IS NULL)
+             OR state_id = :state_id
+             OR city_id = :city_id
+         )
+         ORDER BY sort_order'
+    );
+    $stmt->execute(['state_id' => $stateId, 'city_id' => $cityId]);
+    return $stmt->fetchAll();
+}

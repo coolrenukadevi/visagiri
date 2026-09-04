@@ -71,6 +71,27 @@ $sections = [
             '/track-visa/' => 'Track My Application',
         ],
     ],
+    'Visa Consultant by Location' => [
+        'icon' => 'visa-services',
+        'links' => array_merge(
+            ['/visa-consultant/' => 'Visa Consultant in India'],
+            (static function (): array {
+                $links = [];
+                foreach (states_all() as $s) {
+                    if (!$s['is_indexable']) {
+                        continue;
+                    }
+                    $links["/visa-consultant/{$s['slug']}/"] = "Visa Consultant in {$s['name']}";
+                    foreach (cities_by_state((int) $s['id']) as $c) {
+                        if ($c['is_indexable']) {
+                            $links["/visa-consultant/{$s['slug']}/{$c['slug']}/"] = "Visa Consultant in {$c['name']}";
+                        }
+                    }
+                }
+                return $links;
+            })()
+        ),
+    ],
     'Contact & Support' => [
         'icon' => 'company',
         'links' => [
