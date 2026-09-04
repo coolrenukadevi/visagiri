@@ -46,6 +46,8 @@ $locationRoutes = [
     '#^/visa-consultants-india/?$#' => ['view' => 'hub'],
     '#^/states/?$#' => ['view' => 'states_index'],
     '#^/states/([a-z0-9-]+)/?$#' => ['view' => 'state', 'state' => 1],
+    '#^/cities/?$#' => ['view' => 'cities_index'],
+    '#^/cities/([a-z0-9-]+)/?$#' => ['view' => 'city', 'city' => 1],
 ];
 
 foreach ($locationRoutes as $pattern => $map) {

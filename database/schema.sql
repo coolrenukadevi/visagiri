@@ -54,7 +54,19 @@ CREATE TABLE IF NOT EXISTS states (
     type TEXT NOT NULL DEFAULT 'State',   -- 'State' | 'Union Territory'
     capital TEXT,
     zone TEXT,
-    major_cities TEXT,             -- JSON array of real city names (display only, no dedicated city pages yet)
+    major_cities TEXT,             -- JSON array of real city names; a subset also has a dedicated row in `cities`
+    seo_title TEXT,
+    seo_description TEXT,
+    indexable INTEGER NOT NULL DEFAULT 1,
+    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS cities (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    slug TEXT NOT NULL UNIQUE,
+    name TEXT NOT NULL,
+    state_id INTEGER NOT NULL REFERENCES states(id),
+    neighbourhoods TEXT,           -- JSON array of real locality names (display only, not office claims)
     seo_title TEXT,
     seo_description TEXT,
     indexable INTEGER NOT NULL DEFAULT 1,

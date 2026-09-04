@@ -4,6 +4,7 @@ declare(strict_types=1);
 require __DIR__ . '/countries-data.php';
 require __DIR__ . '/visa-content.php';
 require __DIR__ . '/india-locations-data.php';
+require __DIR__ . '/india-cities-data.php';
 
 function seed_database(PDO $pdo): void
 {
@@ -41,6 +42,22 @@ function seed_database(PDO $pdo): void
         $seoDesc = "Videshia provides visa consultancy, documentation and application support to applicants across {$name}, "
             . "covering " . implode(', ', array_slice($cities, 0, 3)) . " and surrounding areas, for 190+ destination countries.";
         $stateStmt->execute([$slug, $name, $type, $capital, $zone, json_encode($cities), $seoTitle, $seoDesc]);
+    }
+    $stateIds = $pdo->query('SELECT slug, id FROM states')->fetchAll(PDO::FETCH_KEY_PAIR);
+    $stateNames = $pdo->query('SELECT slug, name FROM states')->fetchAll(PDO::FETCH_KEY_PAIR);
+
+    $cityStmt = $pdo->prepare(
+        'INSERT INTO cities (slug, name, state_id, neighbourhoods, seo_title, seo_description, indexable)
+         VALUES (?, ?, ?, ?, ?, ?, 1)'
+    );
+    foreach (all_india_cities_data() as [$citySlug, $cityName, $stateSlug, $neighbourhoods]) {
+        if (!isset($stateIds[$stateSlug])) {
+            continue;
+        }
+        $stateName = $stateNames[$stateSlug];
+        $seoTitle = "Visa Consultant in {$cityName} | Visa Agency & Consultancy Services | Videshia";
+        $seoDesc = "Videshia provides visa consultancy, documentation and application support to applicants in {$cityName}, {$stateName}, for 190+ destination countries.";
+        $cityStmt->execute([$citySlug, $cityName, $stateIds[$stateSlug], json_encode($neighbourhoods), $seoTitle, $seoDesc]);
     }
 
     $catalog = visa_category_catalog();

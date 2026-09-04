@@ -41,6 +41,8 @@ ErrorDocument 404 /404.php
     RewriteRule ^visa-consultants-india/?$ location.php?view=hub [L,QSA]
     RewriteRule ^states/?$ location.php?view=states_index [L,QSA]
     RewriteRule ^states/([a-z0-9-]+)/?$ location.php?view=state&state=$1 [L,QSA]
+    RewriteRule ^cities/?$ location.php?view=cities_index [L,QSA]
+    RewriteRule ^cities/([a-z0-9-]+)/?$ location.php?view=city&city=$1 [L,QSA]
 
     # Consolidate synonym head-terms into the one national hub (avoid duplicate content).
     RewriteRule ^visa-consultant/?$ /visa-consultants-india/ [R=301,L]
