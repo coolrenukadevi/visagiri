@@ -41,26 +41,26 @@ function videshia_logo(string $size = 'md', string $theme = 'light', bool $tagli
     $mark = <<<SVG
     <svg width="{$dims['mark']}" height="{$dims['mark']}" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <defs>
-            <linearGradient id="{$uid}-navy" x1="10" y1="6" x2="60" y2="108" gradientUnits="userSpaceOnUse">
-                <stop offset="0" stop-color="#0A1B3D"/>
-                <stop offset="1" stop-color="#1B63B8"/>
+            <linearGradient id="{$uid}-navy" x1="8" y1="8" x2="56" y2="112" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#0A2456"/>
+                <stop offset="1" stop-color="#1568A8"/>
             </linearGradient>
-            <linearGradient id="{$uid}-teal" x1="110" y1="6" x2="58" y2="108" gradientUnits="userSpaceOnUse">
-                <stop offset="0" stop-color="#22D3D9"/>
-                <stop offset="1" stop-color="#0F4C81"/>
+            <linearGradient id="{$uid}-teal" x1="112" y1="8" x2="58" y2="112" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#1ECAD1"/>
+                <stop offset="1" stop-color="#0A69AC"/>
             </linearGradient>
-            <linearGradient id="{$uid}-edge" x1="50" y1="84" x2="58" y2="100" gradientUnits="userSpaceOnUse">
-                <stop offset="0" stop-color="#B6F5F3"/>
-                <stop offset="1" stop-color="#B6F5F3" stop-opacity="0"/>
+            <linearGradient id="{$uid}-edge" x1="48" y1="92" x2="60" y2="112" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#CFF8F6"/>
+                <stop offset="1" stop-color="#CFF8F6" stop-opacity="0"/>
             </linearGradient>
         </defs>
-        <path d="M8 6 L30 6 L67 100 L45 100 Z" fill="url(#{$uid}-navy)"/>
-        <path d="M112 6 L90 6 L53 100 L75 100 Z" fill="url(#{$uid}-teal)"/>
-        <path d="M50 84 L64 84 L58 100 L50 100 Z" fill="url(#{$uid}-edge)" opacity="0.6"/>
+        <path d="M6 8 L40 8 L64 112 L44 112 Z" fill="url(#{$uid}-navy)"/>
+        <path d="M114 8 L82 8 L56 112 L60 112 Z" fill="url(#{$uid}-teal)"/>
+        <path d="M48 94 L62 94 L58 112 L50 112 Z" fill="url(#{$uid}-edge)" opacity="0.55"/>
     </svg>
     SVG;
 
-    $overlap = (int) round($dims['mark'] * 0.12);
+    $overlap = (int) round($dims['mark'] * 0.2);
 
     $out = '<span class="brand" aria-label="' . SITE_NAME . '.com">';
     $out .= '<span class="brand-mark" style="margin-right:-' . $overlap . 'px">' . $mark . '</span>';
