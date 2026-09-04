@@ -42,8 +42,31 @@ foreach ($infoRoutes as $pattern => $map) {
     }
 }
 
-if (rtrim($path, '/') === '/enquiry') {
-    header('Location: /index.php#enquiry');
+$locationRoutes = [
+    '#^/visa-consultants-india/?$#' => ['view' => 'hub'],
+    '#^/states/?$#' => ['view' => 'states_index'],
+    '#^/states/([a-z0-9-]+)/?$#' => ['view' => 'state', 'state' => 1],
+];
+
+foreach ($locationRoutes as $pattern => $map) {
+    if (preg_match($pattern, $path, $m)) {
+        foreach ($map as $key => $value) {
+            $_GET[$key] = is_int($value) ? $m[$value] : $value;
+        }
+        require __DIR__ . '/location.php';
+        return true;
+    }
+}
+
+$plainRedirects = [
+    '/enquiry' => '/index.php#enquiry',
+    '/visa-consultant' => '/visa-consultants-india/',
+    '/visa-agency' => '/visa-consultants-india/',
+    '/visa-consultancy' => '/visa-consultants-india/',
+    '/india' => '/visa-consultants-india/',
+];
+if (isset($plainRedirects[rtrim($path, '/')])) {
+    header('Location: ' . $plainRedirects[rtrim($path, '/')]);
     return true;
 }
 
@@ -70,7 +93,7 @@ if (isset($cleanUrlMap[$trimmedPath])) {
     return true;
 }
 
-$xmlMap = ['/sitemap.xml' => 'sitemap.php', '/sitemap-pages.xml' => 'sitemap-pages.php', '/sitemap-visa.xml' => 'sitemap-visa.php'];
+$xmlMap = ['/sitemap.xml' => 'sitemap.php', '/sitemap-pages.xml' => 'sitemap-pages.php', '/sitemap-visa.xml' => 'sitemap-visa.php', '/sitemap-locations.xml' => 'sitemap-locations.php'];
 if (isset($xmlMap[$path])) {
     require __DIR__ . '/' . $xmlMap[$path];
     return true;

@@ -57,6 +57,30 @@ function service_schema(string $name, string $description, string $itemUrl): arr
     ];
 }
 
+/**
+ * ProfessionalService rather than LocalBusiness: Videshia serves applicants
+ * nationally through online consultation and does not have a verified
+ * physical address to publish per location, so this deliberately omits
+ * the `address` field rather than fabricate one.
+ */
+function professional_service_schema(string $name, string $description, string $itemUrl, array $areaServed = []): array
+{
+    $schema = [
+        '@context' => 'https://schema.org',
+        '@type' => 'ProfessionalService',
+        'name' => $name,
+        'description' => $description,
+        'url' => $itemUrl,
+        'telephone' => '+91-78448-19819',
+        'email' => 'info@tripgation.com',
+        'parentOrganization' => ['@type' => 'Organization', 'name' => 'Videshia'],
+    ];
+    if ($areaServed) {
+        $schema['areaServed'] = array_map(static fn($a) => ['@type' => 'AdministrativeArea', 'name' => $a], $areaServed);
+    }
+    return $schema;
+}
+
 function render_breadcrumbs(array $items): string
 {
     $html = '<nav class="breadcrumbs" aria-label="Breadcrumb"><ol>';

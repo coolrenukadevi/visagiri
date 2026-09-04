@@ -99,6 +99,7 @@ $visaInfoTopics = $visaInfoTopics ?? ['visa-requirements' => 'Visa Requirements'
                         <li><a href="<?= url('visa-information/visa-faqs/') ?>">Visa FAQs</a></li>
                         <li><a href="<?= url('visa-by-country/') ?>">Country Guides</a></li>
                         <li><a href="<?= url('blog/') ?>#updates">Embassy Updates</a></li>
+                        <li><a href="<?= url('visa-consultants-india/') ?>">Visa Consultants Across India</a></li>
                     </ul>
                 </details>
 

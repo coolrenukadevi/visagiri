@@ -47,6 +47,20 @@ CREATE TABLE IF NOT EXISTS countries (
     updated_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
+CREATE TABLE IF NOT EXISTS states (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    slug TEXT NOT NULL UNIQUE,
+    name TEXT NOT NULL,
+    type TEXT NOT NULL DEFAULT 'State',   -- 'State' | 'Union Territory'
+    capital TEXT,
+    zone TEXT,
+    major_cities TEXT,             -- JSON array of real city names (display only, no dedicated city pages yet)
+    seo_title TEXT,
+    seo_description TEXT,
+    indexable INTEGER NOT NULL DEFAULT 1,
+    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
 CREATE TABLE IF NOT EXISTS visa_categories (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     slug TEXT NOT NULL UNIQUE,

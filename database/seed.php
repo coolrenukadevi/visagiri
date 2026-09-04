@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/countries-data.php';
 require __DIR__ . '/visa-content.php';
+require __DIR__ . '/india-locations-data.php';
 
 function seed_database(PDO $pdo): void
 {
@@ -29,6 +30,17 @@ function seed_database(PDO $pdo): void
     $userStmt = $pdo->prepare('INSERT INTO users (role_id, name, email, password_hash, status) VALUES (?, ?, ?, ?, ?)');
     foreach ($demoUsers as [$name, $email, $password, $roleSlug]) {
         $userStmt->execute([$roleIds[$roleSlug], $name, $email, password_hash($password, PASSWORD_BCRYPT), 'active']);
+    }
+
+    $stateStmt = $pdo->prepare(
+        'INSERT INTO states (slug, name, type, capital, zone, major_cities, seo_title, seo_description, indexable)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)'
+    );
+    foreach (all_india_locations_data() as [$slug, $name, $type, $capital, $zone, $cities]) {
+        $seoTitle = "Visa Consultant in {$name} | Visa Agency & Consultancy Services | Videshia";
+        $seoDesc = "Videshia provides visa consultancy, documentation and application support to applicants across {$name}, "
+            . "covering " . implode(', ', array_slice($cities, 0, 3)) . " and surrounding areas, for 190+ destination countries.";
+        $stateStmt->execute([$slug, $name, $type, $capital, $zone, json_encode($cities), $seoTitle, $seoDesc]);
     }
 
     $catalog = visa_category_catalog();

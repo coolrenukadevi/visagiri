@@ -37,10 +37,22 @@ ErrorDocument 404 /404.php
     # ---- Resources hub ----
     RewriteRule ^blog/?$ blog.php [L]
 
+    # ---- India-wide visa consultant/agency location SEO ----
+    RewriteRule ^visa-consultants-india/?$ location.php?view=hub [L,QSA]
+    RewriteRule ^states/?$ location.php?view=states_index [L,QSA]
+    RewriteRule ^states/([a-z0-9-]+)/?$ location.php?view=state&state=$1 [L,QSA]
+
+    # Consolidate synonym head-terms into the one national hub (avoid duplicate content).
+    RewriteRule ^visa-consultant/?$ /visa-consultants-india/ [R=301,L]
+    RewriteRule ^visa-agency/?$ /visa-consultants-india/ [R=301,L]
+    RewriteRule ^visa-consultancy/?$ /visa-consultants-india/ [R=301,L]
+    RewriteRule ^india/?$ /visa-consultants-india/ [R=301,L]
+
     # ---- Sitemaps, served dynamically from the database ----
     RewriteRule ^sitemap\.xml$ sitemap.php [L]
     RewriteRule ^sitemap-pages\.xml$ sitemap-pages.php [L]
     RewriteRule ^sitemap-visa\.xml$ sitemap-visa.php [L]
+    RewriteRule ^sitemap-locations\.xml$ sitemap-locations.php [L]
 
     # ==== 301 redirects: old /visa/ tree -> new /visa-services/ + /visa-by-country/ ====
     # Old bare category slugs (tourist, business, ...) -> new -visa-suffixed slugs.

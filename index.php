@@ -246,6 +246,29 @@ $allCategories = db()->query("SELECT id, slug, name FROM visa_categories ORDER B
     </div>
 </section>
 
+<section class="section section-alt">
+    <div class="container">
+        <div class="section-head center">
+            <span class="eyebrow">Nationwide Coverage</span>
+            <h2>Visa consultancy support, wherever you are in India</h2>
+            <p>No branch visit required — Videshia supports applicants across every Indian state and union territory through online consultation.</p>
+        </div>
+        <?php
+        $homepageStateSlugs = ['delhi', 'maharashtra', 'karnataka', 'tamil-nadu', 'west-bengal', 'telangana', 'gujarat', 'uttar-pradesh', 'punjab', 'bihar', 'rajasthan', 'kerala'];
+        $placeholders = implode(',', array_fill(0, count($homepageStateSlugs), '?'));
+        $homepageStatesStmt = db()->prepare("SELECT slug, name FROM states WHERE indexable = 1 AND slug IN ($placeholders) ORDER BY name");
+        $homepageStatesStmt->execute($homepageStateSlugs);
+        $homepageStates = $homepageStatesStmt->fetchAll();
+        ?>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center">
+            <?php foreach ($homepageStates as $s): ?>
+            <a href="<?= url('states/' . $s['slug'] . '/') ?>" style="padding:8px 16px;border:1px solid var(--border);border-radius:var(--radius-full);font-size:13.5px;color:var(--navy-800);background:var(--surface)"><?= e($s['name']) ?></a>
+            <?php endforeach; ?>
+        </div>
+        <p style="text-align:center;margin-top:20px"><a href="<?= url('visa-consultants-india/') ?>" style="color:var(--teal-500);font-weight:600">View all states &amp; union territories &rarr;</a></p>
+    </div>
+</section>
+
 <section class="section">
     <div class="container">
         <div class="cta-band">
