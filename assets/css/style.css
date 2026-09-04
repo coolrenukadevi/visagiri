@@ -610,7 +610,7 @@ button { font-family: inherit; cursor: pointer; }
 .footer-cta { padding: 56px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.08); }
 
 .footer-grid-top { display: grid; grid-template-columns: 1.6fr 1fr 1.2fr; gap: 40px; padding: 56px 0 40px; }
-.footer-grid-bottom { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; padding-bottom: 40px; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 40px; }
+.footer-grid-bottom { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; padding-bottom: 40px; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 40px; max-width: 560px; }
 
 .footer-about p { color: rgba(243, 247, 252, 0.6); font-size: 14px; max-width: 320px; }
 .footer-contact-mini { display: flex; flex-direction: column; gap: 8px; margin: 16px 0 20px; }
@@ -887,7 +887,6 @@ textarea.form-control { resize: vertical; min-height: 120px; }
   .visa-grid { grid-template-columns: repeat(3, 1fr); }
   .steps { grid-template-columns: 1fr 1fr; }
   .footer-grid-top { grid-template-columns: 1fr; }
-  .footer-grid-bottom { grid-template-columns: repeat(2, 1fr); }
   .stats-grid { grid-template-columns: repeat(2, 1fr); row-gap: 24px; }
   .stat:nth-child(3) { border-left: none; }
 }

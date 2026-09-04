@@ -3,7 +3,6 @@ $footerCountrySlugs = ['usa', 'uk', 'canada', 'australia', 'uae', 'singapore', '
 $countryNameBySlug = array_column($megaCountries ?? [], 'name', 'slug');
 $footerCategorySlugs = ['tourist-visa', 'business-visa', 'employment-visa', 'family-visa', 'transit-visa'];
 $categoryNameBySlug = array_column($megaCategories ?? [], 'name', 'slug');
-$visaInfoTopics = $visaInfoTopics ?? ['visa-requirements' => 'Visa Requirements', 'visa-documents' => 'Visa Documents', 'visa-checklist' => 'Visa Checklist', 'visa-fees' => 'Visa Fees', 'processing-time' => 'Processing Time', 'visa-appointment' => 'Visa Appointment', 'visa-faqs' => 'Visa FAQs'];
 ?>    <footer class="site-footer">
 
         <div class="footer-cta">
@@ -64,16 +63,6 @@ $visaInfoTopics = $visaInfoTopics ?? ['visa-requirements' => 'Visa Requirements'
             </div>
 
             <div class="footer-grid-bottom">
-                <details class="footer-col footer-col-accordion" open>
-                    <summary>Visa Information</summary>
-                    <ul>
-                        <?php foreach ($visaInfoTopics as $slug => $label): ?>
-                        <li><a href="<?= url('visa-information/' . $slug . '/') ?>"><?= e($label) ?></a></li>
-                        <?php endforeach; ?>
-                        <li><a href="<?= url('track-application/') ?>">Visa Tracking</a></li>
-                    </ul>
-                </details>
-
                 <details class="footer-col footer-col-accordion" open>
                     <summary>Company</summary>
                     <ul>
