@@ -58,6 +58,10 @@
                             <button type="button" data-region="Oceania">Oceania</button>
                         </div>
                         <div class="country-explorer-grid country-nav-grid">
+                            <a href="country-schengen" class="country-chip" data-name="schengen schengen countries 29" data-slug="schengen" data-region="Europe">
+                                <span class="flag">&#127466;&#127482;</span>
+                                <span>Schengen Countries (29)</span>
+                            </a>
                             <?php foreach ($VISA_AGENCY_COUNTRIES as $c): ?>
                             <a href="country-<?php echo $c['slug']; ?>" class="country-chip" data-name="<?php echo strtolower($c['name']); ?>" data-slug="<?php echo strtolower(str_replace('-', ' ', $c['slug'])); ?>" data-region="<?php echo $c['region']; ?>">
                                 <span class="flag"><?php echo $c['flag']; ?></span>
