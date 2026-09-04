@@ -54,8 +54,8 @@ function create_enquiry(string $serviceType, array $customer, array $serviceData
         )->execute([
             $referenceNo, $serviceType, $customerId,
             $serviceData['country'] ?? null,
-            $serviceData['destination'] ?? $serviceData['country'] ?? null,
-            $serviceData['travel_date'] ?? $serviceData['departure_date'] ?? $serviceData['check_in'] ?? null,
+            $serviceData['destination'] ?? $serviceData['country'] ?? $serviceData['travel_country'] ?? $serviceData['to_city'] ?? null,
+            $serviceData['travel_date'] ?? $serviceData['departure_date'] ?? $serviceData['check_in'] ?? $serviceData['travel_start'] ?? null,
             $source, $dedupeKey, 'website',
         ]);
         $enquiryId = (int) $pdo->lastInsertId();
