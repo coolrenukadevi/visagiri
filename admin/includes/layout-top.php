@@ -36,6 +36,7 @@ $navItems = [
     ['key' => 'countries', 'label' => 'Countries', 'icon' => 'earth-americas', 'href' => 'countries.php'],
     ['key' => 'visa-pages', 'label' => 'Content Pages', 'icon' => 'file-lines', 'href' => 'visa-pages.php'],
     ['key' => 'visa-types', 'label' => 'Visa Types', 'icon' => 'stamp', 'href' => 'visa-types.php'],
+    ['key' => 'resource-articles', 'label' => 'Resource Articles', 'icon' => 'newspaper', 'href' => 'resource-articles.php'],
 
     ['section' => 'Forex'],
     ['key' => 'forex-dashboard', 'label' => 'Forex Dashboard', 'icon' => 'gauge-high', 'href' => 'forex-dashboard.php'],
