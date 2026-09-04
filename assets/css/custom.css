@@ -682,14 +682,24 @@
 }
 
 /* ---- Enquire Now: primary CTA — header-scoped royal-blue treatment
-   (the rest of the site keeps the teal .theme-btn for hero/pricing/etc). ---- */
+   (the rest of the site keeps the teal .theme-btn for hero/pricing/etc).
+   Sized down from the base .theme-btn (a large general-purpose CTA style
+   with a 48px icon circle, meant for hero/pricing sections) to match
+   header-track-link's compact scale — the two sat side by side at
+   visibly different heights (58px vs 44px) otherwise. ---- */
 .header-call-item .theme-btn {
     color: var(--va-navy);
     border-color: var(--va-royal);
+    font-size: 13px;
+    padding: 6px 6px 6px 20px;
 }
 .header-call-item .theme-btn i {
     background-color: var(--va-royal) !important;
     color: var(--white) !important;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    margin-left: 10px;
 }
 .header-call-item .theme-btn:hover {
     background-color: var(--va-royal) !important;
