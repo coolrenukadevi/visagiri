@@ -161,7 +161,7 @@ button { font-family: inherit; cursor: pointer; }
 
 /* Brand mark --------------------------------------------------------------*/
 
-.brand { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-head); font-weight: 700; }
+.brand { display: inline-flex; align-items: center; gap: 2px; font-family: var(--font-head); font-weight: 700; }
 .brand-mark { display: inline-flex; line-height: 0; flex-shrink: 0; }
 .brand-mark svg { display: block; }
 .brand-word { line-height: 1; }

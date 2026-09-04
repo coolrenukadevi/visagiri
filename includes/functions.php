@@ -60,8 +60,10 @@ function videshia_logo(string $size = 'md', string $theme = 'light', bool $tagli
     </svg>
     SVG;
 
+    $overlap = (int) round($dims['mark'] * 0.12);
+
     $out = '<span class="brand" aria-label="' . SITE_NAME . '.com">';
-    $out .= '<span class="brand-mark">' . $mark . '</span>';
+    $out .= '<span class="brand-mark" style="margin-right:-' . $overlap . 'px">' . $mark . '</span>';
     $out .= '<span class="brand-word" style="font-size:' . $dims['word'] . 'px;color:' . $wordColor . '">ideshia<span style="color:' . $dotColor . '">.com</span></span>';
     $out .= '</span>';
 
