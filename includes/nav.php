@@ -163,10 +163,11 @@
             <a href="about">Company</a>
             <ul class="submenu simple-dropdown">
                 <li><a href="about#overview">About Us</a></li>
-                <li><a href="about#why-choose-us">Why Choose Us?</a></li>
+                <li><a href="about#why-choose-us">Why Us?</a></li>
                 <li><a href="about#vision-mission">Vision &amp; Mission</a></li>
-                <li><a href="about#leadership">Leadership Partners</a></li>
-                <li><a href="contact#support">Support 24x7</a></li>
+                <li><a href="about#leadership">Leadership</a></li>
+                <li><a href="payment">Payment Link</a></li>
+                <li><a href="contact">Support</a></li>
             </ul>
         </li>
     </ul>
