@@ -23,6 +23,21 @@ if ($clean === 'sitemap.xml') {
     return true;
 }
 
+if ($clean === 'sitemap-pages.xml') {
+    require __DIR__ . '/sitemap-pages-xml.php';
+    return true;
+}
+
+if ($clean === 'sitemap-countries.xml') {
+    require __DIR__ . '/sitemap-countries-xml.php';
+    return true;
+}
+
+if ($clean === 'sitemap-locations.xml') {
+    require __DIR__ . '/sitemap-locations-xml.php';
+    return true;
+}
+
 if (preg_match('#^countries/([a-z0-9-]+)$#', $clean, $m)) {
     $_GET['slug'] = $m[1];
     require __DIR__ . '/countries.php';

@@ -28,9 +28,13 @@ RewriteRule ^ / [R=301,L]
 # Serve index.php for the homepage
 RewriteRule ^$ index.php [L]
 
-# Dynamically-generated XML sitemap, always in sync with the countries/
-# content-pages database instead of a stale hand-maintained file.
+# Dynamically-generated XML sitemap index + type-segmented sub-sitemaps,
+# always in sync with the countries/locations database instead of a stale
+# hand-maintained file.
 RewriteRule ^sitemap\.xml$ sitemap-xml.php [L]
+RewriteRule ^sitemap-pages\.xml$ sitemap-pages-xml.php [L]
+RewriteRule ^sitemap-countries\.xml$ sitemap-countries-xml.php [L]
+RewriteRule ^sitemap-locations\.xml$ sitemap-locations-xml.php [L]
 
 # Country x visa-purpose SEO pages: /countries/{slug}/ and
 # /countries/{country-slug}-{category-slug}/ both dispatch to countries.php,
