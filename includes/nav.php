@@ -258,13 +258,39 @@
 
         <li class="has-dropdown">
             <a href="about">Company</a>
-            <ul class="submenu simple-dropdown">
-                <li><a href="about#overview">About Us</a></li>
-                <li><a href="about#why-choose-us">Why Us?</a></li>
-                <li><a href="about#vision-mission">Vision &amp; Mission</a></li>
-                <li><a href="about#leadership">Leadership</a></li>
-                <li><a href="payment">Payment Link</a></li>
-                <li><a href="contact">Support</a></li>
+            <ul class="submenu has-homemenu mega-panel mega-panel-forex mega-panel-company mega-align-right">
+                <li>
+                    <div class="mega-panel-inner-icons">
+                        <a href="about#overview" class="mega-icon-link">
+                            <span class="mega-icon-badge"><i class="fa-solid fa-building"></i></span>
+                            <span class="mega-icon-text"><strong>About Us</strong><small>Our story &amp; approach</small></span>
+                        </a>
+                        <a href="about#why-choose-us" class="mega-icon-link">
+                            <span class="mega-icon-badge"><i class="fa-solid fa-star"></i></span>
+                            <span class="mega-icon-text"><strong>Why Us?</strong><small>What sets us apart</small></span>
+                        </a>
+                        <a href="about#vision-mission" class="mega-icon-link">
+                            <span class="mega-icon-badge"><i class="fa-solid fa-compass"></i></span>
+                            <span class="mega-icon-text"><strong>Vision &amp; Mission</strong><small>Why we do this work</small></span>
+                        </a>
+                        <a href="about#leadership" class="mega-icon-link">
+                            <span class="mega-icon-badge"><i class="fa-solid fa-user-tie"></i></span>
+                            <span class="mega-icon-text"><strong>Leadership</strong><small>Meet our team</small></span>
+                        </a>
+                        <a href="payment" class="mega-icon-link">
+                            <span class="mega-icon-badge"><i class="fa-solid fa-money-check-dollar"></i></span>
+                            <span class="mega-icon-text"><strong>Payment Link</strong><small>Pay an invoice securely</small></span>
+                        </a>
+                        <a href="contact" class="mega-icon-link">
+                            <span class="mega-icon-badge"><i class="fa-solid fa-headset"></i></span>
+                            <span class="mega-icon-text"><strong>Support</strong><small>Reach us directly</small></span>
+                        </a>
+                    </div>
+                    <div class="mega-bottom">
+                        <div class="mega-bottom-text"><strong>Want to know more about us?</strong>Read our story, or talk to a consultant directly.</div>
+                        <a href="contact" class="mega-cta-btn">Talk To Us <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </li>
             </ul>
         </li>
     </ul>
