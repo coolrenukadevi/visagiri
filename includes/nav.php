@@ -125,6 +125,17 @@
         </li>
 
         <li class="has-dropdown">
+            <a href="travel-services">Travel Services</a>
+            <ul class="submenu simple-dropdown">
+                <li><a href="travel-services#travel-insurance">Travel Insurance</a></li>
+                <li><a href="travel-services#flight-hotel">Flight &amp; Hotel Reservation</a></li>
+                <li><a href="travel-services#invitation-letter">Invitation Letter Assistance</a></li>
+                <li><a href="travel-services#airport-assist">Airport Meet &amp; Assist</a></li>
+                <li><a href="travel-services#corporate">Corporate Travel</a></li>
+            </ul>
+        </li>
+
+        <li class="has-dropdown">
             <a href="resources">Resources</a>
             <ul class="submenu has-homemenu mega-panel mega-panel-resources mega-align-right">
                 <li>

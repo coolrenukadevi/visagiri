@@ -128,12 +128,12 @@ foreach ($VISA_AGENCY_COUNTRIES as $c) {
                                     </ul>
                                 </div>
                                 <div class="policy-link-col">
-                                    <h3>Other Services</h3>
+                                    <h3>Travel Services</h3>
                                     <ul>
-                                        <li><a href="other-services">Travel Insurance</a></li>
+                                        <li><a href="travel-services#travel-insurance">Travel Insurance</a></li>
                                         <li><a href="forex">Forex Services</a></li>
-                                        <li><a href="other-services">Flight &amp; Hotel Reservation</a></li>
-                                        <li><a href="other-services">Corporate Visa Assistance</a></li>
+                                        <li><a href="travel-services#flight-hotel">Flight &amp; Hotel Reservation</a></li>
+                                        <li><a href="travel-services#corporate">Corporate Travel</a></li>
                                     </ul>
                                 </div>
                             </div>

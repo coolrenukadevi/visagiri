@@ -59,9 +59,9 @@
                             <ul>
                                 <li><a href="contact" data-open-enquiry>Visa Enquiry</a></li>
                                 <li><a href="apostille">Apostille &amp; Attestation</a></li>
-                                <li><a href="other-services#travel-insurance">Travel Insurance</a></li>
+                                <li><a href="travel-services#travel-insurance">Travel Insurance</a></li>
                                 <li><a href="forex">Forex Services</a></li>
-                                <li><a href="other-services#flight-hotel-assistance">Flight &amp; Hotel Assistance</a></li>
+                                <li><a href="travel-services#flight-hotel">Flight &amp; Hotel Assistance</a></li>
                                 <li><a href="visa-checklist">Document Checklist</a></li>
                                 <li><a href="track-application">Track Your Enquiry</a></li>
                             </ul>

@@ -32,7 +32,7 @@ function sitemap_static_pages(): array
         ['apostille-translation-services', 'monthly', '0.7'],
         ['forex', 'monthly', '0.8'],
         ['forex-enquiry', 'monthly', '0.7'],
-        ['other-services', 'monthly', '0.6'],
+        ['travel-services', 'monthly', '0.8'],
         ['pricing', 'monthly', '0.7'],
         ['about', 'monthly', '0.7'],
         ['visa-requirements', 'monthly', '0.7'],

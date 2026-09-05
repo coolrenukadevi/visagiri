@@ -40,6 +40,7 @@ $retiredRedirects = [
     'visa-extension' => '/visa-services#extension',
     'our-services' => '/visa-services',
     'visa-consultancy-services' => '/visa-services',
+    'other-services' => '/travel-services',
 ];
 if (isset($retiredRedirects[$clean])) {
     header('Location: ' . $retiredRedirects[$clean], true, 301);

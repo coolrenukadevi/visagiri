@@ -54,6 +54,9 @@ RewriteRule ^visa-extension/?$ /visa-services#extension [R=301,L]
 RewriteRule ^our-services/?$ /visa-services [R=301,L]
 RewriteRule ^visa-consultancy-services/?$ /visa-services [R=301,L]
 
+# Consolidated into /travel-services (see travel-services.php).
+RewriteRule ^other-services/?$ /travel-services [R=301,L]
+
 # Serve index.php for the homepage
 RewriteRule ^$ index.php [L]
 
