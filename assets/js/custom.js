@@ -166,7 +166,18 @@ document.addEventListener('DOMContentLoaded', function () {
     if (checklistForm) {
         checklistForm.addEventListener('submit', function (e) {
             e.preventDefault();
-            var country = document.getElementById('cl-country').value || 'your destination';
+            var countryField = document.getElementById('cl-country');
+            var clError = document.getElementById('cl-error');
+            if (!countryField.value) {
+                /* cl-country is hidden by the nice-select plugin, so native
+                   "required" validation can't focus it or show its bubble —
+                   the browser just blocks the submit silently. Validate and
+                   report it here instead. */
+                if (clError) { clError.hidden = false; }
+                return;
+            }
+            if (clError) { clError.hidden = true; }
+            var country = countryField.value;
             var visaType = document.getElementById('cl-visa-type').value || 'tourist';
             var visaTypeLabel = document.getElementById('cl-visa-type').selectedOptions[0].text;
             var items = checklistData[visaType] || checklistData.tourist;

@@ -1420,6 +1420,11 @@
     font-weight: 600;
     cursor: pointer;
 }
+.checklist-error {
+    color: #C0392B;
+    font-size: 13.5px;
+    margin: -14px 0 20px;
+}
 .checklist-output {
     display: none;
     border-top: 1px dashed var(--border);

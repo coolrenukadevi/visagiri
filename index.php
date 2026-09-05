@@ -266,7 +266,7 @@ include __DIR__ . '/includes/header-home.php';
                 <div class="hr-checklist-wrap">
                     <div class="checklist-widget">
                         <form id="checklist-form" class="checklist-controls">
-                            <select id="cl-country" required>
+                            <select id="cl-country">
                                 <option value="">Select Country</option>
                                 <?php foreach ($VISA_AGENCY_COUNTRIES as $c): ?>
                                 <option value="<?php echo htmlspecialchars($c['name']); ?>"><?php echo $c['flag'] . ' ' . htmlspecialchars($c['name']); ?></option>
@@ -288,6 +288,7 @@ include __DIR__ . '/includes/header-home.php';
                             </select>
                             <button type="submit">Create My Checklist</button>
                         </form>
+                        <p id="cl-error" class="checklist-error" hidden>Please select a country to continue.</p>
                         <div id="checklist-output" class="checklist-output">
                             <h4 id="checklist-heading">Your Checklist</h4>
                             <ul id="checklist-items" class="checklist-items"></ul>
