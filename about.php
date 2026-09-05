@@ -2,6 +2,7 @@
 $page_title = "About Us &ndash; Visa Agency";
 $page_description = "Visa Agency is a Ministry of Tourism recognised, technology-enabled visa consultancy based in Patna, Bihar, serving Patna, Ranchi, Raipur and Bhopal.";
 include __DIR__ . '/includes/header.php';
+$abCountryCount = count($VISA_AGENCY_COUNTRIES ?? []);
 ?>
         <!-- Breadcrumb-Wrapper Section Start -->
         <section class="breadcrumb-wrapper fix bg-cover" style="background-image: url(assets/img/inner-page/breadcrumb.jpg);">
@@ -34,42 +35,64 @@ include __DIR__ . '/includes/header.php';
             </div>
         </nav>
 
-        <section class="console-intro" id="overview">
-            <div class="console-intro-inner">
-                <div class="console-tag"><span class="blink"></span> company.about() &middot; Patna, Bihar</div>
-                <p class="lede">Visa Agency is a Ministry of Tourism recognised, technology-enabled visa consultancy based in Patna, Bihar &mdash; helping applicants across Patna, Ranchi, Raipur and Bhopal navigate visa, apostille and documentation processes with a clear, tracked process instead of guesswork.</p>
-                <div class="console-cta-row">
-                    <a class="console-btn console-btn-primary" href="contact">Start Your Visa Enquiry</a>
-                    <a class="console-btn console-btn-outline-dark" href="about#leadership">Meet the Team</a>
+        <section class="hr-section" id="overview" style="padding-top:48px;">
+            <div class="container ab-hero-grid">
+                <div>
+                    <p class="hr-eyebrow">Ministry of Tourism Recognised</p>
+                    <h2>Getting you across the border, on paper and in practice.</h2>
+                    <p class="ab-hero-lead">Visa Agency handles the documentation side of travel: the forms, the appointment slots, the follow-up calls to embassies. We file for tourist, business, family, transit, medical and extension categories across <?php echo $abCountryCount; ?>+ destinations, and tell you exactly where your file stands at every step.</p>
+                    <div class="ab-hero-actions">
+                        <a class="theme-btn hr-btn-gold" href="about#why-choose-us">See how we work</a>
+                        <a class="theme-btn style-2" href="about#leadership">Meet the team</a>
+                    </div>
+                    <div class="ab-stat-row">
+                        <div class="ab-stat"><span class="num"><?php echo $abCountryCount; ?>+</span><span class="lbl">Destination countries</span></div>
+                        <div class="ab-stat"><span class="num">4</span><span class="lbl">City offices</span></div>
+                        <div class="ab-stat"><span class="num">MoT</span><span class="lbl">Recognised entity</span></div>
+                    </div>
+                </div>
+                <div class="ab-stamp-frame">
+                    <svg class="ab-stamp-svg" viewBox="0 0 260 260">
+                        <circle class="ring-dash" cx="130" cy="130" r="118"/>
+                        <circle class="ring" cx="130" cy="130" r="98"/>
+                        <path id="abCurveTop" d="M 32,130 A 98,98 0 1,1 228,130" fill="none"/>
+                        <path id="abCurveBottom" d="M 228,132 A 98,98 0 1,1 32,132" fill="none"/>
+                        <text><textPath href="#abCurveTop" startOffset="50%" text-anchor="middle">VISA AGENCY</textPath></text>
+                        <text><textPath href="#abCurveBottom" startOffset="50%" text-anchor="middle">MINISTRY OF TOURISM RECOGNISED</textPath></text>
+                        <g class="mark" transform="translate(130,130)">
+                            <path d="M-28,6 L28,6 M-18,6 L-28,-14 L-20,-14 L-6,6 M18,6 L28,-14 L20,-14 L6,6"/>
+                            <circle r="3" fill="currentColor" stroke="none"/>
+                        </g>
+                    </svg>
                 </div>
             </div>
         </section>
 
-        <section class="section-padding fix">
+        <section class="hr-section" style="background:#fff; border-top:1px solid var(--border-color); border-bottom:1px solid var(--border-color);">
             <div class="container">
-                <div class="console-section-head">
-                    <p class="console-eyebrow">What we do</p>
-                    <h2>Consultancy, Not Just Paperwork</h2>
-                    <p>We guide applicants through eligibility checks, documentation, application preparation and appointment support &mdash; across tourist, business, work, family, medical and transit visa categories, plus apostille and attestation for supporting documents.</p>
+                <div class="hr-head">
+                    <p class="hr-eyebrow">What We Do</p>
+                    <h2>Consultancy, not just paperwork</h2>
+                    <p>We guide applicants through eligibility checks, documentation, application preparation and appointment support &mdash; across tourist, business, family, transit, medical and extension visa categories, plus apostille and attestation for supporting documents.</p>
                 </div>
-                <div class="console-card-grid">
-                    <div class="console-tcard">
-                        <div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l2.5 2.5L16 9"/></svg></div>
+                <div class="hr-svc-grid">
+                    <div class="hr-svc-card">
+                        <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--brand-blue)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l2.5 2.5L16 9"/></svg>
                         <h3>Eligibility-first</h3>
                         <p>We check what actually applies to you before recommending a visa category, rather than a one-size-fits-all process.</p>
                     </div>
-                    <div class="console-tcard">
-                        <div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v5h5"/></svg></div>
+                    <div class="hr-svc-card">
+                        <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--brand-blue)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v5h5"/></svg>
                         <h3>Documentation-led</h3>
                         <p>Most delays come from incomplete or inconsistent documents &mdash; our process is built around catching that early.</p>
                     </div>
-                    <div class="console-tcard">
-                        <div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18M3 12h18"/></svg></div>
+                    <div class="hr-svc-card">
+                        <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--brand-blue)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18M3 12h18"/></svg>
                         <h3>Multi-city coverage</h3>
                         <p>We serve applicants across Patna, Ranchi, Raipur and Bhopal from our Patna base, in person and remotely.</p>
                     </div>
-                    <div class="console-tcard">
-                        <div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 5-3.5 8-7 9-3.5-1-7-4-7-9V6l7-3z"/></svg></div>
+                    <div class="hr-svc-card">
+                        <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--brand-blue)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 5-3.5 8-7 9-3.5-1-7-4-7-9V6l7-3z"/></svg>
                         <h3>No guaranteed outcomes, said plainly</h3>
                         <p>We're upfront that visa decisions rest solely with the relevant embassy or authority &mdash; we help you present the strongest possible case.</p>
                     </div>
@@ -93,62 +116,58 @@ include __DIR__ . '/includes/header.php';
             </div>
         </section>
 
-        <section class="section-padding fix" id="vision-mission">
+        <section class="hr-section" id="vision-mission" style="background:#fff; border-top:1px solid var(--border-color); border-bottom:1px solid var(--border-color);">
             <div class="container">
-                <div class="console-section-head">
-                    <p class="console-eyebrow">Vision &amp; Mission</p>
-                    <h2>Why We Do This Work</h2>
+                <div class="hr-head">
+                    <p class="hr-eyebrow">Vision &amp; Mission</p>
+                    <h2>Two pages, one booklet</h2>
                 </div>
-                <div class="console-card-grid">
-                    <div class="console-tcard">
-                        <div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
-                        <h3>Vision</h3>
-                        <p>To make visa, apostille and documentation processes clear and predictable for every applicant we serve &mdash; replacing guesswork with a tracked, transparent process, city by city.</p>
+                <div class="ab-spread">
+                    <div>
+                        <span class="tag">Vision</span>
+                        <h3>A border that isn't the hardest part of the trip.</h3>
+                        <p>We want the paperwork stage of travel to feel ordinary &mdash; something you complete quickly and stop thinking about, not the part of the trip you dread. Every process we build works toward that, replacing guesswork with a tracked, transparent process, city by city.</p>
                     </div>
-                    <div class="console-tcard">
-                        <div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 5-3.5 8-7 9-3.5-1-7-4-7-9V6l7-3z"/><path d="M9.5 12l1.8 1.8L15 10"/></svg></div>
-                        <h3>Mission</h3>
-                        <p>Give applicants across Patna, Ranchi, Raipur and Bhopal a single, dependable point of contact for eligibility checks, documentation and application support &mdash; while being upfront that final decisions rest with the relevant embassy or authority.</p>
+                    <div>
+                        <span class="tag">Mission</span>
+                        <h3>Handle every file with the same precision, start to finish.</h3>
+                        <p>We review, format and check every document against the exact standard each consulate expects, and assign one caseworker who stays with your application from intake to appointment &mdash; while being upfront that final decisions rest with the relevant embassy or authority.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="section-padding fix section-bg-1" id="leadership">
+        <section class="hr-section" id="leadership">
             <div class="container">
-                <div class="console-section-head">
-                    <p class="console-eyebrow">Leadership</p>
-                    <h2>The People Behind The Process</h2>
+                <div class="hr-head">
+                    <p class="hr-eyebrow">Leadership</p>
+                    <h2>The people behind the process</h2>
                     <p>Our leadership team oversees case strategy, documentation standards and client experience across every office we serve.</p>
                 </div>
-                <div class="console-card-grid">
-                    <div class="console-tcard" style="padding:24px;">
-                        <div style="width:52px; height:52px; border-radius:50%; background:var(--signal-dim); display:flex; align-items:center; justify-content:center; margin-bottom:14px;">
-                            <svg viewBox="0 0 24 24" width="24" height="24" stroke="var(--signal)" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-                        </div>
+                <div class="ab-team-grid">
+                    <div class="ab-team-card">
+                        <div class="avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
                         <h3>Founder &amp; Director</h3>
-                        <p>Sets overall case strategy and oversees relationships with embassy and consular partners.</p>
+                        <span class="ab-team-role">Case Strategy</span>
+                        <p class="bio">Sets overall case strategy and oversees relationships with embassy and consular partners.</p>
                     </div>
-                    <div class="console-tcard" style="padding:24px;">
-                        <div style="width:52px; height:52px; border-radius:50%; background:var(--signal-dim); display:flex; align-items:center; justify-content:center; margin-bottom:14px;">
-                            <svg viewBox="0 0 24 24" width="24" height="24" stroke="var(--signal)" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-                        </div>
+                    <div class="ab-team-card">
+                        <div class="avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
                         <h3>Head of Visa Operations</h3>
-                        <p>Leads documentation review and application quality across tourist, business, work and family visa categories.</p>
+                        <span class="ab-team-role">Documentation Quality</span>
+                        <p class="bio">Leads documentation review and application quality across tourist, business, transit and family visa categories.</p>
                     </div>
-                    <div class="console-tcard" style="padding:24px;">
-                        <div style="width:52px; height:52px; border-radius:50%; background:var(--signal-dim); display:flex; align-items:center; justify-content:center; margin-bottom:14px;">
-                            <svg viewBox="0 0 24 24" width="24" height="24" stroke="var(--signal)" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-                        </div>
+                    <div class="ab-team-card">
+                        <div class="avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
                         <h3>Head of Apostille &amp; Attestation</h3>
-                        <p>Oversees document legalisation casework, including MEA apostille and embassy attestation chains.</p>
+                        <span class="ab-team-role">Document Legalisation</span>
+                        <p class="bio">Oversees document legalisation casework, including MEA apostille and embassy attestation chains.</p>
                     </div>
-                    <div class="console-tcard" style="padding:24px;">
-                        <div style="width:52px; height:52px; border-radius:50%; background:var(--signal-dim); display:flex; align-items:center; justify-content:center; margin-bottom:14px;">
-                            <svg viewBox="0 0 24 24" width="24" height="24" stroke="var(--signal)" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-                        </div>
+                    <div class="ab-team-card">
+                        <div class="avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
                         <h3>Client Experience Lead</h3>
-                        <p>Coordinates appointments, communication and support for clients across all four cities we serve.</p>
+                        <span class="ab-team-role">Client Support</span>
+                        <p class="bio">Coordinates appointments, communication and support for clients across all four cities we serve.</p>
                     </div>
                 </div>
             </div>
@@ -187,27 +206,48 @@ include __DIR__ . '/includes/header.php';
             </div>
         </section>
 
-        <section class="section-padding fix" id="why-choose-us">
+        <section class="hr-section" id="why-choose-us" style="background:#fff; border-top:1px solid var(--border-color); border-bottom:1px solid var(--border-color);">
             <div class="container">
-                <div class="console-section-head">
-                    <p class="console-eyebrow">Why choose us</p>
-                    <h2>What We Try To Get Right</h2>
+                <div class="hr-head">
+                    <p class="hr-eyebrow">Why Choose Us</p>
+                    <h2>Five things clients mention when they refer a friend</h2>
+                    <p>None of this is aspirational copy &mdash; it's the actual process every file goes through before it leaves our office.</p>
                 </div>
-                <div class="console-card-grid">
-                    <div class="console-tcard">
-                        <div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg></div>
-                        <h3>Expert consultants</h3>
-                        <p>A team focused specifically on visa consultancy and documentation, not general travel booking.</p>
+                <div class="ab-why-list">
+                    <div class="ab-why-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>
+                        <div>
+                            <h3>Document precision</h3>
+                            <p>Every file is checked line by line against the destination's exact checklist before it ever reaches an embassy.</p>
+                        </div>
                     </div>
-                    <div class="console-tcard">
-                        <div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2 21v-2a5 5 0 0 1 5-5h2a5 5 0 0 1 5 5v2"/></svg></div>
-                        <h3>One case handler</h3>
-                        <p>A single point of contact for your case, rather than being passed between departments.</p>
+                    <div class="ab-why-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="1.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+                        <div>
+                            <h3>Transparent pricing</h3>
+                            <p>Government fee and our service fee are always quoted as two separate lines, before you commit &mdash; never a blended or surprise charge.</p>
+                        </div>
                     </div>
-                    <div class="console-tcard">
-                        <div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="1.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
-                        <h3>Transparent process</h3>
-                        <p>Clear checklists and status updates, so you know exactly where your application stands.</p>
+                    <div class="ab-why-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18M3 12h18"/></svg>
+                        <div>
+                            <h3>Country specialists</h3>
+                            <p>You're assigned one consultant who handles that destination regularly, not a rotating queue that re-reads your file each time.</p>
+                        </div>
+                    </div>
+                    <div class="ab-why-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h6"/><circle cx="19" cy="18" r="2.4"/></svg>
+                        <div>
+                            <h3>A file you can watch</h3>
+                            <p>Our <a href="track-application">application tracker</a> shows the stage your application is at, from intake to the day it reaches the visa window.</p>
+                        </div>
+                    </div>
+                    <div class="ab-why-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l4 2"/></svg>
+                        <div>
+                            <h3>24&times;7 support when it matters</h3>
+                            <p>Reachable outside office hours for appointment days, biometrics, or a last-minute embassy query.</p>
+                        </div>
                     </div>
                 </div>
             </div>
