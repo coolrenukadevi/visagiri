@@ -36,6 +36,11 @@ RewriteRule ^forex-card/?$ /forex#forex-card [R=301,L]
 RewriteRule ^forex-currency-exchange/?$ /forex#currency-exchange [R=301,L]
 RewriteRule ^forex-travel/?$ /forex#travel-forex [R=301,L]
 
+# Consolidated back into /about as anchor sections (see about.php).
+RewriteRule ^why-us/?$ /about#why-choose-us [R=301,L]
+RewriteRule ^vision-mission/?$ /about#vision-mission [R=301,L]
+RewriteRule ^leadership/?$ /about#leadership [R=301,L]
+
 # Serve index.php for the homepage
 RewriteRule ^$ index.php [L]
 

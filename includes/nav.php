@@ -266,15 +266,15 @@
                             <span class="mega-icon-badge"><i class="fa-solid fa-building"></i></span>
                             <span class="mega-icon-text"><strong>About Us</strong><small>Our story &amp; approach</small></span>
                         </a>
-                        <a href="why-us" class="mega-icon-link">
+                        <a href="about#why-choose-us" class="mega-icon-link">
                             <span class="mega-icon-badge"><i class="fa-solid fa-star"></i></span>
                             <span class="mega-icon-text"><strong>Why Us?</strong><small>What sets us apart</small></span>
                         </a>
-                        <a href="vision-mission" class="mega-icon-link">
+                        <a href="about#vision-mission" class="mega-icon-link">
                             <span class="mega-icon-badge"><i class="fa-solid fa-compass"></i></span>
                             <span class="mega-icon-text"><strong>Vision &amp; Mission</strong><small>Why we do this work</small></span>
                         </a>
-                        <a href="leadership" class="mega-icon-link">
+                        <a href="about#leadership" class="mega-icon-link">
                             <span class="mega-icon-badge"><i class="fa-solid fa-user-tie"></i></span>
                             <span class="mega-icon-text"><strong>Leadership</strong><small>Meet our team</small></span>
                         </a>

@@ -26,6 +26,9 @@ $retiredRedirects = [
     'forex-card' => '/forex#forex-card',
     'forex-currency-exchange' => '/forex#currency-exchange',
     'forex-travel' => '/forex#travel-forex',
+    'why-us' => '/about#why-choose-us',
+    'vision-mission' => '/about#vision-mission',
+    'leadership' => '/about#leadership',
 ];
 if (isset($retiredRedirects[$clean])) {
     header('Location: ' . $retiredRedirects[$clean], true, 301);

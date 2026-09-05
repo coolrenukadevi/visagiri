@@ -70,7 +70,7 @@
                             <summary>Company</summary>
                             <ul>
                                 <li><a href="about">About Us</a></li>
-                                <li><a href="why-us">Why Us?</a></li>
+                                <li><a href="about#why-choose-us">Why Us?</a></li>
                                 <li><a href="locations">Locations</a></li>
                                 <li><a href="careers">Career</a></li>
                                 <li><a href="b2b-partners">B2B Partner</a></li>
