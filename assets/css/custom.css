@@ -1013,7 +1013,15 @@
     text-transform: none !important;
     color: var(--text);
     line-height: 1.35;
-    white-space: normal !important;
+    /* Forced single-line: descriptions are kept short enough to fit, but this
+       guarantees rows stay aligned across the four columns even if a
+       description would otherwise wrap at some viewport width. */
+    white-space: nowrap !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.mega-icon-link-sm {
+    min-height: 46px;
 }
 /* Tools column: visually stronger per spec, to draw the eye to the interactive tools */
 .mega-col-tools {
