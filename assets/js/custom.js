@@ -1,5 +1,27 @@
 document.addEventListener('DOMContentLoaded', function () {
 
+    /* ---- Sticky in-page TOC: highlight the section currently in view ---- */
+    var pageToc = document.querySelector('.page-toc');
+    if (pageToc) {
+        var tocLinks = Array.prototype.slice.call(pageToc.querySelectorAll('a[href^="#"]'));
+        var sections = tocLinks
+            .map(function (a) { return document.getElementById(a.getAttribute('href').slice(1)); })
+            .filter(Boolean);
+        if (sections.length) {
+            var setActive = function (id) {
+                tocLinks.forEach(function (a) {
+                    a.classList.toggle('is-active', a.getAttribute('href') === '#' + id);
+                });
+            };
+            var observer = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) { setActive(entry.target.id); }
+                });
+            }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
+            sections.forEach(function (s) { observer.observe(s); });
+        }
+    }
+
     /* ---- Nav mega-menu country search/filter ---- */
     function wireCountryFilter(root) {
         if (!root) return;

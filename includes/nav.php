@@ -127,19 +127,19 @@
             <ul class="submenu has-homemenu mega-panel mega-panel-forex">
                 <li>
                     <div class="mega-panel-inner-icons">
-                        <a href="forex-foreign-currency" class="mega-icon-link">
+                        <a href="forex#foreign-currency" class="mega-icon-link">
                             <span class="mega-icon-badge"><i class="fa-solid fa-money-bill-wave"></i></span>
                             <span class="mega-icon-text"><strong>Foreign Currency</strong><small>Buy currency notes for your trip</small></span>
                         </a>
-                        <a href="forex-card" class="mega-icon-link">
+                        <a href="forex#forex-card" class="mega-icon-link">
                             <span class="mega-icon-badge"><i class="fa-solid fa-credit-card"></i></span>
                             <span class="mega-icon-text"><strong>Forex Card</strong><small>Prepaid travel card, loaded &amp; ready</small></span>
                         </a>
-                        <a href="forex-currency-exchange" class="mega-icon-link">
+                        <a href="forex#currency-exchange" class="mega-icon-link">
                             <span class="mega-icon-badge"><i class="fa-solid fa-right-left"></i></span>
                             <span class="mega-icon-text"><strong>Currency Exchange</strong><small>Exchange for your specific need</small></span>
                         </a>
-                        <a href="forex-travel" class="mega-icon-link">
+                        <a href="forex#travel-forex" class="mega-icon-link">
                             <span class="mega-icon-badge"><i class="fa-solid fa-earth-americas"></i></span>
                             <span class="mega-icon-text"><strong>Travel Forex</strong><small>Not sure what fits? We'll guide you</small></span>
                         </a>

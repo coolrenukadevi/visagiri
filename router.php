@@ -22,6 +22,10 @@ $clean = trim($uri, '/');
 $retiredRedirects = [
     'news-grid' => '/news',
     'appointment' => '/visa-appointment',
+    'forex-foreign-currency' => '/forex#foreign-currency',
+    'forex-card' => '/forex#forex-card',
+    'forex-currency-exchange' => '/forex#currency-exchange',
+    'forex-travel' => '/forex#travel-forex',
 ];
 if (isset($retiredRedirects[$clean])) {
     header('Location: ' . $retiredRedirects[$clean], true, 301);

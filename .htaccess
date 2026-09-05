@@ -30,6 +30,12 @@ RewriteRule ^ / [R=301,L]
 RewriteRule ^news-grid/?$ /news [R=301,L]
 RewriteRule ^appointment/?$ /visa-appointment [R=301,L]
 
+# Consolidated into /forex as anchor sections (see forex.php).
+RewriteRule ^forex-foreign-currency/?$ /forex#foreign-currency [R=301,L]
+RewriteRule ^forex-card/?$ /forex#forex-card [R=301,L]
+RewriteRule ^forex-currency-exchange/?$ /forex#currency-exchange [R=301,L]
+RewriteRule ^forex-travel/?$ /forex#travel-forex [R=301,L]
+
 # Serve index.php for the homepage
 RewriteRule ^$ index.php [L]
 
