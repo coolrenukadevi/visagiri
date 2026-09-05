@@ -18,6 +18,11 @@ if ($uri === '/' || $uri === '') {
 
 $clean = trim($uri, '/');
 
+if ($clean !== '' && is_dir(__DIR__ . '/' . $clean) && file_exists(__DIR__ . '/' . $clean . '/index.php')) {
+    require __DIR__ . '/' . $clean . '/index.php';
+    return true;
+}
+
 if ($clean === 'sitemap.xml') {
     require __DIR__ . '/sitemap-xml.php';
     return true;

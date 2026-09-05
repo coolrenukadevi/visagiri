@@ -40,6 +40,7 @@ Disallow: /forex-document-upload
 Disallow: /forex-enquiry-handler
 Disallow: /customer-login
 Disallow: /employee-login
+Disallow: /design-preview/
 Allow: /
 
 Sitemap: https://visaagency.in/sitemap.xml
