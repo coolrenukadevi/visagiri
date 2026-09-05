@@ -24,16 +24,17 @@
                         <details class="footer-accordion" open>
                             <summary>Visa Services</summary>
                             <ul>
-                                <li><a href="visa-tourist">Tourist Visa</a></li>
-                                <li><a href="visa-business">Business Visa</a></li>
-                                <li><a href="visa-family">Family Visa</a></li>
-                                <li><a href="visa-transit">Transit Visa</a></li>
-                                <li><a href="visa-sports">Sports Visa</a></li>
-                                <li><a href="visa-medical">Medical Visa</a></li>
-                                <li><a href="visa-crew">Crew Visa</a></li>
-                                <li><a href="visa-extension">Visa Extension</a></li>
+                                <li><a href="visa-services#tourist">Tourist Visa</a></li>
+                                <li><a href="visa-services#business">Business Visa</a></li>
+                                <li><a href="visa-services#work">Work Visa</a></li>
+                                <li><a href="visa-services#family">Family Visa</a></li>
+                                <li><a href="visa-services#transit">Transit Visa</a></li>
+                                <li><a href="visa-services#sports">Sports Visa</a></li>
+                                <li><a href="visa-services#medical">Medical Visa</a></li>
+                                <li><a href="visa-services#crew">Crew Visa</a></li>
+                                <li><a href="visa-services#extension">Visa Extension</a></li>
                             </ul>
-                            <a href="our-services" class="footer-col-more">View All Visa Services <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                            <a href="visa-services" class="footer-col-more">View All Visa Services <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
                         </details>
 
                         <details class="footer-accordion" open>

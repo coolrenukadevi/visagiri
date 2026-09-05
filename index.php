@@ -102,7 +102,7 @@ include __DIR__ . '/includes/header-home.php';
                 </div>
                 <div class="hr-svc-grid">
 
-                    <a href="visa-tourist" class="hr-svc-card">
+                    <a href="visa-services#tourist" class="hr-svc-card">
                         <svg viewBox="0 0 56 56" fill="none" aria-hidden="true">
                             <rect x="14" y="6" width="28" height="40" rx="4" stroke="var(--brand-navy)" stroke-width="1.4"/>
                             <circle cx="28" cy="20" r="6" stroke="var(--brand-navy)" stroke-width="1.2"/>
@@ -113,7 +113,7 @@ include __DIR__ . '/includes/header-home.php';
                         <p>Leisure, sightseeing and family visits &mdash; itinerary and funding documentation prepared to the destination's exact format.</p>
                     </a>
 
-                    <a href="visa-business" class="hr-svc-card">
+                    <a href="visa-services#business" class="hr-svc-card">
                         <svg viewBox="0 0 56 56" fill="none" aria-hidden="true">
                             <rect x="14" y="6" width="28" height="40" rx="4" stroke="var(--brand-navy)" stroke-width="1.4"/>
                             <rect x="20" y="16" width="16" height="12" rx="1.5" stroke="var(--brand-navy)" stroke-width="1.2"/>
@@ -125,7 +125,7 @@ include __DIR__ . '/includes/header-home.php';
                         <p>Meetings, conferences and trade visits &mdash; invitation letters and company documentation reviewed line by line.</p>
                     </a>
 
-                    <a href="visa-family" class="hr-svc-card">
+                    <a href="visa-services#family" class="hr-svc-card">
                         <svg viewBox="0 0 56 56" fill="none" aria-hidden="true">
                             <rect x="12" y="8" width="22" height="36" rx="4" stroke="var(--brand-navy)" stroke-width="1.4"/>
                             <rect x="24" y="14" width="20" height="32" rx="4" fill="#fff" stroke="var(--brand-navy)" stroke-width="1.4"/>
@@ -137,7 +137,7 @@ include __DIR__ . '/includes/header-home.php';
                         <p>Spouse, child and parent applications &mdash; relationship evidence and sponsorship proof assembled as one coherent file.</p>
                     </a>
 
-                    <a href="visa-transit" class="hr-svc-card">
+                    <a href="visa-services#transit" class="hr-svc-card">
                         <svg viewBox="0 0 56 56" fill="none" aria-hidden="true">
                             <rect x="14" y="6" width="28" height="40" rx="4" stroke="var(--brand-navy)" stroke-width="1.4"/>
                             <path d="M20 26l16-4-5 8 5 8-16-4z" stroke="var(--brand-navy)" stroke-width="1.2" fill="none" stroke-linejoin="round"/>
@@ -148,7 +148,7 @@ include __DIR__ . '/includes/header-home.php';
                         <p>Layovers and onward connections &mdash; confirmed against your exact routing so nothing is missed at the connecting airport.</p>
                     </a>
 
-                    <a href="visa-medical" class="hr-svc-card">
+                    <a href="visa-services#medical" class="hr-svc-card">
                         <svg viewBox="0 0 56 56" fill="none" aria-hidden="true">
                             <rect x="14" y="6" width="28" height="40" rx="4" stroke="var(--brand-navy)" stroke-width="1.4"/>
                             <path d="M28 16v12M22 22h12" stroke="var(--brand-navy)" stroke-width="1.6" stroke-linecap="round"/>
@@ -159,7 +159,7 @@ include __DIR__ . '/includes/header-home.php';
                         <p>Treatment invitation letters, hospital correspondence and attendant visas, coordinated against appointment dates.</p>
                     </a>
 
-                    <a href="visa-extension" class="hr-svc-card">
+                    <a href="visa-services#extension" class="hr-svc-card">
                         <svg viewBox="0 0 56 56" fill="none" aria-hidden="true">
                             <rect x="14" y="6" width="28" height="40" rx="4" stroke="var(--brand-navy)" stroke-width="1.4"/>
                             <path d="M22 24a6 6 0 1 1 1.8 4.3M22 24v-5M22 24h5" stroke="var(--brand-navy)" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>

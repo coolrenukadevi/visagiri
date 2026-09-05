@@ -41,6 +41,19 @@ RewriteRule ^why-us/?$ /about#why-choose-us [R=301,L]
 RewriteRule ^vision-mission/?$ /about#vision-mission [R=301,L]
 RewriteRule ^leadership/?$ /about#leadership [R=301,L]
 
+# Consolidated into /visa-services as anchor sections (see visa-services.php).
+RewriteRule ^visa-tourist/?$ /visa-services#tourist [R=301,L]
+RewriteRule ^visa-business/?$ /visa-services#business [R=301,L]
+RewriteRule ^visa-work/?$ /visa-services#work [R=301,L]
+RewriteRule ^visa-family/?$ /visa-services#family [R=301,L]
+RewriteRule ^visa-transit/?$ /visa-services#transit [R=301,L]
+RewriteRule ^visa-medical/?$ /visa-services#medical [R=301,L]
+RewriteRule ^visa-sports/?$ /visa-services#sports [R=301,L]
+RewriteRule ^visa-crew/?$ /visa-services#crew [R=301,L]
+RewriteRule ^visa-extension/?$ /visa-services#extension [R=301,L]
+RewriteRule ^our-services/?$ /visa-services [R=301,L]
+RewriteRule ^visa-consultancy-services/?$ /visa-services [R=301,L]
+
 # Serve index.php for the homepage
 RewriteRule ^$ index.php [L]
 

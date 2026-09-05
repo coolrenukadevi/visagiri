@@ -2,37 +2,37 @@
 <nav id="mobile-menu">
     <ul>
         <li class="has-dropdown">
-            <a href="our-services">Services</a>
+            <a href="visa-services">Visa Services</a>
             <ul class="submenu has-homemenu mega-panel">
                 <li>
                     <div class="mega-panel-inner">
                         <div class="mega-col">
                             <h5>Visa Types</h5>
                             <ul class="mega-links">
-                                <li><a href="visa-tourist">Tourist Visa</a></li>
-                                <li><a href="visa-business">Business Visa</a></li>
-                                <li><a href="visa-work">Work Visa</a></li>
-                                <li><a href="visa-family">Family Visa</a></li>
-                                <li><a href="visa-transit">Transit Visa</a></li>
-                                <li><a href="visa-medical">Medical Visa</a></li>
-                                <li><a href="visa-sports">Sports Visa</a></li>
-                                <li><a href="visa-crew">Crew Visa</a></li>
-                                <li><a href="visa-extension">Visa Extension</a></li>
+                                <li><a href="visa-services#tourist">Tourist Visa</a></li>
+                                <li><a href="visa-services#business">Business Visa</a></li>
+                                <li><a href="visa-services#work">Work Visa</a></li>
+                                <li><a href="visa-services#family">Family Visa</a></li>
+                                <li><a href="visa-services#transit">Transit Visa</a></li>
+                                <li><a href="visa-services#medical">Medical Visa</a></li>
+                                <li><a href="visa-services#sports">Sports Visa</a></li>
+                                <li><a href="visa-services#crew">Crew Visa</a></li>
+                                <li><a href="visa-services#extension">Visa Extension</a></li>
                             </ul>
                         </div>
                         <div class="mega-col">
-                            <h5>Application Support</h5>
+                            <h5>Know Before You Apply</h5>
                             <ul class="mega-links">
-                                <li><a href="contact">Visa Consultation</a></li>
-                                <li><a href="visa-consultancy-services">Visa Assistance</a></li>
-                                <li><a href="visa-appointment">Embassy Appointment Assistance</a></li>
+                                <li><a href="visa-requirements">Visa Requirements Checker</a></li>
                                 <li><a href="visa-checklist">Document Checklist</a></li>
                                 <li><a href="visa-refusal">Refusal &amp; Re-Application Guidance</a></li>
+                                <li><a href="visa-appointment">Book an Appointment</a></li>
+                                <li><a href="track-application">Track Your Application</a></li>
                             </ul>
                         </div>
                     </div>
                     <div class="mega-bottom">
-                        <div class="mega-bottom-text"><strong>Need help choosing?</strong>Get a free 10-minute expert consultation.</div>
+                        <div class="mega-bottom-text"><strong>Not sure what you need?</strong>We'll match you to the right visa category and documents.</div>
                         <a href="contact" class="mega-cta-btn">Talk to a Visa Expert <i class="fa-solid fa-arrow-right"></i></a>
                     </div>
                 </li>
@@ -74,37 +74,6 @@
                     <div class="mega-bottom">
                         <div class="mega-bottom-text"><strong>Explore more</strong>Browse the complete country directory.</div>
                         <a href="country-list" class="mega-cta-btn">View All <?php echo count($VISA_AGENCY_COUNTRIES); ?>+ Countries <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
-                </li>
-            </ul>
-        </li>
-
-        <li class="has-dropdown">
-            <a href="visa-consultancy-services">Visa Solutions</a>
-            <ul class="submenu has-homemenu mega-panel mega-panel-2col">
-                <li>
-                    <div class="mega-panel-inner">
-                        <div class="mega-col">
-                            <h5>Know Before You Apply</h5>
-                            <ul class="mega-links">
-                                <li><a href="visa-requirements">Visa Requirements Checker</a></li>
-                                <li><a href="visa-checklist">Document Checklist</a></li>
-                                <li><a href="visa-consultancy-services">Visa Application Guide</a></li>
-                                <li><a href="visa-refusal">Visa Refusal &amp; Rejection Reasons</a></li>
-                            </ul>
-                        </div>
-                        <div class="mega-col">
-                            <h5>Tools</h5>
-                            <ul class="mega-links">
-                                <li><a href="country-list">Country-Wise Requirements</a></li>
-                                <li><a href="visa-appointment">Book an Appointment</a></li>
-                                <li><a href="track-application">Track Your Application</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="mega-bottom">
-                        <div class="mega-bottom-text"><strong>Not sure what you need?</strong>We'll match you to the right visa category and documents.</div>
-                        <a href="visa-consultancy-services" class="mega-cta-btn">Talk To A Visa Expert <i class="fa-solid fa-arrow-right"></i></a>
                     </div>
                 </li>
             </ul>

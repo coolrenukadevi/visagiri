@@ -84,21 +84,21 @@ foreach ($VISA_AGENCY_COUNTRIES as $c) {
                                 <div class="policy-link-col">
                                     <h3>Visa Categories</h3>
                                     <ul>
-                                        <li><a href="visa-tourist">Tourist Visa</a></li>
-                                        <li><a href="visa-business">Business Visa</a></li>
-                                        <li><a href="visa-work">Work Visa</a></li>
-                                        <li><a href="visa-family">Family Visa</a></li>
-                                        <li><a href="visa-transit">Transit Visa</a></li>
+                                        <li><a href="visa-services#tourist">Tourist Visa</a></li>
+                                        <li><a href="visa-services#business">Business Visa</a></li>
+                                        <li><a href="visa-services#work">Work Visa</a></li>
+                                        <li><a href="visa-services#family">Family Visa</a></li>
+                                        <li><a href="visa-services#transit">Transit Visa</a></li>
                                     </ul>
                                 </div>
                                 <div class="policy-link-col">
                                     <h3>More Categories</h3>
                                     <ul>
-                                        <li><a href="visa-sports">Sports Visa</a></li>
-                                        <li><a href="visa-medical">Medical Visa</a></li>
-                                        <li><a href="visa-crew">Crew Visa</a></li>
-                                        <li><a href="visa-extension">Visa Extension</a></li>
-                                        <li class="more"><a href="visa-consultancy-services">Explore all visa services</a></li>
+                                        <li><a href="visa-services#sports">Sports Visa</a></li>
+                                        <li><a href="visa-services#medical">Medical Visa</a></li>
+                                        <li><a href="visa-services#crew">Crew Visa</a></li>
+                                        <li><a href="visa-services#extension">Visa Extension</a></li>
+                                        <li class="more"><a href="visa-services">Explore all visa services</a></li>
                                     </ul>
                                 </div>
                                 <div class="policy-link-col">
@@ -171,7 +171,7 @@ foreach ($VISA_AGENCY_COUNTRIES as $c) {
                                     <h3>Company</h3>
                                     <ul>
                                         <li><a href="about">About Us</a></li>
-                                        <li><a href="our-services">Our Services</a></li>
+                                        <li><a href="visa-services">Our Services</a></li>
                                         <li><a href="careers">Careers</a></li>
                                         <li><a href="visa-news">News &amp; Updates</a></li>
                                         <li><a href="contact">Contact Us</a></li>

@@ -29,6 +29,17 @@ $retiredRedirects = [
     'why-us' => '/about#why-choose-us',
     'vision-mission' => '/about#vision-mission',
     'leadership' => '/about#leadership',
+    'visa-tourist' => '/visa-services#tourist',
+    'visa-business' => '/visa-services#business',
+    'visa-work' => '/visa-services#work',
+    'visa-family' => '/visa-services#family',
+    'visa-transit' => '/visa-services#transit',
+    'visa-medical' => '/visa-services#medical',
+    'visa-sports' => '/visa-services#sports',
+    'visa-crew' => '/visa-services#crew',
+    'visa-extension' => '/visa-services#extension',
+    'our-services' => '/visa-services',
+    'visa-consultancy-services' => '/visa-services',
 ];
 if (isset($retiredRedirects[$clean])) {
     header('Location: ' . $retiredRedirects[$clean], true, 301);

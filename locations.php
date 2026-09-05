@@ -74,7 +74,7 @@ include __DIR__ . '/includes/header.php';
                     </div>
                     <div class="col-md-6">
                         <div class="location-dir-card">
-                            <h4><a href="our-services">Visa Services</a></h4>
+                            <h4><a href="visa-services">Visa Services</a></h4>
                             <p>Tourist, business, family, transit, medical and other visa categories we assist with.</p>
                         </div>
                     </div>
