@@ -5,6 +5,7 @@ include __DIR__ . '/includes/header.php';
 
 $hasBankDetails = $site_bank_account_number !== '' && $site_bank_ifsc !== '';
 $hasUpi = $site_upi_id !== '';
+$hasPaymentLink = !empty($site_payment_link);
 ?>
         <!-- Breadcrumb-Wrapper Section Start -->
         <section class="breadcrumb-wrapper fix bg-cover" style="background-image: url(assets/img/inner-page/breadcrumb.jpg);">
@@ -32,6 +33,18 @@ $hasUpi = $site_upi_id !== '';
 
         <section class="section-padding fix">
             <div class="container">
+                <?php if ($hasPaymentLink): ?>
+                <div class="console-tool-panel" style="margin-bottom:24px;">
+                    <div class="console-tool-panel-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="path">payment / pay-online</span></div>
+                    <div class="console-tool-panel-body">
+                        <p style="margin:0 0 14px; font-size:14.5px;">Pay securely online now. Add your Enquiry, Application or Forex Reference Number in the payment note so we can match it to your file.</p>
+                        <div class="console-cta-row">
+                            <a class="console-btn console-btn-primary" href="<?php echo htmlspecialchars($site_payment_link); ?>" target="_blank" rel="noopener">Pay Online Now</a>
+                        </div>
+                    </div>
+                </div>
+                <?php endif; ?>
+
                 <?php if ($hasBankDetails || $hasUpi): ?>
                 <div class="row g-4 align-items-stretch">
                     <?php if ($hasBankDetails): ?>
@@ -92,7 +105,7 @@ $hasUpi = $site_upi_id !== '';
                 <div class="console-tool-panel">
                     <div class="console-tool-panel-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="path">payment / contact-us</span></div>
                     <div class="console-tool-panel-body">
-                        <p style="margin:0 0 14px; font-size:14.5px;">Online payment details aren't published yet. Please contact us directly and our team will share bank transfer or UPI details along with your invoice.</p>
+                        <p style="margin:0 0 14px; font-size:14.5px;">Prefer bank transfer or UPI instead? Contact us directly and our team will share those details along with your invoice.</p>
                         <div class="console-cta-row">
                             <a class="console-btn console-btn-primary" href="tel:<?php echo $site_phone_e164; ?>">Call <?php echo $site_phone_display; ?></a>
                             <a class="console-btn console-btn-outline-dark" href="<?php echo $site_whatsapp_url; ?>" target="_blank" rel="noopener">WhatsApp Us</a>

@@ -36,3 +36,9 @@ $site_bank_ifsc           = '';
 $site_bank_name           = '';
 $site_bank_branch         = '';
 $site_upi_id              = '';
+
+/**
+ * Real hosted payment link (Paytm Payment Links) shown on payment.php.
+ * Leave blank to hide the "Pay Online Now" button entirely.
+ */
+$site_payment_link = 'https://pmny.in/qIyJENrpxkqM';
