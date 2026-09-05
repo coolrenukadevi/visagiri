@@ -25,6 +25,10 @@ $headerWhatsappMsg = rawurlencode('Hello VisaAgency.in, I need assistance with m
         <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
         <span>24&times;7 Support</span>
     </a>
+    <a class="header-support-link" href="tel:<?php echo htmlspecialchars($site_phone_e164); ?>" aria-label="Call <?php echo htmlspecialchars($site_phone_display); ?>">
+        <i class="fa-solid fa-phone" aria-hidden="true"></i>
+        <span><?php echo htmlspecialchars($site_phone_display); ?></span>
+    </a>
     <span class="header-topbar-divider" aria-hidden="true"></span>
     <div class="header-login-dropdown" id="headerLoginDropdown">
         <button type="button" class="header-login-toggle" id="headerLoginToggle" aria-haspopup="true" aria-expanded="false" aria-controls="headerLoginPanel">

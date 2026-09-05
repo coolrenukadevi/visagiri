@@ -1,5 +1,31 @@
 document.addEventListener('DOMContentLoaded', function () {
 
+    /* ---- Top-level nav: mark the current section's tab active ----
+       Anchors (#foo) never change location.pathname, so a primary page's
+       tab correctly stays active when the visitor jumps between its own
+       in-page sections — no extra logic needed for that case. */
+    (function () {
+        var path = location.pathname.replace(/^\/+|\/+$/g, '').toLowerCase();
+        if (!path) { return; } // homepage: no tab should be marked active
+        var sectionPrefixes = {
+            'visa-services': ['visa-services'],
+            'country-list': ['country-list', 'country-', 'visa-consultant'],
+            'apostille': ['apostille'],
+            'forex': ['forex'],
+            'travel-services': ['travel-services'],
+            'resources': ['resources', 'visa-guides', 'visa-requirements-guide', 'visa-application-process', 'visa-interview-guide', 'visa-updates', 'embassy-news', 'visa-alerts', 'entry-requirements', 'visa-fee-calculator', 'visa-processing-time-checker', 'visa-faqs', 'visa-tips', 'consultant-help', 'downloads', 'news'],
+            'about': ['about', 'careers'],
+        };
+        document.querySelectorAll('#mobile-menu > ul > li.has-dropdown').forEach(function (li) {
+            var topLink = li.querySelector(':scope > a');
+            if (!topLink) { return; }
+            var hrefBase = topLink.getAttribute('href').split('#')[0].replace(/^\/+|\/+$/g, '').toLowerCase();
+            var prefixes = sectionPrefixes[hrefBase] || [hrefBase];
+            var matches = prefixes.some(function (p) { return path === p || path.indexOf(p) === 0; });
+            li.classList.toggle('active', matches);
+        });
+    })();
+
     /* ---- Sticky in-page TOC: highlight the section currently in view ---- */
     var pageToc = document.querySelector('.page-toc');
     if (pageToc) {
