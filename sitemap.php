@@ -70,7 +70,7 @@ foreach ($VISA_AGENCY_COUNTRIES as $c) {
                                         <li><a href="/">Home</a></li>
                                         <li><a href="about">About Us</a></li>
                                         <li><a href="contact">Contact Us</a></li>
-                                        <li><a href="appointment">Book an Appointment</a></li>
+                                        <li><a href="visa-appointment">Book an Appointment</a></li>
                                         <li><a href="customer-login">Customer Login</a></li>
                                         <li><a href="employee-login">Employee Login</a></li>
                                     </ul>
@@ -86,7 +86,7 @@ foreach ($VISA_AGENCY_COUNTRIES as $c) {
                                     <ul>
                                         <li><a href="visa-tourist">Tourist Visa</a></li>
                                         <li><a href="visa-business">Business Visa</a></li>
-                                        <li><a href="service-details">Work Visa</a></li>
+                                        <li><a href="visa-work">Work Visa</a></li>
                                         <li><a href="visa-family">Family Visa</a></li>
                                         <li><a href="visa-transit">Transit Visa</a></li>
                                     </ul>
@@ -162,13 +162,6 @@ foreach ($VISA_AGENCY_COUNTRIES as $c) {
                                 </div>
                                 <a class="btn-small" href="country-list">Open country list &rarr;</a>
                             </div>
-                            <div class="policy-xml-card" style="margin-top:14px;">
-                                <div>
-                                    <p>Visa-category pages by destination</p>
-                                    <span>Country + purpose pages with eligibility, documents, fees and FAQs &mdash; e.g. Australia Tourist Visa</span>
-                                </div>
-                                <a class="btn-small" href="countries/australia">Open Australia visa hub &rarr;</a>
-                            </div>
                         </section>
 
                         <section id="company">
@@ -188,7 +181,7 @@ foreach ($VISA_AGENCY_COUNTRIES as $c) {
                                     <h3>Resources</h3>
                                     <ul>
                                         <li><a href="news">Blog</a></li>
-                                        <li><a href="news-grid">Visa Guides</a></li>
+                                        <li><a href="visa-guides">Visa Guides</a></li>
                                         <li><a href="visa-checklist">Document Checklist</a></li>
                                         <li><a href="visa-requirements">Visa Requirements Checker</a></li>
                                         <li><a href="visa-appointment">Book an Appointment</a></li>

@@ -95,7 +95,7 @@ $countriesWithContent = (int) $pdo->query("SELECT COUNT(DISTINCT country_id) FRO
 <div class="crm-page-header">
     <div>
         <h1 class="crm-page-title">Countries</h1>
-        <p class="crm-page-subtitle">Master list backing the /countries/ SEO pages, the mega-menu and the enquiry form.</p>
+        <p class="crm-page-subtitle">Master list backing the mega-menu and the enquiry form. The standalone /countries/ SEO pages are retired &mdash; those URLs now redirect to the matching /country-{slug} page.</p>
     </div>
     <div class="crm-page-actions">
         <button type="button" class="crm-btn crm-btn-primary" id="crmOpenAddCountry"><i class="fa-solid fa-earth-americas"></i> Add Country</button>

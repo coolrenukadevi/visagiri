@@ -32,7 +32,7 @@ include __DIR__ . '/includes/header.php';
                     and sometimes does, ask follow-up questions or request a call, particularly if something in your
                     application needs clarifying. This guide covers what that typically looks like and how to be
                     ready. For the full document and eligibility picture, see our
-                    <a href="countries/uk-tourist-visa">UK Tourist Visa page</a>.
+                    <a href="country-uk">UK Visa page</a>.
                 </p>
 
                 <div class="svc-lede" style="text-align:left;max-width:900px;">
@@ -68,7 +68,7 @@ include __DIR__ . '/includes/header.php';
 
                 <div class="text-center mt-5">
                     <a href="contact" class="theme-btn" data-open-enquiry data-country="United Kingdom">Start Your UK Visa Enquiry <i class="fa-solid fa-arrow-right"></i></a>
-                    <a href="countries/uk-tourist-visa" class="theme-btn style-2">UK Tourist Visa Details</a>
+                    <a href="country-uk" class="theme-btn style-2">UK Visa Details</a>
                 </div>
             </div>
         </section>

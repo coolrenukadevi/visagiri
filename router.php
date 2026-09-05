@@ -18,6 +18,16 @@ if ($uri === '/' || $uri === '') {
 
 $clean = trim($uri, '/');
 
+// Retired duplicate URLs — mirrors the 301s in .htaccess for local testing.
+$retiredRedirects = [
+    'news-grid' => '/news',
+    'appointment' => '/visa-appointment',
+];
+if (isset($retiredRedirects[$clean])) {
+    header('Location: ' . $retiredRedirects[$clean], true, 301);
+    return true;
+}
+
 if ($clean !== '' && is_dir(__DIR__ . '/' . $clean) && file_exists(__DIR__ . '/' . $clean . '/index.php')) {
     require __DIR__ . '/' . $clean . '/index.php';
     return true;

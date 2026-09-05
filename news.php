@@ -23,7 +23,7 @@ include __DIR__ . '/includes/header.php';
             </div>
             <div class="container">
                 <div class="page-heading">
-                    <h1 class="breadcrumb-title">Blog Stardard</h1>
+                    <h1 class="breadcrumb-title">Visa Blog</h1>
                     <ul class="breadcrumb-list">
                         <li>
                             <a href="/">Home</a>
@@ -32,7 +32,7 @@ include __DIR__ . '/includes/header.php';
                             <i class="fa-solid fa-chevron-right"></i>
                         </li>
                         <li>
-                           Blog Stardard
+                           Visa Blog
                         </li>
                     </ul>
                 </div>

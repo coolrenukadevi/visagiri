@@ -1,6 +1,13 @@
 <?php
+/**
+ * Generic, non-parameterized blog-post template — every "VIEW MORE" link
+ * from news.php shows the same content regardless of which post was
+ * clicked, so it can't carry unique per-article metadata. Noindexed until
+ * posts are real, individually-slugged content.
+ */
 $page_title = "Blog Details &ndash; Visa Agency";
 $page_description = "Read the latest visa and immigration news from Visa Agency.";
+$page_noindex = true;
 include __DIR__ . '/includes/header.php';
 ?>
         <!-- Search Area Start -->

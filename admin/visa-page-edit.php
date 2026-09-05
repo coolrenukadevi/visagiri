@@ -149,9 +149,9 @@ $titleBase = $page['country_name'] . ' ' . $page['category_name'];
         <h1 class="crm-page-title"><?php echo htmlspecialchars($page['country_flag'] . ' ' . $titleBase); ?></h1>
         <p class="crm-page-subtitle">
             <span class="crm-status-badge <?php echo visa_page_status_class($page['status']); ?>"><?php echo htmlspecialchars(visa_page_status_label($page['status'])); ?></span>
-            &nbsp;/countries/<?php echo htmlspecialchars($page['page_slug']); ?>
+            &nbsp;redirects from /countries/<?php echo htmlspecialchars($page['page_slug']); ?> to /country-<?php echo htmlspecialchars($page['country_slug']); ?>
             <?php if ($page['status'] === 'published'): ?>
-            &nbsp;&middot; <a href="<?php echo htmlspecialchars('/' . visa_country_page_url($page['page_slug'])); ?>" target="_blank">View Live Page <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+            &nbsp;&middot; <a href="<?php echo htmlspecialchars('/country-' . $page['country_slug']); ?>" target="_blank">View Live Page <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
             <?php endif; ?>
         </p>
     </div>

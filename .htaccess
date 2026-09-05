@@ -25,6 +25,11 @@ RewriteRule ^ /%1 [R=301,L]
 RewriteCond %{THE_REQUEST} \s/+index(?:\.php)?[\s?] [NC]
 RewriteRule ^ / [R=301,L]
 
+# Retired duplicate URLs: each of these used to be a second, competing page
+# for content that already has a canonical URL elsewhere on the site.
+RewriteRule ^news-grid/?$ /news [R=301,L]
+RewriteRule ^appointment/?$ /visa-appointment [R=301,L]
+
 # Serve index.php for the homepage
 RewriteRule ^$ index.php [L]
 

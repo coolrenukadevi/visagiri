@@ -1,6 +1,13 @@
 <?php
+/**
+ * Generic, non-parameterized service detail template — every link into
+ * this page shows the exact same content regardless of which service was
+ * clicked, so it can't carry unique per-service metadata. Noindexed until
+ * each service gets its own dedicated page (see visa-work.php etc.).
+ */
 $page_title = "Service Details &ndash; Visa Agency";
 $page_description = "Detailed visa services offered by Visa Agency.";
+$page_noindex = true;
 include __DIR__ . '/includes/header.php';
 ?>
         <!-- Search Area Start -->
