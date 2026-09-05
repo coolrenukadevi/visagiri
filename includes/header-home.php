@@ -1,7 +1,5 @@
 <?php include __DIR__ . '/head-meta.php'; ?>
 
-        <?php include __DIR__ . '/cookie-gate.php'; ?>
-
         <?php include __DIR__ . '/header-preloader.php'; ?>
 
         <?php include __DIR__ . '/header-offcanvas.php'; ?>

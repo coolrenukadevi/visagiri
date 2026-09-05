@@ -233,14 +233,23 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    /* ---- Footer "Cookie Settings" link — reopens the cookie consent dialog ---- */
-    var cookieSettingsLink = document.getElementById('cookieSettingsLink');
-    if (cookieSettingsLink) {
-        cookieSettingsLink.addEventListener('click', function (e) {
-            e.preventDefault();
-            if (typeof window.vaOpenCookieSettings === 'function') {
-                window.vaOpenCookieSettings();
-            }
+    /* ---- Footer cookie preference — Yes/No, purely informational, never
+       blocks or restricts access to the page either way ---- */
+    var footerCookieYes = document.getElementById('footerCookieYes');
+    var footerCookieNo = document.getElementById('footerCookieNo');
+    if (footerCookieYes && footerCookieNo) {
+        var setActiveCookieBtn = function (value) {
+            footerCookieYes.classList.toggle('is-active', value === 'accepted');
+            footerCookieNo.classList.toggle('is-active', value === 'declined');
+        };
+        try { setActiveCookieBtn(localStorage.getItem('va_cookie_consent')); } catch (e) {}
+        footerCookieYes.addEventListener('click', function () {
+            try { localStorage.setItem('va_cookie_consent', 'accepted'); } catch (e) {}
+            setActiveCookieBtn('accepted');
+        });
+        footerCookieNo.addEventListener('click', function () {
+            try { localStorage.setItem('va_cookie_consent', 'declined'); } catch (e) {}
+            setActiveCookieBtn('declined');
         });
     }
 

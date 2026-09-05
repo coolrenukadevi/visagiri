@@ -7,10 +7,14 @@
                         <a href="privacy-policy">Privacy Policy</a>
                         <a href="terms-and-conditions">Terms &amp; Conditions</a>
                         <a href="cookie-policy">Cookie Policy</a>
-                        <a href="#" id="cookieSettingsLink">Cookie Settings</a>
                         <a href="disclaimer">Disclaimer</a>
                         <a href="refund-policy">Refund Policy</a>
                         <a href="data-security">Data Security</a>
                         <a href="sitemap">Sitemap</a>
+                    </div>
+                    <div class="footer-cookie-pref" id="footerCookiePref">
+                        <span class="footer-cookie-label">Accept cookies?</span>
+                        <button type="button" class="footer-cookie-btn" data-consent="accepted" id="footerCookieYes">Yes</button>
+                        <button type="button" class="footer-cookie-btn" data-consent="declined" id="footerCookieNo">No</button>
                     </div>
                 </div>
