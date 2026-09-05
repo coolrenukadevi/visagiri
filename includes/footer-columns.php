@@ -55,6 +55,19 @@
                         </details>
 
                         <details class="footer-accordion" open>
+                            <summary>Resources</summary>
+                            <ul>
+                                <li><a href="visa-guides">Visa Guides</a></li>
+                                <li><a href="visa-application-process">Application Process</a></li>
+                                <li><a href="visa-fee-calculator">Visa Fee Calculator</a></li>
+                                <li><a href="entry-requirements">Entry Requirements</a></li>
+                                <li><a href="visa-updates">Visa Updates</a></li>
+                                <li><a href="visa-faqs">Visa FAQs</a></li>
+                            </ul>
+                            <a href="resources" class="footer-col-more">Explore Resources Hub <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                        </details>
+
+                        <details class="footer-accordion" open>
                             <summary>Services &amp; Support</summary>
                             <ul>
                                 <li><a href="contact" data-open-enquiry>Visa Enquiry</a></li>

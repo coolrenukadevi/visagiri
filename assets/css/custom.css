@@ -1920,10 +1920,10 @@
     color: var(--theme-2);
 }
 
-/* ---- Main footer columns: brand + 4 accordion columns ---- */
+/* ---- Main footer columns: brand + 5 accordion columns ---- */
 .va-footer-columns {
     display: grid;
-    grid-template-columns: 1.3fr repeat(4, 1fr);
+    grid-template-columns: 1.2fr repeat(5, 1fr);
     gap: 24px;
 }
 @media (max-width: 1199px) {

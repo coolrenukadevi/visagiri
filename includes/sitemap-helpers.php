@@ -44,6 +44,7 @@ function sitemap_static_pages(): array
         ['contact', 'monthly', '0.8'],
         ['news', 'weekly', '0.6'],
         ['forex-track', 'monthly', '0.4'],
+        ['track-application', 'monthly', '0.4'],
         ['locations', 'monthly', '0.7'],
         ['visa-consultant', 'monthly', '0.8'],
         ['visa-bank-statement-guide', 'monthly', '0.6'],
