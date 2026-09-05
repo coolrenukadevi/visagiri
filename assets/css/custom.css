@@ -885,6 +885,7 @@
 .mega-icon-link {
     display: flex !important;
     align-items: flex-start;
+    justify-content: flex-start !important;
     gap: 12px;
     padding: 14px 12px !important;
     width: auto !important;
@@ -967,6 +968,7 @@
 .mega-icon-link-sm {
     display: flex !important;
     align-items: flex-start;
+    justify-content: flex-start !important;
     gap: 10px;
     padding: 7px 8px !important;
     margin: 0 -8px !important;
