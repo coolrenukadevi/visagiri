@@ -101,6 +101,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
         vswForm.addEventListener('submit', function (e) {
             e.preventDefault();
+            if (!countrySlugField.value && countryInput.value.trim()) {
+                /* User typed a destination but submitted without clicking an
+                   autocomplete suggestion (e.g. typed then clicked the button
+                   directly) — fall back to the same match the dropdown would
+                   have shown, instead of blocking on a technicality. */
+                var terms = searchTerms(countryInput.value);
+                var autoMatches = terms.length ? window.VSW_COUNTRIES.filter(function (c) { return matchCountry(c, terms); }) : [];
+                if (autoMatches.length) {
+                    selectCountry(autoMatches[0]);
+                }
+            }
             if (!countrySlugField.value) {
                 countryError.textContent = 'Please select a country from the list.';
                 countryInput.focus();
