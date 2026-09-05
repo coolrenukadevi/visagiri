@@ -6,6 +6,7 @@ include __DIR__ . '/includes/header.php';
 $visa_siblings = [
     ['slug' => 'visa-tourist', 'label' => 'Tourist Visa'],
     ['slug' => 'visa-business', 'label' => 'Business Visa'],
+    ['slug' => 'visa-work', 'label' => 'Work Visa'],
     ['slug' => 'visa-family', 'label' => 'Family Visa'],
     ['slug' => 'visa-transit', 'label' => 'Transit Visa'],
     ['slug' => 'visa-sports', 'label' => 'Sports Visa'],

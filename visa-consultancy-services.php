@@ -5,14 +5,14 @@ require_once __DIR__ . '/includes/countries-data.php';
 include __DIR__ . '/includes/header.php';
 
 $visa_categories = [
-    ['icon' => 'fa-umbrella-beach', 'title' => 'Tourist Visa', 'desc' => 'Leisure travel, sightseeing and visiting family or friends abroad.'],
-    ['icon' => 'fa-briefcase', 'title' => 'Business Visa', 'desc' => 'Meetings, conferences, trade fairs and commercial visits.'],
-    ['icon' => 'fa-house-user', 'title' => 'Family / Dependent Visa', 'desc' => 'Joining or visiting family members settled abroad.'],
-    ['icon' => 'fa-user-tie', 'title' => 'Work Visa', 'desc' => 'Employment-sponsored visas for professionals moving abroad.'],
-    ['icon' => 'fa-house-medical', 'title' => 'Medical Visa', 'desc' => 'Travel for medical treatment, with an attendant visa where needed.'],
-    ['icon' => 'fa-plane-departure', 'title' => 'Transit Visa', 'desc' => 'Short stopovers en route to a final destination.'],
-    ['icon' => 'fa-place-of-worship', 'title' => 'Pilgrimage Visa', 'desc' => 'Religious travel to pilgrimage destinations.'],
-    ['icon' => 'fa-earth-americas', 'title' => 'Immigration / PR', 'desc' => 'Guidance on permanent residency and long-stay pathways.'],
+    ['icon' => 'fa-umbrella-beach', 'title' => 'Tourist Visa', 'desc' => 'Leisure travel, sightseeing and visiting family or friends abroad.', 'slug' => 'visa-tourist'],
+    ['icon' => 'fa-briefcase', 'title' => 'Business Visa', 'desc' => 'Meetings, conferences, trade fairs and commercial visits.', 'slug' => 'visa-business'],
+    ['icon' => 'fa-house-user', 'title' => 'Family / Dependent Visa', 'desc' => 'Joining or visiting family members settled abroad.', 'slug' => 'visa-family'],
+    ['icon' => 'fa-user-tie', 'title' => 'Work Visa', 'desc' => 'Employment-sponsored visas for professionals moving abroad.', 'slug' => 'visa-work'],
+    ['icon' => 'fa-house-medical', 'title' => 'Medical Visa', 'desc' => 'Travel for medical treatment, with an attendant visa where needed.', 'slug' => 'visa-medical'],
+    ['icon' => 'fa-plane-departure', 'title' => 'Transit Visa', 'desc' => 'Short stopovers en route to a final destination.', 'slug' => 'visa-transit'],
+    ['icon' => 'fa-place-of-worship', 'title' => 'Pilgrimage Visa', 'desc' => 'Religious travel to pilgrimage destinations.', 'slug' => 'contact'],
+    ['icon' => 'fa-earth-americas', 'title' => 'Immigration / PR', 'desc' => 'Guidance on permanent residency and long-stay pathways.', 'slug' => 'contact'],
 ];
 
 $vcs_faqs = [
@@ -98,7 +98,7 @@ $vcs_faqs = [
                         <div class="vc-icon"><i class="fa-solid <?php echo $c['icon']; ?>"></i></div>
                         <h4><?php echo $c['title']; ?></h4>
                         <p><?php echo $c['desc']; ?></p>
-                        <a href="service-details" class="vc-link">Explore &rarr;</a>
+                        <a href="<?php echo $c['slug']; ?>" class="vc-link">Explore &rarr;</a>
                     </div>
                     <?php endforeach; ?>
                 </div>

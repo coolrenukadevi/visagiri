@@ -1,7 +1,17 @@
 <?php
-$page_title = "Forex &amp; Foreign Currency Services &ndash; Visa Agency";
-$page_description = "Buy foreign currency, travel forex cards and currency exchange for your trip &ndash; document-assisted, quotation-first, with tracked status. By Visa Agency, Patna.";
+$page_title = "Foreign Currency Notes &ndash; Visa Agency Forex";
+$page_description = "Buy foreign currency notes for your trip, at a rate confirmed before you commit. Document-assisted, quotation-first forex from Visa Agency, Patna.";
 include __DIR__ . '/includes/header.php';
+
+$forex_siblings = [
+    ['slug' => 'forex', 'label' => 'Forex Overview'],
+    ['slug' => 'forex-foreign-currency', 'label' => 'Foreign Currency'],
+    ['slug' => 'forex-card', 'label' => 'Forex Card'],
+    ['slug' => 'forex-currency-exchange', 'label' => 'Currency Exchange'],
+    ['slug' => 'forex-travel', 'label' => 'Travel Forex'],
+    ['slug' => 'forex-track', 'label' => 'Track Your Request'],
+];
+$forex_current = 'forex-foreign-currency';
 ?>
         <!-- Breadcrumb-Wrapper Section Start -->
         <section class="breadcrumb-wrapper fix bg-cover" style="background-image: url(assets/img/inner-page/breadcrumb.jpg);">
@@ -10,11 +20,13 @@ include __DIR__ . '/includes/header.php';
             </div>
             <div class="container">
                 <div class="page-heading">
-                    <h1 class="breadcrumb-title">Forex Services</h1>
+                    <h1 class="breadcrumb-title">Foreign Currency</h1>
                     <ul class="breadcrumb-list">
                         <li><a href="/">Home</a></li>
                         <li><i class="fa-solid fa-chevron-right"></i></li>
-                        <li>Forex Services</li>
+                        <li><a href="forex">Forex Services</a></li>
+                        <li><i class="fa-solid fa-chevron-right"></i></li>
+                        <li>Foreign Currency</li>
                     </ul>
                 </div>
             </div>
@@ -23,13 +35,13 @@ include __DIR__ . '/includes/header.php';
         <section class="service-section section-padding fix section-bg-1">
             <div class="container">
                 <div class="section-title text-center">
-                    <span class="sub-title-2 wow fadeInUp">Foreign Currency &amp; Travel Forex</span>
-                    <h2 class="split-text-right split-text-in-right">Forex, Sorted Alongside Your Visa</h2>
+                    <span class="sub-title-2 wow fadeInUp">Currency Notes For Your Trip</span>
+                    <h2 class="split-text-right split-text-in-right">Foreign Currency, Quoted Before You Commit</h2>
                 </div>
                 <p class="svc-lede">
-                    Buy foreign currency, load a travel forex card, or exchange currency for your trip &mdash;
-                    with a clear quotation up front and document-assisted processing, tracked the same way
-                    as your visa application.
+                    Buy foreign currency notes in the currency and amount you need for your trip. We confirm the
+                    applicable rate and charges in a quotation before you commit to anything, and handle the KYC
+                    paperwork alongside it.
                 </p>
                 <div class="svc-stat-strip">
                     <div><span class="num">Multi-Currency</span><span class="lbl">USD, EUR, GBP &amp; more</span></div>
@@ -42,37 +54,19 @@ include __DIR__ . '/includes/header.php';
 
         <nav class="svc-sibling-nav" aria-label="Forex services">
             <div class="svc-sibling-inner">
-                <a href="forex" class="current">Forex Overview</a>
-                <a href="forex-foreign-currency">Foreign Currency</a>
-                <a href="forex-card">Forex Card</a>
-                <a href="forex-currency-exchange">Currency Exchange</a>
-                <a href="forex-travel">Travel Forex</a>
-                <a href="forex-track">Track Your Request</a>
+                <?php foreach ($forex_siblings as $sib): ?>
+                <a href="<?php echo $sib['slug']; ?>" class="<?php echo $sib['slug'] === $forex_current ? 'current' : ''; ?>"><?php echo $sib['label']; ?></a>
+                <?php endforeach; ?>
             </div>
         </nav>
 
         <section class="section-padding fix">
             <div class="container">
                 <div class="section-title text-center">
-                    <span class="sub-title-2 wow fadeInUp">What We Help With</span>
-                    <h2 class="split-text-right split-text-in-right">Forex Assistance, By Requirement</h2>
-                </div>
-                <div class="svc-why-grid">
-                    <a class="svc-why-item" href="forex-foreign-currency"><div class="check">01</div><div><h4>Foreign Currency</h4><p>Buy foreign currency notes in the currency and amount you need for your trip, at a rate confirmed before you commit.</p></div></a>
-                    <a class="svc-why-item" href="forex-card"><div class="check">02</div><div><h4>Forex Card</h4><p>A prepaid travel card loaded in your destination currency &mdash; a safer alternative to carrying large amounts of cash.</p></div></a>
-                    <a class="svc-why-item" href="forex-currency-exchange"><div class="check">03</div><div><h4>Currency Exchange</h4><p>Exchange currency for your specific travel or business need, guided through the documentation FEMA purpose codes require.</p></div></a>
-                    <a class="svc-why-item" href="forex-travel"><div class="check">04</div><div><h4>Travel Forex</h4><p>General travel forex guidance &mdash; unsure which option fits your trip? We help you work out currency, amount and format.</p></div></a>
-                </div>
-            </div>
-        </section>
-
-        <section class="section-padding fix section-bg-1">
-            <div class="container">
-                <div class="section-title text-center">
                     <span class="sub-title-2 wow fadeInUp">How It Works</span>
-                    <h2 class="split-text-right split-text-in-right">From Request To Delivery</h2>
+                    <h2 class="split-text-right split-text-in-right">From Request To Collection</h2>
                 </div>
-                <p class="svc-lede">The same quotation-first, document-assisted process for every forex request, tracked end to end.</p>
+                <p class="svc-lede">The same quotation-first, document-assisted process, tracked end to end.</p>
                 <div class="svc-steps">
                     <div class="svc-step-row">
                         <div class="svc-step-marker"><div class="svc-step-num">1</div><div class="svc-step-line"></div></div>
@@ -80,7 +74,7 @@ include __DIR__ . '/includes/header.php';
                     </div>
                     <div class="svc-step-row">
                         <div class="svc-step-marker"><div class="svc-step-num">2</div><div class="svc-step-line"></div></div>
-                        <div class="svc-step-body"><h3>Get a quotation</h3><p>We confirm the applicable rate and charges in a quotation before you commit to anything.</p></div>
+                        <div class="svc-step-body"><h3>Get a quotation</h3><p>We confirm the applicable rate and charges for the currency notes you need before you commit.</p></div>
                     </div>
                     <div class="svc-step-row">
                         <div class="svc-step-marker"><div class="svc-step-num">3</div><div class="svc-step-line"></div></div>
@@ -92,17 +86,17 @@ include __DIR__ . '/includes/header.php';
                     </div>
                     <div class="svc-step-row">
                         <div class="svc-step-marker"><div class="svc-step-num">5</div><div class="svc-step-line"></div></div>
-                        <div class="svc-step-body"><h3>Collection or delivery</h3><p>Your currency or forex card is handed over or delivered, with a receipt for your records.</p></div>
+                        <div class="svc-step-body"><h3>Collection or delivery</h3><p>Your currency notes are handed over or delivered, with a receipt for your records.</p></div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="section-padding fix">
+        <section class="section-padding fix section-bg-1">
             <div class="container">
                 <div class="section-title text-center">
                     <span class="sub-title-2 wow fadeInUp">Documents You'll Need</span>
-                    <h2 class="split-text-right split-text-in-right">Standard KYC For Forex Purchase</h2>
+                    <h2 class="split-text-right split-text-in-right">Standard KYC For Currency Purchase</h2>
                 </div>
                 <p class="svc-lede">Exact requirements depend on the amount and purpose &mdash; this is the common baseline we'll confirm against your request.</p>
                 <div class="svc-checklist">
@@ -114,10 +108,26 @@ include __DIR__ . '/includes/header.php';
             </div>
         </section>
 
+        <section class="section-padding fix">
+            <div class="container">
+                <div class="section-title text-center">
+                    <span class="sub-title-2 wow fadeInUp">Why Visa Agency</span>
+                    <h2 class="split-text-right split-text-in-right">A Rate You See Before You Pay</h2>
+                </div>
+                <p class="svc-lede">No surprises on the amount you receive &mdash; the rate is confirmed in writing before you commit.</p>
+                <div class="svc-why-grid">
+                    <div class="svc-why-item"><div class="check">01</div><div><h4>Quotation before commitment</h4><p>You see the exact rate and charges before you pay anything.</p></div></div>
+                    <div class="svc-why-item"><div class="check">02</div><div><h4>Multiple currencies</h4><p>USD, EUR, GBP and other major travel currencies &mdash; tell us your destination and we'll confirm availability.</p></div></div>
+                    <div class="svc-why-item"><div class="check">03</div><div><h4>Same tracking as your visa</h4><p>Your currency request gets a reference number, trackable the same way as your visa application.</p></div></div>
+                    <div class="svc-why-item"><div class="check">04</div><div><h4>Alongside your visa filing</h4><p>Handle your currency and your visa with the same caseworker and timeline.</p></div></div>
+                </div>
+            </div>
+        </section>
+
         <section class="section-padding fix section-bg-1">
             <div class="container">
                 <div class="final-cta">
-                    <h2>Ready To Get A Forex Quotation?</h2>
+                    <h2>Need Foreign Currency For Your Trip?</h2>
                     <p>Tell us your currency, amount and travel date &mdash; we'll confirm the rate and next steps.</p>
                     <div class="cta-buttons">
                         <a href="forex-enquiry" class="theme-btn">Start Your Forex Enquiry <i class="fa-solid fa-arrow-right"></i></a>
@@ -128,13 +138,13 @@ include __DIR__ . '/includes/header.php';
         </section>
 
         <!-- FAQ -->
-        <section id="forex-faq" class="section-padding fix">
+        <section id="currency-faq" class="section-padding fix">
             <div class="container">
                 <div class="row g-5 align-items-start">
                     <div class="col-lg-4">
                         <div class="section-title mb-0">
                             <span class="sub-title-2 wow fadeInUp">FAQs</span>
-                            <h2 class="split-text-right split-text-in-right">Forex, Answered</h2>
+                            <h2 class="split-text-right split-text-in-right">Foreign Currency, Answered</h2>
                         </div>
                     </div>
                     <div class="col-lg-8">
@@ -152,7 +162,7 @@ include __DIR__ . '/includes/header.php';
                                 <div class="faq-answer"><p>This depends on the currency and purpose of travel under RBI/FEMA guidelines &mdash; we'll confirm the applicable limit for your specific request.</p></div>
                             </div>
                             <div class="faq-item">
-                                <div class="faq-question">Can I track my forex request like a visa application?</div>
+                                <div class="faq-question">Can I track my currency request like a visa application?</div>
                                 <div class="faq-answer"><p>Yes &mdash; every forex request gets a reference number you can look up anytime on our <a href="forex-track">Track Your Forex Request</a> page.</p></div>
                             </div>
                         </div>

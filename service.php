@@ -73,7 +73,7 @@ include __DIR__ . '/includes/header.php';
                         </div>
                         <div class="service-main-item-3 style-2 fade-up-anim">
                             <div class="service-button">
-                                <a href="service-details" class="theme-btn">
+                                <a href="visa-work" class="theme-btn">
                                     read more
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </a>
@@ -81,7 +81,7 @@ include __DIR__ . '/includes/header.php';
                             <div class="service-left">
                                 <div class="content">
                                     <h3>
-                                        <a href="service-details">Work Visa Consultancy</a>
+                                        <a href="visa-work">Work Visa Consultancy</a>
                                     </h3>
                                     <p>
                                         We help applicants identify the right visa category, assist with documentation, and provide expert guidance to maximize the chances of a smooth application.
@@ -254,37 +254,37 @@ include __DIR__ . '/includes/header.php';
                         <div class="top-item">
                             <h4 class="number">01</h4>
                             <h3>
-                                <a href="service-details">Family Visa</a>
+                                <a href="visa-family">Family Visa</a>
                             </h3>
                         </div>
                         <p>
-                            “Our Family Visa services help reunite loved ones by providing expert.
+                            Relationship-proof documentation and translated certificates handled with one caseworker for the whole family.
                         </p>
-                        <a href="service-details" class="service-button">service _ 02</a>
+                        <a href="visa-family" class="service-button">Learn More</a>
                     </div>
                     <div class="service-visa-items style-2">
                         <div class="top-item">
                             <h4 class="number">02</h4>
                             <h3>
-                                <a href="service-details">Work Visa</a>
+                                <a href="visa-work">Work Visa</a>
                             </h3>
                         </div>
                         <p>
-                            We provide expert guidance for work visa applications, helping
+                            Employer sponsorship paperwork and labour-market documentation for employment-based moves abroad.
                         </p>
-                        <a href="service-details" class="service-button">service _ 02</a>
+                        <a href="visa-work" class="service-button">Learn More</a>
                     </div>
                      <div class="service-visa-items style-2">
                         <div class="top-item">
                             <h4 class="number">03</h4>
                             <h3>
-                                <a href="service-details">Business Visa</a>
+                                <a href="visa-business">Business Visa</a>
                             </h3>
                         </div>
                         <p>
-                           Collaboratively disintermediate one to one functionalities and long term.
+                           Invitation-letter drafting and corporate documentation for meetings, conferences and trade.
                         </p>
-                        <a href="service-details" class="service-button">service _ 02</a>
+                        <a href="visa-business" class="service-button">Learn More</a>
                     </div>
                 </div>
             </div>
