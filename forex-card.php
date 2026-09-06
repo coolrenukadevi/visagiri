@@ -87,28 +87,22 @@ include __DIR__ . '/includes/header.php';
 
         <section id="faq" class="section-padding fix">
             <div class="container">
-                <div class="row g-5 align-items-start">
-                    <div class="col-lg-4">
-                        <div class="section-title mb-0">
-                            <span class="sub-title-2 wow fadeInUp">FAQs</span>
-                            <h2 class="split-text-right split-text-in-right">Forex Card, Answered</h2>
-                        </div>
+                <div class="section-title text-center">
+                    <span class="sub-title-2 wow fadeInUp">FAQs</span>
+                    <h2 class="split-text-right split-text-in-right">Forex Card, Answered</h2>
+                </div>
+                <div class="faq-accordion">
+                    <div class="faq-item active">
+                        <div class="faq-question">How is a forex card different from buying cash currency? <i class="fa-solid fa-plus"></i></div>
+                        <div class="faq-answer"><p>A forex card is a prepaid card loaded in your destination currency, so you're not carrying physical notes. It can typically be reloaded, and lost/stolen cards can usually be blocked, unlike cash.</p></div>
                     </div>
-                    <div class="col-lg-8">
-                        <div class="faq-accordion">
-                            <div class="faq-item active">
-                                <div class="faq-question">How is a forex card different from buying cash currency? <i class="fa-solid fa-plus"></i></div>
-                                <div class="faq-answer"><p>A forex card is a prepaid card loaded in your destination currency, so you're not carrying physical notes. It can typically be reloaded, and lost/stolen cards can usually be blocked, unlike cash.</p></div>
-                            </div>
-                            <div class="faq-item">
-                                <div class="faq-question">Can I load more than one currency on the same card? <i class="fa-solid fa-plus"></i></div>
-                                <div class="faq-answer"><p>Some issuers support multiple currency wallets on one card. We'll confirm whether your chosen card supports this before you load it, based on your travel plan.</p></div>
-                            </div>
-                            <div class="faq-item">
-                                <div class="faq-question">What happens if I don't use the full balance on my trip? <i class="fa-solid fa-plus"></i></div>
-                                <div class="faq-answer"><p>Unused balance usually stays on the card for a future trip, or can be exchanged back subject to the issuer's terms and applicable RBI/FEMA limits &mdash; we'll confirm the process when you're ready.</p></div>
-                            </div>
-                        </div>
+                    <div class="faq-item">
+                        <div class="faq-question">Can I load more than one currency on the same card? <i class="fa-solid fa-plus"></i></div>
+                        <div class="faq-answer"><p>Some issuers support multiple currency wallets on one card. We'll confirm whether your chosen card supports this before you load it, based on your travel plan.</p></div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">What happens if I don't use the full balance on my trip? <i class="fa-solid fa-plus"></i></div>
+                        <div class="faq-answer"><p>Unused balance usually stays on the card for a future trip, or can be exchanged back subject to the issuer's terms and applicable RBI/FEMA limits &mdash; we'll confirm the process when you're ready.</p></div>
                     </div>
                 </div>
             </div>

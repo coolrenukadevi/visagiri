@@ -123,44 +123,38 @@ include __DIR__ . '/includes/header.php';
         <!-- FAQ -->
         <section id="faq" class="section-padding fix section-bg-1">
             <div class="container">
-                <div class="row g-5 align-items-start">
-                    <div class="col-lg-4">
-                        <div class="section-title mb-0">
-                            <span class="sub-title-2 wow fadeInUp">FAQs</span>
-                            <h2 class="split-text-right split-text-in-right">Forex, Answered</h2>
-                        </div>
+                <div class="section-title text-center">
+                    <span class="sub-title-2 wow fadeInUp">FAQs</span>
+                    <h2 class="split-text-right split-text-in-right">Forex, Answered</h2>
+                </div>
+                <div class="faq-accordion">
+                    <div class="faq-item active">
+                        <div class="faq-question">Which currencies can I buy? <i class="fa-solid fa-plus"></i></div>
+                        <div class="faq-answer"><p>USD, EUR, GBP and other major travel currencies &mdash; tell us your destination and we'll confirm availability for that currency.</p></div>
                     </div>
-                    <div class="col-lg-8">
-                        <div class="faq-accordion">
-                            <div class="faq-item active">
-                                <div class="faq-question">Which currencies can I buy? <i class="fa-solid fa-plus"></i></div>
-                                <div class="faq-answer"><p>USD, EUR, GBP and other major travel currencies &mdash; tell us your destination and we'll confirm availability for that currency.</p></div>
-                            </div>
-                            <div class="faq-item">
-                                <div class="faq-question">How is the exchange rate decided? <i class="fa-solid fa-plus"></i></div>
-                                <div class="faq-answer"><p>Rates move with the market, so we confirm the applicable rate in a quotation before you commit &mdash; nothing is charged against a rate you haven't seen.</p></div>
-                            </div>
-                            <div class="faq-item">
-                                <div class="faq-question">Is there a minimum or maximum amount? <i class="fa-solid fa-plus"></i></div>
-                                <div class="faq-answer"><p>This depends on the currency and purpose of travel under RBI/FEMA guidelines &mdash; we'll confirm the applicable limit for your specific request.</p></div>
-                            </div>
-                            <div class="faq-item">
-                                <div class="faq-question">How is a forex card different from buying cash currency? <i class="fa-solid fa-plus"></i></div>
-                                <div class="faq-answer"><p>A forex card is a prepaid card loaded in your destination currency, so you're not carrying physical notes. It can typically be reloaded, and lost/stolen cards can usually be blocked, unlike cash.</p></div>
-                            </div>
-                            <div class="faq-item">
-                                <div class="faq-question">Can I exchange currency left over from a trip? <i class="fa-solid fa-plus"></i></div>
-                                <div class="faq-answer"><p>Yes &mdash; leftover foreign currency can usually be exchanged back, subject to the applicable purpose-code documentation and any limits under RBI/FEMA guidelines.</p></div>
-                            </div>
-                            <div class="faq-item">
-                                <div class="faq-question">Should I carry cash or use a forex card? <i class="fa-solid fa-plus"></i></div>
-                                <div class="faq-answer"><p>It depends on your destination and how you like to spend &mdash; many travellers carry a small amount of cash for immediate needs and load the rest on a forex card. We'll recommend a split based on your trip.</p></div>
-                            </div>
-                            <div class="faq-item">
-                                <div class="faq-question">Can I track my forex request like a visa application?</div>
-                                <div class="faq-answer"><p>Yes &mdash; every forex request gets a reference number you can look up anytime on our <a href="forex-track">Track Your Forex Request</a> page.</p></div>
-                            </div>
-                        </div>
+                    <div class="faq-item">
+                        <div class="faq-question">How is the exchange rate decided? <i class="fa-solid fa-plus"></i></div>
+                        <div class="faq-answer"><p>Rates move with the market, so we confirm the applicable rate in a quotation before you commit &mdash; nothing is charged against a rate you haven't seen.</p></div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">Is there a minimum or maximum amount? <i class="fa-solid fa-plus"></i></div>
+                        <div class="faq-answer"><p>This depends on the currency and purpose of travel under RBI/FEMA guidelines &mdash; we'll confirm the applicable limit for your specific request.</p></div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">How is a forex card different from buying cash currency? <i class="fa-solid fa-plus"></i></div>
+                        <div class="faq-answer"><p>A forex card is a prepaid card loaded in your destination currency, so you're not carrying physical notes. It can typically be reloaded, and lost/stolen cards can usually be blocked, unlike cash.</p></div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">Can I exchange currency left over from a trip? <i class="fa-solid fa-plus"></i></div>
+                        <div class="faq-answer"><p>Yes &mdash; leftover foreign currency can usually be exchanged back, subject to the applicable purpose-code documentation and any limits under RBI/FEMA guidelines.</p></div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">Should I carry cash or use a forex card? <i class="fa-solid fa-plus"></i></div>
+                        <div class="faq-answer"><p>It depends on your destination and how you like to spend &mdash; many travellers carry a small amount of cash for immediate needs and load the rest on a forex card. We'll recommend a split based on your trip.</p></div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">Can I track my forex request like a visa application?</div>
+                        <div class="faq-answer"><p>Yes &mdash; every forex request gets a reference number you can look up anytime on our <a href="forex-track">Track Your Forex Request</a> page.</p></div>
                     </div>
                 </div>
             </div>

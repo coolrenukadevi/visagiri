@@ -85,32 +85,26 @@ include __DIR__ . '/includes/header.php';
 
         <section id="faq" class="section-padding fix">
             <div class="container">
-                <div class="row g-5 align-items-start">
-                    <div class="col-lg-4">
-                        <div class="section-title mb-0">
-                            <span class="sub-title-2 wow fadeInUp">FAQs</span>
-                            <h2 class="split-text-right split-text-in-right">Currency Exchange, Answered</h2>
-                        </div>
+                <div class="section-title text-center">
+                    <span class="sub-title-2 wow fadeInUp">FAQs</span>
+                    <h2 class="split-text-right split-text-in-right">Currency Exchange, Answered</h2>
+                </div>
+                <div class="faq-accordion">
+                    <div class="faq-item active">
+                        <div class="faq-question">Is there a minimum or maximum amount? <i class="fa-solid fa-plus"></i></div>
+                        <div class="faq-answer"><p>This depends on the currency and purpose of travel under RBI/FEMA guidelines &mdash; we'll confirm the applicable limit for your specific request.</p></div>
                     </div>
-                    <div class="col-lg-8">
-                        <div class="faq-accordion">
-                            <div class="faq-item active">
-                                <div class="faq-question">Is there a minimum or maximum amount? <i class="fa-solid fa-plus"></i></div>
-                                <div class="faq-answer"><p>This depends on the currency and purpose of travel under RBI/FEMA guidelines &mdash; we'll confirm the applicable limit for your specific request.</p></div>
-                            </div>
-                            <div class="faq-item">
-                                <div class="faq-question">Can I exchange currency left over from a trip? <i class="fa-solid fa-plus"></i></div>
-                                <div class="faq-answer"><p>Yes &mdash; leftover foreign currency can usually be exchanged back, subject to the applicable purpose-code documentation and any limits under RBI/FEMA guidelines.</p></div>
-                            </div>
-                            <div class="faq-item">
-                                <div class="faq-question">What purpose codes does currency exchange cover? <i class="fa-solid fa-plus"></i></div>
-                                <div class="faq-answer"><p>Common examples include leisure travel, business travel, medical treatment abroad and certain business remittances. We'll confirm which purpose code applies to your specific request.</p></div>
-                            </div>
-                            <div class="faq-item">
-                                <div class="faq-question">Do I need the original receipt to exchange leftover currency? <i class="fa-solid fa-plus"></i></div>
-                                <div class="faq-answer"><p>It helps but isn't always mandatory &mdash; we'll confirm what's needed based on the currency, amount and how it was originally acquired.</p></div>
-                            </div>
-                        </div>
+                    <div class="faq-item">
+                        <div class="faq-question">Can I exchange currency left over from a trip? <i class="fa-solid fa-plus"></i></div>
+                        <div class="faq-answer"><p>Yes &mdash; leftover foreign currency can usually be exchanged back, subject to the applicable purpose-code documentation and any limits under RBI/FEMA guidelines.</p></div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">What purpose codes does currency exchange cover? <i class="fa-solid fa-plus"></i></div>
+                        <div class="faq-answer"><p>Common examples include leisure travel, business travel, medical treatment abroad and certain business remittances. We'll confirm which purpose code applies to your specific request.</p></div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">Do I need the original receipt to exchange leftover currency? <i class="fa-solid fa-plus"></i></div>
+                        <div class="faq-answer"><p>It helps but isn't always mandatory &mdash; we'll confirm what's needed based on the currency, amount and how it was originally acquired.</p></div>
                     </div>
                 </div>
             </div>

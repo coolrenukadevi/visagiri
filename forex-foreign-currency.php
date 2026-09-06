@@ -78,24 +78,18 @@ include __DIR__ . '/includes/header.php';
 
         <section id="faq" class="section-padding fix">
             <div class="container">
-                <div class="row g-5 align-items-start">
-                    <div class="col-lg-4">
-                        <div class="section-title mb-0">
-                            <span class="sub-title-2 wow fadeInUp">FAQs</span>
-                            <h2 class="split-text-right split-text-in-right">Foreign Currency, Answered</h2>
-                        </div>
+                <div class="section-title text-center">
+                    <span class="sub-title-2 wow fadeInUp">FAQs</span>
+                    <h2 class="split-text-right split-text-in-right">Foreign Currency, Answered</h2>
+                </div>
+                <div class="faq-accordion">
+                    <div class="faq-item active">
+                        <div class="faq-question">Which currencies can I buy? <i class="fa-solid fa-plus"></i></div>
+                        <div class="faq-answer"><p>USD, EUR, GBP and other major travel currencies &mdash; tell us your destination and we'll confirm availability for that currency.</p></div>
                     </div>
-                    <div class="col-lg-8">
-                        <div class="faq-accordion">
-                            <div class="faq-item active">
-                                <div class="faq-question">Which currencies can I buy? <i class="fa-solid fa-plus"></i></div>
-                                <div class="faq-answer"><p>USD, EUR, GBP and other major travel currencies &mdash; tell us your destination and we'll confirm availability for that currency.</p></div>
-                            </div>
-                            <div class="faq-item">
-                                <div class="faq-question">How is the exchange rate decided? <i class="fa-solid fa-plus"></i></div>
-                                <div class="faq-answer"><p>Rates move with the market, so we confirm the applicable rate in a quotation before you commit &mdash; nothing is charged against a rate you haven't seen.</p></div>
-                            </div>
-                        </div>
+                    <div class="faq-item">
+                        <div class="faq-question">How is the exchange rate decided? <i class="fa-solid fa-plus"></i></div>
+                        <div class="faq-answer"><p>Rates move with the market, so we confirm the applicable rate in a quotation before you commit &mdash; nothing is charged against a rate you haven't seen.</p></div>
                     </div>
                 </div>
             </div>

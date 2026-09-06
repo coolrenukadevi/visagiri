@@ -77,24 +77,18 @@ include __DIR__ . '/includes/header.php';
 
         <section id="faq" class="section-padding fix">
             <div class="container">
-                <div class="row g-5 align-items-start">
-                    <div class="col-lg-4">
-                        <div class="section-title mb-0">
-                            <span class="sub-title-2 wow fadeInUp">FAQs</span>
-                            <h2 class="split-text-right split-text-in-right">Travel Forex, Answered</h2>
-                        </div>
+                <div class="section-title text-center">
+                    <span class="sub-title-2 wow fadeInUp">FAQs</span>
+                    <h2 class="split-text-right split-text-in-right">Travel Forex, Answered</h2>
+                </div>
+                <div class="faq-accordion">
+                    <div class="faq-item active">
+                        <div class="faq-question">Should I carry cash or use a forex card? <i class="fa-solid fa-plus"></i></div>
+                        <div class="faq-answer"><p>It depends on your destination and how you like to spend &mdash; many travellers carry a small amount of cash for immediate needs and load the rest on a forex card. We'll recommend a split based on your trip.</p></div>
                     </div>
-                    <div class="col-lg-8">
-                        <div class="faq-accordion">
-                            <div class="faq-item active">
-                                <div class="faq-question">Should I carry cash or use a forex card? <i class="fa-solid fa-plus"></i></div>
-                                <div class="faq-answer"><p>It depends on your destination and how you like to spend &mdash; many travellers carry a small amount of cash for immediate needs and load the rest on a forex card. We'll recommend a split based on your trip.</p></div>
-                            </div>
-                            <div class="faq-item">
-                                <div class="faq-question">Can I track my forex request like a visa application?</div>
-                                <div class="faq-answer"><p>Yes &mdash; every forex request gets a reference number you can look up anytime on our <a href="forex-track">Track Your Forex Request</a> page.</p></div>
-                            </div>
-                        </div>
+                    <div class="faq-item">
+                        <div class="faq-question">Can I track my forex request like a visa application?</div>
+                        <div class="faq-answer"><p>Yes &mdash; every forex request gets a reference number you can look up anytime on our <a href="forex-track">Track Your Forex Request</a> page.</p></div>
                     </div>
                 </div>
             </div>

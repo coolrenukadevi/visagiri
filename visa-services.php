@@ -122,33 +122,27 @@ include __DIR__ . '/includes/header.php';
         <!-- GENERAL FAQ -->
         <section class="section-padding fix section-bg-1">
             <div class="container">
-                <div class="row g-5 align-items-start">
-                    <div class="col-lg-4">
-                        <div class="section-title mb-0">
-                            <span class="sub-title-2 wow fadeInUp">General FAQs</span>
-                            <h2 class="split-text-right split-text-in-right">Still Have Questions?</h2>
-                        </div>
-                        <p style="margin-top:14px; font-size:14px; color:var(--text);">Category-specific questions are answered on each category's own page. These cover choosing between categories.</p>
+                <div class="section-title text-center">
+                    <span class="sub-title-2 wow fadeInUp">General FAQs</span>
+                    <h2 class="split-text-right split-text-in-right">Still Have Questions?</h2>
+                    <p style="margin-top:14px; font-size:14px; color:var(--text);">Category-specific questions are answered on each category's own page. These cover choosing between categories.</p>
+                </div>
+                <div class="faq-accordion">
+                    <div class="faq-item active">
+                        <div class="faq-question">I'm not sure which visa category applies to me &mdash; what should I do? <i class="fa-solid fa-plus"></i></div>
+                        <div class="faq-answer"><p>Tell us your destination and the purpose of your trip through our <a href="contact">enquiry form</a> &mdash; a consultant will confirm the right category before you commit to anything.</p></div>
                     </div>
-                    <div class="col-lg-8">
-                        <div class="faq-accordion">
-                            <div class="faq-item active">
-                                <div class="faq-question">I'm not sure which visa category applies to me &mdash; what should I do? <i class="fa-solid fa-plus"></i></div>
-                                <div class="faq-answer"><p>Tell us your destination and the purpose of your trip through our <a href="contact">enquiry form</a> &mdash; a consultant will confirm the right category before you commit to anything.</p></div>
-                            </div>
-                            <div class="faq-item">
-                                <div class="faq-question">Can I apply for more than one visa category at the same time? <i class="fa-solid fa-plus"></i></div>
-                                <div class="faq-answer"><p>Yes &mdash; for example, a transit visa alongside a tourist visa, or a dependant family visa alongside a work visa. We coordinate related applications as one engagement.</p></div>
-                            </div>
-                            <div class="faq-item">
-                                <div class="faq-question">Do you guarantee visa approval? <i class="fa-solid fa-plus"></i></div>
-                                <div class="faq-answer"><p>No &mdash; visa decisions rest solely with the relevant embassy, consulate or immigration authority. We help you present the strongest possible case, but approval is never guaranteed.</p></div>
-                            </div>
-                            <div class="faq-item">
-                                <div class="faq-question">How much does your service cost? <i class="fa-solid fa-plus"></i></div>
-                                <div class="faq-answer"><p>Our filing fee is quoted separately from government/consulate fees, before you commit. See our <a href="pricing">pricing</a> page or contact us for a specific quote.</p></div>
-                            </div>
-                        </div>
+                    <div class="faq-item">
+                        <div class="faq-question">Can I apply for more than one visa category at the same time? <i class="fa-solid fa-plus"></i></div>
+                        <div class="faq-answer"><p>Yes &mdash; for example, a transit visa alongside a tourist visa, or a dependant family visa alongside a work visa. We coordinate related applications as one engagement.</p></div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">Do you guarantee visa approval? <i class="fa-solid fa-plus"></i></div>
+                        <div class="faq-answer"><p>No &mdash; visa decisions rest solely with the relevant embassy, consulate or immigration authority. We help you present the strongest possible case, but approval is never guaranteed.</p></div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">How much does your service cost? <i class="fa-solid fa-plus"></i></div>
+                        <div class="faq-answer"><p>Our filing fee is quoted separately from government/consulate fees, before you commit. See our <a href="pricing">pricing</a> page or contact us for a specific quote.</p></div>
                     </div>
                 </div>
             </div>

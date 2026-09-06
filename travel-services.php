@@ -61,32 +61,26 @@ include __DIR__ . '/includes/header.php';
         <!-- FAQ -->
         <section class="section-padding fix section-bg-1">
             <div class="container">
-                <div class="row g-5 align-items-start">
-                    <div class="col-lg-4">
-                        <div class="section-title mb-0">
-                            <span class="sub-title-2 wow fadeInUp">FAQs</span>
-                            <h2 class="split-text-right split-text-in-right">Travel Services, Answered</h2>
-                        </div>
+                <div class="section-title text-center">
+                    <span class="sub-title-2 wow fadeInUp">FAQs</span>
+                    <h2 class="split-text-right split-text-in-right">Travel Services, Answered</h2>
+                </div>
+                <div class="faq-accordion">
+                    <div class="faq-item active">
+                        <div class="faq-question">Do I need travel insurance for every destination? <i class="fa-solid fa-plus"></i></div>
+                        <div class="faq-answer"><p>Some destinations, notably Schengen countries, make it mandatory for the visa application. Others don't require it for the visa itself, though we generally recommend it. We'll confirm what applies to your destination.</p></div>
                     </div>
-                    <div class="col-lg-8">
-                        <div class="faq-accordion">
-                            <div class="faq-item active">
-                                <div class="faq-question">Do I need travel insurance for every destination? <i class="fa-solid fa-plus"></i></div>
-                                <div class="faq-answer"><p>Some destinations, notably Schengen countries, make it mandatory for the visa application. Others don't require it for the visa itself, though we generally recommend it. We'll confirm what applies to your destination.</p></div>
-                            </div>
-                            <div class="faq-item">
-                                <div class="faq-question">Can I get a refundable or dummy flight ticket for my visa application? <i class="fa-solid fa-plus"></i></div>
-                                <div class="faq-answer"><p>Some destinations accept a reservation or hold without full payment; others expect a confirmed, paid ticket. We'll confirm which applies before you book anything.</p></div>
-                            </div>
-                            <div class="faq-item">
-                                <div class="faq-question">Can these services be booked without also filing a visa with you? <i class="fa-solid fa-plus"></i></div>
-                                <div class="faq-answer"><p>Travel insurance and flight/hotel assistance can be arranged on their own, though most clients use them alongside a visa application we're already filing.</p></div>
-                            </div>
-                            <div class="faq-item">
-                                <div class="faq-question">How does corporate travel support pricing work? <i class="fa-solid fa-plus"></i></div>
-                                <div class="faq-answer"><p>Each traveller's visa and travel costs are quoted individually, with a coordinated group timeline. Contact us with your group size and destination for a specific quote.</p></div>
-                            </div>
-                        </div>
+                    <div class="faq-item">
+                        <div class="faq-question">Can I get a refundable or dummy flight ticket for my visa application? <i class="fa-solid fa-plus"></i></div>
+                        <div class="faq-answer"><p>Some destinations accept a reservation or hold without full payment; others expect a confirmed, paid ticket. We'll confirm which applies before you book anything.</p></div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">Can these services be booked without also filing a visa with you? <i class="fa-solid fa-plus"></i></div>
+                        <div class="faq-answer"><p>Travel insurance and flight/hotel assistance can be arranged on their own, though most clients use them alongside a visa application we're already filing.</p></div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">How does corporate travel support pricing work? <i class="fa-solid fa-plus"></i></div>
+                        <div class="faq-answer"><p>Each traveller's visa and travel costs are quoted individually, with a coordinated group timeline. Contact us with your group size and destination for a specific quote.</p></div>
                     </div>
                 </div>
             </div>
