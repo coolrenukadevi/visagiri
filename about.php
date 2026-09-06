@@ -4,6 +4,37 @@ $page_description = "Visa Agency is a Ministry of Tourism recognised, technology
 include __DIR__ . '/includes/header.php';
 $abCountryCount = count($VISA_AGENCY_COUNTRIES ?? []);
 
+$ab2Board = [
+    ['code' => 'DEST', 'label' => 'Destination countries', 'value' => $abCountryCount . '+'],
+    ['code' => 'TERM', 'label' => 'City offices',           'value' => '04'],
+    ['code' => 'STAT', 'label' => 'Recognition',            'value' => 'MoT RECOGNISED'],
+];
+
+$ab2MiniBoard = [
+    ['label' => 'Service fee',       'value' => 'Quoted apart from govt. fee'],
+    ['label' => 'First consultation','value' => 'Free, no obligation'],
+    ['label' => 'Your file',         'value' => 'One caseworker, start to finish'],
+];
+
+$ab2Tickets = [
+    ['num' => '01', 'title' => 'Start An Enquiry',       'text' => 'Tell us your destination and purpose &mdash; a consultant confirms the right visa category before anything else.', 'href' => 'contact'],
+    ['num' => '02', 'title' => 'Book An Appointment',    'text' => 'Pick a date and time for your visa consultation, in person or remotely.',                                          'href' => 'visa-appointment'],
+    ['num' => '03', 'title' => 'Meet The Leadership',    'text' => 'The people overseeing case strategy, documentation standards and client experience.',                            'href' => 'leadership'],
+];
+
+$ab2Placards = [
+    ['title' => 'Eligibility-first',    'text' => 'We check what actually applies to you before recommending a visa category, rather than a one-size-fits-all process.'],
+    ['title' => 'Documentation-led',    'text' => 'Most delays come from incomplete or inconsistent documents &mdash; our process is built around catching that early.'],
+    ['title' => 'Four-city coverage',   'text' => 'We serve applicants across Patna, Ranchi, Raipur and Bhopal from our Patna base, in person and remotely.'],
+    ['title' => 'Plain about outcomes', 'text' => "We're upfront that visa decisions rest solely with the relevant embassy or authority &mdash; we help you present the strongest possible case."],
+];
+
+$ab2Cities = [
+    'PAT' => ['name' => 'Patna',  'role' => 'Base office',   'note' => 'Our head office, where cases are reviewed and filed. Consultations are available in person and remotely.'],
+    'RAN' => ['name' => 'Ranchi', 'role' => 'Served remotely','note' => 'Applicants in Ranchi are supported by the same case team, coordinated remotely from our Patna base.'],
+    'RAP' => ['name' => 'Raipur', 'role' => 'Served remotely','note' => 'Applicants in Raipur are supported by the same case team, coordinated remotely from our Patna base.'],
+    'BHO' => ['name' => 'Bhopal', 'role' => 'Served remotely','note' => 'Applicants in Bhopal are supported by the same case team, coordinated remotely from our Patna base.'],
+];
 ?>
         <!-- Breadcrumb-Wrapper Section Start -->
         <section class="breadcrumb-wrapper fix bg-cover" style="background-image: url(assets/img/inner-page/breadcrumb.jpg);">
@@ -22,72 +53,77 @@ $abCountryCount = count($VISA_AGENCY_COUNTRIES ?? []);
             </div>
         </section>
 
-        <section class="hr-section" style="padding-top:48px;">
-            <div class="container ab-hero-grid">
-                <div>
-                    <p class="hr-eyebrow">Ministry of Tourism Recognised</p>
-                    <h2>Getting you across the border, on paper and in practice.</h2>
-                    <p class="ab-hero-lead">Visa Agency handles the documentation side of travel: the forms, the appointment slots, the follow-up calls to embassies. We file for tourist, business, family, transit, medical and extension categories across <?php echo $abCountryCount; ?>+ destinations, and tell you exactly where your file stands at every step.</p>
-                    <div class="ab-hero-actions">
-                        <a class="theme-btn hr-btn-gold" href="why-choose-us">See how we work</a>
-                        <a class="theme-btn style-2" href="leadership">Meet the team</a>
-                    </div>
-                    <div class="ab-stat-row">
-                        <div class="ab-stat"><span class="num"><?php echo $abCountryCount; ?>+</span><span class="lbl">Destination countries</span></div>
-                        <div class="ab-stat"><span class="num">4</span><span class="lbl">City offices</span></div>
-                        <div class="ab-stat"><span class="num">MoT</span><span class="lbl">Recognised entity</span></div>
-                    </div>
-                </div>
-                <div class="ab-stamp-frame">
-                    <svg class="ab-stamp-svg" viewBox="0 0 260 260">
-                        <circle class="ring-dash" cx="130" cy="130" r="118"/>
-                        <circle class="ring" cx="130" cy="130" r="98"/>
-                        <path id="abCurveTop" d="M 32,130 A 98,98 0 1,1 228,130" fill="none"/>
-                        <path id="abCurveBottom" d="M 228,132 A 98,98 0 1,1 32,132" fill="none"/>
-                        <text><textPath href="#abCurveTop" startOffset="50%" text-anchor="middle">VISA AGENCY</textPath></text>
-                        <text><textPath href="#abCurveBottom" startOffset="50%" text-anchor="middle">MINISTRY OF TOURISM RECOGNISED</textPath></text>
-                        <g class="mark" transform="translate(130,130)">
-                            <path d="M-28,6 L28,6 M-18,6 L-28,-14 L-20,-14 L-6,6 M18,6 L28,-14 L20,-14 L6,6"/>
-                            <circle r="3" fill="currentColor" stroke="none"/>
-                        </g>
-                    </svg>
-                </div>
-            </div>
-        </section>
-
-        <section class="hr-section" style="background:#fff; border-top:1px solid var(--border-color); border-bottom:1px solid var(--border-color);">
+        <!-- ============ LEDE + BOARD (navy band) ============ -->
+        <section style="background:var(--theme-2); color:var(--white); padding:48px 0 40px;">
             <div class="container">
-                <div class="hr-head">
-                    <p class="hr-eyebrow">What We Do</p>
-                    <h2>Consultancy, not just paperwork</h2>
-                    <p>We guide applicants through eligibility checks, documentation, application preparation and appointment support &mdash; across tourist, business, family, transit, medical and extension visa categories, plus apostille and attestation for supporting documents.</p>
+                <p class="ab-hero-lead" style="color:rgba(255,255,255,.82); font-size:1.05rem; max-width:64ch; margin:0 0 24px;">Visa Agency handles the documentation side of travel: the forms, the appointment slots, the follow-up calls to embassies. We file for tourist, business, family, transit, medical and extension categories across <?php echo $abCountryCount; ?>+ destinations, and tell you exactly where your file stands at every step.</p>
+                <div class="ab-hero-actions" style="display:flex; gap:14px; flex-wrap:wrap; margin-bottom:8px;">
+                    <a class="theme-btn hr-btn-gold" href="why-choose-us">See how we work</a>
+                    <a class="theme-btn style-2" href="leadership" style="border-color:rgba(255,255,255,.5); color:var(--white);">Meet the team</a>
                 </div>
-                <div class="hr-svc-grid">
-                    <div class="hr-svc-card">
-                        <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--brand-blue)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l2.5 2.5L16 9"/></svg>
-                        <h3>Eligibility-first</h3>
-                        <p>We check what actually applies to you before recommending a visa category, rather than a one-size-fits-all process.</p>
+                <div class="ab2-board">
+                    <?php foreach ($ab2Board as $r): ?>
+                    <div class="ab2-board-row">
+                        <span class="code"><?php echo htmlspecialchars($r['code']); ?></span>
+                        <span class="label"><?php echo htmlspecialchars($r['label']); ?></span>
+                        <span class="value"><?php echo htmlspecialchars($r['value']); ?></span>
                     </div>
-                    <div class="hr-svc-card">
-                        <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--brand-blue)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v5h5"/></svg>
-                        <h3>Documentation-led</h3>
-                        <p>Most delays come from incomplete or inconsistent documents &mdash; our process is built around catching that early.</p>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ ABOUT AGENCY ============ -->
+        <section class="section-padding fix">
+            <div class="container">
+                <div class="ab2-agency-wrap">
+                    <div>
+                        <div class="section-title" style="margin-bottom:20px;">
+                            <span class="sub-title-2 wow fadeInUp">About The Agency</span>
+                            <h2 class="split-text-right split-text-in-right">Consultancy, Not Just Paperwork</h2>
+                        </div>
+                        <p class="svc-lede" style="margin-bottom:20px;">We guide applicants through eligibility checks, documentation, application preparation and appointment support &mdash; across tourist, business, family, transit, medical and extension visa categories, plus apostille and attestation for supporting documents.</p>
+                        <ul class="ab2-agency-list">
+                            <li>Talk to one of our consultants today</li>
+                            <li>We help you find the right visa pathway</li>
+                            <li>Government and service fees always shown as two separate lines</li>
+                        </ul>
+                        <div style="display:flex; align-items:center; gap:22px; flex-wrap:wrap;">
+                            <a class="theme-btn hr-btn-gold" href="why-choose-us">More Detail</a>
+                            <a href="tel:+917844819819" style="font-family:monospace; font-size:.95rem; color:var(--header); text-decoration:none;">+91 78448 19819</a>
+                        </div>
                     </div>
-                    <div class="hr-svc-card">
-                        <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--brand-blue)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18M3 12h18"/></svg>
-                        <h3>Multi-city coverage</h3>
-                        <p>We serve applicants across Patna, Ranchi, Raipur and Bhopal from our Patna base, in person and remotely.</p>
-                    </div>
-                    <div class="hr-svc-card">
-                        <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--brand-blue)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 5-3.5 8-7 9-3.5-1-7-4-7-9V6l7-3z"/></svg>
-                        <h3>No guaranteed outcomes, said plainly</h3>
-                        <p>We're upfront that visa decisions rest solely with the relevant embassy or authority &mdash; we help you present the strongest possible case.</p>
+                    <div class="ab2-mini-board">
+                        <div class="mb-head">Fee Summary</div>
+                        <?php foreach ($ab2MiniBoard as $m): ?>
+                        <div class="ab2-mb-row"><span class="k"><?php echo htmlspecialchars($m['label']); ?></span><span class="v"><?php echo htmlspecialchars($m['value']); ?></span></div>
+                        <?php endforeach; ?>
                     </div>
                 </div>
             </div>
         </section>
 
+        <!-- ============ WHO WE ARE: TICKETS ============ -->
         <section class="section-padding fix section-bg-1">
+            <div class="container">
+                <div class="section-title text-center">
+                    <span class="sub-title-2 wow fadeInUp">Who We Are</span>
+                    <h2 class="split-text-right split-text-in-right">Three Ways To Get Started</h2>
+                </div>
+                <div class="ab2-ticket-grid">
+                    <?php foreach ($ab2Tickets as $t): ?>
+                    <div class="ab2-ticket">
+                        <span class="num"><?php echo htmlspecialchars($t['num']); ?></span>
+                        <a href="<?php echo htmlspecialchars($t['href']); ?>"><?php echo htmlspecialchars($t['title']); ?></a>
+                        <p><?php echo $t['text']; ?></p>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ GET TO KNOW US (sibling pages) ============ -->
+        <section class="section-padding fix">
             <div class="container">
                 <div class="section-title text-center">
                     <span class="sub-title-2 wow fadeInUp">Get To Know Us</span>
@@ -105,6 +141,86 @@ $abCountryCount = count($VISA_AGENCY_COUNTRIES ?? []);
             </div>
         </section>
 
+        <!-- ============ HOW A FILE MOVES (flow diagram) ============ -->
+        <section class="section-padding fix section-bg-1">
+            <div class="container">
+                <div class="section-title text-center">
+                    <span class="sub-title-2 wow fadeInUp">How A File Moves</span>
+                    <h2 class="split-text-right split-text-in-right">Four Stages, In Order</h2>
+                </div>
+                <p class="svc-lede">Eligibility, documentation, filing and appointment support &mdash; handled in sequence, not all at once.</p>
+                <div class="svc-steps">
+                    <div class="svc-step-row">
+                        <div class="svc-step-marker"><div class="svc-step-num">1</div><div class="svc-step-line"></div></div>
+                        <div class="svc-step-body"><h3>Eligibility check</h3><p>We check what actually applies to your case before naming a visa category.</p></div>
+                    </div>
+                    <div class="svc-step-row">
+                        <div class="svc-step-marker"><div class="svc-step-num">2</div><div class="svc-step-line"></div></div>
+                        <div class="svc-step-body"><h3>Documentation</h3><p>Most delays trace to one missing or inconsistent paper &mdash; we catch that early.</p></div>
+                    </div>
+                    <div class="svc-step-row">
+                        <div class="svc-step-marker"><div class="svc-step-num">3</div><div class="svc-step-line"></div></div>
+                        <div class="svc-step-body"><h3>Preparation &amp; filing</h3><p>Forms, translations, apostille where needed &mdash; filed correctly the first time.</p></div>
+                    </div>
+                    <div class="svc-step-row">
+                        <div class="svc-step-marker"><div class="svc-step-num">4</div><div class="svc-step-line"></div></div>
+                        <div class="svc-step-body"><h3>Appointment &amp; follow-up</h3><p>We track embassy slots and chase updates, so you are not the one on hold.</p></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ TRAITS: PLACARDS ============ -->
+        <section class="section-padding fix">
+            <div class="container">
+                <div class="section-title text-center">
+                    <span class="sub-title-2 wow fadeInUp">How We Work</span>
+                    <h2 class="split-text-right split-text-in-right">What Clients Tend To Notice</h2>
+                </div>
+                <div class="ab2-placards">
+                    <?php
+                    $ab2Icons = [
+                        '<circle cx="12" cy="12" r="9"/><path d="M8 12l2.5 2.5L16 9"/>',
+                        '<path d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v5h5"/>',
+                        '<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18M3 12h18"/>',
+                        '<path d="M12 3l7 3v6c0 5-3.5 8-7 9-3.5-1-7-4-7-9V6l7-3z"/>',
+                    ];
+                    foreach ($ab2Placards as $i => $t): ?>
+                    <div class="ab2-placard">
+                        <div class="tile"><svg viewBox="0 0 24 24"><?php echo $ab2Icons[$i]; ?></svg></div>
+                        <div>
+                            <h3><?php echo htmlspecialchars($t['title']); ?></h3>
+                            <p><?php echo $t['text']; ?></p>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ CITY SELECTOR ============ -->
+        <section class="section-padding fix section-bg-1">
+            <div class="container">
+                <div class="section-title text-center">
+                    <span class="sub-title-2 wow fadeInUp">Where We Operate</span>
+                    <h2 class="split-text-right split-text-in-right">Four Cities, One Case Team</h2>
+                    <p style="margin-top:10px;">Pick a city to see how we support applicants there.</p>
+                </div>
+                <div class="ab2-city-wrap">
+                    <div class="ab2-city-tabs" role="tablist" aria-label="Office cities" id="ab2CityTabs">
+                        <?php $first = true; foreach ($ab2Cities as $code => $c): ?>
+                        <button type="button" class="ab2-city-tab" role="tab" data-code="<?php echo htmlspecialchars($code); ?>" aria-selected="<?php echo $first ? 'true' : 'false'; ?>">
+                            <span><?php echo htmlspecialchars($c['name']); ?></span>
+                            <span class="code"><?php echo htmlspecialchars($code); ?></span>
+                        </button>
+                        <?php $first = false; endforeach; ?>
+                    </div>
+                    <div class="ab2-city-panel" id="ab2CityPanel"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ CLOSING ============ -->
         <section class="section-padding fix section-bg-1">
             <div class="container">
                 <div class="console-cta-band">
@@ -121,5 +237,34 @@ $abCountryCount = count($VISA_AGENCY_COUNTRIES ?? []);
                 </div>
             </div>
         </section>
+
+<script>
+(function () {
+    var cityData = <?php echo json_encode($ab2Cities); ?>;
+    var tabs = document.querySelectorAll('#ab2CityTabs .ab2-city-tab');
+    var panel = document.getElementById('ab2CityPanel');
+    if (!tabs.length || !panel) { return; }
+
+    function renderCity(code) {
+        var c = cityData[code];
+        if (!c) { return; }
+        panel.style.opacity = 0;
+        setTimeout(function () {
+            panel.innerHTML = '<span class="role">' + c.role.toUpperCase() + '</span><h3>' + c.name + '</h3><p>' + c.note + '</p>';
+            panel.style.opacity = 1;
+        }, 120);
+    }
+
+    tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+            tabs.forEach(function (t) { t.setAttribute('aria-selected', 'false'); });
+            tab.setAttribute('aria-selected', 'true');
+            renderCity(tab.getAttribute('data-code'));
+        });
+    });
+
+    renderCity(tabs[0].getAttribute('data-code'));
+})();
+</script>
 
 <?php include __DIR__ . '/includes/footer.php'; ?>
