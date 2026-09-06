@@ -3,14 +3,6 @@ $page_title = "Forex Card &ndash; Visa Agency";
 $page_description = "Prepaid travel forex card loaded in your destination currency &ndash; a safer alternative to carrying cash, quotation-first and reloadable.";
 include __DIR__ . '/includes/header.php';
 
-$forex_siblings = [
-    ['slug' => 'forex', 'label' => 'Overview'],
-    ['slug' => 'forex-foreign-currency', 'label' => 'Foreign Currency'],
-    ['slug' => 'forex-card', 'label' => 'Forex Card'],
-    ['slug' => 'forex-currency-exchange', 'label' => 'Currency Exchange'],
-    ['slug' => 'forex-travel', 'label' => 'Travel Forex'],
-];
-$forex_current = 'forex-card';
 ?>
         <!-- Breadcrumb-Wrapper Section Start -->
         <section class="breadcrumb-wrapper fix bg-cover" style="background-image: url(assets/img/inner-page/breadcrumb.jpg);">
@@ -31,14 +23,6 @@ $forex_current = 'forex-card';
             </div>
         </section>
 
-        <nav class="svc-sibling-nav" aria-label="Forex services">
-            <div class="svc-sibling-inner">
-                <?php foreach ($forex_siblings as $sib): ?>
-                <a href="<?php echo $sib['slug']; ?>" class="<?php echo $sib['slug'] === $forex_current ? 'current' : ''; ?>"><?php echo $sib['label']; ?></a>
-                <?php endforeach; ?>
-            </div>
-        </nav>
-
         <section class="section-padding fix">
             <div class="container">
                 <div class="section-title text-center">
@@ -55,6 +39,16 @@ $forex_current = 'forex-card';
                     <div class="svc-why-item"><div class="check">01</div><div><h4>Safer than cash</h4><p>Avoid carrying large sums of physical currency through airports and abroad.</p></div></div>
                     <div class="svc-why-item"><div class="check">02</div><div><h4>Quotation before commitment</h4><p>You see the loading rate and any charges before you pay anything.</p></div></div>
                     <div class="svc-why-item"><div class="check">03</div><div><h4>Reloadable</h4><p>Reload options depend on the card issuer &mdash; we confirm whether your card supports online reload before you travel.</p></div></div>
+                    <div class="svc-why-item"><div class="check">04</div><div><h4>Multiple currencies on one card</h4><p>Some issuers let you load more than one currency on the same card &mdash; useful if your trip covers more than one country.</p></div></div>
+                    <div class="svc-why-item"><div class="check">05</div><div><h4>Locked-in rate at loading</h4><p>Once loaded, that portion of your balance isn't affected by later currency movements, unlike cash you convert at the destination.</p></div></div>
+                    <div class="svc-why-item"><div class="check">06</div><div><h4>Widely accepted</h4><p>Usable at most card machines and ATMs abroad, the same way you'd use a debit card at home.</p></div></div>
+                </div>
+                <h3 style="margin:32px 0 14px; font-size:18px;">Documents you'll typically need</h3>
+                <div class="svc-checklist">
+                    <div class="svc-checklist-item"><div class="tick"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></div><span class="txt">PAN card</span></div>
+                    <div class="svc-checklist-item"><div class="tick"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></div><span class="txt">Passport with valid visa or travel proof, where applicable</span></div>
+                    <div class="svc-checklist-item"><div class="tick"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></div><span class="txt">Confirmed flight ticket or travel itinerary</span></div>
+                    <div class="svc-checklist-item"><div class="tick"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></div><span class="txt">Purpose-of-travel declaration (FEMA Form A2)</span></div>
                 </div>
             </div>
         </section>
@@ -105,6 +99,14 @@ $forex_current = 'forex-card';
                             <div class="faq-item active">
                                 <div class="faq-question">How is a forex card different from buying cash currency? <i class="fa-solid fa-plus"></i></div>
                                 <div class="faq-answer"><p>A forex card is a prepaid card loaded in your destination currency, so you're not carrying physical notes. It can typically be reloaded, and lost/stolen cards can usually be blocked, unlike cash.</p></div>
+                            </div>
+                            <div class="faq-item">
+                                <div class="faq-question">Can I load more than one currency on the same card? <i class="fa-solid fa-plus"></i></div>
+                                <div class="faq-answer"><p>Some issuers support multiple currency wallets on one card. We'll confirm whether your chosen card supports this before you load it, based on your travel plan.</p></div>
+                            </div>
+                            <div class="faq-item">
+                                <div class="faq-question">What happens if I don't use the full balance on my trip? <i class="fa-solid fa-plus"></i></div>
+                                <div class="faq-answer"><p>Unused balance usually stays on the card for a future trip, or can be exchanged back subject to the issuer's terms and applicable RBI/FEMA limits &mdash; we'll confirm the process when you're ready.</p></div>
                             </div>
                         </div>
                     </div>

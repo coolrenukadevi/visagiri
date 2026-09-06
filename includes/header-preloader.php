@@ -30,7 +30,3 @@
         <button id="back-top" class="back-to-top show">
             <i class="fa-regular fa-arrow-up"></i>
         </button>
-
-        <!-- GT MouseCursor Start -->
-        <div class="mouseCursor cursor-outer"></div>
-        <div class="mouseCursor cursor-inner"></div>

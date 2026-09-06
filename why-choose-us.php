@@ -3,17 +3,6 @@ $page_title = "Why Choose Us &ndash; Visa Agency";
 $page_description = "Document precision, transparent pricing, country specialists and 24x7 support &ndash; what clients mention when they refer Visa Agency to a friend.";
 include __DIR__ . '/includes/header.php';
 
-$about_siblings = [
-    ['slug' => 'about', 'label' => 'About Us'],
-    ['slug' => 'why-choose-us', 'label' => 'Why Choose Us'],
-    ['slug' => 'vision-mission', 'label' => 'Vision &amp; Mission'],
-    ['slug' => 'leadership', 'label' => 'Leadership'],
-    ['slug' => 'our-journey', 'label' => 'Our Journey'],
-    ['slug' => 'our-team', 'label' => 'Our Team'],
-    ['slug' => 'partners', 'label' => 'Partners'],
-    ['slug' => 'careers', 'label' => 'Careers'],
-];
-$about_current = 'why-choose-us';
 ?>
         <!-- Breadcrumb-Wrapper Section Start -->
         <section class="breadcrumb-wrapper fix bg-cover" style="background-image: url(assets/img/inner-page/breadcrumb.jpg);">
@@ -33,14 +22,6 @@ $about_current = 'why-choose-us';
                 </div>
             </div>
         </section>
-
-        <nav class="svc-sibling-nav" aria-label="Company pages">
-            <div class="svc-sibling-inner">
-                <?php foreach ($about_siblings as $sib): ?>
-                <a href="<?php echo $sib['slug']; ?>" class="<?php echo $sib['slug'] === $about_current ? 'current' : ''; ?>"><?php echo $sib['label']; ?></a>
-                <?php endforeach; ?>
-            </div>
-        </nav>
 
         <section class="hr-section" style="padding-top:48px;">
             <div class="container">
@@ -84,6 +65,29 @@ $about_current = 'why-choose-us';
                             <h3>24&times;7 support when it matters</h3>
                             <p>Reachable outside office hours for appointment days, biometrics, or a last-minute embassy query.</p>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="hr-section" style="background:#fff; border-top:1px solid var(--border-color); border-bottom:1px solid var(--border-color);">
+            <div class="container">
+                <div class="hr-head">
+                    <p class="hr-eyebrow">Frequently Asked</p>
+                    <h2>Questions clients ask before switching to us</h2>
+                </div>
+                <div class="faq-accordion">
+                    <div class="faq-item active">
+                        <div class="faq-question">How is this different from applying myself? <i class="fa-solid fa-plus"></i></div>
+                        <div class="faq-answer"><p>You can apply directly for most visa categories &mdash; we add value by checking your documents against the exact standard your destination expects, catching gaps before an embassy does, and giving you a single point of contact throughout.</p></div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">What if I've already been refused once? <i class="fa-solid fa-plus"></i></div>
+                        <div class="faq-answer"><p>We review the refusal reason where it's known, and rebuild the application to address it directly, rather than resubmitting the same documents. See our Refusal &amp; Re-Application guidance for more.</p></div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">Do you work with corporate or group applications? <i class="fa-solid fa-plus"></i></div>
+                        <div class="faq-answer"><p>Yes &mdash; businesses sending employees, and families or groups travelling together, can be coordinated through a single case handler. See our <a href="corporate-travel">Corporate Travel</a> support.</p></div>
                     </div>
                 </div>
             </div>

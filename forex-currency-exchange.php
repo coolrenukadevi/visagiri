@@ -3,14 +3,6 @@ $page_title = "Currency Exchange &ndash; Visa Agency";
 $page_description = "Currency exchange for travel or business need, guided through FEMA purpose-code documentation, with limits confirmed against your specific request.";
 include __DIR__ . '/includes/header.php';
 
-$forex_siblings = [
-    ['slug' => 'forex', 'label' => 'Overview'],
-    ['slug' => 'forex-foreign-currency', 'label' => 'Foreign Currency'],
-    ['slug' => 'forex-card', 'label' => 'Forex Card'],
-    ['slug' => 'forex-currency-exchange', 'label' => 'Currency Exchange'],
-    ['slug' => 'forex-travel', 'label' => 'Travel Forex'],
-];
-$forex_current = 'forex-currency-exchange';
 ?>
         <!-- Breadcrumb-Wrapper Section Start -->
         <section class="breadcrumb-wrapper fix bg-cover" style="background-image: url(assets/img/inner-page/breadcrumb.jpg);">
@@ -31,14 +23,6 @@ $forex_current = 'forex-currency-exchange';
             </div>
         </section>
 
-        <nav class="svc-sibling-nav" aria-label="Forex services">
-            <div class="svc-sibling-inner">
-                <?php foreach ($forex_siblings as $sib): ?>
-                <a href="<?php echo $sib['slug']; ?>" class="<?php echo $sib['slug'] === $forex_current ? 'current' : ''; ?>"><?php echo $sib['label']; ?></a>
-                <?php endforeach; ?>
-            </div>
-        </nav>
-
         <section class="section-padding fix">
             <div class="container">
                 <div class="section-title text-center">
@@ -51,6 +35,19 @@ $forex_current = 'forex-currency-exchange';
                     remittance, or another declared purpose. Limits depend on the currency and declared purpose
                     under RBI/FEMA guidelines &mdash; we confirm the applicable limit for your specific request.
                 </p>
+                <div class="svc-why-grid">
+                    <div class="svc-why-item"><div class="check">01</div><div><h4>Purpose-code guidance</h4><p>Every exchange under RBI/FEMA rules is tied to a declared purpose &mdash; we help you identify and document the correct one for your request.</p></div></div>
+                    <div class="svc-why-item"><div class="check">02</div><div><h4>Leftover currency accepted</h4><p>Bringing back unused foreign currency from a completed trip? We handle the buy-back process against the applicable documentation.</p></div></div>
+                    <div class="svc-why-item"><div class="check">03</div><div><h4>Business remittance support</h4><p>For business-purpose exchange, we guide you on the additional company documentation typically required.</p></div></div>
+                    <div class="svc-why-item"><div class="check">04</div><div><h4>Same-day quotation</h4><p>You get a rate quotation confirmed on the same day you enquire, before any documents are needed.</p></div></div>
+                </div>
+                <h3 style="margin:32px 0 14px; font-size:18px;">Documents you'll typically need</h3>
+                <div class="svc-checklist">
+                    <div class="svc-checklist-item"><div class="tick"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></div><span class="txt">PAN card</span></div>
+                    <div class="svc-checklist-item"><div class="tick"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></div><span class="txt">Passport with valid visa or travel proof, where applicable</span></div>
+                    <div class="svc-checklist-item"><div class="tick"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></div><span class="txt">Purpose-of-travel or purpose-of-exchange declaration (FEMA Form A2)</span></div>
+                    <div class="svc-checklist-item"><div class="tick"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></div><span class="txt">Original currency purchase receipt, for exchanging leftover currency back</span></div>
+                </div>
             </div>
         </section>
 
@@ -104,6 +101,14 @@ $forex_current = 'forex-currency-exchange';
                             <div class="faq-item">
                                 <div class="faq-question">Can I exchange currency left over from a trip? <i class="fa-solid fa-plus"></i></div>
                                 <div class="faq-answer"><p>Yes &mdash; leftover foreign currency can usually be exchanged back, subject to the applicable purpose-code documentation and any limits under RBI/FEMA guidelines.</p></div>
+                            </div>
+                            <div class="faq-item">
+                                <div class="faq-question">What purpose codes does currency exchange cover? <i class="fa-solid fa-plus"></i></div>
+                                <div class="faq-answer"><p>Common examples include leisure travel, business travel, medical treatment abroad and certain business remittances. We'll confirm which purpose code applies to your specific request.</p></div>
+                            </div>
+                            <div class="faq-item">
+                                <div class="faq-question">Do I need the original receipt to exchange leftover currency? <i class="fa-solid fa-plus"></i></div>
+                                <div class="faq-answer"><p>It helps but isn't always mandatory &mdash; we'll confirm what's needed based on the currency, amount and how it was originally acquired.</p></div>
                             </div>
                         </div>
                     </div>

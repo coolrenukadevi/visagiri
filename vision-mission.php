@@ -3,17 +3,6 @@ $page_title = "Vision &amp; Mission &ndash; Visa Agency";
 $page_description = "Visa Agency's vision and mission &ndash; making the paperwork stage of travel ordinary, with a tracked, transparent process handled by one caseworker per file.";
 include __DIR__ . '/includes/header.php';
 
-$about_siblings = [
-    ['slug' => 'about', 'label' => 'About Us'],
-    ['slug' => 'why-choose-us', 'label' => 'Why Choose Us'],
-    ['slug' => 'vision-mission', 'label' => 'Vision &amp; Mission'],
-    ['slug' => 'leadership', 'label' => 'Leadership'],
-    ['slug' => 'our-journey', 'label' => 'Our Journey'],
-    ['slug' => 'our-team', 'label' => 'Our Team'],
-    ['slug' => 'partners', 'label' => 'Partners'],
-    ['slug' => 'careers', 'label' => 'Careers'],
-];
-$about_current = 'vision-mission';
 ?>
         <!-- Breadcrumb-Wrapper Section Start -->
         <section class="breadcrumb-wrapper fix bg-cover" style="background-image: url(assets/img/inner-page/breadcrumb.jpg);">
@@ -34,14 +23,6 @@ $about_current = 'vision-mission';
             </div>
         </section>
 
-        <nav class="svc-sibling-nav" aria-label="Company pages">
-            <div class="svc-sibling-inner">
-                <?php foreach ($about_siblings as $sib): ?>
-                <a href="<?php echo $sib['slug']; ?>" class="<?php echo $sib['slug'] === $about_current ? 'current' : ''; ?>"><?php echo $sib['label']; ?></a>
-                <?php endforeach; ?>
-            </div>
-        </nav>
-
         <section class="hr-section" style="padding-top:48px;">
             <div class="container">
                 <div class="hr-head">
@@ -58,6 +39,39 @@ $about_current = 'vision-mission';
                         <span class="tag">Mission</span>
                         <h3>Handle every file with the same precision, start to finish.</h3>
                         <p>We review, format and check every document against the exact standard each consulate expects, and assign one caseworker who stays with your application from intake to appointment &mdash; while being upfront that final decisions rest with the relevant embassy or authority.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="hr-section" style="background:#fff; border-top:1px solid var(--border-color); border-bottom:1px solid var(--border-color);">
+            <div class="container">
+                <div class="hr-head">
+                    <p class="hr-eyebrow">What This Looks Like In Practice</p>
+                    <h2>Three commitments behind the mission</h2>
+                    <p>Vision and mission statements are easy to write and easy to ignore &mdash; here's what ours actually means for how your file is handled.</p>
+                </div>
+                <div class="ab-why-list">
+                    <div class="ab-why-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>
+                        <div>
+                            <h3>Transparency over guesswork</h3>
+                            <p>You always know which stage your application is at and what happens next, instead of waiting on an unexplained status.</p>
+                        </div>
+                    </div>
+                    <div class="ab-why-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18M3 12h18"/></svg>
+                        <div>
+                            <h3>Consistency across every destination</h3>
+                            <p>The same documentation rigour applies whether your file is headed to a nearby consulate or a country we rarely process, because the standard doesn't change by destination.</p>
+                        </div>
+                    </div>
+                    <div class="ab-why-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="1.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+                        <div>
+                            <h3>Honesty about what we don't control</h3>
+                            <p>We're upfront that the final visa decision belongs to the embassy or authority, not us &mdash; our job is to remove every avoidable reason for delay or refusal.</p>
+                        </div>
                     </div>
                 </div>
             </div>

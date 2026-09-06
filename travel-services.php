@@ -3,15 +3,6 @@ $page_title = "Travel Services &ndash; Insurance, Flight &amp; Hotel, Corporate 
 $page_description = "Travel insurance, flight &amp; hotel reservation assistance, invitation letters, airport meet &amp; assist and corporate travel support alongside your visa filing. By Visa Agency, Patna.";
 include __DIR__ . '/includes/header.php';
 
-$travel_siblings = [
-    ['slug' => 'travel-services', 'label' => 'Overview'],
-    ['slug' => 'travel-insurance', 'label' => 'Travel Insurance'],
-    ['slug' => 'flight-hotel', 'label' => 'Flight &amp; Hotel'],
-    ['slug' => 'invitation-letter', 'label' => 'Invitation Letters'],
-    ['slug' => 'airport-assist', 'label' => 'Airport Assist'],
-    ['slug' => 'corporate-travel', 'label' => 'Corporate Travel'],
-];
-$travel_current = 'travel-services';
 ?>
         <!-- Breadcrumb-Wrapper Section Start -->
         <section class="breadcrumb-wrapper fix bg-cover" style="background-image: url(assets/img/inner-page/breadcrumb.jpg);">
@@ -49,14 +40,6 @@ $travel_current = 'travel-services';
                 </div>
             </div>
         </section>
-
-        <nav class="svc-sibling-nav" aria-label="Travel services">
-            <div class="svc-sibling-inner">
-                <?php foreach ($travel_siblings as $sib): ?>
-                <a href="<?php echo $sib['slug']; ?>" class="<?php echo $sib['slug'] === $travel_current ? 'current' : ''; ?>"><?php echo $sib['label']; ?></a>
-                <?php endforeach; ?>
-            </div>
-        </nav>
 
         <!-- CATEGORY TEASER GRID -->
         <section class="section-padding fix">

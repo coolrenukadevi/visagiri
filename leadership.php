@@ -3,17 +3,6 @@ $page_title = "Leadership &ndash; Visa Agency";
 $page_description = "The leadership team behind Visa Agency's case strategy, documentation standards and client experience across Patna, Ranchi, Raipur and Bhopal.";
 include __DIR__ . '/includes/header.php';
 
-$about_siblings = [
-    ['slug' => 'about', 'label' => 'About Us'],
-    ['slug' => 'why-choose-us', 'label' => 'Why Choose Us'],
-    ['slug' => 'vision-mission', 'label' => 'Vision &amp; Mission'],
-    ['slug' => 'leadership', 'label' => 'Leadership'],
-    ['slug' => 'our-journey', 'label' => 'Our Journey'],
-    ['slug' => 'our-team', 'label' => 'Our Team'],
-    ['slug' => 'partners', 'label' => 'Partners'],
-    ['slug' => 'careers', 'label' => 'Careers'],
-];
-$about_current = 'leadership';
 ?>
         <!-- Breadcrumb-Wrapper Section Start -->
         <section class="breadcrumb-wrapper fix bg-cover" style="background-image: url(assets/img/inner-page/breadcrumb.jpg);">
@@ -33,14 +22,6 @@ $about_current = 'leadership';
                 </div>
             </div>
         </section>
-
-        <nav class="svc-sibling-nav" aria-label="Company pages">
-            <div class="svc-sibling-inner">
-                <?php foreach ($about_siblings as $sib): ?>
-                <a href="<?php echo $sib['slug']; ?>" class="<?php echo $sib['slug'] === $about_current ? 'current' : ''; ?>"><?php echo $sib['label']; ?></a>
-                <?php endforeach; ?>
-            </div>
-        </nav>
 
         <section class="hr-section" style="padding-top:48px;">
             <div class="container">
@@ -73,6 +54,43 @@ $about_current = 'leadership';
                         <h3>Client Experience Lead</h3>
                         <span class="ab-team-role">Client Support</span>
                         <p class="bio">Coordinates appointments, communication and support for clients across all four cities we serve.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="hr-section" style="background:#fff; border-top:1px solid var(--border-color); border-bottom:1px solid var(--border-color);">
+            <div class="container">
+                <div class="hr-head">
+                    <p class="hr-eyebrow">How We Work</p>
+                    <h2>One caseworker owns your file, top to bottom</h2>
+                    <p>Rather than passing your application between departments, leadership assigns one caseworker who stays with your case from intake to visa collection &mdash; while our operations leads set the documentation standards that caseworker follows.</p>
+                </div>
+                <div class="hr-svc-grid">
+                    <div class="hr-svc-card">
+                        <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--brand-blue)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l2.5 2.5L16 9"/></svg>
+                        <h3>Standards set centrally</h3>
+                        <p>Documentation checklists and quality standards are set once by our operations leadership and applied consistently across every office.</p>
+                    </div>
+                    <div class="hr-svc-card">
+                        <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--brand-blue)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v5h5"/></svg>
+                        <h3>Escalation when it matters</h3>
+                        <p>If your case needs senior attention &mdash; a complex document issue or an embassy query &mdash; leadership is reachable, not several layers removed.</p>
+                    </div>
+                    <div class="hr-svc-card">
+                        <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--brand-blue)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18M3 12h18"/></svg>
+                        <h3>Consistent across cities</h3>
+                        <p>The same leadership team oversees Patna, Ranchi, Raipur and Bhopal, so the process you get doesn't depend on which office you walk into.</p>
+                    </div>
+                </div>
+                <div class="faq-accordion" style="margin-top:32px;">
+                    <div class="faq-item active">
+                        <div class="faq-question">Can I speak with a senior team member directly? <i class="fa-solid fa-plus"></i></div>
+                        <div class="faq-answer"><p>If your caseworker feels your situation needs it, they'll escalate to the relevant lead. You can also request this directly through your caseworker or our <a href="contact">contact page</a>.</p></div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">Does the leadership team change per city? <i class="fa-solid fa-plus"></i></div>
+                        <div class="faq-answer"><p>No &mdash; the same leadership team sets standards and oversees casework across all four cities we serve, so quality and process stay consistent.</p></div>
                     </div>
                 </div>
             </div>

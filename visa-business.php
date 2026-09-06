@@ -3,19 +3,6 @@ $page_title = "Business Visa Consultancy &ndash; Visa Agency";
 $page_description = "Business visa consultancy for meetings, conferences and trade travel &ndash; invitation letters, corporate documentation and application filing.";
 include __DIR__ . '/includes/header.php';
 
-$visa_siblings = [
-    ['slug' => 'visa-services', 'label' => 'Overview'],
-    ['slug' => 'visa-tourist', 'label' => 'Tourist'],
-    ['slug' => 'visa-business', 'label' => 'Business'],
-    ['slug' => 'visa-work', 'label' => 'Work'],
-    ['slug' => 'visa-family', 'label' => 'Family'],
-    ['slug' => 'visa-transit', 'label' => 'Transit'],
-    ['slug' => 'visa-medical', 'label' => 'Medical'],
-    ['slug' => 'visa-sports', 'label' => 'Sports'],
-    ['slug' => 'visa-crew', 'label' => 'Crew'],
-    ['slug' => 'visa-extension', 'label' => 'Extension'],
-];
-$visa_current = 'visa-business';
 ?>
         <!-- Breadcrumb-Wrapper Section Start -->
         <section class="breadcrumb-wrapper fix bg-cover" style="background-image: url(assets/img/inner-page/breadcrumb.jpg);">
@@ -35,14 +22,6 @@ $visa_current = 'visa-business';
                 </div>
             </div>
         </section>
-
-        <nav class="svc-sibling-nav" aria-label="Visa categories">
-            <div class="svc-sibling-inner">
-                <?php foreach ($visa_siblings as $sib): ?>
-                <a href="<?php echo $sib['slug']; ?>" class="<?php echo $sib['slug'] === $visa_current ? 'current' : ''; ?>"><?php echo $sib['label']; ?></a>
-                <?php endforeach; ?>
-            </div>
-        </nav>
 
         <section class="section-padding fix">
             <div class="container">

@@ -3,14 +3,6 @@ $page_title = "Travel Forex Guidance &ndash; Visa Agency";
 $page_description = "Not sure whether to carry cash, load a forex card, or split between the two? Travel forex guidance worked out with you, for your specific trip.";
 include __DIR__ . '/includes/header.php';
 
-$forex_siblings = [
-    ['slug' => 'forex', 'label' => 'Overview'],
-    ['slug' => 'forex-foreign-currency', 'label' => 'Foreign Currency'],
-    ['slug' => 'forex-card', 'label' => 'Forex Card'],
-    ['slug' => 'forex-currency-exchange', 'label' => 'Currency Exchange'],
-    ['slug' => 'forex-travel', 'label' => 'Travel Forex'],
-];
-$forex_current = 'forex-travel';
 ?>
         <!-- Breadcrumb-Wrapper Section Start -->
         <section class="breadcrumb-wrapper fix bg-cover" style="background-image: url(assets/img/inner-page/breadcrumb.jpg);">
@@ -31,14 +23,6 @@ $forex_current = 'forex-travel';
             </div>
         </section>
 
-        <nav class="svc-sibling-nav" aria-label="Forex services">
-            <div class="svc-sibling-inner">
-                <?php foreach ($forex_siblings as $sib): ?>
-                <a href="<?php echo $sib['slug']; ?>" class="<?php echo $sib['slug'] === $forex_current ? 'current' : ''; ?>"><?php echo $sib['label']; ?></a>
-                <?php endforeach; ?>
-            </div>
-        </nav>
-
         <section class="section-padding fix">
             <div class="container">
                 <div class="section-title text-center">
@@ -50,6 +34,12 @@ $forex_current = 'forex-travel';
                     currency, amount and format that fits your specific trip, then handle whichever option you
                     choose &mdash; including a combined quotation if you want both currency notes and a card.
                 </p>
+                <div class="svc-why-grid">
+                    <div class="svc-why-item"><div class="check">01</div><div><h4>Trip-specific recommendation</h4><p>We factor in your destination, trip length and how you plan to spend &mdash; not a one-size-fits-all suggestion.</p></div></div>
+                    <div class="svc-why-item"><div class="check">02</div><div><h4>Combined cash + card quotes</h4><p>Want a split between physical currency and a forex card? We quote both together so you can compare before deciding.</p></div></div>
+                    <div class="svc-why-item"><div class="check">03</div><div><h4>Group &amp; family trips</h4><p>Travelling with family or a group? We help work out a sensible split across travellers rather than quoting each person separately.</p></div></div>
+                    <div class="svc-why-item"><div class="check">04</div><div><h4>No pressure to decide upfront</h4><p>You can start with a quotation and enquiry, and only commit once you've compared the options.</p></div></div>
+                </div>
             </div>
         </section>
 

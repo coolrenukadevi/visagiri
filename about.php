@@ -4,17 +4,6 @@ $page_description = "Visa Agency is a Ministry of Tourism recognised, technology
 include __DIR__ . '/includes/header.php';
 $abCountryCount = count($VISA_AGENCY_COUNTRIES ?? []);
 
-$about_siblings = [
-    ['slug' => 'about', 'label' => 'About Us'],
-    ['slug' => 'why-choose-us', 'label' => 'Why Choose Us'],
-    ['slug' => 'vision-mission', 'label' => 'Vision &amp; Mission'],
-    ['slug' => 'leadership', 'label' => 'Leadership'],
-    ['slug' => 'our-journey', 'label' => 'Our Journey'],
-    ['slug' => 'our-team', 'label' => 'Our Team'],
-    ['slug' => 'partners', 'label' => 'Partners'],
-    ['slug' => 'careers', 'label' => 'Careers'],
-];
-$about_current = 'about';
 ?>
         <!-- Breadcrumb-Wrapper Section Start -->
         <section class="breadcrumb-wrapper fix bg-cover" style="background-image: url(assets/img/inner-page/breadcrumb.jpg);">
@@ -65,14 +54,6 @@ $about_current = 'about';
                 </div>
             </div>
         </section>
-
-        <nav class="svc-sibling-nav" aria-label="Company pages">
-            <div class="svc-sibling-inner">
-                <?php foreach ($about_siblings as $sib): ?>
-                <a href="<?php echo $sib['slug']; ?>" class="<?php echo $sib['slug'] === $about_current ? 'current' : ''; ?>"><?php echo $sib['label']; ?></a>
-                <?php endforeach; ?>
-            </div>
-        </nav>
 
         <section class="hr-section" style="background:#fff; border-top:1px solid var(--border-color); border-bottom:1px solid var(--border-color);">
             <div class="container">

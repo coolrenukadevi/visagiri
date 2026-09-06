@@ -3,15 +3,6 @@ $page_title = "Document Legalisation Services &ndash; Visa Agency";
 $page_description = "End-to-end document legalisation &ndash; notarisation through state, MEA and embassy-level clearance, managed for you. By Visa Agency, Patna.";
 include __DIR__ . '/includes/header.php';
 
-$apostille_siblings = [
-    ['slug' => 'apostille', 'label' => 'Overview'],
-    ['slug' => 'apostille-mea', 'label' => 'MEA Apostille'],
-    ['slug' => 'apostille-embassy-attestation', 'label' => 'Embassy Attestation'],
-    ['slug' => 'apostille-certificate-attestation', 'label' => 'Certificate Attestation'],
-    ['slug' => 'apostille-document-legalisation', 'label' => 'Document Legalisation'],
-    ['slug' => 'apostille-translation-services', 'label' => 'Translation Services'],
-];
-$apostille_current = 'apostille-document-legalisation';
 ?>
         <!-- Breadcrumb-Wrapper Section Start -->
         <section class="breadcrumb-wrapper fix bg-cover" style="background-image: url(assets/img/inner-page/breadcrumb.jpg);">
@@ -50,14 +41,6 @@ $apostille_current = 'apostille-document-legalisation';
                 </div>
             </div>
         </section>
-
-        <nav class="svc-sibling-nav" aria-label="Apostille services">
-            <div class="svc-sibling-inner">
-                <?php foreach ($apostille_siblings as $sib): ?>
-                <a href="<?php echo $sib['slug']; ?>" class="<?php echo $sib['slug'] === $apostille_current ? 'current' : ''; ?>"><?php echo $sib['label']; ?></a>
-                <?php endforeach; ?>
-            </div>
-        </nav>
 
         <section class="section-padding fix">
             <div class="container">

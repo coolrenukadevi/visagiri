@@ -3,15 +3,6 @@ $page_title = "Corporate Travel &amp; Visa Support &ndash; Visa Agency";
 $page_description = "Corporate travel and visa support for businesses sending employees abroad &ndash; group intake, company documentation and a single point of contact.";
 include __DIR__ . '/includes/header.php';
 
-$travel_siblings = [
-    ['slug' => 'travel-services', 'label' => 'Overview'],
-    ['slug' => 'travel-insurance', 'label' => 'Travel Insurance'],
-    ['slug' => 'flight-hotel', 'label' => 'Flight &amp; Hotel'],
-    ['slug' => 'invitation-letter', 'label' => 'Invitation Letters'],
-    ['slug' => 'airport-assist', 'label' => 'Airport Assist'],
-    ['slug' => 'corporate-travel', 'label' => 'Corporate Travel'],
-];
-$travel_current = 'corporate-travel';
 ?>
         <!-- Breadcrumb-Wrapper Section Start -->
         <section class="breadcrumb-wrapper fix bg-cover" style="background-image: url(assets/img/inner-page/breadcrumb.jpg);">
@@ -31,14 +22,6 @@ $travel_current = 'corporate-travel';
                 </div>
             </div>
         </section>
-
-        <nav class="svc-sibling-nav" aria-label="Travel services">
-            <div class="svc-sibling-inner">
-                <?php foreach ($travel_siblings as $sib): ?>
-                <a href="<?php echo $sib['slug']; ?>" class="<?php echo $sib['slug'] === $travel_current ? 'current' : ''; ?>"><?php echo $sib['label']; ?></a>
-                <?php endforeach; ?>
-            </div>
-        </nav>
 
         <section class="section-padding fix">
             <div class="container">
@@ -69,10 +52,24 @@ $travel_current = 'corporate-travel';
                         <div class="svc-step-body"><h3>Single point of contact</h3><p>One caseworker reports status for the whole group, instead of your team following up individually.</p></div>
                     </div>
                 </div>
+                <h3 style="margin:32px 0 14px; font-size:18px;">Why companies use a single point of contact</h3>
+                <div class="svc-why-grid">
+                    <div class="svc-why-item"><div class="check">01</div><div><h4>One status report, not several</h4><p>Your HR or travel desk gets a single consolidated update on the whole group, instead of chasing individual traveller status.</p></div></div>
+                    <div class="svc-why-item"><div class="check">02</div><div><h4>Consistent documentation standard</h4><p>Every traveller's application is checked against the same standard, reducing the risk of one weak file holding up the group.</p></div></div>
+                    <div class="svc-why-item"><div class="check">03</div><div><h4>Mixed visa categories handled together</h4><p>A group can include business, work and family-accompanying travellers on the same trip &mdash; we coordinate all categories as one engagement.</p></div></div>
+                </div>
                 <div class="faq-accordion" style="margin-top:32px;">
                     <div class="faq-item active">
                         <div class="faq-question">How does corporate travel support pricing work? <i class="fa-solid fa-plus"></i></div>
                         <div class="faq-answer"><p>Each traveller's visa and travel costs are quoted individually, with a coordinated group timeline. Contact us with your group size and destination for a specific quote.</p></div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">What's the minimum group size for corporate support? <i class="fa-solid fa-plus"></i></div>
+                        <div class="faq-answer"><p>There's no fixed minimum &mdash; this support works whether you're sending two employees or a larger team, since the coordination benefit scales with group size.</p></div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">Can our company be billed directly instead of individual employees? <i class="fa-solid fa-plus"></i></div>
+                        <div class="faq-answer"><p>Yes &mdash; we can arrange company-level billing for group bookings. Tell us your preference when you submit the group enquiry.</p></div>
                     </div>
                 </div>
                 <div class="text-center mt-5">

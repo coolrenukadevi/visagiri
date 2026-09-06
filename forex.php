@@ -3,14 +3,6 @@ $page_title = "Forex &amp; Foreign Currency Services &ndash; Visa Agency";
 $page_description = "Buy foreign currency, load a travel forex card, exchange currency or get travel forex guidance &ndash; document-assisted, quotation-first, with tracked status. By Visa Agency, Patna.";
 include __DIR__ . '/includes/header.php';
 
-$forex_siblings = [
-    ['slug' => 'forex', 'label' => 'Overview'],
-    ['slug' => 'forex-foreign-currency', 'label' => 'Foreign Currency'],
-    ['slug' => 'forex-card', 'label' => 'Forex Card'],
-    ['slug' => 'forex-currency-exchange', 'label' => 'Currency Exchange'],
-    ['slug' => 'forex-travel', 'label' => 'Travel Forex'],
-];
-$forex_current = 'forex';
 ?>
         <!-- Breadcrumb-Wrapper Section Start -->
         <section class="breadcrumb-wrapper fix bg-cover" style="background-image: url(assets/img/inner-page/breadcrumb.jpg);">
@@ -48,14 +40,6 @@ $forex_current = 'forex';
                 </div>
             </div>
         </section>
-
-        <nav class="svc-sibling-nav" aria-label="Forex services">
-            <div class="svc-sibling-inner">
-                <?php foreach ($forex_siblings as $sib): ?>
-                <a href="<?php echo $sib['slug']; ?>" class="<?php echo $sib['slug'] === $forex_current ? 'current' : ''; ?>"><?php echo $sib['label']; ?></a>
-                <?php endforeach; ?>
-            </div>
-        </nav>
 
         <!-- CATEGORY TEASER GRID -->
         <section class="section-padding fix">
