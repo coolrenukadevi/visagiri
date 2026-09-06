@@ -62,6 +62,7 @@ $sections = [
     'Resources' => [
         'icon' => 'resources',
         'links' => [
+            '/resources/' => 'Resources Hub',
             '/enquire/' => 'Submit a Visa Enquiry',
             '/faq/' => 'FAQ',
             '/visa-process/' => 'Visa Process',

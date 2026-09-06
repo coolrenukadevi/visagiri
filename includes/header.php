@@ -41,8 +41,48 @@ $supportPhoneDisplay = setting('contact_phone_display', '+91 7065 819 819');
 
 $navLinks = [
     ['label' => 'Visa Process', 'href' => '/visa-process/', 'icon' => 'visa-process'],
-    ['label' => 'Visa Updates', 'href' => '/blog/', 'icon' => 'visa-updates'],
 ];
+
+// Resources mega-menu — every link points to a genuinely real, already
+// routable page (see AUDIT.md's Resources Hub entry). No fabricated
+// guide/tool names; document-checklists and resources/tools are
+// honestly labeled "Coming Soon" since they're still content-pending
+// stubs, not hidden or pretended-finished.
+$resourcesMenu = [
+    'Guides & Documents' => [
+        ['label' => 'Documentation Assistance', 'href' => '/documentation/'],
+        ['label' => 'Document Templates', 'href' => '/document-templates/'],
+        ['label' => 'Document Checklists (Coming Soon)', 'href' => '/document-checklists/'],
+    ],
+    'Visa Information' => [
+        ['label' => 'Visa Types', 'href' => '/visa-type/'],
+        ['label' => 'Countries We Serve', 'href' => '/countries/'],
+        ['label' => 'Embassy Directory', 'href' => '/embassy-directory/'],
+    ],
+    'Tools' => [
+        ['label' => 'Track Your Application', 'href' => '/track-visa/'],
+        ['label' => 'Check Visa Status', 'href' => '/visa-status/'],
+        ['label' => 'Visa Tools (Coming Soon)', 'href' => '/resources/tools/'],
+    ],
+    'Updates & Help' => [
+        ['label' => 'Visa Updates & News', 'href' => '/blog/'],
+        ['label' => 'FAQs', 'href' => '/faq/'],
+        ['label' => 'Submit an Enquiry', 'href' => '/enquire/'],
+    ],
+];
+$resourcesIsActive = static function () use ($resourcesMenu, $currentPath): bool {
+    if ($currentPath === '/resources/' || str_starts_with($currentPath, '/resources/')) {
+        return true;
+    }
+    foreach ($resourcesMenu as $group) {
+        foreach ($group as $item) {
+            if ($item['href'] !== '/' && str_starts_with($currentPath, $item['href'])) {
+                return true;
+            }
+        }
+    }
+    return false;
+};
 
 // Country mega-menu — see includes/data.php's country_mega_menu_data().
 $countryMenuData = country_mega_menu_data();
@@ -383,6 +423,30 @@ foreach ([
                 <?php foreach ($navLinks as $link): ?>
                 <li><a href="<?= e($link['href']) ?>"<?= $isActive($link['href']) ? ' class="is-active"' : '' ?>><span class="site-header__nav-icon"><?= primary_nav_icon($link['icon']) ?></span><?= e($link['label']) ?></a></li>
                 <?php endforeach; ?>
+                <li class="has-dropdown has-mega-menu">
+                    <a href="/resources/" id="resources-mega-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="resources-mega-menu"<?= $resourcesIsActive() ? ' class="is-active"' : '' ?>><span class="site-header__nav-icon"><?= primary_nav_icon('resources') ?></span>Resources</a>
+                    <div class="mega-menu" id="resources-mega-menu" aria-labelledby="resources-mega-trigger">
+                        <div class="mega-menu__columns">
+                            <?php foreach ($resourcesMenu as $resourcesGroupName => $resourcesGroupItems): ?>
+                            <div class="mega-menu__col">
+                                <div class="mega-menu__col-heading"><?= e($resourcesGroupName) ?></div>
+                                <ul>
+                                    <?php foreach ($resourcesGroupItems as $resourcesItem): ?>
+                                    <li><a href="<?= e($resourcesItem['href']) ?>"><?= e($resourcesItem['label']) ?></a></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <div class="mega-menu__cta">
+                            <div class="mega-menu__cta-copy">
+                                <strong>Need Help Choosing?</strong>
+                                <p>Browse guides, document checklists, tools and FAQs — or ask our team directly.</p>
+                            </div>
+                            <a href="/resources/" class="btn btn-gold btn-sm">Explore All Resources &rarr;</a>
+                        </div>
+                    </div>
+                </li>
                 <li class="has-dropdown has-mega-menu has-mega-menu--company">
                     <a href="/about/" id="company-mega-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="company-mega-menu"<?= $companyIsActive() ? ' class="is-active"' : '' ?>><span class="site-header__nav-icon"><?= primary_nav_icon('company') ?></span>Company <?= nav_chevron_icon() ?></a>
                     <div class="mega-menu mega-menu--company" id="company-mega-menu" aria-labelledby="company-mega-trigger">
@@ -535,6 +599,24 @@ foreach ([
                 <?php foreach ($navLinks as $link): ?>
                 <li><a href="<?= e($link['href']) ?>"><span class="site-header__nav-icon"><?= primary_nav_icon($link['icon']) ?></span><?= e($link['label']) ?></a></li>
                 <?php endforeach; ?>
+                <li class="site-header__mobile-accordion">
+                    <details>
+                        <summary><span class="site-header__mobile-summary-label"><span class="site-header__nav-icon"><?= primary_nav_icon('resources') ?></span>Resources</span></summary>
+                        <div class="site-header__mobile-accordion-body">
+                            <?php foreach ($resourcesMenu as $resourcesGroupName => $resourcesGroupItems): ?>
+                            <div class="site-header__mobile-subgroup">
+                                <span class="site-header__mobile-subheading"><?= e($resourcesGroupName) ?></span>
+                                <ul>
+                                    <?php foreach ($resourcesGroupItems as $resourcesItem): ?>
+                                    <li><a href="<?= e($resourcesItem['href']) ?>"><?= e($resourcesItem['label']) ?></a></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                            <?php endforeach; ?>
+                            <a href="/resources/" class="site-header__mobile-viewall">Explore All Resources &rarr;</a>
+                        </div>
+                    </details>
+                </li>
                 <li class="site-header__mobile-accordion">
                     <details>
                         <summary><span class="site-header__mobile-summary-label"><span class="site-header__nav-icon"><?= primary_nav_icon('company') ?></span>Company</span></summary>

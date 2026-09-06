@@ -221,6 +221,39 @@ require __DIR__ . '/../includes/header.php';
     </div>
 </section>
 
+<!-- Section 9b: Explore Visa Resources -->
+<section class="section">
+    <div class="container">
+        <div class="section-heading">
+            <span class="section-eyebrow">Resources</span>
+            <h2>Explore Visa Resources</h2>
+        </div>
+        <div class="card-grid">
+            <a href="/documentation/" class="card service-card">
+                <div class="card-title">Documentation Assistance</div>
+                <p>Understand exactly what documents your application needs.</p>
+            </a>
+            <a href="/document-templates/" class="card service-card">
+                <div class="card-title">Document Templates</div>
+                <p>Ready-made cover letters, NOCs, sponsor letters and more.</p>
+            </a>
+            <a href="/visa-process/" class="card service-card">
+                <div class="card-title">Visa Information</div>
+                <p>How our visa consultancy process works, step by step.</p>
+            </a>
+            <a href="/track-visa/" class="card service-card">
+                <div class="card-title">Track Your Application</div>
+                <p>Check the status of an existing visa application.</p>
+            </a>
+            <a href="/faq/" class="card service-card">
+                <div class="card-title">FAQs</div>
+                <p>Answers to common questions about visas and documents.</p>
+            </a>
+        </div>
+        <p style="text-align:center;margin-top:var(--space-6)"><a href="/resources/" class="btn btn-outline">Explore All Resources &rarr;</a></p>
+    </div>
+</section>
+
 <!-- Section 10: FAQ -->
 <section class="section" style="background:var(--surface)">
     <div class="container" style="max-width:760px">

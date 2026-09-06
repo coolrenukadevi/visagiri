@@ -193,6 +193,14 @@ switch ($segments[0] ?? '') {
     case 'document-templates':
         $dispatch("$root/pages/document-templates.php");
 
+    case 'resources':
+        // /resources/ or /resources/tools/ — both static handlers,
+        // no DB-backed slug resolution needed here.
+        if (($segments[1] ?? null) === 'tools') {
+            $dispatch("$root/pages/resources-tools.php");
+        }
+        $dispatch("$root/pages/resources.php");
+
     case 'embassy-directory':
         $dispatch("$root/pages/embassy-directory.php");
 

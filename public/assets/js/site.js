@@ -108,6 +108,7 @@
   initMegaMenu('attestation-mega-trigger', 'attestation-mega-menu');
   initMegaMenu('company-mega-trigger', 'company-mega-menu');
   initMegaMenu('countries-mega-trigger', 'countries-mega-menu');
+  initMegaMenu('resources-mega-trigger', 'resources-mega-menu');
 
   // Countries mega-menu live search. Same substring-match approach as
   // countries.js's /countries/ page filter, but scoped to the
