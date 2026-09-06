@@ -63,10 +63,23 @@
 .site-header__utility-bar {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: var(--space-4);
   padding: var(--space-2) 0;
   font-size: var(--font-size-xs);
+}
+
+/* Left-side tech-forward tagline — a stated fact (see
+   includes/encryption.php: AES-256-GCM really does encrypt sensitive
+   fields like passport/PAN numbers), not a decorative claim. Hidden
+   below 900px rather than truncated, since the WhatsApp+Login group
+   on the right already needs the space on tablet/mobile widths. */
+.site-header__utility-tagline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255, 255, 255, 0.75);
+  white-space: nowrap;
 }
 
 .site-header__utility-link {
@@ -86,6 +99,10 @@
   display: flex;
   align-items: center;
   gap: var(--space-5);
+}
+
+@media (max-width: 900px) {
+  .site-header__utility-tagline { display: none; }
 }
 
 @media (max-width: 768px) {
