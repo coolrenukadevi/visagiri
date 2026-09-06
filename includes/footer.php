@@ -7,8 +7,21 @@ declare(strict_types=1);
  * (founding date, CIN) are client-confirmed, not invented; see
  * AUDIT.md §7/§1 for sourcing. Region slugs are hardcoded (not
  * DB-queried) since the 6-region taxonomy is fixed and matches the
- * anchors rendered on /countries/.
+ * anchors rendered on /countries/. The two office addresses below are
+ * read live from the same `cities.office_address` rows the Location
+ * SEO pages render — the only two real walk-in offices the client
+ * confirmed — rather than retyped here, so the footer can never drift
+ * out of sync with those pages.
  */
+
+$footerBihar = state_by_slug('bihar');
+$footerPatna = $footerBihar ? city_by_slug((int) $footerBihar['id'], 'patna') : null;
+$footerUP = state_by_slug('uttar-pradesh');
+$footerNoida = $footerUP ? city_by_slug((int) $footerUP['id'], 'noida') : null;
+$footerOffices = array_values(array_filter([
+    ($footerPatna['office_address'] ?? null) ? ['city' => 'Patna', 'address' => $footerPatna['office_address']] : null,
+    ($footerNoida['office_address'] ?? null) ? ['city' => 'Noida', 'address' => $footerNoida['office_address']] : null,
+]));
 ?>
 </main>
 
@@ -18,6 +31,16 @@ declare(strict_types=1);
             <div class="site-header__logo-mark">VISA<span>GIRI</span></div>
             <p class="site-footer__tagline">Seamless Visas. Limitless Journeys.</p>
             <p class="site-footer__muted">Visagiri drives innovation with smart, future-ready digital solutions that empower growth and transformation. A Unit of Tripgation Pvt Ltd.</p>
+            <?php if ($footerOffices): ?>
+            <ul class="site-footer__offices">
+                <?php foreach ($footerOffices as $office): ?>
+                <li>
+                    <span class="site-footer__office-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span>
+                    <span><strong><?= e($office['city']) ?> Office:</strong> <?= e($office['address']) ?></span>
+                </li>
+                <?php endforeach; ?>
+            </ul>
+            <?php endif; ?>
             <div class="site-footer__social">
                 <a href="https://www.facebook.com/Visagiri" target="_blank" rel="noopener noreferrer" aria-label="Visagiri on Facebook"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-7.5h2.5l.4-3H13.5V8.4c0-.87.24-1.46 1.49-1.46H16.5V4.34C16.2 4.3 15.2 4.2 14 4.2c-2.4 0-4 1.46-4 4.15V10.5H7.5v3H10V21h3.5z"/></svg></a>
                 <a href="https://www.instagram.com/hi_visagiri/" target="_blank" rel="noopener noreferrer" aria-label="Visagiri on Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="12" cy="12" r="3.8"/><circle cx="17.2" cy="6.8" r="1"/></svg></a>
@@ -68,7 +91,7 @@ declare(strict_types=1);
         </div>
 
         <div class="site-footer__col">
-            <h3><span class="site-footer__col-icon"><?= primary_nav_icon('countries') ?></span>Countries</h3>
+            <h3><span class="site-footer__col-icon"><?= primary_nav_icon('countries') ?></span>Countries &amp; Locations</h3>
             <ul>
                 <li><a href="/countries/#region-asia">Asia</a></li>
                 <li><a href="/countries/#region-europe">Europe</a></li>
@@ -76,7 +99,13 @@ declare(strict_types=1);
                 <li><a href="/countries/#region-south-america">South America</a></li>
                 <li><a href="/countries/#region-africa">Africa</a></li>
                 <li><a href="/countries/#region-oceania">Oceania</a></li>
-                <li><a href="/countries/">View All &rarr;</a></li>
+                <li><a href="/countries/">View All Countries &rarr;</a></li>
+            </ul>
+            <p class="site-footer__col-subheading">Visa Consultant By Location</p>
+            <ul>
+                <li><a href="/visa-consultant/">Visa Consultant in India</a></li>
+                <li><a href="/visa-consultant/bihar/">Visa Consultant in Bihar</a></li>
+                <li><a href="/visa-consultant/uttar-pradesh/">Visa Consultant in Uttar Pradesh</a></li>
             </ul>
         </div>
 
@@ -115,14 +144,6 @@ declare(strict_types=1);
                 <li><a href="/enquire/">Submit a Visa Enquiry</a></li>
             </ul>
         </div>
-        <div class="site-footer__col">
-            <h3><span class="site-footer__col-icon"><?= primary_nav_icon('countries') ?></span>Popular Locations</h3>
-            <ul>
-                <li><a href="/visa-consultant/">Visa Consultant in India</a></li>
-                <li><a href="/visa-consultant/bihar/">Visa Consultant in Bihar</a></li>
-                <li><a href="/visa-consultant/uttar-pradesh/">Visa Consultant in Uttar Pradesh</a></li>
-            </ul>
-        </div>
     </div>
 
     <div class="site-footer__disclaimer">
@@ -131,39 +152,33 @@ declare(strict_types=1);
         </div>
     </div>
 
-    <div class="site-footer__cta">
-        <div class="container site-footer__cta-inner">
-            <div>
+    <div class="site-footer__engage">
+        <div class="container site-footer__engage-card">
+            <div class="site-footer__engage-cta">
                 <h2>Need Assistance?</h2>
                 <p>Tell us what you need help with and our team will guide you through the next step.</p>
+                <button type="button" class="btn btn-gold btn-lg js-open-enquiry-widget">Get Assistance</button>
             </div>
-            <button type="button" class="btn btn-gold btn-lg js-open-enquiry-widget">Get Assistance</button>
+            <div class="site-footer__engage-divider" aria-hidden="true"></div>
+            <div class="site-footer__engage-contact">
+                <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to get in touch.")) ?>" target="_blank" rel="noopener noreferrer">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 20z"/><path d="M16.7 13.9c-.3-.1-1.6-.8-1.8-.9-.2-.1-.4-.1-.6.1-.2.3-.7.9-.8 1-.2.2-.3.2-.5.1-.3-.1-1.2-.4-2.2-1.4-.8-.7-1.4-1.6-1.5-1.9-.2-.3 0-.4.1-.6l.4-.4c.1-.1.2-.3.2-.4.1-.2 0-.3 0-.5-.1-.1-.6-1.5-.8-2-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.1 0 1.2.9 2.4 1 2.6.1.2 1.8 2.8 4.4 3.8.6.3 1.1.4 1.5.5.6.2 1.2.2 1.6.1.5-.1 1.6-.6 1.8-1.3.2-.6.2-1.1.1-1.3 0-.1-.2-.2-.5-.3z"/></svg>
+                    <span><strong>WhatsApp</strong><small><?= e(setting('contact_phone_display', '+91 7065 819 819')) ?></small></span>
+                </a>
+                <a href="tel:<?= e(setting('contact_phone_dial', '+917065819819')) ?>">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .3 2 .7 2.9a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.2-1.3a2 2 0 0 1 2.1-.5c.9.4 1.9.6 2.9.7a2 2 0 0 1 1.8 2.1Z"/></svg>
+                    <span><strong>Call Us</strong><small><?= e(setting('contact_phone_display', '+91 7065 819 819')) ?></small></span>
+                </a>
+                <a href="mailto:<?= e(setting('contact_email', 'info@visagiri.com')) ?>">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 6c0-1.1-.9-2-2-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6Z"/><path d="m2 7 8.97 6.28a2 2 0 0 0 2.06 0L22 7"/></svg>
+                    <span><strong>Email Us</strong><small><?= e(setting('contact_email', 'info@visagiri.com')) ?></small></span>
+                </a>
+            </div>
         </div>
     </div>
 
-    <div class="site-footer__contact-strip">
-        <div class="container site-footer__contact-strip-inner">
-            <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to get in touch.")) ?>" target="_blank" rel="noopener noreferrer">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 20z"/><path d="M16.7 13.9c-.3-.1-1.6-.8-1.8-.9-.2-.1-.4-.1-.6.1-.2.3-.7.9-.8 1-.2.2-.3.2-.5.1-.3-.1-1.2-.4-2.2-1.4-.8-.7-1.4-1.6-1.5-1.9-.2-.3 0-.4.1-.6l.4-.4c.1-.1.2-.3.2-.4.1-.2 0-.3 0-.5-.1-.1-.6-1.5-.8-2-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.1 0 1.2.9 2.4 1 2.6.1.2 1.8 2.8 4.4 3.8.6.3 1.1.4 1.5.5.6.2 1.2.2 1.6.1.5-.1 1.6-.6 1.8-1.3.2-.6.2-1.1.1-1.3 0-.1-.2-.2-.5-.3z"/></svg>
-                WhatsApp
-            </a>
-            <a href="tel:<?= e(setting('contact_phone_dial', '+917065819819')) ?>">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .3 2 .7 2.9a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.2-1.3a2 2 0 0 1 2.1-.5c.9.4 1.9.6 2.9.7a2 2 0 0 1 1.8 2.1Z"/></svg>
-                Call Us
-            </a>
-            <a href="mailto:<?= e(setting('contact_email', 'info@visagiri.com')) ?>">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 6c0-1.1-.9-2-2-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6Z"/><path d="m2 7 8.97 6.28a2 2 0 0 0 2.06 0L22 7"/></svg>
-                Email Us
-            </a>
-            <button type="button" class="js-open-enquiry-widget">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z"/></svg>
-                Get Assistance
-            </button>
-        </div>
-    </div>
-
-    <div class="site-footer__legal-row">
-        <div class="container">
+    <div class="site-footer__meta">
+        <div class="container site-footer__meta-inner">
             <nav aria-label="Legal and support">
                 <a href="/privacy/">Privacy Policy</a>
                 <a href="/terms/">Terms &amp; Conditions</a>
@@ -175,11 +190,6 @@ declare(strict_types=1);
                 <a href="/sitemap/">Sitemap</a>
                 <a href="/contact/">Contact Us</a>
             </nav>
-        </div>
-    </div>
-
-    <div class="site-footer__bottom">
-        <div class="container">
             <p>&copy; <?= date('Y') ?> <?= e(setting('company_name', 'Visagiri')) ?> &mdash; A Unit of <?= e(setting('company_parent', 'Tripgation Pvt Ltd')) ?>. Serving visa and travel-related requirements since <?= e(format_founding_date(setting('company_founding_date', '2015-04'))) ?>. CIN: <?= e(setting('company_cin', 'U63030UP2020PTC128661')) ?>. All rights reserved.</p>
         </div>
     </div>
