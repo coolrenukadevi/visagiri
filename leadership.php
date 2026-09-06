@@ -3,6 +3,11 @@ $page_title = "Leadership &ndash; Visa Agency";
 $page_description = "The leadership team behind Visa Agency's case strategy, documentation standards and client experience across Patna, Ranchi, Raipur and Bhopal.";
 include __DIR__ . '/includes/header.php';
 
+$lead_placards = [
+    ['title' => 'Standards set centrally',   'text' => 'Documentation checklists and quality standards are set once by our operations leadership and applied consistently across every office.', 'icon' => '<circle cx="12" cy="12" r="9"/><path d="M8 12l2.5 2.5L16 9"/>'],
+    ['title' => 'Escalation when it matters','text' => 'If your case needs senior attention &mdash; a complex document issue or an embassy query &mdash; leadership is reachable, not several layers removed.', 'icon' => '<path d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v5h5"/>'],
+    ['title' => 'Consistent across cities',  'text' => 'The same leadership team oversees Patna, Ranchi, Raipur and Bhopal, so the process you get does not depend on which office you walk into.', 'icon' => '<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18M3 12h18"/>'],
+];
 ?>
         <!-- Breadcrumb-Wrapper Section Start -->
         <section class="breadcrumb-wrapper fix bg-cover" style="background-image: url(assets/img/inner-page/breadcrumb.jpg);">
@@ -23,67 +28,65 @@ include __DIR__ . '/includes/header.php';
             </div>
         </section>
 
-        <section class="hr-section" style="padding-top:48px;">
+        <!-- ============ LEDE (navy band) ============ -->
+        <section style="background:var(--theme-2); color:var(--white); padding:44px 0 40px;">
             <div class="container">
-                <div class="hr-head">
-                    <p class="hr-eyebrow">Leadership</p>
-                    <h2>The people behind the process</h2>
-                    <p>Our leadership team oversees case strategy, documentation standards and client experience across every office we serve.</p>
+                <p class="ab-hero-lead" style="color:rgba(255,255,255,.82); font-size:1.05rem; max-width:70ch; margin:0;">Our leadership team oversees case strategy, documentation standards and client experience across every office we serve.</p>
+            </div>
+        </section>
+
+        <!-- ============ TEAM TICKETS ============ -->
+        <section class="section-padding fix">
+            <div class="container">
+                <div class="section-title text-center">
+                    <span class="sub-title-2 wow fadeInUp">Who We Are</span>
+                    <h2 class="split-text-right split-text-in-right">The People Behind The Process</h2>
                 </div>
-                <div class="ab-team-grid">
-                    <div class="ab-team-card">
-                        <div class="avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
-                        <h3>Founder &amp; Director</h3>
-                        <span class="ab-team-role">Case Strategy</span>
-                        <p class="bio">Sets overall case strategy and oversees relationships with embassy and consular partners.</p>
+                <div class="ab2-ticket-grid-4">
+                    <div class="ab2-ticket">
+                        <span class="ab2-ticket-role">Case Strategy</span>
+                        <h3 style="font-family:inherit; text-transform:none; font-size:1.05rem; font-weight:700; color:var(--header); margin:8px 0 8px;">Founder &amp; Director</h3>
+                        <p>Sets overall case strategy and oversees relationships with embassy and consular partners.</p>
                     </div>
-                    <div class="ab-team-card">
-                        <div class="avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
-                        <h3>Head of Visa Operations</h3>
-                        <span class="ab-team-role">Documentation Quality</span>
-                        <p class="bio">Leads documentation review and application quality across tourist, business, transit and family visa categories.</p>
+                    <div class="ab2-ticket">
+                        <span class="ab2-ticket-role">Documentation Quality</span>
+                        <h3 style="font-family:inherit; text-transform:none; font-size:1.05rem; font-weight:700; color:var(--header); margin:8px 0 8px;">Head of Visa Operations</h3>
+                        <p>Leads documentation review and application quality across tourist, business, transit and family visa categories.</p>
                     </div>
-                    <div class="ab-team-card">
-                        <div class="avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
-                        <h3>Head of Apostille &amp; Attestation</h3>
-                        <span class="ab-team-role">Document Legalisation</span>
-                        <p class="bio">Oversees document legalisation casework, including MEA apostille and embassy attestation chains.</p>
+                    <div class="ab2-ticket">
+                        <span class="ab2-ticket-role">Document Legalisation</span>
+                        <h3 style="font-family:inherit; text-transform:none; font-size:1.05rem; font-weight:700; color:var(--header); margin:8px 0 8px;">Head of Apostille &amp; Attestation</h3>
+                        <p>Oversees document legalisation casework, including MEA apostille and embassy attestation chains.</p>
                     </div>
-                    <div class="ab-team-card">
-                        <div class="avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
-                        <h3>Client Experience Lead</h3>
-                        <span class="ab-team-role">Client Support</span>
-                        <p class="bio">Coordinates appointments, communication and support for clients across all four cities we serve.</p>
+                    <div class="ab2-ticket">
+                        <span class="ab2-ticket-role">Client Support</span>
+                        <h3 style="font-family:inherit; text-transform:none; font-size:1.05rem; font-weight:700; color:var(--header); margin:8px 0 8px;">Client Experience Lead</h3>
+                        <p>Coordinates appointments, communication and support for clients across all four cities we serve.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="hr-section" style="background:#fff; border-top:1px solid var(--border-color); border-bottom:1px solid var(--border-color);">
+        <!-- ============ HOW WE WORK: PLACARDS ============ -->
+        <section class="section-padding fix section-bg-1">
             <div class="container">
-                <div class="hr-head">
-                    <p class="hr-eyebrow">How We Work</p>
-                    <h2>One caseworker owns your file, top to bottom</h2>
-                    <p>Rather than passing your application between departments, leadership assigns one caseworker who stays with your case from intake to visa collection &mdash; while our operations leads set the documentation standards that caseworker follows.</p>
+                <div class="section-title text-center">
+                    <span class="sub-title-2 wow fadeInUp">How We Work</span>
+                    <h2 class="split-text-right split-text-in-right">One Caseworker Owns Your File, Top To Bottom</h2>
+                    <p style="margin-top:10px;">Rather than passing your application between departments, leadership assigns one caseworker who stays with your case from intake to visa collection &mdash; while our operations leads set the documentation standards that caseworker follows.</p>
                 </div>
-                <div class="hr-svc-grid">
-                    <div class="hr-svc-card">
-                        <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--brand-blue)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l2.5 2.5L16 9"/></svg>
-                        <h3>Standards set centrally</h3>
-                        <p>Documentation checklists and quality standards are set once by our operations leadership and applied consistently across every office.</p>
+                <div class="ab2-placards">
+                    <?php foreach ($lead_placards as $t): ?>
+                    <div class="ab2-placard">
+                        <div class="tile"><svg viewBox="0 0 24 24"><?php echo $t['icon']; ?></svg></div>
+                        <div>
+                            <h3><?php echo htmlspecialchars($t['title']); ?></h3>
+                            <p><?php echo $t['text']; ?></p>
+                        </div>
                     </div>
-                    <div class="hr-svc-card">
-                        <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--brand-blue)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v5h5"/></svg>
-                        <h3>Escalation when it matters</h3>
-                        <p>If your case needs senior attention &mdash; a complex document issue or an embassy query &mdash; leadership is reachable, not several layers removed.</p>
-                    </div>
-                    <div class="hr-svc-card">
-                        <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="var(--brand-blue)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18M3 12h18"/></svg>
-                        <h3>Consistent across cities</h3>
-                        <p>The same leadership team oversees Patna, Ranchi, Raipur and Bhopal, so the process you get doesn't depend on which office you walk into.</p>
-                    </div>
+                    <?php endforeach; ?>
                 </div>
-                <div class="faq-accordion" style="margin-top:32px;">
+                <div class="faq-accordion" style="margin-top:36px;">
                     <div class="faq-item active">
                         <div class="faq-question">Can I speak with a senior team member directly? <i class="fa-solid fa-plus"></i></div>
                         <div class="faq-answer"><p>If your caseworker feels your situation needs it, they'll escalate to the relevant lead. You can also request this directly through your caseworker or our <a href="contact">contact page</a>.</p></div>
@@ -96,7 +99,7 @@ include __DIR__ . '/includes/header.php';
             </div>
         </section>
 
-        <section class="section-padding fix section-bg-1">
+        <section class="section-padding fix">
             <div class="container">
                 <div class="console-cta-band">
                     <div class="console-cta-inner">

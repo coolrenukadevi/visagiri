@@ -6314,3 +6314,11 @@ table.pp-table tr:hover td { background: var(--bg); }
 .ab2-city-panel .role { font-family: monospace; font-size: 0.76rem; color: var(--theme); font-weight: 700; margin-bottom: 10px; display: block; text-transform: uppercase; }
 .ab2-city-panel h3 { font-size: 1.6rem; color: var(--header); margin: 0 0 14px; text-transform: none; }
 .ab2-city-panel p { margin: 0; font-size: 0.96rem; color: var(--text); max-width: 52ch; }
+
+.ab2-mini-board-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+@media (max-width: 700px) { .ab2-mini-board-pair { grid-template-columns: 1fr; } }
+
+.ab2-ticket-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+@media (max-width: 980px) { .ab2-ticket-grid-4 { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .ab2-ticket-grid-4 { grid-template-columns: 1fr; } }
+.ab2-ticket-role { font-family: monospace; font-size: 0.72rem; color: var(--theme); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }

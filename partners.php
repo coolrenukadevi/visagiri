@@ -24,6 +24,13 @@ include __DIR__ . '/includes/header.php';
             </div>
         </section>
 
+        <!-- ============ LEDE (navy band) ============ -->
+        <section style="background:var(--theme-2); color:var(--white); padding:44px 0 40px;">
+            <div class="container">
+                <p class="ab-hero-lead" style="color:rgba(255,255,255,.82); font-size:1.05rem; max-width:70ch; margin:0;">Organisations Visa Agency works with to serve visa, apostille and travel clients better.</p>
+            </div>
+        </section>
+
         <section class="section-padding fix section-bg-1">
             <div class="container">
                 <div class="console-section-head">

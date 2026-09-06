@@ -3,6 +3,13 @@ $page_title = "Why Choose Us &ndash; Visa Agency";
 $page_description = "Document precision, transparent pricing, country specialists and 24x7 support &ndash; what clients mention when they refer Visa Agency to a friend.";
 include __DIR__ . '/includes/header.php';
 
+$why_placards = [
+    ['title' => 'Document precision',   'text' => "Every file is checked line by line against the destination's exact checklist before it ever reaches an embassy.", 'icon' => '<path d="M4 12l5 5L20 6"/>'],
+    ['title' => 'Transparent pricing',  'text' => 'Government fee and our service fee are always quoted as two separate lines, before you commit &mdash; never a blended or surprise charge.', 'icon' => '<rect x="4" y="10" width="16" height="10" rx="1.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>'],
+    ['title' => 'Country specialists',  'text' => "You're assigned one consultant who handles that destination regularly, not a rotating queue that re-reads your file each time.", 'icon' => '<circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18M3 12h18"/>'],
+    ['title' => 'A file you can watch','text' => 'Our <a href="track-application">application tracker</a> shows the stage your application is at, from intake to the day it reaches the visa window.', 'icon' => '<path d="M4 6h16M4 12h10M4 18h6"/><circle cx="19" cy="18" r="2.4"/>'],
+    ['title' => '24&times;7 support when it matters', 'text' => 'Reachable outside office hours for appointment days, biometrics, or a last-minute embassy query.', 'icon' => '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l4 2"/>'],
+];
 ?>
         <!-- Breadcrumb-Wrapper Section Start -->
         <section class="breadcrumb-wrapper fix bg-cover" style="background-image: url(assets/img/inner-page/breadcrumb.jpg);">
@@ -23,58 +30,35 @@ include __DIR__ . '/includes/header.php';
             </div>
         </section>
 
-        <section class="hr-section" style="padding-top:48px;">
+        <!-- ============ LEDE (navy band) ============ -->
+        <section style="background:var(--theme-2); color:var(--white); padding:44px 0 40px;">
             <div class="container">
-                <div class="hr-head">
-                    <p class="hr-eyebrow">Why Choose Us</p>
-                    <h2>Five things clients mention when they refer a friend</h2>
-                    <p>None of this is aspirational copy &mdash; it's the actual process every file goes through before it leaves our office.</p>
-                </div>
-                <div class="ab-why-list">
-                    <div class="ab-why-item">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>
+                <p class="ab-hero-lead" style="color:rgba(255,255,255,.82); font-size:1.05rem; max-width:70ch; margin:0;">Five things clients mention when they refer a friend. None of this is aspirational copy &mdash; it's the actual process every file goes through before it leaves our office.</p>
+            </div>
+        </section>
+
+        <!-- ============ WHY: PLACARDS ============ -->
+        <section class="section-padding fix">
+            <div class="container">
+                <div class="ab2-placards">
+                    <?php foreach ($why_placards as $t): ?>
+                    <div class="ab2-placard">
+                        <div class="tile"><svg viewBox="0 0 24 24"><?php echo $t['icon']; ?></svg></div>
                         <div>
-                            <h3>Document precision</h3>
-                            <p>Every file is checked line by line against the destination's exact checklist before it ever reaches an embassy.</p>
+                            <h3><?php echo htmlspecialchars($t['title']); ?></h3>
+                            <p><?php echo $t['text']; ?></p>
                         </div>
                     </div>
-                    <div class="ab-why-item">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="1.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
-                        <div>
-                            <h3>Transparent pricing</h3>
-                            <p>Government fee and our service fee are always quoted as two separate lines, before you commit &mdash; never a blended or surprise charge.</p>
-                        </div>
-                    </div>
-                    <div class="ab-why-item">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18M3 12h18"/></svg>
-                        <div>
-                            <h3>Country specialists</h3>
-                            <p>You're assigned one consultant who handles that destination regularly, not a rotating queue that re-reads your file each time.</p>
-                        </div>
-                    </div>
-                    <div class="ab-why-item">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h6"/><circle cx="19" cy="18" r="2.4"/></svg>
-                        <div>
-                            <h3>A file you can watch</h3>
-                            <p>Our <a href="track-application">application tracker</a> shows the stage your application is at, from intake to the day it reaches the visa window.</p>
-                        </div>
-                    </div>
-                    <div class="ab-why-item">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l4 2"/></svg>
-                        <div>
-                            <h3>24&times;7 support when it matters</h3>
-                            <p>Reachable outside office hours for appointment days, biometrics, or a last-minute embassy query.</p>
-                        </div>
-                    </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
         </section>
 
-        <section class="hr-section" style="background:#fff; border-top:1px solid var(--border-color); border-bottom:1px solid var(--border-color);">
+        <section class="section-padding fix section-bg-1">
             <div class="container">
-                <div class="hr-head">
-                    <p class="hr-eyebrow">Frequently Asked</p>
-                    <h2>Questions clients ask before switching to us</h2>
+                <div class="section-title text-center">
+                    <span class="sub-title-2 wow fadeInUp">Frequently Asked</span>
+                    <h2 class="split-text-right split-text-in-right">Questions Clients Ask Before Switching To Us</h2>
                 </div>
                 <div class="faq-accordion">
                     <div class="faq-item active">
@@ -93,7 +77,7 @@ include __DIR__ . '/includes/header.php';
             </div>
         </section>
 
-        <section class="section-padding fix section-bg-1">
+        <section class="section-padding fix">
             <div class="container">
                 <div class="console-cta-band">
                     <div class="console-cta-inner">
