@@ -63,34 +63,10 @@
 .site-header__utility-bar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: var(--space-4);
   padding: var(--space-2) 0;
   font-size: var(--font-size-xs);
-}
-
-.site-header__rate {
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-2);
-  white-space: nowrap;
-}
-
-.site-header__rate strong {
-  font-variant-numeric: tabular-nums;
-  color: var(--white);
-  font-weight: var(--font-weight-semibold);
-}
-
-.site-header__rate-label {
-  color: rgba(255, 255, 255, 0.6);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  font-size: 0.68rem;
-}
-
-.site-header__rate--unavailable {
-  color: rgba(255, 255, 255, 0.5);
 }
 
 .site-header__utility-link {
@@ -112,87 +88,17 @@
   gap: var(--space-5);
 }
 
-/* Rate widget trigger — an unstyled <button> wrapping the same
-   .site-header__rate markup so the whole thing is one accessible,
-   keyboard-focusable hit target that opens the details popover
-   below, matching the Login trigger's own button+dropdown shape. */
-.site-header__rate-trigger {
-  display: inline-flex;
-  align-items: center;
-  background: none;
-  border: none;
-  padding: 0;
-  font: inherit;
-  cursor: pointer;
-  color: inherit;
-  border-radius: var(--radius-sm);
-}
-
-.site-header__rate-trigger:focus-visible {
-  outline: 2px solid var(--visa-gold);
-  outline-offset: 3px;
-}
-
-/* Popover content is dark-on-light (unlike the dark utility bar it
-   opens from) since it's a substantial block of explanatory text —
-   reusing .dropdown-menu's existing light surface/shadow keeps it
-   consistent with every other dropdown on the site rather than
-   inventing a second popover style. */
-.site-header__rate-menu {
-  width: max(260px, min(320px, calc(100vw - var(--space-6))));
-  padding: var(--space-4);
-}
-
-.site-header__rate-menu-title {
-  font-size: var(--font-size-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--text-muted);
-  margin: 0 0 var(--space-1);
-}
-
-.site-header__rate-menu-value {
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-semibold);
-  font-variant-numeric: tabular-nums;
-  color: var(--text-dark);
-  margin: 0 0 var(--space-2);
-}
-
-.site-header__rate-menu-meta {
-  font-size: var(--font-size-sm);
-  color: var(--text-muted);
-  margin: 0 0 var(--space-1);
-}
-
-.site-header__rate-menu-disclaimer {
-  font-size: var(--font-size-xs);
-  color: var(--text-muted);
-  margin: var(--space-2) 0 var(--space-4);
-  padding-top: var(--space-2);
-  border-top: 1px solid var(--border);
-}
-
-.site-header__rate-menu-cta {
-  display: block;
-  text-align: center;
-}
-
 @media (max-width: 768px) {
   .site-header__utility-bar {
     padding: 6px 0;
   }
 
-  /* Compact mobile utility bar: rate + WhatsApp support, one line —
+  /* Compact mobile utility bar: WhatsApp support only, one line —
      Login stays reachable via the hamburger menu's own Login section
      (.site-header__mobile-login) rather than duplicating the trigger
      here, which is what keeps this from wrapping onto a second line. */
   .site-header__login { display: none; }
   .site-header__utility-link-text { display: none; }
-}
-
-@media (max-width: 420px) {
-  .site-header__rate-label { display: none; }
 }
 
 .site-header__bar {
@@ -1175,21 +1081,6 @@
   color: var(--text-muted);
   font-size: var(--font-size-sm);
   font-style: italic;
-}
-
-.site-header__mobile-rate {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  padding: var(--space-2) var(--space-3);
-  background: var(--visa-blue-light);
-  border-radius: var(--radius-md);
-  font-size: var(--font-size-sm);
-}
-
-.site-header__mobile-rate span {
-  font-size: var(--font-size-xs);
-  color: var(--text-muted);
 }
 
 .site-header__mobile-login {

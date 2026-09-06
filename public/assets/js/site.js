@@ -198,49 +198,6 @@
     });
   };
   initSimpleDropdown('login-menu-trigger', 'login-menu');
-  initSimpleDropdown('rate-menu-trigger', 'rate-menu');
-
-  // Header USD->INR rate: re-fetches every 5 minutes so the number
-  // can move while a visitor's tab stays open, without a full page
-  // reload. The server-rendered value (includes/currency-rate.php,
-  // cached ~1hr) already covers "not hardcoded" and "updates
-  // automatically across page loads" on its own — this only adds
-  // same-session freshness on top. Silently does nothing on failure;
-  // the last good value just stays on screen.
-  var rateValueEl = document.getElementById('site-header-rate-value');
-  var rateLabelEl = document.getElementById('site-header-rate-label');
-  var rateMenuValueEl = document.getElementById('rate-menu-value');
-  var rateMenuUpdatedEl = document.getElementById('rate-menu-updated');
-  var formatRateTimestamp = function (unixSeconds) {
-    var d = new Date(unixSeconds * 1000);
-    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    var pad = function (n) { return n < 10 ? '0' + n : String(n); };
-    var hours = d.getHours();
-    var ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12 || 12;
-    return pad(d.getDate()) + ' ' + months[d.getMonth()] + ' ' + d.getFullYear() + ', ' + pad(hours) + ':' + pad(d.getMinutes()) + ' ' + ampm;
-  };
-  if (rateValueEl) {
-    setInterval(function () {
-      fetch('/api-usd-inr-rate/', { cache: 'no-store' })
-        .then(function (res) { return res.ok ? res.json() : null; })
-        .then(function (data) {
-          if (data && typeof data.rate === 'number') {
-            rateValueEl.textContent = data.rate.toFixed(2);
-            if (rateLabelEl) {
-              rateLabelEl.textContent = data.stale ? 'Last known rate' : 'Indicative Rate';
-            }
-            if (rateMenuValueEl) {
-              rateMenuValueEl.textContent = data.rate.toFixed(2);
-            }
-            if (rateMenuUpdatedEl && typeof data.as_of === 'number') {
-              rateMenuUpdatedEl.textContent = formatRateTimestamp(data.as_of);
-            }
-          }
-        })
-        .catch(function () { /* leave the last known value on screen */ });
-    }, 5 * 60 * 1000);
-  }
 
   // Mobile Attestation accordion — closes any other open <details> in
   // the mobile nav when one is opened, so only one panel is expanded

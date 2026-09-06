@@ -3,15 +3,14 @@ declare(strict_types=1);
 
 /**
  * Minimal hand-rolled SMTP client — no PHPMailer/Composer, matching
- * this project's zero-dependency convention (see includes/encryption.php,
- * includes/currency-rate.php: everything hand-rolled against PHP's own
- * stdlib, no vendor/ directory anywhere in this codebase). Speaks just
- * enough SMTP (EHLO, STARTTLS, AUTH LOGIN, MAIL FROM/RCPT TO/DATA) to
- * work with a standard cPanel mailbox or any provider's SMTP relay
- * (SendGrid, SES, Postmark, etc. all support this exact same flow).
+ * this project's zero-dependency convention (see includes/encryption.php:
+ * everything hand-rolled against PHP's own stdlib, no vendor/ directory
+ * anywhere in this codebase). Speaks just enough SMTP (EHLO, STARTTLS,
+ * AUTH LOGIN, MAIL FROM/RCPT TO/DATA) to work with a standard cPanel
+ * mailbox or any provider's SMTP relay (SendGrid, SES, Postmark, etc.
+ * all support this exact same flow).
  *
- * Same defensive shape as get_usd_inr_rate() in currency-rate.php: a
- * connection failure, missing config, or SMTP error never throws —
+ * A connection failure, missing config, or SMTP error never throws —
  * send_mail() just returns false, and every caller already treats a
  * failed send as non-fatal (see the APP_DEBUG on-screen-link fallback
  * already used by the password-reset flows). This sandbox has no
