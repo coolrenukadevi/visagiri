@@ -419,9 +419,7 @@ foreach ([
         </nav>
 
         <div class="site-header__actions">
-            <a href="/countries/" class="site-header__icon-btn" aria-label="Search visas">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="9" cy="9" r="6.5" stroke="currentColor" stroke-width="1.6"/><path d="M17 17L13.6 13.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-            </a>
+            <a href="/track-visa/" class="site-header__text-link">Track Application</a>
             <a href="/enquire/" class="btn btn-gold btn-sm site-header__enquire-btn">Enquire Now</a>
         </div>
 

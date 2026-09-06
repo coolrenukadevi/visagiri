@@ -2,19 +2,27 @@
 declare(strict_types=1);
 
 /**
- * Public visa application tracking — /track-visa/. Same
- * non-enumerating pattern as /forex/track/: reference number +
- * registered mobile must both match, and a mismatch on either always
- * shows the identical generic "not found" message. Only a
- * customer-safe status label and timeline are shown — never internal
- * notes, assigned consultant, or quote/payment amounts.
+ * Public visa application tracking — /track-visa/. Three factors —
+ * reference number, registered mobile/email, and passport number —
+ * must all match in one query; a mismatch on any of them shows the
+ * identical generic "not found" message (same non-enumerating pattern
+ * as /forex/track/). Only a customer-safe status label and timeline
+ * are shown — never internal notes, assigned consultant, or
+ * quote/payment amounts.
+ *
+ * Passport number is matched via searchable_hash() (a keyed HMAC)
+ * against customers.passport_number_hash, exactly like the admin
+ * passport-search features already do — the encrypted column itself
+ * (customers.passport_number_encrypted, AES-256-GCM) is never used in
+ * a WHERE clause, since its ciphertext isn't stable across encryptions.
  */
 
 $submitted = false;
 $application = null;
 $errors = [];
 $reference = trim((string) ($_POST['reference'] ?? ''));
-$mobile = trim((string) ($_POST['mobile'] ?? ''));
+$contact = trim((string) ($_POST['contact'] ?? ''));
+$passport = trim((string) ($_POST['passport'] ?? ''));
 
 $statusLabels = [
     'draft' => 'Draft',
@@ -32,8 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!rate_limit_check('visa-track:' . ($_SERVER['REMOTE_ADDR'] ?? ''), 10, 900)) {
         $errors[] = 'Too many attempts. Please try again later.';
-    } elseif ($reference === '' || $mobile === '') {
-        $errors[] = 'Please enter both your Application Reference Number and registered mobile number.';
+    } elseif ($reference === '' || $contact === '' || $passport === '') {
+        $errors[] = 'Please enter your Application Reference Number, registered mobile number or email ID, and passport number.';
     } else {
         $submitted = true;
         $stmt = db()->prepare(
@@ -43,9 +51,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
              JOIN customers c ON c.id = va.customer_id
              JOIN countries co ON co.id = va.country_id
              JOIN visa_types vt ON vt.id = va.visa_type_id
-             WHERE va.application_reference_no = :ref AND c.mobile = :mobile AND va.deleted_at IS NULL'
+             WHERE va.application_reference_no = :ref
+               AND (c.mobile = :contact1 OR c.email = :contact2)
+               AND c.passport_number_hash = :passport_hash
+               AND va.deleted_at IS NULL'
         );
-        $stmt->execute(['ref' => $reference, 'mobile' => $mobile]);
+        $stmt->execute([
+            'ref' => $reference,
+            'contact1' => $contact,
+            'contact2' => $contact,
+            'passport_hash' => searchable_hash($passport),
+        ]);
         $application = $stmt->fetch() ?: null;
     }
 }
@@ -99,7 +115,7 @@ require __DIR__ . '/../includes/header.php';
         <div class="section-heading" style="text-align:left;margin-left:0;max-width:none">
             <span class="section-eyebrow">Track Application</span>
             <h1>Track Your Visa Application</h1>
-            <p>Enter your Application Reference Number and registered mobile number to check your application status.</p>
+            <p>Enter your Application Reference Number, registered mobile number or email ID, and passport number to check your application status.</p>
         </div>
 
         <?php foreach ($errors as $error): ?>
@@ -110,7 +126,8 @@ require __DIR__ . '/../includes/header.php';
             <form method="post" action="/track-visa/">
                 <?= csrf_field() ?>
                 <div class="form-group"><label class="form-label" for="reference">Application Reference Number</label><input class="form-input" type="text" id="reference" name="reference" value="<?= e($reference) ?>" placeholder="VG-VISA-2026-000001" required></div>
-                <div class="form-group"><label class="form-label" for="mobile">Registered Mobile Number</label><input class="form-input" type="text" id="mobile" name="mobile" value="<?= e($mobile) ?>" required></div>
+                <div class="form-group"><label class="form-label" for="contact">Registered Mobile Number or Email ID</label><input class="form-input" type="text" id="contact" name="contact" value="<?= e($contact) ?>" required></div>
+                <div class="form-group"><label class="form-label" for="passport">Passport Number</label><input class="form-input" type="text" id="passport" name="passport" value="<?= e($passport) ?>" required></div>
                 <button type="submit" class="btn btn-primary" style="width:100%">Track Application</button>
             </form>
         </div>
