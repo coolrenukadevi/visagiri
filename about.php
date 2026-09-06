@@ -3,6 +3,18 @@ $page_title = "About Us &ndash; Visa Agency";
 $page_description = "Visa Agency is a Ministry of Tourism recognised, technology-enabled visa consultancy based in Patna, Bihar, serving Patna, Ranchi, Raipur and Bhopal.";
 include __DIR__ . '/includes/header.php';
 $abCountryCount = count($VISA_AGENCY_COUNTRIES ?? []);
+
+$about_siblings = [
+    ['slug' => 'about', 'label' => 'About Us'],
+    ['slug' => 'why-choose-us', 'label' => 'Why Choose Us'],
+    ['slug' => 'vision-mission', 'label' => 'Vision &amp; Mission'],
+    ['slug' => 'leadership', 'label' => 'Leadership'],
+    ['slug' => 'our-journey', 'label' => 'Our Journey'],
+    ['slug' => 'our-team', 'label' => 'Our Team'],
+    ['slug' => 'partners', 'label' => 'Partners'],
+    ['slug' => 'careers', 'label' => 'Careers'],
+];
+$about_current = 'about';
 ?>
         <!-- Breadcrumb-Wrapper Section Start -->
         <section class="breadcrumb-wrapper fix bg-cover" style="background-image: url(assets/img/inner-page/breadcrumb.jpg);">
@@ -21,28 +33,15 @@ $abCountryCount = count($VISA_AGENCY_COUNTRIES ?? []);
             </div>
         </section>
 
-        <nav class="page-toc" aria-label="On this page">
-            <div class="page-toc-inner">
-                <a href="#overview">About Us</a>
-                <a href="#why-choose-us">Why Choose Us</a>
-                <a href="#vision-mission">Vision &amp; Mission</a>
-                <a href="#leadership">Leadership</a>
-                <a href="#journey">Our Journey</a>
-                <a href="#our-team">Our Team</a>
-                <a href="#partners">Partners</a>
-                <a href="careers">Careers</a>
-            </div>
-        </nav>
-
-        <section class="hr-section" id="overview" style="padding-top:48px;">
+        <section class="hr-section" style="padding-top:48px;">
             <div class="container ab-hero-grid">
                 <div>
                     <p class="hr-eyebrow">Ministry of Tourism Recognised</p>
                     <h2>Getting you across the border, on paper and in practice.</h2>
                     <p class="ab-hero-lead">Visa Agency handles the documentation side of travel: the forms, the appointment slots, the follow-up calls to embassies. We file for tourist, business, family, transit, medical and extension categories across <?php echo $abCountryCount; ?>+ destinations, and tell you exactly where your file stands at every step.</p>
                     <div class="ab-hero-actions">
-                        <a class="theme-btn hr-btn-gold" href="#why-choose-us">See how we work</a>
-                        <a class="theme-btn style-2" href="#leadership">Meet the team</a>
+                        <a class="theme-btn hr-btn-gold" href="why-choose-us">See how we work</a>
+                        <a class="theme-btn style-2" href="leadership">Meet the team</a>
                     </div>
                     <div class="ab-stat-row">
                         <div class="ab-stat"><span class="num"><?php echo $abCountryCount; ?>+</span><span class="lbl">Destination countries</span></div>
@@ -66,6 +65,14 @@ $abCountryCount = count($VISA_AGENCY_COUNTRIES ?? []);
                 </div>
             </div>
         </section>
+
+        <nav class="svc-sibling-nav" aria-label="Company pages">
+            <div class="svc-sibling-inner">
+                <?php foreach ($about_siblings as $sib): ?>
+                <a href="<?php echo $sib['slug']; ?>" class="<?php echo $sib['slug'] === $about_current ? 'current' : ''; ?>"><?php echo $sib['label']; ?></a>
+                <?php endforeach; ?>
+            </div>
+        </nav>
 
         <section class="hr-section" style="background:#fff; border-top:1px solid var(--border-color); border-bottom:1px solid var(--border-color);">
             <div class="container">
@@ -99,155 +106,20 @@ $abCountryCount = count($VISA_AGENCY_COUNTRIES ?? []);
             </div>
         </section>
 
-        <section class="hr-section" id="why-choose-us" style="background:#fff; border-top:1px solid var(--border-color); border-bottom:1px solid var(--border-color); scroll-margin-top:110px;">
+        <section class="section-padding fix section-bg-1">
             <div class="container">
-                <div class="hr-head">
-                    <p class="hr-eyebrow">Why Choose Us</p>
-                    <h2>Five things clients mention when they refer a friend</h2>
-                    <p>None of this is aspirational copy &mdash; it's the actual process every file goes through before it leaves our office.</p>
+                <div class="section-title text-center">
+                    <span class="sub-title-2 wow fadeInUp">Get To Know Us</span>
+                    <h2 class="split-text-right split-text-in-right">More About Visa Agency</h2>
                 </div>
-                <div class="ab-why-list">
-                    <div class="ab-why-item">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>
-                        <div>
-                            <h3>Document precision</h3>
-                            <p>Every file is checked line by line against the destination's exact checklist before it ever reaches an embassy.</p>
-                        </div>
-                    </div>
-                    <div class="ab-why-item">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="1.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
-                        <div>
-                            <h3>Transparent pricing</h3>
-                            <p>Government fee and our service fee are always quoted as two separate lines, before you commit &mdash; never a blended or surprise charge.</p>
-                        </div>
-                    </div>
-                    <div class="ab-why-item">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18M3 12h18"/></svg>
-                        <div>
-                            <h3>Country specialists</h3>
-                            <p>You're assigned one consultant who handles that destination regularly, not a rotating queue that re-reads your file each time.</p>
-                        </div>
-                    </div>
-                    <div class="ab-why-item">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h6"/><circle cx="19" cy="18" r="2.4"/></svg>
-                        <div>
-                            <h3>A file you can watch</h3>
-                            <p>Our <a href="track-application">application tracker</a> shows the stage your application is at, from intake to the day it reaches the visa window.</p>
-                        </div>
-                    </div>
-                    <div class="ab-why-item">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l4 2"/></svg>
-                        <div>
-                            <h3>24&times;7 support when it matters</h3>
-                            <p>Reachable outside office hours for appointment days, biometrics, or a last-minute embassy query.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="hr-section" id="vision-mission" style="background:#fff; border-top:1px solid var(--border-color); border-bottom:1px solid var(--border-color); scroll-margin-top:110px;">
-            <div class="container">
-                <div class="hr-head">
-                    <p class="hr-eyebrow">Vision &amp; Mission</p>
-                    <h2>Two pages, one booklet</h2>
-                </div>
-                <div class="ab-spread">
-                    <div>
-                        <span class="tag">Vision</span>
-                        <h3>A border that isn't the hardest part of the trip.</h3>
-                        <p>We want the paperwork stage of travel to feel ordinary &mdash; something you complete quickly and stop thinking about, not the part of the trip you dread. Every process we build works toward that, replacing guesswork with a tracked, transparent process, city by city.</p>
-                    </div>
-                    <div>
-                        <span class="tag">Mission</span>
-                        <h3>Handle every file with the same precision, start to finish.</h3>
-                        <p>We review, format and check every document against the exact standard each consulate expects, and assign one caseworker who stays with your application from intake to appointment &mdash; while being upfront that final decisions rest with the relevant embassy or authority.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="hr-section" id="leadership" style="scroll-margin-top:110px;">
-            <div class="container">
-                <div class="hr-head">
-                    <p class="hr-eyebrow">Leadership</p>
-                    <h2>The people behind the process</h2>
-                    <p>Our leadership team oversees case strategy, documentation standards and client experience across every office we serve.</p>
-                </div>
-                <div class="ab-team-grid">
-                    <div class="ab-team-card">
-                        <div class="avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
-                        <h3>Founder &amp; Director</h3>
-                        <span class="ab-team-role">Case Strategy</span>
-                        <p class="bio">Sets overall case strategy and oversees relationships with embassy and consular partners.</p>
-                    </div>
-                    <div class="ab-team-card">
-                        <div class="avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
-                        <h3>Head of Visa Operations</h3>
-                        <span class="ab-team-role">Documentation Quality</span>
-                        <p class="bio">Leads documentation review and application quality across tourist, business, transit and family visa categories.</p>
-                    </div>
-                    <div class="ab-team-card">
-                        <div class="avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
-                        <h3>Head of Apostille &amp; Attestation</h3>
-                        <span class="ab-team-role">Document Legalisation</span>
-                        <p class="bio">Oversees document legalisation casework, including MEA apostille and embassy attestation chains.</p>
-                    </div>
-                    <div class="ab-team-card">
-                        <div class="avatar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
-                        <h3>Client Experience Lead</h3>
-                        <span class="ab-team-role">Client Support</span>
-                        <p class="bio">Coordinates appointments, communication and support for clients across all four cities we serve.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="section-padding fix section-bg-1" id="journey" style="scroll-margin-top:110px;">
-            <div class="container">
-                <div class="console-section-head">
-                    <p class="console-eyebrow">Our Journey</p>
-                    <h2>How We Got Here</h2>
-                </div>
-                <div class="data-pending">
-                    <i class="fa-solid fa-circle-info"></i>
-                    <div>
-                        <h4>Our company timeline is coming soon</h4>
-                        <p>We're putting together the key milestones in Visa Agency's history &mdash; founding, city expansions and major service launches &mdash; for this section. Check back soon, or read about what we do today above.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="section-padding fix" id="our-team" style="scroll-margin-top:110px;">
-            <div class="container">
-                <div class="console-section-head">
-                    <p class="console-eyebrow">Our Team</p>
-                    <h2>Beyond Leadership</h2>
-                    <p>The consultants, documentation specialists and support staff who work your case day to day.</p>
-                </div>
-                <div class="data-pending">
-                    <i class="fa-solid fa-circle-info"></i>
-                    <div>
-                        <h4>Full team profiles are coming soon</h4>
-                        <p>We're building out individual profiles for our visa consultants and documentation specialists. In the meantime, our <a href="#leadership">leadership team</a> can point you to the right person for your case.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="section-padding fix section-bg-1" id="partners" style="scroll-margin-top:110px;">
-            <div class="container">
-                <div class="console-section-head">
-                    <p class="console-eyebrow">Partners</p>
-                    <h2>Who We Work With</h2>
-                </div>
-                <div class="data-pending">
-                    <i class="fa-solid fa-circle-info"></i>
-                    <div>
-                        <h4>Partner details are coming soon</h4>
-                        <p>We're finalising the list of partner organisations we work with to bring here. For details on a specific partnership or referral, please <a href="contact">contact us</a> directly.</p>
-                    </div>
+                <div class="console-card-grid">
+                    <div class="console-tcard"><div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg></div><h3>Why Choose Us</h3><p>Five things clients mention when they refer a friend &mdash; document precision, transparent pricing and more.</p><a class="tcard-link" href="why-choose-us">Read more &rarr;</a></div>
+                    <div class="console-tcard"><div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 5-3.5 8-7 9-3.5-1-7-4-7-9V6l7-3z"/></svg></div><h3>Vision &amp; Mission</h3><p>What we're working toward, and how we handle every file to get there.</p><a class="tcard-link" href="vision-mission">Read more &rarr;</a></div>
+                    <div class="console-tcard"><div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div><h3>Leadership</h3><p>The people behind case strategy, documentation standards and client experience.</p><a class="tcard-link" href="leadership">Meet the team &rarr;</a></div>
+                    <div class="console-tcard"><div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M3 6h18M3 18h18"/></svg></div><h3>Our Journey</h3><p>Founding, city expansions and major service launches &mdash; our story so far.</p><a class="tcard-link" href="our-journey">Read more &rarr;</a></div>
+                    <div class="console-tcard"><div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><path d="M2 20c0-3 2.7-5 6-5s6 2 6 5M14 20c0-2.2 1.5-4 4-4.5"/></svg></div><h3>Our Team</h3><p>The consultants and documentation specialists who work your case day to day.</p><a class="tcard-link" href="our-team">Read more &rarr;</a></div>
+                    <div class="console-tcard"><div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M4 4h16v9a8 8 0 0 1-16 0V4z"/></svg></div><h3>Partners</h3><p>Organisations we work with to serve clients better.</p><a class="tcard-link" href="partners">Read more &rarr;</a></div>
+                    <div class="console-tcard"><div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="1.5"/><path d="M3 11h18"/></svg></div><h3>Careers</h3><p>Open roles across our Patna, Ranchi, Raipur and Bhopal offices.</p><a class="tcard-link" href="careers">View openings &rarr;</a></div>
                 </div>
             </div>
         </section>

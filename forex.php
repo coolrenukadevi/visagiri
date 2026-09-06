@@ -2,6 +2,15 @@
 $page_title = "Forex &amp; Foreign Currency Services &ndash; Visa Agency";
 $page_description = "Buy foreign currency, load a travel forex card, exchange currency or get travel forex guidance &ndash; document-assisted, quotation-first, with tracked status. By Visa Agency, Patna.";
 include __DIR__ . '/includes/header.php';
+
+$forex_siblings = [
+    ['slug' => 'forex', 'label' => 'Overview'],
+    ['slug' => 'forex-foreign-currency', 'label' => 'Foreign Currency'],
+    ['slug' => 'forex-card', 'label' => 'Forex Card'],
+    ['slug' => 'forex-currency-exchange', 'label' => 'Currency Exchange'],
+    ['slug' => 'forex-travel', 'label' => 'Travel Forex'],
+];
+$forex_current = 'forex';
 ?>
         <!-- Breadcrumb-Wrapper Section Start -->
         <section class="breadcrumb-wrapper fix bg-cover" style="background-image: url(assets/img/inner-page/breadcrumb.jpg);">
@@ -40,94 +49,32 @@ include __DIR__ . '/includes/header.php';
             </div>
         </section>
 
-        <nav class="page-toc" aria-label="On this page">
-            <div class="page-toc-inner">
-                <a href="#foreign-currency">Foreign Currency</a>
-                <a href="#forex-card">Forex Card</a>
-                <a href="#currency-exchange">Currency Exchange</a>
-                <a href="#travel-forex">Travel Forex</a>
-                <a href="#how-it-works">How It Works</a>
-                <a href="#documents">Documents</a>
-                <a href="#faq">FAQs</a>
+        <nav class="svc-sibling-nav" aria-label="Forex services">
+            <div class="svc-sibling-inner">
+                <?php foreach ($forex_siblings as $sib): ?>
+                <a href="<?php echo $sib['slug']; ?>" class="<?php echo $sib['slug'] === $forex_current ? 'current' : ''; ?>"><?php echo $sib['label']; ?></a>
+                <?php endforeach; ?>
             </div>
         </nav>
 
-        <!-- FOREIGN CURRENCY -->
-        <section class="section-padding fix" id="foreign-currency" style="scroll-margin-top:80px;">
+        <!-- CATEGORY TEASER GRID -->
+        <section class="section-padding fix">
             <div class="container">
                 <div class="section-title text-center">
-                    <span class="sub-title-2 wow fadeInUp">Currency Notes For Your Trip</span>
-                    <h2 class="split-text-right split-text-in-right">Foreign Currency, Quoted Before You Commit</h2>
+                    <span class="sub-title-2 wow fadeInUp">Browse By Need</span>
+                    <h2 class="split-text-right split-text-in-right">Which Forex Service Fits Your Trip?</h2>
                 </div>
-                <p class="svc-lede">
-                    Buy foreign currency notes in the currency and amount you need for your trip. We confirm the
-                    applicable rate and charges in a quotation before you commit to anything, and handle the KYC
-                    paperwork alongside it.
-                </p>
-                <div class="svc-checklist">
-                    <div class="svc-checklist-item"><div class="tick"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></div><span class="txt">PAN card</span></div>
-                    <div class="svc-checklist-item"><div class="tick"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></div><span class="txt">Passport with valid visa or travel proof, where applicable</span></div>
-                    <div class="svc-checklist-item"><div class="tick"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></div><span class="txt">Confirmed flight ticket or travel itinerary</span></div>
-                    <div class="svc-checklist-item"><div class="tick"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></div><span class="txt">Purpose-of-travel declaration (FEMA Form A2)</span></div>
+                <div class="console-card-grid">
+                    <div class="console-tcard"><div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="1.5"/><path d="M3 11h18"/></svg></div><h3>Foreign Currency</h3><p>Buy currency notes for your trip, quoted before you commit.</p><a class="tcard-link" href="forex-foreign-currency">View service &rarr;</a></div>
+                    <div class="console-tcard"><div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="6" width="16" height="12" rx="2"/><path d="M4 10h16"/></svg></div><h3>Forex Card</h3><p>A prepaid card loaded in your destination currency &mdash; safer than cash.</p><a class="tcard-link" href="forex-card">View service &rarr;</a></div>
+                    <div class="console-tcard"><div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8l-4 4 4 4M17 8l4 4-4 4M14 4l-4 16"/></svg></div><h3>Currency Exchange</h3><p>Exchange currency for a specific travel or business need.</p><a class="tcard-link" href="forex-currency-exchange">View service &rarr;</a></div>
+                    <div class="console-tcard"><div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg></div><h3>Travel Forex</h3><p>Not sure what you need? We work out the right mix with you.</p><a class="tcard-link" href="forex-travel">View service &rarr;</a></div>
                 </div>
-                <p class="svc-lede" style="margin-top:20px;">USD, EUR, GBP and other major travel currencies &mdash; tell us your destination and we'll confirm availability. Rates move with the market, so nothing is charged against a rate you haven't seen.</p>
-            </div>
-        </section>
-
-        <!-- FOREX CARD -->
-        <section class="section-padding fix section-bg-1" id="forex-card" style="scroll-margin-top:80px;">
-            <div class="container">
-                <div class="section-title text-center">
-                    <span class="sub-title-2 wow fadeInUp">A Safer Way To Carry Travel Money</span>
-                    <h2 class="split-text-right split-text-in-right">Prepaid Forex Card, Loaded And Ready</h2>
-                </div>
-                <p class="svc-lede">
-                    A prepaid travel card loaded in your destination currency &mdash; a safer alternative to
-                    carrying large amounts of cash, with the same quotation-first process as our other forex
-                    services. Most forex cards can be blocked by calling the issuer's helpline if lost or stolen,
-                    unlike cash.
-                </p>
-                <div class="svc-why-grid">
-                    <div class="svc-why-item"><div class="check">01</div><div><h4>Safer than cash</h4><p>Avoid carrying large sums of physical currency through airports and abroad.</p></div></div>
-                    <div class="svc-why-item"><div class="check">02</div><div><h4>Quotation before commitment</h4><p>You see the loading rate and any charges before you pay anything.</p></div></div>
-                    <div class="svc-why-item"><div class="check">03</div><div><h4>Reloadable</h4><p>Reload options depend on the card issuer &mdash; we confirm whether your card supports online reload before you travel.</p></div></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- CURRENCY EXCHANGE -->
-        <section class="section-padding fix" id="currency-exchange" style="scroll-margin-top:80px;">
-            <div class="container">
-                <div class="section-title text-center">
-                    <span class="sub-title-2 wow fadeInUp">Exchange For Your Specific Need</span>
-                    <h2 class="split-text-right split-text-in-right">Currency Exchange, Documented Correctly</h2>
-                </div>
-                <p class="svc-lede">
-                    Exchange currency for your specific travel or business need, guided through the documentation
-                    FEMA purpose codes require &mdash; whether that's leftover currency from a trip, a business
-                    remittance, or another declared purpose. Limits depend on the currency and declared purpose
-                    under RBI/FEMA guidelines &mdash; we confirm the applicable limit for your specific request.
-                </p>
-            </div>
-        </section>
-
-        <!-- TRAVEL FOREX -->
-        <section class="section-padding fix section-bg-1" id="travel-forex" style="scroll-margin-top:80px;">
-            <div class="container">
-                <div class="section-title text-center">
-                    <span class="sub-title-2 wow fadeInUp">Not Sure What You Need?</span>
-                    <h2 class="split-text-right split-text-in-right">Travel Forex Guidance, Worked Out With You</h2>
-                </div>
-                <p class="svc-lede">
-                    Unsure whether to carry cash, load a forex card, or split between the two? We work out the
-                    currency, amount and format that fits your specific trip, then handle whichever option you
-                    choose &mdash; including a combined quotation if you want both currency notes and a card.
-                </p>
             </div>
         </section>
 
         <!-- HOW IT WORKS -->
-        <section class="section-padding fix" id="how-it-works" style="scroll-margin-top:80px;">
+        <section class="section-padding fix section-bg-1">
             <div class="container">
                 <div class="section-title text-center">
                     <span class="sub-title-2 wow fadeInUp">How It Works</span>
@@ -160,7 +107,7 @@ include __DIR__ . '/includes/header.php';
         </section>
 
         <!-- DOCUMENTS -->
-        <section class="section-padding fix section-bg-1" id="documents" style="scroll-margin-top:80px;">
+        <section class="section-padding fix">
             <div class="container">
                 <div class="section-title text-center">
                     <span class="sub-title-2 wow fadeInUp">Documents You'll Need</span>
@@ -190,7 +137,7 @@ include __DIR__ . '/includes/header.php';
         </section>
 
         <!-- FAQ -->
-        <section id="faq" class="section-padding fix section-bg-1" style="scroll-margin-top:80px;">
+        <section id="faq" class="section-padding fix section-bg-1">
             <div class="container">
                 <div class="row g-5 align-items-start">
                     <div class="col-lg-4">

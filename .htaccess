@@ -30,31 +30,14 @@ RewriteRule ^ / [R=301,L]
 RewriteRule ^news-grid/?$ /news [R=301,L]
 RewriteRule ^appointment/?$ /visa-appointment [R=301,L]
 
-# Consolidated into /forex as anchor sections (see forex.php).
-RewriteRule ^forex-foreign-currency/?$ /forex#foreign-currency [R=301,L]
-RewriteRule ^forex-card/?$ /forex#forex-card [R=301,L]
-RewriteRule ^forex-currency-exchange/?$ /forex#currency-exchange [R=301,L]
-RewriteRule ^forex-travel/?$ /forex#travel-forex [R=301,L]
+# Renamed when Company pages were split back out of /about (see why-choose-us.php).
+RewriteRule ^why-us/?$ /why-choose-us [R=301,L]
 
-# Consolidated back into /about as anchor sections (see about.php).
-RewriteRule ^why-us/?$ /about#why-choose-us [R=301,L]
-RewriteRule ^vision-mission/?$ /about#vision-mission [R=301,L]
-RewriteRule ^leadership/?$ /about#leadership [R=301,L]
-
-# Consolidated into /visa-services as anchor sections (see visa-services.php).
-RewriteRule ^visa-tourist/?$ /visa-services#tourist [R=301,L]
-RewriteRule ^visa-business/?$ /visa-services#business [R=301,L]
-RewriteRule ^visa-work/?$ /visa-services#work [R=301,L]
-RewriteRule ^visa-family/?$ /visa-services#family [R=301,L]
-RewriteRule ^visa-transit/?$ /visa-services#transit [R=301,L]
-RewriteRule ^visa-medical/?$ /visa-services#medical [R=301,L]
-RewriteRule ^visa-sports/?$ /visa-services#sports [R=301,L]
-RewriteRule ^visa-crew/?$ /visa-services#crew [R=301,L]
-RewriteRule ^visa-extension/?$ /visa-services#extension [R=301,L]
+# Merged overview pages: the standalone overview page was retired in favour of
+# the hub page for that category, but each category/sub-service still has its
+# own live URL (see visa-services.php, travel-services.php).
 RewriteRule ^our-services/?$ /visa-services [R=301,L]
 RewriteRule ^visa-consultancy-services/?$ /visa-services [R=301,L]
-
-# Consolidated into /travel-services (see travel-services.php).
 RewriteRule ^other-services/?$ /travel-services [R=301,L]
 
 # Serve index.php for the homepage

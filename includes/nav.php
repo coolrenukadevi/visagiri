@@ -9,15 +9,15 @@
                         <div class="mega-col">
                             <h5>Visa Types</h5>
                             <ul class="mega-links">
-                                <li><a href="visa-services#tourist">Tourist Visa</a></li>
-                                <li><a href="visa-services#business">Business Visa</a></li>
-                                <li><a href="visa-services#work">Work Visa</a></li>
-                                <li><a href="visa-services#family">Family Visa</a></li>
-                                <li><a href="visa-services#transit">Transit Visa</a></li>
-                                <li><a href="visa-services#medical">Medical Visa</a></li>
-                                <li><a href="visa-services#sports">Sports Visa</a></li>
-                                <li><a href="visa-services#crew">Crew Visa</a></li>
-                                <li><a href="visa-services#extension">Visa Extension</a></li>
+                                <li><a href="visa-tourist">Tourist Visa</a></li>
+                                <li><a href="visa-business">Business Visa</a></li>
+                                <li><a href="visa-work">Work Visa</a></li>
+                                <li><a href="visa-family">Family Visa</a></li>
+                                <li><a href="visa-transit">Transit Visa</a></li>
+                                <li><a href="visa-medical">Medical Visa</a></li>
+                                <li><a href="visa-sports">Sports Visa</a></li>
+                                <li><a href="visa-crew">Crew Visa</a></li>
+                                <li><a href="visa-extension">Visa Extension</a></li>
                             </ul>
                         </div>
                         <div class="mega-col">
@@ -96,19 +96,19 @@
             <ul class="submenu has-homemenu mega-panel mega-panel-forex">
                 <li>
                     <div class="mega-panel-inner-icons">
-                        <a href="forex#foreign-currency" class="mega-icon-link">
+                        <a href="forex-foreign-currency" class="mega-icon-link">
                             <span class="mega-icon-badge"><i class="fa-solid fa-money-bill-wave"></i></span>
                             <span class="mega-icon-text"><strong>Foreign Currency</strong><small>Buy currency notes for your trip</small></span>
                         </a>
-                        <a href="forex#forex-card" class="mega-icon-link">
+                        <a href="forex-card" class="mega-icon-link">
                             <span class="mega-icon-badge"><i class="fa-solid fa-credit-card"></i></span>
                             <span class="mega-icon-text"><strong>Forex Card</strong><small>Prepaid travel card, loaded &amp; ready</small></span>
                         </a>
-                        <a href="forex#currency-exchange" class="mega-icon-link">
+                        <a href="forex-currency-exchange" class="mega-icon-link">
                             <span class="mega-icon-badge"><i class="fa-solid fa-right-left"></i></span>
                             <span class="mega-icon-text"><strong>Currency Exchange</strong><small>Exchange for your specific need</small></span>
                         </a>
-                        <a href="forex#travel-forex" class="mega-icon-link">
+                        <a href="forex-travel" class="mega-icon-link">
                             <span class="mega-icon-badge"><i class="fa-solid fa-earth-americas"></i></span>
                             <span class="mega-icon-text"><strong>Travel Forex</strong><small>Not sure what fits? We'll guide you</small></span>
                         </a>
@@ -127,11 +127,11 @@
         <li class="has-dropdown">
             <a href="travel-services">Travel Services</a>
             <ul class="submenu simple-dropdown">
-                <li><a href="travel-services#travel-insurance">Travel Insurance</a></li>
-                <li><a href="travel-services#flight-hotel">Flight &amp; Hotel Reservation</a></li>
-                <li><a href="travel-services#invitation-letter">Invitation Letter Assistance</a></li>
-                <li><a href="travel-services#airport-assist">Airport Meet &amp; Assist</a></li>
-                <li><a href="travel-services#corporate">Corporate Travel</a></li>
+                <li><a href="travel-insurance">Travel Insurance</a></li>
+                <li><a href="flight-hotel">Flight &amp; Hotel Reservation</a></li>
+                <li><a href="invitation-letter">Invitation Letter Assistance</a></li>
+                <li><a href="airport-assist">Airport Meet &amp; Assist</a></li>
+                <li><a href="corporate-travel">Corporate Travel</a></li>
             </ul>
         </li>
 
@@ -242,19 +242,19 @@
             <ul class="submenu has-homemenu mega-panel mega-panel-forex mega-panel-company mega-align-right">
                 <li>
                     <div class="mega-panel-inner-icons">
-                        <a href="about#overview" class="mega-icon-link">
+                        <a href="about" class="mega-icon-link">
                             <span class="mega-icon-badge"><i class="fa-solid fa-building"></i></span>
                             <span class="mega-icon-text"><strong>About Us</strong><small>Our story &amp; approach</small></span>
                         </a>
-                        <a href="about#why-choose-us" class="mega-icon-link">
+                        <a href="why-choose-us" class="mega-icon-link">
                             <span class="mega-icon-badge"><i class="fa-solid fa-star"></i></span>
                             <span class="mega-icon-text"><strong>Why Us?</strong><small>What sets us apart</small></span>
                         </a>
-                        <a href="about#vision-mission" class="mega-icon-link">
+                        <a href="vision-mission" class="mega-icon-link">
                             <span class="mega-icon-badge"><i class="fa-solid fa-compass"></i></span>
                             <span class="mega-icon-text"><strong>Vision &amp; Mission</strong><small>Why we do this work</small></span>
                         </a>
-                        <a href="about#leadership" class="mega-icon-link">
+                        <a href="leadership" class="mega-icon-link">
                             <span class="mega-icon-badge"><i class="fa-solid fa-user-tie"></i></span>
                             <span class="mega-icon-text"><strong>Leadership</strong><small>Meet our team</small></span>
                         </a>

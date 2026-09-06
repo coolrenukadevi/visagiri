@@ -2,6 +2,16 @@
 $page_title = "Travel Services &ndash; Insurance, Flight &amp; Hotel, Corporate Travel | Visa Agency";
 $page_description = "Travel insurance, flight &amp; hotel reservation assistance, invitation letters, airport meet &amp; assist and corporate travel support alongside your visa filing. By Visa Agency, Patna.";
 include __DIR__ . '/includes/header.php';
+
+$travel_siblings = [
+    ['slug' => 'travel-services', 'label' => 'Overview'],
+    ['slug' => 'travel-insurance', 'label' => 'Travel Insurance'],
+    ['slug' => 'flight-hotel', 'label' => 'Flight &amp; Hotel'],
+    ['slug' => 'invitation-letter', 'label' => 'Invitation Letters'],
+    ['slug' => 'airport-assist', 'label' => 'Airport Assist'],
+    ['slug' => 'corporate-travel', 'label' => 'Corporate Travel'],
+];
+$travel_current = 'travel-services';
 ?>
         <!-- Breadcrumb-Wrapper Section Start -->
         <section class="breadcrumb-wrapper fix bg-cover" style="background-image: url(assets/img/inner-page/breadcrumb.jpg);">
@@ -40,146 +50,33 @@ include __DIR__ . '/includes/header.php';
             </div>
         </section>
 
-        <nav class="page-toc" aria-label="On this page">
-            <div class="page-toc-inner">
-                <a href="#travel-insurance">Travel Insurance</a>
-                <a href="#flight-hotel">Flight &amp; Hotel</a>
-                <a href="#invitation-letter">Invitation Letters</a>
-                <a href="#airport-assist">Airport Assist</a>
-                <a href="#corporate">Corporate Travel</a>
-                <a href="#faq">FAQs</a>
+        <nav class="svc-sibling-nav" aria-label="Travel services">
+            <div class="svc-sibling-inner">
+                <?php foreach ($travel_siblings as $sib): ?>
+                <a href="<?php echo $sib['slug']; ?>" class="<?php echo $sib['slug'] === $travel_current ? 'current' : ''; ?>"><?php echo $sib['label']; ?></a>
+                <?php endforeach; ?>
             </div>
         </nav>
 
-        <!-- TRAVEL INSURANCE -->
-        <section class="section-padding fix" id="travel-insurance" style="scroll-margin-top:80px;">
+        <!-- CATEGORY TEASER GRID -->
+        <section class="section-padding fix">
             <div class="container">
                 <div class="section-title text-center">
-                    <span class="sub-title-2 wow fadeInUp">Embassy &amp; Personal Safety Requirements</span>
-                    <h2 class="split-text-right split-text-in-right">Travel Insurance Assistance</h2>
+                    <span class="sub-title-2 wow fadeInUp">Browse By Need</span>
+                    <h2 class="split-text-right split-text-in-right">What Does Your Trip Still Need?</h2>
                 </div>
-                <p class="svc-lede">
-                    Many visa applications, particularly for Schengen and similar destinations, require proof of
-                    valid travel insurance before the application can even be filed. We help you understand what
-                    cover your destination requires and get the right policy in place before you submit.
-                </p>
-                <div class="svc-why-grid">
-                    <div class="svc-why-item"><div class="check">01</div><div><h4>Destination-specific cover check</h4><p>Minimum sum insured, medical cover and validity requirements differ by destination &mdash; we confirm what your embassy actually needs.</p></div></div>
-                    <div class="svc-why-item"><div class="check">02</div><div><h4>Filed alongside your visa</h4><p>Your insurance certificate is checked against your application dates and destination before submission, not after.</p></div></div>
-                    <div class="svc-why-item"><div class="check">03</div><div><h4>Group &amp; family cover</h4><p>Travelling as a family or group? We help coordinate a single policy or matching individual policies as needed.</p></div></div>
-                </div>
-                <div class="text-center mt-5">
-                    <a href="contact" class="theme-btn" data-open-enquiry>Ask About Travel Insurance <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-        </section>
-
-        <!-- FLIGHT & HOTEL -->
-        <section class="section-padding fix section-bg-1" id="flight-hotel" style="scroll-margin-top:80px;">
-            <div class="container">
-                <div class="section-title text-center">
-                    <span class="sub-title-2 wow fadeInUp">Confirmed Itinerary &amp; Accommodation</span>
-                    <h2 class="split-text-right split-text-in-right">Flight &amp; Hotel Reservation Assistance</h2>
-                </div>
-                <p class="svc-lede">
-                    Most visa applications need a confirmed or tentative flight itinerary and accommodation
-                    proof. We help you put together bookings that satisfy your embassy's requirements &mdash;
-                    including refundable or dummy-ticket options where a destination doesn't require a fully
-                    paid ticket at application stage.
-                </p>
-                <div class="svc-why-grid">
-                    <div class="svc-why-item"><div class="check">01</div><div><h4>Application-ready itineraries</h4><p>We help you get a booking reference in the right format &mdash; matching passenger names and dates exactly to your visa application.</p></div></div>
-                    <div class="svc-why-item"><div class="check">02</div><div><h4>Accommodation proof</h4><p>Hotel booking confirmations or a host's invitation letter, whichever your destination and visa category requires.</p></div></div>
-                    <div class="svc-why-item"><div class="check">03</div><div><h4>Coordinated with your visa timeline</h4><p>Booking dates are checked against your intended visa validity and travel dates before you commit to anything non-refundable.</p></div></div>
-                </div>
-                <div class="text-center mt-5">
-                    <a href="contact" class="theme-btn" data-open-enquiry>Ask About Flight &amp; Hotel Booking <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-        </section>
-
-        <!-- INVITATION LETTER -->
-        <section class="section-padding fix" id="invitation-letter" style="scroll-margin-top:80px;">
-            <div class="container">
-                <div class="section-title text-center">
-                    <span class="sub-title-2 wow fadeInUp">Where A Host Or Company Is Inviting You</span>
-                    <h2 class="split-text-right split-text-in-right">Invitation Letter Assistance</h2>
-                </div>
-                <p class="svc-lede">
-                    Business, family and some tourist visas rely on an invitation letter from a host, employer or
-                    company abroad. We advise the person or organisation inviting you on the format and content
-                    embassies expect, so the letter holds up under scrutiny.
-                </p>
-                <div class="svc-why-grid">
-                    <div class="svc-why-item"><div class="check">01</div><div><h4>Format guidance for your host</h4><p>We tell your host or inviting company exactly what details and supporting documents the letter needs to include.</p></div></div>
-                    <div class="svc-why-item"><div class="check">02</div><div><h4>Consistency check</h4><p>We check the invitation letter's dates, purpose and details match the rest of your application before filing.</p></div></div>
-                </div>
-                <div class="text-center mt-5">
-                    <a href="contact" class="theme-btn" data-open-enquiry>Ask About Invitation Letters <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-        </section>
-
-        <!-- AIRPORT ASSIST -->
-        <section class="section-padding fix section-bg-1" id="airport-assist" style="scroll-margin-top:80px;">
-            <div class="container">
-                <div class="section-title text-center">
-                    <span class="sub-title-2 wow fadeInUp">On The Ground, On Arrival</span>
-                    <h2 class="split-text-right split-text-in-right">Airport Meet &amp; Assist</h2>
-                </div>
-                <p class="svc-lede">
-                    First-time travellers, elderly passengers, or anyone travelling for medical treatment can
-                    request meet, assist and transfer support at the airport &mdash; on departure from India or on
-                    arrival, where the service is available.
-                </p>
-                <div class="svc-why-grid">
-                    <div class="svc-why-item"><div class="check">01</div><div><h4>First-time traveller support</h4><p>Guidance on immigration, customs and transfer procedures for those unfamiliar with the process.</p></div></div>
-                    <div class="svc-why-item"><div class="check">02</div><div><h4>Medical &amp; elderly assistance</h4><p>Coordinated support for patients travelling for treatment or elderly family members travelling alone.</p></div></div>
-                </div>
-                <div class="text-center mt-5">
-                    <a href="contact" class="theme-btn" data-open-enquiry>Ask About Airport Assistance <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-            </div>
-        </section>
-
-        <!-- CORPORATE TRAVEL -->
-        <section class="section-padding fix" id="corporate" style="scroll-margin-top:80px;">
-            <div class="container">
-                <div class="section-title text-center">
-                    <span class="sub-title-2 wow fadeInUp">For Businesses Sending Employees Abroad</span>
-                    <h2 class="split-text-right split-text-in-right">Corporate Travel &amp; Visa Support</h2>
-                </div>
-                <p class="svc-lede">
-                    Sending one employee or an entire team abroad for business, training or a project? We
-                    coordinate visa, travel insurance, flight and hotel bookings for the whole group through a
-                    single point of contact, so HR or travel desks aren't chasing multiple vendors.
-                </p>
-                <div class="svc-steps">
-                    <div class="svc-step-row">
-                        <div class="svc-step-marker"><div class="svc-step-num">1</div><div class="svc-step-line"></div></div>
-                        <div class="svc-step-body"><h3>Group requirement gathering</h3><p>We collect destination, dates and traveller details for everyone in one intake, rather than separate individual enquiries.</p></div>
-                    </div>
-                    <div class="svc-step-row">
-                        <div class="svc-step-marker"><div class="svc-step-num">2</div><div class="svc-step-line"></div></div>
-                        <div class="svc-step-body"><h3>Company documentation</h3><p>We advise on the company-level documents &mdash; registration, invitation letters, sponsorship &mdash; that support every traveller's application.</p></div>
-                    </div>
-                    <div class="svc-step-row">
-                        <div class="svc-step-marker"><div class="svc-step-num">3</div><div class="svc-step-line"></div></div>
-                        <div class="svc-step-body"><h3>Coordinated filing</h3><p>Visa, insurance and travel bookings for the group are tracked together against one shared timeline.</p></div>
-                    </div>
-                    <div class="svc-step-row">
-                        <div class="svc-step-marker"><div class="svc-step-num">4</div><div class="svc-step-line"></div></div>
-                        <div class="svc-step-body"><h3>Single point of contact</h3><p>One caseworker reports status for the whole group, instead of your team following up individually.</p></div>
-                    </div>
-                </div>
-                <div class="text-center mt-5">
-                    <a href="contact" class="theme-btn" data-open-enquiry>Start A Corporate Enquiry <i class="fa-solid fa-arrow-right"></i></a>
+                <div class="console-card-grid">
+                    <div class="console-tcard"><div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 5-3.5 8-7 9-3.5-1-7-4-7-9V6l7-3z"/></svg></div><h3>Travel Insurance</h3><p>Destination-specific cover, filed alongside your visa.</p><a class="tcard-link" href="travel-insurance">View service &rarr;</a></div>
+                    <div class="console-tcard"><div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="1.5"/><path d="M16 3v4M8 3v4M3 10h18"/></svg></div><h3>Flight &amp; Hotel</h3><p>Application-ready itineraries and accommodation proof.</p><a class="tcard-link" href="flight-hotel">View service &rarr;</a></div>
+                    <div class="console-tcard"><div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 4v5"/></svg></div><h3>Invitation Letters</h3><p>Format guidance for your host, employer or event organiser.</p><a class="tcard-link" href="invitation-letter">View service &rarr;</a></div>
+                    <div class="console-tcard"><div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a5 5 0 0 1 5 5v3.5l3 6.5-8-3-8 3 3-6.5V7a5 5 0 0 1 5-5z"/></svg></div><h3>Airport Meet &amp; Assist</h3><p>Meet, assist and transfer support on departure or arrival.</p><a class="tcard-link" href="airport-assist">View service &rarr;</a></div>
+                    <div class="console-tcard"><div class="icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="1.5"/><path d="M3 11h18"/></svg></div><h3>Corporate Travel</h3><p>Coordinated visa, insurance and bookings for the whole team.</p><a class="tcard-link" href="corporate-travel">View service &rarr;</a></div>
                 </div>
             </div>
         </section>
 
         <!-- FAQ -->
-        <section id="faq" class="section-padding fix section-bg-1" style="scroll-margin-top:80px;">
+        <section class="section-padding fix section-bg-1">
             <div class="container">
                 <div class="row g-5 align-items-start">
                     <div class="col-lg-4">

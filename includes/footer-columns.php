@@ -24,15 +24,15 @@
                         <details class="footer-accordion" open>
                             <summary>Visa Services</summary>
                             <ul>
-                                <li><a href="visa-services#tourist">Tourist Visa</a></li>
-                                <li><a href="visa-services#business">Business Visa</a></li>
-                                <li><a href="visa-services#work">Work Visa</a></li>
-                                <li><a href="visa-services#family">Family Visa</a></li>
-                                <li><a href="visa-services#transit">Transit Visa</a></li>
-                                <li><a href="visa-services#sports">Sports Visa</a></li>
-                                <li><a href="visa-services#medical">Medical Visa</a></li>
-                                <li><a href="visa-services#crew">Crew Visa</a></li>
-                                <li><a href="visa-services#extension">Visa Extension</a></li>
+                                <li><a href="visa-tourist">Tourist Visa</a></li>
+                                <li><a href="visa-business">Business Visa</a></li>
+                                <li><a href="visa-work">Work Visa</a></li>
+                                <li><a href="visa-family">Family Visa</a></li>
+                                <li><a href="visa-transit">Transit Visa</a></li>
+                                <li><a href="visa-sports">Sports Visa</a></li>
+                                <li><a href="visa-medical">Medical Visa</a></li>
+                                <li><a href="visa-crew">Crew Visa</a></li>
+                                <li><a href="visa-extension">Visa Extension</a></li>
                             </ul>
                             <a href="visa-services" class="footer-col-more">View All Visa Services <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
                         </details>
@@ -72,9 +72,9 @@
                             <ul>
                                 <li><a href="contact" data-open-enquiry>Visa Enquiry</a></li>
                                 <li><a href="apostille">Apostille &amp; Attestation</a></li>
-                                <li><a href="travel-services#travel-insurance">Travel Insurance</a></li>
+                                <li><a href="travel-insurance">Travel Insurance</a></li>
                                 <li><a href="forex">Forex Services</a></li>
-                                <li><a href="travel-services#flight-hotel">Flight &amp; Hotel Assistance</a></li>
+                                <li><a href="flight-hotel">Flight &amp; Hotel Assistance</a></li>
                                 <li><a href="visa-checklist">Document Checklist</a></li>
                                 <li><a href="track-application">Track Your Enquiry</a></li>
                             </ul>
@@ -84,7 +84,7 @@
                             <summary>Company</summary>
                             <ul>
                                 <li><a href="about">About Us</a></li>
-                                <li><a href="about#why-choose-us">Why Us?</a></li>
+                                <li><a href="why-choose-us">Why Us?</a></li>
                                 <li><a href="locations">Locations</a></li>
                                 <li><a href="careers">Career</a></li>
                                 <li><a href="b2b-partners">B2B Partner</a></li>

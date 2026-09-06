@@ -26,7 +26,7 @@ include __DIR__ . '/includes/header.php';
                 <p class="lede">We're a small, growing technology-enabled visa consultancy based in Patna. There are no open roles listed right now, but we're always glad to hear from people who care about clear, honest client service.</p>
                 <div class="console-cta-row">
                     <a class="console-btn console-btn-primary" href="careers#apply">Submit Your Resume</a>
-                    <a class="console-btn console-btn-outline-dark" href="about#leadership">Meet the Team</a>
+                    <a class="console-btn console-btn-outline-dark" href="leadership">Meet the Team</a>
                 </div>
             </div>
         </section>

@@ -8,13 +8,13 @@ document.addEventListener('DOMContentLoaded', function () {
         var path = location.pathname.replace(/^\/+|\/+$/g, '').toLowerCase();
         if (!path) { return; } // homepage: no tab should be marked active
         var sectionPrefixes = {
-            'visa-services': ['visa-services'],
+            'visa-services': ['visa-services', 'visa-tourist', 'visa-business', 'visa-work', 'visa-family', 'visa-transit', 'visa-medical', 'visa-sports', 'visa-crew', 'visa-extension'],
             'country-list': ['country-list', 'country-', 'visa-consultant'],
             'apostille': ['apostille'],
             'forex': ['forex'],
-            'travel-services': ['travel-services'],
+            'travel-services': ['travel-services', 'travel-insurance', 'flight-hotel', 'invitation-letter', 'airport-assist', 'corporate-travel'],
             'resources': ['resources', 'visa-guides', 'visa-requirements-guide', 'visa-application-process', 'visa-interview-guide', 'visa-updates', 'embassy-news', 'visa-alerts', 'entry-requirements', 'visa-fee-calculator', 'visa-processing-time-checker', 'visa-faqs', 'visa-tips', 'consultant-help', 'downloads', 'news'],
-            'about': ['about', 'careers'],
+            'about': ['about', 'careers', 'why-choose-us', 'vision-mission', 'leadership', 'our-journey', 'our-team', 'partners'],
         };
         document.querySelectorAll('#mobile-menu > ul > li.has-dropdown').forEach(function (li) {
             var topLink = li.querySelector(':scope > a');
