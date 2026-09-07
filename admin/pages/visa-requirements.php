@@ -63,6 +63,7 @@ $published = $pdo->query(
 )->fetchAll();
 
 admin_header_start('Visa Requirements', 'countries');
+admin_subnav('content', 'visa-requirements');
 ?>
 <div class="admin-form-card" style="max-width:900px">
     <h2 class="country-directory__subheading" style="margin-top:0">Select country + visa type</h2>

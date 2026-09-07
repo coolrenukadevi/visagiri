@@ -176,6 +176,7 @@ foreach ($registry as $table => $meta) {
 }
 
 admin_header_start('Recycle Bin', 'recycle-bin');
+admin_subnav('system', 'recycle-bin');
 ?>
 <p style="color:var(--color-text-muted);max-width:60ch">Every restore requires a one-time code emailed to <strong><?= e(RECYCLE_BIN_OTP_RECIPIENT) ?></strong> — not your own inbox — so a single admin session can't silently undo a deletion on its own.</p>
 

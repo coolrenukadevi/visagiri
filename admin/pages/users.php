@@ -107,6 +107,7 @@ if ($action === 'create' || $action === 'edit') {
     }
 
     admin_header_start($action === 'edit' ? 'Edit User' : 'Add User', 'users');
+    admin_subnav('system', 'users');
     ?>
     <div class="admin-form-card" style="max-width:600px">
         <form method="post" action="/admin/users/">
@@ -143,6 +144,7 @@ $users = $pdo->query(
 )->fetchAll();
 
 admin_header_start('Users & Roles', 'users');
+admin_subnav('system', 'users');
 ?>
 <div class="admin-toolbar">
     <a href="/admin/users/?action=create" class="btn btn-primary">+ Add User</a>

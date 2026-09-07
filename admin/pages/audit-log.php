@@ -46,6 +46,7 @@ $modules = $pdo->query('SELECT DISTINCT module FROM audit_logs ORDER BY module')
 $admins = $pdo->query('SELECT id, full_name FROM admin_users ORDER BY full_name')->fetchAll();
 
 admin_header_start('Audit Log', 'audit-log');
+admin_subnav('system', 'audit-log');
 ?>
 <div class="admin-toolbar">
     <form method="get" action="/admin/audit-log/" style="display:flex;gap:var(--space-2);flex-wrap:wrap">

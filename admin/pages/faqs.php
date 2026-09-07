@@ -69,6 +69,7 @@ if ($action === 'create' || $action === 'edit') {
     }
 
     admin_header_start($action === 'edit' ? 'Edit FAQ' : 'Add FAQ', 'faqs');
+    admin_subnav('content', 'faqs');
     ?>
     <div class="admin-form-card">
         <form method="post" action="/admin/faqs/">
@@ -124,6 +125,7 @@ $faqs = $pdo->query(
 )->fetchAll();
 
 admin_header_start('FAQs', 'faqs');
+admin_subnav('content', 'faqs');
 ?>
 <div class="admin-toolbar">
     <div></div>

@@ -52,6 +52,7 @@ if ($id) {
     $approvals = $approvalsStmt->fetchAll();
 
     admin_header_start('FEMA / Audit Record — ' . $request['forex_reference_no'], 'forex-fema-audit');
+    admin_subnav('forex', 'forex-fema-audit');
     ?>
     <div class="alert alert-info">This is a permanent compliance record-management view, not a legal determination of FEMA/RBI compliance. Final regulatory requirements should be reviewed by the company's authorized compliance/legal professional.</div>
     <div class="card" style="margin-bottom:var(--space-5)">
@@ -136,6 +137,7 @@ $requests->execute($params);
 $requests = $requests->fetchAll();
 
 admin_header_start('FEMA / Audit Records', 'forex-fema-audit');
+admin_subnav('forex', 'forex-fema-audit');
 ?>
 <div class="alert alert-info">Permanent compliance records for every forex transaction. This is a record-management tool, not a legal determination of FEMA/RBI compliance.</div>
 <form method="get" action="/admin/forex-fema-audit/" style="margin-bottom:var(--space-5)">

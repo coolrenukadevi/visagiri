@@ -97,6 +97,7 @@ if ($action === 'create' || $action === 'edit') {
     }
 
     admin_header_start($action === 'edit' ? 'Edit Country' : 'Add Country', 'countries');
+    admin_subnav('content', 'countries');
     ?>
     <div class="admin-form-card">
         <form method="post" action="/admin/countries/">
@@ -197,6 +198,7 @@ $stmt->execute($params);
 $countries = $stmt->fetchAll();
 
 admin_header_start('Countries', 'countries');
+admin_subnav('content', 'countries');
 ?>
 <div class="admin-toolbar">
     <form method="get" action="/admin/countries/" style="display:flex;gap:var(--space-2)">

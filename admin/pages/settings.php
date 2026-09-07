@@ -52,6 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $current = site_settings();
 
 admin_header_start('Settings', 'settings');
+admin_subnav('system', 'settings');
 ?>
 <div class="admin-form-card" style="max-width:900px">
     <form method="post" action="/admin/settings/">

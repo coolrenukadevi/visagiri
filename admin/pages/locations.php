@@ -132,6 +132,7 @@ if ($action === 'create' || $action === 'edit') {
     }
 
     admin_header_start($action === 'edit' ? 'Edit ' . ucfirst($type) : 'Add ' . ucfirst($type), 'locations');
+    admin_subnav('content', 'locations');
     ?>
     <div class="admin-form-card">
         <form method="post" action="/admin/locations/">
@@ -243,6 +244,7 @@ if ($search !== '') {
 $rows = $stmt->fetchAll();
 
 admin_header_start('Locations', 'locations');
+admin_subnav('content', 'locations');
 ?>
 <div class="admin-toolbar" style="justify-content:space-between">
     <div class="button-group">

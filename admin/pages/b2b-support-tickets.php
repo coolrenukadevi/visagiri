@@ -92,6 +92,7 @@ if ($action === 'view' && $id) {
     $canManage = has_permission('b2b_travel_partners.manage');
 
     admin_header_start($ticket['ticket_reference_no'], 'b2b-support-tickets');
+    admin_subnav('b2b', 'b2b-support-tickets');
     ?>
     <div class="admin-form-card" style="max-width:900px;margin-bottom:var(--space-6)">
         <p><strong>Partner:</strong> <a href="/admin/b2b-partners/?action=view&id=<?= (int) $ticket['b2b_partner_id'] ?>"><?= e($ticket['legal_business_name']) ?></a> (<?= e($ticket['partner_reference_no']) ?>)</p>
@@ -165,6 +166,7 @@ $tickets = $stmt->fetchAll();
 $openCount = (int) $pdo->query("SELECT COUNT(*) FROM b2b_support_tickets WHERE status = 'open'")->fetchColumn();
 
 admin_header_start('B2B Support Tickets', 'b2b-support-tickets');
+admin_subnav('b2b', 'b2b-support-tickets');
 ?>
 <?php if ($openCount > 0): ?>
 <div class="alert alert-warning"><?= $openCount ?> open ticket<?= $openCount === 1 ? '' : 's' ?> awaiting a response.</div>

@@ -401,6 +401,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 if ($action === 'create') {
     require_permission('forex.requests.manage');
     admin_header_start('New Forex Request', 'forex');
+    admin_subnav('forex', 'forex');
     ?>
     <div class="admin-form-card" style="max-width:900px">
         <form method="post" action="/admin/forex-requests/">
@@ -573,6 +574,7 @@ if ($action === 'view' && $id) {
     $auditEntries = $auditStmt->fetchAll();
 
     admin_header_start($request['forex_reference_no'], 'forex');
+    admin_subnav('forex', 'forex');
     ?>
     <div class="card" style="margin-bottom:var(--space-5)">
         <div class="admin-toolbar" style="margin-bottom:0;align-items:flex-start">
@@ -1004,6 +1006,7 @@ $requests = $stmt->fetchAll();
 
 $viewLabels = ['all' => 'All Requests', 'pending_documents' => 'Pending Documents', 'quotations' => 'Quotations', 'approved' => 'Approved Requests', 'delivered' => 'Delivered', 'cancelled' => 'Cancelled'];
 admin_header_start('Forex — ' . $viewLabels[$view], 'forex');
+admin_subnav('forex', 'forex');
 ?>
 <div class="admin-toolbar">
     <form method="get" action="/admin/forex-requests/" style="display:flex;gap:var(--space-2);flex-wrap:wrap">

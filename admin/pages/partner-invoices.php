@@ -79,6 +79,7 @@ if ($action === 'create') {
     }
 
     admin_header_start('New Invoice', 'partner-invoices');
+    admin_subnav('partners', 'partner-invoices');
     ?>
     <div class="admin-form-card">
         <form method="post" action="/admin/partner-invoices/">
@@ -139,6 +140,7 @@ if ($action === 'view' && $id) {
     }
 
     admin_header_start($invoice['invoice_reference_no'], 'partner-invoices');
+    admin_subnav('partners', 'partner-invoices');
     ?>
     <div class="admin-form-card" style="max-width:640px">
         <p><strong>Reference:</strong> <?= e($invoice['invoice_reference_no']) ?></p>
@@ -177,6 +179,7 @@ $invoices = $pdo->query(
 )->fetchAll();
 
 admin_header_start('Partner Invoices', 'partner-invoices');
+admin_subnav('partners', 'partner-invoices');
 ?>
 <div class="admin-toolbar">
     <div></div>

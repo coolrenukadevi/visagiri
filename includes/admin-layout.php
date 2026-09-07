@@ -4,30 +4,16 @@ declare(strict_types=1);
 /**
  * Shared admin panel chrome (sidebar + header). Every admin page
  * (except login) calls require_admin_login() then admin_header_start(),
- * renders its own content, then admin_header_end().
+ * renders its own content, then admin_header_end(). The sidebar only
+ * ever shows "Dashboard" — that page is the single command center
+ * (a tile per business module); everything a module needs beyond its
+ * own tile is reached via admin_subnav() calls inside that module's
+ * own pages, not a global sidebar tree.
  */
 
 function admin_header_start(string $pageTitle, string $activeNav): void
 {
     $admin = current_admin();
-
-    // Which sidebar group (if any) the current page belongs to — used
-    // to auto-expand only that one group server-side, so the sidebar
-    // renders in the right state on first paint with no JS-dependent
-    // flash, and still works if JS fails to load at all.
-    $navGroups = [
-        'forex' => ['forex-dashboard', 'forex', 'forex-rates', 'forex-country-rules', 'forex-fema-audit'],
-        'content' => ['countries', 'visa-types', 'faqs', 'embassies', 'locations'],
-        'system' => ['users', 'audit-log', 'settings', 'mail-log', 'recycle-bin'],
-    ];
-    $activeGroup = null;
-    foreach ($navGroups as $groupKey => $groupNavs) {
-        if (in_array($activeNav, $groupNavs, true)) {
-            $activeGroup = $groupKey;
-            break;
-        }
-    }
-    $isGroupOpen = static fn(string $groupKey): bool => $activeGroup === $groupKey;
     ?>
 <!doctype html>
 <html lang="en">
@@ -47,97 +33,6 @@ function admin_header_start(string $pageTitle, string $activeNav): void
         <div class="admin-sidebar__brand">VISA<span>GIRI</span> <small>Admin</small></div>
         <nav class="admin-sidebar__nav">
             <a href="/admin/dashboard/" class="<?= $activeNav === 'dashboard' ? 'is-active' : '' ?>">Dashboard</a>
-            <?php if (has_permission('enquiries.view') || has_permission('general_enquiries.view') || has_permission('forex.requests.view') || has_permission('partners.view')): ?>
-            <a href="/admin/sales-crm/" class="<?= $activeNav === 'sales-crm' ? 'is-active' : '' ?>">Sales CRM</a>
-            <?php endif; ?>
-            <?php if (has_permission('customers.view')): ?>
-            <a href="/admin/customers/" class="<?= $activeNav === 'customers' ? 'is-active' : '' ?>">Customers</a>
-            <?php endif; ?>
-            <?php if (has_permission('partners.view')): ?>
-            <a href="/admin/partners/" class="<?= $activeNav === 'partners' ? 'is-active' : '' ?>">Partners</a>
-            <?php endif; ?>
-            <?php if (has_permission('partners.manage')): ?>
-            <a href="/admin/partner-tiers/" class="<?= $activeNav === 'partner-tiers' ? 'is-active' : '' ?>">Partner Tiers</a>
-            <a href="/admin/partner-invoices/" class="<?= $activeNav === 'partner-invoices' ? 'is-active' : '' ?>">Partner Invoices</a>
-            <?php endif; ?>
-            <?php if (has_permission('partners.view')): ?>
-            <a href="/admin/partner-document-expiry/" class="<?= $activeNav === 'partner-document-expiry' ? 'is-active' : '' ?>">Document Expiry</a>
-            <a href="/admin/partner-enquiries/" class="<?= $activeNav === 'partner-enquiries' ? 'is-active' : '' ?>">Partner Enquiries<?php $pendingPartnerEnquiries = (int) db()->query("SELECT COUNT(*) FROM partner_enquiries WHERE deleted_at IS NULL AND status = 'new'")->fetchColumn(); if ($pendingPartnerEnquiries > 0): ?> <span class="admin-sidebar__badge"><?= $pendingPartnerEnquiries ?></span><?php endif; ?></a>
-            <?php endif; ?>
-            <?php if (has_permission('partners.manage') || has_permission('forex.requests.view')): ?>
-            <a href="/admin/finance/" class="<?= $activeNav === 'finance' ? 'is-active' : '' ?>">Finance</a>
-            <?php endif; ?>
-            <?php if (has_permission('b2b_travel_partners.view')): ?>
-            <a href="/admin/b2b-partners/" class="<?= $activeNav === 'b2b-partners' ? 'is-active' : '' ?>">B2B Travel Partners<?php $pendingB2bPartners = (int) db()->query("SELECT COUNT(*) FROM b2b_partners WHERE deleted_at IS NULL AND status IN ('submitted', 'under_review')")->fetchColumn(); if ($pendingB2bPartners > 0): ?> <span class="admin-sidebar__badge"><?= $pendingB2bPartners ?></span><?php endif; ?></a>
-            <a href="/admin/b2b-enquiries/" class="<?= $activeNav === 'b2b-enquiries' ? 'is-active' : '' ?>">B2B Visa Enquiries<?php $pendingB2bEnquiries = (int) db()->query("SELECT COUNT(*) FROM b2b_visa_enquiries WHERE deleted_at IS NULL AND status = 'new'")->fetchColumn(); if ($pendingB2bEnquiries > 0): ?> <span class="admin-sidebar__badge"><?= $pendingB2bEnquiries ?></span><?php endif; ?></a>
-            <a href="/admin/b2b-support-tickets/" class="<?= $activeNav === 'b2b-support-tickets' ? 'is-active' : '' ?>">B2B Support Tickets<?php $openB2bTickets = (int) db()->query("SELECT COUNT(*) FROM b2b_support_tickets WHERE status = 'open'")->fetchColumn(); if ($openB2bTickets > 0): ?> <span class="admin-sidebar__badge"><?= $openB2bTickets ?></span><?php endif; ?></a>
-            <?php endif; ?>
-            <?php if (has_permission('enquiries.view')): ?>
-            <a href="/admin/enquiries/" class="<?= $activeNav === 'enquiries' ? 'is-active' : '' ?>">Enquiries (Visa + Apostille)</a>
-            <?php endif; ?>
-            <?php if (has_permission('visa.view')): ?>
-            <a href="/admin/visa-enquiries/" class="<?= $activeNav === 'visa-enquiries' ? 'is-active' : '' ?>">Visa Enquiries (Legacy)</a>
-            <a href="/admin/visa-applications/" class="<?= $activeNav === 'visa-applications' ? 'is-active' : '' ?>">Visa Applications</a>
-            <?php endif; ?>
-            <?php if (has_permission('general_enquiries.view')): ?>
-            <a href="/admin/general-enquiries/" class="<?= $activeNav === 'general-enquiries' ? 'is-active' : '' ?>">General &amp; Attestation Enquiries</a>
-            <?php endif; ?>
-            <?php if (has_permission('grievances.view')): ?>
-            <a href="/admin/grievances/" class="<?= $activeNav === 'grievances' ? 'is-active' : '' ?>">Grievances</a>
-            <?php endif; ?>
-            <?php if (has_permission('forex.requests.view')): ?>
-            <button type="button" class="admin-sidebar__group" aria-expanded="<?= $isGroupOpen('forex') ? 'true' : 'false' ?>" aria-controls="sidebar-group-forex">Forex <?= nav_chevron_icon() ?></button>
-            <div class="admin-sidebar__subgroup<?= $isGroupOpen('forex') ? ' is-open' : '' ?>" id="sidebar-group-forex">
-            <a href="/admin/forex-dashboard/" class="<?= $activeNav === 'forex-dashboard' ? 'is-active' : '' ?>">Forex Dashboard</a>
-            <?php if (has_permission('forex.requests.manage')): ?>
-            <a href="/admin/forex-requests/?action=create" class="<?= '' ?>">New Forex Request</a>
-            <?php endif; ?>
-            <a href="/admin/forex-requests/?view=all" class="<?= $activeNav === 'forex' ? 'is-active' : '' ?>">All Requests</a>
-            <a href="/admin/forex-requests/?view=pending_documents">Pending Documents</a>
-            <a href="/admin/forex-requests/?view=quotations">Quotations</a>
-            <a href="/admin/forex-requests/?view=approved">Approved Requests</a>
-            <a href="/admin/forex-requests/?view=delivered">Delivered</a>
-            <a href="/admin/forex-requests/?view=cancelled">Cancelled</a>
-            <?php if (has_permission('forex.compliance.view')): ?>
-            <a href="/admin/forex-fema-audit/">FEMA / Audit Records</a>
-            <?php endif; ?>
-            <?php if (has_permission('forex.rates.manage')): ?>
-            <a href="/admin/forex-rates/" class="<?= $activeNav === 'forex-rates' ? 'is-active' : '' ?>">Exchange Rates</a>
-            <?php endif; ?>
-            <?php if (has_permission('forex.country_rules.manage')): ?>
-            <a href="/admin/forex-country-rules/" class="<?= $activeNav === 'forex-country-rules' ? 'is-active' : '' ?>">Country Rules</a>
-            <?php endif; ?>
-            </div>
-            <?php endif; ?>
-            <?php if (has_permission('content.manage')): ?>
-            <button type="button" class="admin-sidebar__group" aria-expanded="<?= $isGroupOpen('content') ? 'true' : 'false' ?>" aria-controls="sidebar-group-content">Content <?= nav_chevron_icon() ?></button>
-            <div class="admin-sidebar__subgroup<?= $isGroupOpen('content') ? ' is-open' : '' ?>" id="sidebar-group-content">
-            <a href="/admin/countries/" class="<?= $activeNav === 'countries' ? 'is-active' : '' ?>">Countries</a>
-            <a href="/admin/visa-types/" class="<?= $activeNav === 'visa-types' ? 'is-active' : '' ?>">Visa Types</a>
-            <a href="/admin/visa-requirements/" class="<?= $activeNav === 'visa-requirements' ? 'is-active' : '' ?>">Visa Requirements</a>
-            <a href="/admin/faqs/" class="<?= $activeNav === 'faqs' ? 'is-active' : '' ?>">FAQs</a>
-            <a href="/admin/embassies/" class="<?= $activeNav === 'embassies' ? 'is-active' : '' ?>">Embassies / Consulates / VACs</a>
-            <a href="/admin/locations/" class="<?= $activeNav === 'locations' ? 'is-active' : '' ?>">Locations (States/Cities)</a>
-            </div>
-            <?php endif; ?>
-            <?php if (has_permission('users.manage') || has_permission('settings.manage') || has_permission('audit.view') || has_permission('recycle_bin.manage')): ?>
-            <button type="button" class="admin-sidebar__group" aria-expanded="<?= $isGroupOpen('system') ? 'true' : 'false' ?>" aria-controls="sidebar-group-system">System <?= nav_chevron_icon() ?></button>
-            <div class="admin-sidebar__subgroup<?= $isGroupOpen('system') ? ' is-open' : '' ?>" id="sidebar-group-system">
-            <?php if (has_permission('users.manage')): ?>
-            <a href="/admin/users/" class="<?= $activeNav === 'users' ? 'is-active' : '' ?>">Users &amp; Roles</a>
-            <?php endif; ?>
-            <?php if (has_permission('audit.view')): ?>
-            <a href="/admin/audit-log/" class="<?= $activeNav === 'audit-log' ? 'is-active' : '' ?>">Audit Log</a>
-            <?php endif; ?>
-            <?php if (has_permission('settings.manage')): ?>
-            <a href="/admin/settings/" class="<?= $activeNav === 'settings' ? 'is-active' : '' ?>">Settings</a>
-            <a href="/admin/mail-log/" class="<?= $activeNav === 'mail-log' ? 'is-active' : '' ?>">Mail Log</a>
-            <?php endif; ?>
-            <?php if (has_permission('recycle_bin.manage')): ?>
-            <a href="/admin/recycle-bin/" class="<?= $activeNav === 'recycle-bin' ? 'is-active' : '' ?>">Recycle Bin</a>
-            <?php endif; ?>
-            </div>
-            <?php endif; ?>
         </nav>
         <div class="admin-sidebar__footer">
             <a href="/" target="_blank" rel="noopener">View site &rarr;</a>
@@ -172,5 +67,73 @@ function admin_header_end(): void
 <script src="<?= e(asset_url('/assets/js/admin.js')) ?>"></script>
 </body>
 </html>
+    <?php
+}
+
+/**
+ * Named groups of related module pages, each keyed by its own module's
+ * home page ('href' + label) plus a permission gate — mirrors the
+ * sidebar's old grouping exactly, now rendered as an in-page tab strip
+ * on the module's own pages instead of a global sidebar tree. Call
+ * admin_subnav() right after admin_header_start() on any page whose
+ * $activeNav appears in one of these groups' items.
+ */
+const ADMIN_SUBNAV_GROUPS = [
+    'partners' => [
+        ['nav' => 'partners', 'label' => 'Referral Partners', 'href' => '/admin/partners/', 'permission' => 'partners.view'],
+        ['nav' => 'partner-tiers', 'label' => 'Partner Tiers', 'href' => '/admin/partner-tiers/', 'permission' => 'partners.manage'],
+        ['nav' => 'partner-invoices', 'label' => 'Partner Invoices', 'href' => '/admin/partner-invoices/', 'permission' => 'partners.manage'],
+        ['nav' => 'partner-document-expiry', 'label' => 'Document Expiry', 'href' => '/admin/partner-document-expiry/', 'permission' => 'partners.view'],
+        ['nav' => 'partner-enquiries', 'label' => 'Partner Enquiries', 'href' => '/admin/partner-enquiries/', 'permission' => 'partners.view'],
+    ],
+    'b2b' => [
+        ['nav' => 'b2b-partners', 'label' => 'B2B Partners', 'href' => '/admin/b2b-partners/', 'permission' => 'b2b_travel_partners.view'],
+        ['nav' => 'b2b-enquiries', 'label' => 'B2B Visa Enquiries', 'href' => '/admin/b2b-enquiries/', 'permission' => 'b2b_travel_partners.view'],
+        ['nav' => 'b2b-support-tickets', 'label' => 'B2B Support Tickets', 'href' => '/admin/b2b-support-tickets/', 'permission' => 'b2b_travel_partners.view'],
+    ],
+    'leads' => [
+        ['nav' => 'sales-crm', 'label' => 'Sales CRM', 'href' => '/admin/sales-crm/', 'permission' => null],
+        ['nav' => 'enquiries', 'label' => 'Enquiries (Visa + Apostille)', 'href' => '/admin/enquiries/', 'permission' => 'enquiries.view'],
+        ['nav' => 'visa-enquiries', 'label' => 'Visa Enquiries (Legacy)', 'href' => '/admin/visa-enquiries/', 'permission' => 'visa.view'],
+        ['nav' => 'general-enquiries', 'label' => 'General &amp; Attestation Enquiries', 'href' => '/admin/general-enquiries/', 'permission' => 'general_enquiries.view'],
+    ],
+    'forex' => [
+        ['nav' => 'forex-dashboard', 'label' => 'Forex Dashboard', 'href' => '/admin/forex-dashboard/', 'permission' => 'forex.requests.view'],
+        ['nav' => 'forex', 'label' => 'All Requests', 'href' => '/admin/forex-requests/?view=all', 'permission' => 'forex.requests.view'],
+        ['nav' => 'forex-rates', 'label' => 'Exchange Rates', 'href' => '/admin/forex-rates/', 'permission' => 'forex.rates.manage'],
+        ['nav' => 'forex-country-rules', 'label' => 'Country Rules', 'href' => '/admin/forex-country-rules/', 'permission' => 'forex.country_rules.manage'],
+        ['nav' => 'forex-fema-audit', 'label' => 'FEMA / Audit Records', 'href' => '/admin/forex-fema-audit/', 'permission' => 'forex.compliance.view'],
+    ],
+    'content' => [
+        ['nav' => 'countries', 'label' => 'Countries', 'href' => '/admin/countries/', 'permission' => 'content.manage'],
+        ['nav' => 'visa-types', 'label' => 'Visa Types', 'href' => '/admin/visa-types/', 'permission' => 'content.manage'],
+        ['nav' => 'visa-requirements', 'label' => 'Visa Requirements', 'href' => '/admin/visa-requirements/', 'permission' => 'content.manage'],
+        ['nav' => 'faqs', 'label' => 'FAQs', 'href' => '/admin/faqs/', 'permission' => 'content.manage'],
+        ['nav' => 'embassies', 'label' => 'Embassies / Consulates / VACs', 'href' => '/admin/embassies/', 'permission' => 'content.manage'],
+        ['nav' => 'locations', 'label' => 'Locations (States/Cities)', 'href' => '/admin/locations/', 'permission' => 'content.manage'],
+    ],
+    'system' => [
+        ['nav' => 'users', 'label' => 'Users &amp; Roles', 'href' => '/admin/users/', 'permission' => 'users.manage'],
+        ['nav' => 'audit-log', 'label' => 'Audit Log', 'href' => '/admin/audit-log/', 'permission' => 'audit.view'],
+        ['nav' => 'settings', 'label' => 'Settings', 'href' => '/admin/settings/', 'permission' => 'settings.manage'],
+        ['nav' => 'mail-log', 'label' => 'Mail Log', 'href' => '/admin/mail-log/', 'permission' => 'settings.manage'],
+        ['nav' => 'recycle-bin', 'label' => 'Recycle Bin', 'href' => '/admin/recycle-bin/', 'permission' => 'recycle_bin.manage'],
+    ],
+];
+
+/** Renders a small pill-tab strip of related module pages. Call right after admin_header_start(). */
+function admin_subnav(string $groupKey, string $activeNav): void
+{
+    $items = ADMIN_SUBNAV_GROUPS[$groupKey] ?? [];
+    $items = array_filter($items, static fn(array $item): bool => $item['permission'] === null || has_permission($item['permission']));
+    if (count($items) < 2) {
+        return;
+    }
+    ?>
+    <div class="admin-toolbar" style="margin-bottom:var(--space-5)">
+        <?php foreach ($items as $item): ?>
+        <a href="<?= e($item['href']) ?>" class="btn btn-sm <?= $item['nav'] === $activeNav ? 'btn-primary' : 'btn-outline' ?>"><?= $item['label'] ?></a>
+        <?php endforeach; ?>
+    </div>
     <?php
 }

@@ -89,6 +89,7 @@ if ($action === 'create' || $action === 'edit') {
     }
 
     admin_header_start($action === 'edit' ? 'Edit Country Rule' : 'Add Country Rule', 'forex-country-rules');
+    admin_subnav('forex', 'forex-country-rules');
     ?>
     <div class="admin-form-card" style="max-width:700px">
         <form method="post" action="/admin/forex-country-rules/">
@@ -126,6 +127,7 @@ if ($action === 'create' || $action === 'edit') {
 $rules = $pdo->query('SELECT * FROM forex_country_rules ORDER BY country')->fetchAll();
 
 admin_header_start('Forex Country Rules', 'forex-country-rules');
+admin_subnav('forex', 'forex-country-rules');
 ?>
 <div class="alert alert-info">These rules drive the automatic document checklist per country. A country with no rule here still gets the full standard checklist (passport, PAN, air ticket, hotel, visa or declaration) — nothing is ever silently skipped for an unconfigured country. This is a record-management tool, not a substitute for the company's own legal/compliance review of applicable FEMA/RBI/visa rules.</div>
 <div class="admin-toolbar">

@@ -117,6 +117,7 @@ if ($id) {
     }
 
     admin_header_start('Enquiry ' . $enquiry['reference_number'], 'visa-enquiries');
+    admin_subnav('leads', 'visa-enquiries');
     ?>
     <div class="admin-form-card">
         <p><strong>Reference:</strong> <?= e($enquiry['reference_number']) ?></p>
@@ -206,6 +207,7 @@ $stmt->execute($params);
 $enquiries = $stmt->fetchAll();
 
 admin_header_start('Visa Enquiries', 'visa-enquiries');
+admin_subnav('leads', 'visa-enquiries');
 ?>
 <div class="admin-toolbar">
     <div class="button-group">

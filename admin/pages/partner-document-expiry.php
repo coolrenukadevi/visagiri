@@ -23,6 +23,7 @@ $documents = $pdo->query(
 )->fetchAll();
 
 admin_header_start('Document Expiry', 'partner-document-expiry');
+admin_subnav('partners', 'partner-document-expiry');
 ?>
 <p style="color:var(--text-muted);margin-bottom:var(--space-4)">Partner documents with an expiry date on file, soonest first. Documents without an expiry date (most uploads) don't appear here.</p>
 <?php if (!$documents): ?>

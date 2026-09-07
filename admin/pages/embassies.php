@@ -84,6 +84,7 @@ if ($action === 'create' || $action === 'edit') {
     }
 
     admin_header_start(($action === 'edit' ? 'Edit ' : 'Add ') . $tables[$type]['label'], 'embassies');
+    admin_subnav('content', 'embassies');
     ?>
     <div class="admin-form-card">
         <form method="post" action="/admin/embassies/">
@@ -141,6 +142,7 @@ $table = $tables[$type]['table'];
 $entries = $pdo->query("SELECT e.*, c.name AS country_name FROM $table e JOIN countries c ON c.id = e.country_id ORDER BY c.name, e.name")->fetchAll();
 
 admin_header_start('Embassies / Consulates / VACs', 'embassies');
+admin_subnav('content', 'embassies');
 ?>
 <div class="admin-toolbar">
     <div class="button-group">

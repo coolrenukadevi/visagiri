@@ -120,6 +120,7 @@ if ($id) {
     $docStatusBadgeMap = ['uploaded' => 'neutral', 'under_review' => 'warning', 'verified' => 'success', 'rejected' => 'danger', 'copy_required' => 'warning'];
 
     admin_header_start('Enquiry ' . $enquiry['enquiry_number'], 'enquiries');
+    admin_subnav('leads', 'enquiries');
     ?>
     <div class="admin-form-card">
         <p><strong>Enquiry No.:</strong> <?= e($enquiry['enquiry_number']) ?> &nbsp; <strong>Tracking No.:</strong> <?= e($enquiry['tracking_token']) ?></p>
@@ -302,6 +303,7 @@ $stmt->execute($params);
 $enquiries = $stmt->fetchAll();
 
 admin_header_start('Enquiries', 'enquiries');
+admin_subnav('leads', 'enquiries');
 ?>
 <div class="admin-toolbar">
     <form method="get" action="/admin/enquiries/" style="margin-bottom:var(--space-4)">

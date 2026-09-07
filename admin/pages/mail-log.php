@@ -23,6 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'clear
 }
 
 admin_header_start('Mail Log', 'mail-log');
+admin_subnav('system', 'mail-log');
 ?>
 <div class="admin-form-card" style="max-width:1100px">
     <p style="color:var(--text-muted);margin-top:0">

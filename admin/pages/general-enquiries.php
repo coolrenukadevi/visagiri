@@ -98,6 +98,7 @@ if ($id) {
     $documents->execute(['id' => $id]);
 
     admin_header_start('Enquiry ' . $enquiry['enquiry_reference_no'], 'general-enquiries');
+    admin_subnav('leads', 'general-enquiries');
     ?>
     <div class="admin-form-card">
         <p><strong>Reference:</strong> <?= e($enquiry['enquiry_reference_no']) ?></p>
@@ -203,6 +204,7 @@ $stmt->execute($params);
 $enquiries = $stmt->fetchAll();
 
 admin_header_start('General & Attestation Enquiries', 'general-enquiries');
+admin_subnav('leads', 'general-enquiries');
 ?>
 <div class="admin-toolbar">
     <div class="button-group">

@@ -83,6 +83,7 @@ if ($action === 'create' || $action === 'edit') {
     }
 
     admin_header_start($action === 'edit' ? 'Edit Tier' : 'Add Tier', 'partner-tiers');
+    admin_subnav('partners', 'partner-tiers');
     ?>
     <div class="admin-form-card">
         <form method="post" action="/admin/partner-tiers/">
@@ -136,6 +137,7 @@ $tiers = $pdo->query(
 )->fetchAll();
 
 admin_header_start('Partner Tiers', 'partner-tiers');
+admin_subnav('partners', 'partner-tiers');
 ?>
 <div class="admin-toolbar">
     <div></div>

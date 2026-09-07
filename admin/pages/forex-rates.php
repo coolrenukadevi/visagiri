@@ -48,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $activeRates = $pdo->query("SELECT r.*, u.full_name AS updated_by_name FROM forex_rates r LEFT JOIN admin_users u ON u.id = r.updated_by WHERE r.is_active = 1 ORDER BY r.currency_code")->fetchAll();
 
 admin_header_start('Forex Exchange Rates', 'forex-rates');
+admin_subnav('forex', 'forex-rates');
 ?>
 <div class="admin-form-card" style="max-width:700px;margin-bottom:var(--space-6)">
     <div class="card-title">Add / Update Rate</div>

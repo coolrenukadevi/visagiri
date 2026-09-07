@@ -72,6 +72,7 @@ if ($action === 'create' || $action === 'edit') {
     }
 
     admin_header_start($action === 'edit' ? 'Edit Visa Type' : 'Add Visa Type', 'visa-types');
+    admin_subnav('content', 'visa-types');
     ?>
     <div class="admin-form-card">
         <form method="post" action="/admin/visa-types/">
@@ -113,6 +114,7 @@ if ($action === 'create' || $action === 'edit') {
 $types = $pdo->query('SELECT * FROM visa_types ORDER BY sort_order')->fetchAll();
 
 admin_header_start('Visa Types', 'visa-types');
+admin_subnav('content', 'visa-types');
 ?>
 <div class="admin-toolbar">
     <div></div>

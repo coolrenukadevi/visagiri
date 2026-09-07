@@ -254,6 +254,7 @@ if ($action === 'view' && $id) {
     $canManage = has_permission('b2b_travel_partners.manage');
 
     admin_header_start($enquiry['enquiry_reference_no'], 'b2b-enquiries');
+    admin_subnav('b2b', 'b2b-enquiries');
     ?>
     <div class="admin-form-card" style="max-width:900px;margin-bottom:var(--space-6)">
         <p><strong>Partner:</strong> <a href="/admin/b2b-partners/?action=view&id=<?= (int) $enquiry['b2b_partner_id'] ?>"><?= e($enquiry['legal_business_name']) ?></a> (<?= e($enquiry['partner_reference_no']) ?>)</p>
@@ -506,6 +507,7 @@ $enquiries = $stmt->fetchAll();
 $newCount = (int) $pdo->query("SELECT COUNT(*) FROM b2b_visa_enquiries WHERE status = 'new' AND deleted_at IS NULL")->fetchColumn();
 
 admin_header_start('B2B Visa Enquiries', 'b2b-enquiries');
+admin_subnav('b2b', 'b2b-enquiries');
 ?>
 <?php if ($newCount > 0): ?>
 <div class="alert alert-warning"><?= $newCount ?> new visa enquir<?= $newCount === 1 ? 'y' : 'ies' ?> awaiting review.</div>

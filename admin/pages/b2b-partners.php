@@ -196,6 +196,7 @@ if ($action === 'view' && $id) {
     $canApprove = count($docStatuses) > 0 && count(array_filter($docStatuses, static fn($s) => $s !== 'verified')) === 0;
 
     admin_header_start($partner['legal_business_name'], 'b2b-partners');
+    admin_subnav('b2b', 'b2b-partners');
     ?>
     <div class="admin-form-card" style="max-width:900px;margin-bottom:var(--space-6)">
         <p><strong>Partner ID:</strong> <?= e($partner['partner_reference_no']) ?></p>
@@ -395,6 +396,7 @@ $partners = $stmt->fetchAll();
 $pendingCount = (int) $pdo->query("SELECT COUNT(*) FROM b2b_partners WHERE status IN ('submitted', 'under_review') AND deleted_at IS NULL")->fetchColumn();
 
 admin_header_start('B2B Travel Partners', 'b2b-partners');
+admin_subnav('b2b', 'b2b-partners');
 ?>
 <?php if ($pendingCount > 0): ?>
 <div class="alert alert-warning"><?= $pendingCount ?> B2B partner application<?= $pendingCount === 1 ? '' : 's' ?> awaiting review.</div>

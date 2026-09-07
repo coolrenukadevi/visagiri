@@ -38,6 +38,7 @@ $byCurrency = $pdo->query(
 )->fetchAll();
 
 admin_header_start('Forex Dashboard', 'forex-dashboard');
+admin_subnav('forex', 'forex-dashboard');
 ?>
 <div class="hrms-stat-grid">
     <?php foreach ($stats as $label => $value): ?>

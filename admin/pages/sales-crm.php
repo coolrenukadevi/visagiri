@@ -111,6 +111,7 @@ $todayCounts = [
 $todayTotal = array_sum($todayCounts);
 
 admin_header_start('Sales CRM', 'sales-crm');
+admin_subnav('leads', 'sales-crm');
 ?>
 <p style="color:var(--text-muted);max-width:70ch;margin-bottom:var(--space-5)">Every lead your team captures — visa/apostille, general &amp; attestation, forex, and B2B partner enquiries — in one place. Each row opens its own record for full management; nothing here is duplicated data, this is a live combined view.</p>
 

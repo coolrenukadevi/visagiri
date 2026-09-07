@@ -382,6 +382,7 @@ if ($action === 'view' && $id) {
     $partnerDocuments = $documentsStmt->fetchAll();
 
     admin_header_start($partner['company_name'], 'partners');
+    admin_subnav('partners', 'partners');
     ?>
     <div class="admin-form-card" style="max-width:900px;margin-bottom:var(--space-6)">
         <p><strong>Reference:</strong> <?= e($partner['partner_reference_no']) ?></p>
@@ -673,6 +674,7 @@ $pendingCount = (int) $pendingCountStmt->fetchColumn();
 $pendingEnquiryCount = (int) $pdo->query("SELECT COUNT(*) FROM partner_enquiries WHERE deleted_at IS NULL AND status = 'new'")->fetchColumn();
 
 admin_header_start('Partners', 'partners');
+admin_subnav('partners', 'partners');
 ?>
 <?php if ($pendingCount > 0): ?>
 <div class="alert alert-warning"><?= $pendingCount ?> partner<?= $pendingCount === 1 ? '' : 's' ?> awaiting approval.</div>

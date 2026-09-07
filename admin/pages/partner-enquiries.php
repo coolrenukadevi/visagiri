@@ -65,6 +65,7 @@ if ($id) {
     }
 
     admin_header_start('Enquiry ' . $enquiry['reference_number'], 'partner-enquiries');
+    admin_subnav('partners', 'partner-enquiries');
     ?>
     <div class="admin-form-card">
         <p><strong>Reference:</strong> <?= e($enquiry['reference_number']) ?></p>
@@ -126,6 +127,7 @@ $stmt->execute($params);
 $enquiries = $stmt->fetchAll();
 
 admin_header_start('Partner Enquiries', 'partner-enquiries');
+admin_subnav('partners', 'partner-enquiries');
 ?>
 <div class="admin-toolbar">
     <div class="button-group">
