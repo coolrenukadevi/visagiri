@@ -50,24 +50,24 @@ $navLinks = [
 // stubs, not hidden or pretended-finished.
 $resourcesMenu = [
     'Guides & Documents' => [
-        ['label' => 'Documentation Assistance', 'href' => '/documentation/'],
-        ['label' => 'Document Templates', 'href' => '/document-templates/'],
-        ['label' => 'Document Checklists (Coming Soon)', 'href' => '/document-checklists/'],
+        ['label' => 'Documentation Assistance', 'href' => '/documentation/', 'icon' => 'document'],
+        ['label' => 'Document Templates', 'href' => '/document-templates/', 'icon' => 'template'],
+        ['label' => 'Document Checklists (Coming Soon)', 'href' => '/document-checklists/', 'icon' => 'checklist'],
     ],
     'Visa Information' => [
-        ['label' => 'Visa Types', 'href' => '/visa-type/'],
-        ['label' => 'Countries We Serve', 'href' => '/countries/'],
-        ['label' => 'Embassy Directory', 'href' => '/embassy-directory/'],
+        ['label' => 'Visa Types', 'href' => '/visa-type/', 'icon' => 'visa-types'],
+        ['label' => 'Countries We Serve', 'href' => '/countries/', 'icon' => 'countries'],
+        ['label' => 'Embassy Directory', 'href' => '/embassy-directory/', 'icon' => 'embassy'],
     ],
     'Tools' => [
-        ['label' => 'Track Your Application', 'href' => '/track-visa/'],
-        ['label' => 'Check Visa Status', 'href' => '/visa-status/'],
-        ['label' => 'Visa Tools (Coming Soon)', 'href' => '/resources/tools/'],
+        ['label' => 'Track Your Application', 'href' => '/track-visa/', 'icon' => 'track'],
+        ['label' => 'Check Visa Status', 'href' => '/visa-status/', 'icon' => 'status'],
+        ['label' => 'Visa Tools (Coming Soon)', 'href' => '/resources/tools/', 'icon' => 'tools'],
     ],
     'Updates & Help' => [
-        ['label' => 'Visa Updates & News', 'href' => '/blog/'],
-        ['label' => 'FAQs', 'href' => '/faq/'],
-        ['label' => 'Submit an Enquiry', 'href' => '/enquire/'],
+        ['label' => 'Visa Updates & News', 'href' => '/blog/', 'icon' => 'visa-updates'],
+        ['label' => 'FAQs', 'href' => '/faq/', 'icon' => 'faq'],
+        ['label' => 'Submit an Enquiry', 'href' => '/enquire/', 'icon' => 'enquiry'],
     ],
 ];
 $resourcesIsActive = static function () use ($resourcesMenu, $currentPath): bool {
@@ -444,10 +444,10 @@ foreach ([
                         <div class="mega-menu__columns">
                             <?php foreach ($resourcesMenu as $resourcesGroupName => $resourcesGroupItems): ?>
                             <div class="mega-menu__col">
-                                <div class="mega-menu__col-heading"><?= e($resourcesGroupName) ?></div>
+                                <div class="mega-menu__col-heading"><span class="mega-menu__col-icon" aria-hidden="true"><?= resource_nav_icon($resourcesGroupName) ?></span><?= e($resourcesGroupName) ?></div>
                                 <ul>
                                     <?php foreach ($resourcesGroupItems as $resourcesItem): ?>
-                                    <li><a href="<?= e($resourcesItem['href']) ?>"><?= e($resourcesItem['label']) ?></a></li>
+                                    <li><a href="<?= e($resourcesItem['href']) ?>"><span class="mega-menu__icon" aria-hidden="true"><?= resource_nav_icon($resourcesItem['icon']) ?></span><?= e($resourcesItem['label']) ?></a></li>
                                     <?php endforeach; ?>
                                 </ul>
                             </div>
@@ -632,10 +632,10 @@ foreach ([
                         <div class="site-header__mobile-accordion-body">
                             <?php foreach ($resourcesMenu as $resourcesGroupName => $resourcesGroupItems): ?>
                             <div class="site-header__mobile-subgroup">
-                                <span class="site-header__mobile-subheading"><?= e($resourcesGroupName) ?></span>
+                                <span class="site-header__mobile-subheading"><span aria-hidden="true"><?= resource_nav_icon($resourcesGroupName) ?></span> <?= e($resourcesGroupName) ?></span>
                                 <ul>
                                     <?php foreach ($resourcesGroupItems as $resourcesItem): ?>
-                                    <li><a href="<?= e($resourcesItem['href']) ?>"><?= e($resourcesItem['label']) ?></a></li>
+                                    <li><a href="<?= e($resourcesItem['href']) ?>"><span aria-hidden="true"><?= resource_nav_icon($resourcesItem['icon']) ?></span> <?= e($resourcesItem['label']) ?></a></li>
                                     <?php endforeach; ?>
                                 </ul>
                             </div>

@@ -431,6 +431,42 @@ function company_nav_icon(string $key): string
 }
 
 /**
+ * Icon set for the Resources mega-menu — both its 4 column headings
+ * (matched directly on the group name, same convention as
+ * attestation_category_icon()) and its 12 individual links. Same
+ * premium stroke-SVG treatment as company_nav_icon()/visa_type_icon()
+ * rather than emoji, since the Resources trigger itself already uses
+ * primary_nav_icon('resources')'s line-icon style. A few links reuse
+ * an existing icon from elsewhere in the nav (e.g. Visa Types reuses
+ * the passport icon) rather than drawing a near-duplicate.
+ */
+function resource_nav_icon(string $key): string
+{
+    $attrs = 'width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
+    return match ($key) {
+        // Column headings
+        'Guides & Documents' => "<svg $attrs><path d=\"M2.5 6.5C2.5 5.7 3.2 5 4 5H8L9.5 6.8H16C16.8 6.8 17.5 7.5 17.5 8.3V13.5C17.5 14.3 16.8 15 16 15H4C3.2 15 2.5 14.3 2.5 13.5V6.5Z\"/></svg>",
+        'Visa Information' => "<svg $attrs><rect x=\"4\" y=\"3\" width=\"12\" height=\"14\" rx=\"1.3\"/><line x1=\"7\" y1=\"7\" x2=\"13\" y2=\"7\"/><line x1=\"7\" y1=\"10\" x2=\"13\" y2=\"10\"/><line x1=\"7\" y1=\"13\" x2=\"10.5\" y2=\"13\"/></svg>",
+        'Tools', 'tools' => "<svg $attrs><path d=\"M12.5 4.2C11 3.4 9.1 3.7 7.9 4.9 6.7 6.1 6.4 7.9 7.1 9.4L3.6 12.9C3 13.5 3 14.4 3.6 15 4.2 15.6 5.1 15.6 5.7 15L9.2 11.5C10.7 12.2 12.5 11.9 13.7 10.7 14.9 9.5 15.2 7.6 14.4 6.1L12 8.5 10.1 6.6Z\"/></svg>",
+        'Updates & Help' => "<svg $attrs><path d=\"M3.5 5.5C3.5 4.4 4.4 3.5 5.5 3.5H14.5C15.6 3.5 16.5 4.4 16.5 5.5V11C16.5 12.1 15.6 13 14.5 13H8L5 15.8V13H5.5C4.4 13 3.5 12.1 3.5 11V5.5Z\"/><path d=\"M8.3 7.3C8.3 6.5 9 6 10 6 10.9 6 11.6 6.5 11.6 7.2 11.6 8 10.9 8.2 10.3 8.6 10 8.8 10 9 10 9.4\"/><circle cx=\"10\" cy=\"11\" r=\"0.15\" fill=\"currentColor\" stroke=\"none\"/></svg>",
+        // Individual links
+        'document' => "<svg $attrs><path d=\"M6 2.8H12L15 5.8V16.2C15 16.6 14.6 17 14.2 17H6C5.6 17 5.2 16.6 5.2 16.2V3.6C5.2 3.2 5.6 2.8 6 2.8Z\"/><path d=\"M12 2.8V5.8H15\"/><line x1=\"7.3\" y1=\"9.5\" x2=\"12.7\" y2=\"9.5\"/><line x1=\"7.3\" y1=\"12.3\" x2=\"12.7\" y2=\"12.3\"/></svg>",
+        'template' => "<svg $attrs><rect x=\"3.3\" y=\"3.3\" width=\"9\" height=\"9\" rx=\"1.2\"/><rect x=\"7.7\" y=\"7.7\" width=\"9\" height=\"9\" rx=\"1.2\" fill=\"var(--surface)\"/></svg>",
+        'checklist' => "<svg $attrs><rect x=\"3.5\" y=\"4\" width=\"4\" height=\"4\" rx=\"0.8\"/><path d=\"M4.3 6 5 6.8 6.5 5.2\"/><line x1=\"9.5\" y1=\"6\" x2=\"16.5\" y2=\"6\"/><rect x=\"3.5\" y=\"10.5\" width=\"4\" height=\"4\" rx=\"0.8\"/><line x1=\"9.5\" y1=\"12.5\" x2=\"16.5\" y2=\"12.5\"/></svg>",
+        'embassy' => "<svg $attrs><path d=\"M10 2.5 17 6.3H3Z\"/><line x1=\"3\" y1=\"8\" x2=\"17\" y2=\"8\"/><line x1=\"5\" y1=\"8\" x2=\"5\" y2=\"15\"/><line x1=\"8.3\" y1=\"8\" x2=\"8.3\" y2=\"15\"/><line x1=\"11.7\" y1=\"8\" x2=\"11.7\" y2=\"15\"/><line x1=\"15\" y1=\"8\" x2=\"15\" y2=\"15\"/><line x1=\"3\" y1=\"16.5\" x2=\"17\" y2=\"16.5\"/></svg>",
+        'track' => "<svg $attrs><path d=\"M10 17.2C10 17.2 15.5 12 15.5 8.2 15.5 5.1 13 2.8 10 2.8 7 2.8 4.5 5.1 4.5 8.2 4.5 12 10 17.2 10 17.2Z\"/><circle cx=\"10\" cy=\"8\" r=\"2\"/></svg>",
+        'status' => "<svg $attrs><circle cx=\"10\" cy=\"10\" r=\"7.3\"/><path d=\"M6.8 10 9 12.2 13.3 7.6\"/></svg>",
+        'faq' => "<svg $attrs><circle cx=\"10\" cy=\"10\" r=\"7.3\"/><path d=\"M7.9 7.8C7.9 6.6 8.8 5.8 10 5.8 11.1 5.8 12 6.6 12 7.6 12 8.7 11.1 8.9 10.4 9.5 10 9.8 10 10.1 10 10.6\"/><circle cx=\"10\" cy=\"13.3\" r=\"0.15\" fill=\"currentColor\" stroke=\"none\"/></svg>",
+        // Reused from elsewhere in the nav rather than a near-duplicate
+        'visa-types' => primary_nav_icon('visa-services'),
+        'countries' => primary_nav_icon('countries'),
+        'visa-updates' => primary_nav_icon('visa-updates'),
+        'enquiry' => company_nav_icon('mail'),
+        default => '',
+    };
+}
+
+/**
  * Line icons for the primary header nav tabs (Visa Services,
  * Attestation, Countries, Visa Process, Visa Updates, Company) and,
  * reused as-is, the matching footer column headings (Resources is
