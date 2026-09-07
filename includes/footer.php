@@ -81,6 +81,20 @@ declare(strict_types=1);
         </div>
 
         <div class="site-footer__col">
+            <h3><span class="site-footer__col-icon"><?= primary_nav_icon('resources') ?></span>Resources</h3>
+            <ul>
+                <li><a href="/resources/">Resource Hub</a></li>
+                <li><a href="/documentation/">Documentation Assistance</a></li>
+                <li><a href="/document-templates/">Document Templates</a></li>
+                <li><a href="/visa-process/">Visa Information</a></li>
+                <li><a href="/faq/">Visa FAQs</a></li>
+                <li><a href="/track-visa/">Track Application</a></li>
+                <li><a href="/blog/">Visa Updates</a></li>
+                <li><a href="/enquire/">Submit a Visa Enquiry</a></li>
+            </ul>
+        </div>
+
+        <div class="site-footer__col">
             <h3><span class="site-footer__col-icon"><?= primary_nav_icon('company') ?></span>Company</h3>
             <ul>
                 <?php
@@ -99,28 +113,6 @@ declare(strict_types=1);
                 endforeach;
                 ?>
                 <li><a href="/partner-program/">Become a B2B Partner</a></li>
-            </ul>
-        </div>
-
-        <div class="site-footer__col">
-            <h3><span class="site-footer__col-icon"><?= primary_nav_icon('resources') ?></span>Resources</h3>
-            <ul>
-                <li><a href="/resources/">Resource Hub</a></li>
-                <li><a href="/documentation/">Documentation Assistance</a></li>
-                <li><a href="/document-templates/">Document Templates</a></li>
-                <li><a href="/visa-process/">Visa Information</a></li>
-                <li><a href="/faq/">Visa FAQs</a></li>
-                <li><a href="/track-visa/">Track Application</a></li>
-                <li><a href="/blog/">Visa Updates</a></li>
-                <li><a href="/enquire/">Submit a Visa Enquiry</a></li>
-            </ul>
-        </div>
-        <div class="site-footer__col">
-            <h3><span class="site-footer__col-icon"><?= primary_nav_icon('countries') ?></span>Popular Locations</h3>
-            <ul>
-                <li><a href="/visa-consultant/">Visa Consultant in India</a></li>
-                <li><a href="/visa-consultant/bihar/">Visa Consultant in Bihar</a></li>
-                <li><a href="/visa-consultant/uttar-pradesh/">Visa Consultant in Uttar Pradesh</a></li>
             </ul>
         </div>
     </div>
