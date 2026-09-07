@@ -138,7 +138,6 @@ declare(strict_types=1);
                 <a href="/cookie-policy/">Cookie Policy</a>
                 <a href="/grievance/">Grievance Redressal</a>
                 <a href="/sitemap/">Sitemap</a>
-                <a href="/contact/">Contact Us</a>
             </nav>
         </div>
     </div>

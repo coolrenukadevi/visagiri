@@ -105,6 +105,7 @@
       }
     });
   };
+  initMegaMenu('visa-services-mega-trigger', 'visa-services-mega-menu');
   initMegaMenu('attestation-mega-trigger', 'attestation-mega-menu');
   initMegaMenu('company-mega-trigger', 'company-mega-menu');
   initMegaMenu('countries-mega-trigger', 'countries-mega-menu');

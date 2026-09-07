@@ -245,13 +245,29 @@ foreach ([
 
         <nav class="site-header__nav" aria-label="Primary">
             <ul>
-                <li class="has-dropdown">
-                    <a href="/visa-type/" aria-haspopup="true"<?= $isActive('/visa-type/') ? ' class="is-active"' : '' ?>><span class="site-header__nav-icon"><?= primary_nav_icon('visa-services') ?></span>Visa Services</a>
-                    <ul class="dropdown-menu">
-                        <?php foreach ($visaServiceLinks as $link): ?>
-                        <li><a href="<?= e($link['href']) ?>"><?= e($link['label']) ?></a></li>
-                        <?php endforeach; ?>
-                    </ul>
+                <li class="has-dropdown has-mega-menu">
+                    <a href="/visa-type/" id="visa-services-mega-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="visa-services-mega-menu"<?= $isActive('/visa-type/') ? ' class="is-active"' : '' ?>><span class="site-header__nav-icon"><?= primary_nav_icon('visa-services') ?></span>Visa Services</a>
+                    <div class="mega-menu" id="visa-services-mega-menu" aria-labelledby="visa-services-mega-trigger">
+                        <div class="mega-menu__columns mega-menu__columns--visa-services">
+                            <?php foreach ($visaTypesRaw as $vt): ?>
+                            <a href="/visa-type/<?= e($vt['slug']) ?>/" class="mega-menu__company-link">
+                                <span class="mega-menu__company-icon" aria-hidden="true"><?= visa_type_icon($vt['slug']) ?></span>
+                                <span class="mega-menu__company-text">
+                                    <span class="mega-menu__company-label"><?= e($vt['name']) ?></span>
+                                    <span class="mega-menu__company-desc"><?= e($vt['description']) ?></span>
+                                </span>
+                                <span class="mega-menu__company-arrow" aria-hidden="true">&rarr;</span>
+                            </a>
+                            <?php endforeach; ?>
+                        </div>
+                        <div class="mega-menu__cta">
+                            <div class="mega-menu__cta-copy">
+                                <strong>Not Sure Which Visa You Need?</strong>
+                                <p>Talk to our visa experts — we'll help you choose the right category for your trip.</p>
+                            </div>
+                            <a href="<?= e(whatsapp_enquiry_href('Hi Visagiri, I would like help choosing the right visa type for my trip.')) ?>" class="btn btn-gold btn-sm" target="_blank" rel="noopener noreferrer">Get Free Guidance &rarr;</a>
+                        </div>
+                    </div>
                 </li>
                 <li class="has-dropdown has-mega-menu">
                     <a href="/attestation/" id="attestation-mega-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="attestation-mega-menu"<?= $isActive('/attestation/') ? ' class="is-active"' : '' ?>><span class="site-header__nav-icon"><?= primary_nav_icon('attestation') ?></span>Attestation</a>
@@ -494,7 +510,19 @@ foreach ([
     <div class="site-header__mobile" id="site-header-mobile">
         <nav aria-label="Mobile primary">
             <ul>
-                <li><a href="/visa-type/"><span class="site-header__nav-icon"><?= primary_nav_icon('visa-services') ?></span>Visa Services</a></li>
+                <li class="site-header__mobile-accordion">
+                    <details>
+                        <summary><span class="site-header__mobile-summary-label"><span class="site-header__nav-icon"><?= primary_nav_icon('visa-services') ?></span>Visa Services</span></summary>
+                        <div class="site-header__mobile-accordion-body">
+                            <ul>
+                                <?php foreach ($visaTypesRaw as $vt): ?>
+                                <li><a href="/visa-type/<?= e($vt['slug']) ?>/"><span aria-hidden="true"><?= visa_type_icon($vt['slug']) ?></span> <?= e($vt['name']) ?></a></li>
+                                <?php endforeach; ?>
+                            </ul>
+                            <a href="/visa-type/" class="site-header__mobile-viewall">View All Visa Services &rarr;</a>
+                        </div>
+                    </details>
+                </li>
                 <li class="site-header__mobile-accordion">
                     <details>
                         <summary><span class="site-header__mobile-summary-label"><span class="site-header__nav-icon"><?= primary_nav_icon('attestation') ?></span>Attestation</span></summary>

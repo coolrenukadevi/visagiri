@@ -332,6 +332,11 @@
   gap: var(--space-6);
 }
 
+.mega-menu__columns--visa-services {
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-1) var(--space-5);
+}
+
 .mega-menu__col-heading {
   display: flex;
   align-items: center;
@@ -494,6 +499,7 @@
   justify-content: center;
   width: 34px;
   height: 34px;
+  font-size: var(--font-size-lg);
   border-radius: var(--radius-full);
   background: var(--visa-blue-light);
   color: var(--visa-blue);
