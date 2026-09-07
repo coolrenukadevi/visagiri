@@ -30,6 +30,9 @@ $pendingPartnerEnquiries = has_permission('partners.view')
 $pendingDocuments = has_permission('documents.verify')
     ? (int) $pdo->query("SELECT COUNT(*) FROM documents WHERE deleted_at IS NULL AND verification_status = 'pending'")->fetchColumn()
     : 0;
+$pendingB2bPartners = has_permission('b2b_travel_partners.view')
+    ? (int) $pdo->query("SELECT COUNT(*) FROM b2b_partners WHERE deleted_at IS NULL AND status IN ('submitted', 'under_review')")->fetchColumn()
+    : 0;
 
 $stats = [
     'New Leads Today' => $leadsToday,
@@ -81,8 +84,17 @@ admin_header_start('Dashboard', 'dashboard');
     <a href="/admin/partners/" class="admin-module-tile">
         <?php if ($pendingPartnerEnquiries > 0): ?><span class="admin-module-tile__badge"><?= $pendingPartnerEnquiries ?></span><?php endif; ?>
         <span class="admin-module-tile__icon">🤝</span>
-        <span class="admin-module-tile__title">B2B Partners</span>
-        <span class="admin-module-tile__desc">Partner onboarding, tiers, commissions, invoices, and document expiry.</span>
+        <span class="admin-module-tile__title">Referral Partners</span>
+        <span class="admin-module-tile__desc">Commission-tier referral program: onboarding, tiers, commissions, invoices, and document expiry.</span>
+    </a>
+    <?php endif; ?>
+
+    <?php if (has_permission('b2b_travel_partners.view')): ?>
+    <a href="/admin/b2b-partners/" class="admin-module-tile">
+        <?php if ($pendingB2bPartners > 0): ?><span class="admin-module-tile__badge"><?= $pendingB2bPartners ?></span><?php endif; ?>
+        <span class="admin-module-tile__icon">🏢</span>
+        <span class="admin-module-tile__title">B2B Travel Partner Portal</span>
+        <span class="admin-module-tile__desc">The standalone travel partner portal: applications, KYC verification, and account status.</span>
     </a>
     <?php endif; ?>
 
