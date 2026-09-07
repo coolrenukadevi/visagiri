@@ -60,6 +60,14 @@ if ($typeSlug !== null) {
                 </div>
             </div>
 
+            <?php if ($visaType['slug'] === 'work'): ?>
+            <div class="alert alert-info" style="max-width:760px">
+                <div>
+                    <strong>Please note:</strong> Our work permit assistance covers sponsorship-letter-based applications for white-collar/professional roles only. We do not process blue-collar or labor recruitment visas.
+                </div>
+            </div>
+            <?php endif; ?>
+
             <h2 class="country-directory__subheading">Popular Destinations</h2>
             <div class="card-grid">
                 <?php foreach ($popularCountries as $c): ?>
