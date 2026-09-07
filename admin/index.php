@@ -77,6 +77,16 @@ switch ($adminSegment) {
         require __DIR__ . '/pages/general-enquiries.php';
         exit;
 
+    case 'enquiries':
+        require_admin_login();
+        require __DIR__ . '/pages/enquiries.php';
+        exit;
+
+    case 'enquiry-document-download':
+        require_admin_login();
+        require __DIR__ . '/pages/enquiry-document-download.php';
+        exit;
+
     case 'grievances':
         require_admin_login();
         require __DIR__ . '/pages/grievances.php';

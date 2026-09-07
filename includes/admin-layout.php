@@ -61,8 +61,11 @@ function admin_header_start(string $pageTitle, string $activeNav): void
             <a href="/admin/partner-document-expiry/" class="<?= $activeNav === 'partner-document-expiry' ? 'is-active' : '' ?>">Document Expiry</a>
             <a href="/admin/partner-enquiries/" class="<?= $activeNav === 'partner-enquiries' ? 'is-active' : '' ?>">Partner Enquiries</a>
             <?php endif; ?>
+            <?php if (has_permission('enquiries.view')): ?>
+            <a href="/admin/enquiries/" class="<?= $activeNav === 'enquiries' ? 'is-active' : '' ?>">Enquiries (Visa + Apostille)</a>
+            <?php endif; ?>
             <?php if (has_permission('visa.view')): ?>
-            <a href="/admin/visa-enquiries/" class="<?= $activeNav === 'visa-enquiries' ? 'is-active' : '' ?>">Visa Enquiries</a>
+            <a href="/admin/visa-enquiries/" class="<?= $activeNav === 'visa-enquiries' ? 'is-active' : '' ?>">Visa Enquiries (Legacy)</a>
             <a href="/admin/visa-applications/" class="<?= $activeNav === 'visa-applications' ? 'is-active' : '' ?>">Visa Applications</a>
             <?php endif; ?>
             <?php if (has_permission('general_enquiries.view')): ?>
