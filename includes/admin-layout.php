@@ -18,7 +18,7 @@ function admin_header_start(string $pageTitle, string $activeNav): void
     $navGroups = [
         'forex' => ['forex-dashboard', 'forex', 'forex-rates', 'forex-country-rules', 'forex-fema-audit'],
         'content' => ['countries', 'visa-types', 'faqs', 'embassies', 'locations'],
-        'system' => ['users', 'audit-log', 'settings', 'mail-log'],
+        'system' => ['users', 'audit-log', 'settings', 'mail-log', 'recycle-bin'],
     ];
     $activeGroup = null;
     foreach ($navGroups as $groupKey => $groupNavs) {
@@ -109,7 +109,7 @@ function admin_header_start(string $pageTitle, string $activeNav): void
             <a href="/admin/locations/" class="<?= $activeNav === 'locations' ? 'is-active' : '' ?>">Locations (States/Cities)</a>
             </div>
             <?php endif; ?>
-            <?php if (has_permission('users.manage') || has_permission('settings.manage') || has_permission('audit.view')): ?>
+            <?php if (has_permission('users.manage') || has_permission('settings.manage') || has_permission('audit.view') || has_permission('recycle_bin.manage')): ?>
             <button type="button" class="admin-sidebar__group" aria-expanded="<?= $isGroupOpen('system') ? 'true' : 'false' ?>" aria-controls="sidebar-group-system">System <?= nav_chevron_icon() ?></button>
             <div class="admin-sidebar__subgroup<?= $isGroupOpen('system') ? ' is-open' : '' ?>" id="sidebar-group-system">
             <?php if (has_permission('users.manage')): ?>
@@ -121,6 +121,9 @@ function admin_header_start(string $pageTitle, string $activeNav): void
             <?php if (has_permission('settings.manage')): ?>
             <a href="/admin/settings/" class="<?= $activeNav === 'settings' ? 'is-active' : '' ?>">Settings</a>
             <a href="/admin/mail-log/" class="<?= $activeNav === 'mail-log' ? 'is-active' : '' ?>">Mail Log</a>
+            <?php endif; ?>
+            <?php if (has_permission('recycle_bin.manage')): ?>
+            <a href="/admin/recycle-bin/" class="<?= $activeNav === 'recycle-bin' ? 'is-active' : '' ?>">Recycle Bin</a>
             <?php endif; ?>
             </div>
             <?php endif; ?>

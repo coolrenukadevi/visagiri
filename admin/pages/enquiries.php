@@ -252,7 +252,7 @@ if ($id) {
     </div>
 
     <?php if (has_permission('enquiries.manage')): ?>
-    <form method="post" action="/admin/enquiries/?id=<?= (int) $enquiry['id'] ?>" style="margin-top:var(--space-5)" onsubmit="return confirm('Move this enquiry to the Recycle Bin?');">
+    <form method="post" action="/admin/enquiries/?id=<?= (int) $enquiry['id'] ?>" style="margin-top:var(--space-5)" data-confirm="Move this enquiry to the Recycle Bin?">
         <?= csrf_field() ?>
         <input type="hidden" name="action" value="delete">
         <input type="hidden" name="id" value="<?= (int) $enquiry['id'] ?>">

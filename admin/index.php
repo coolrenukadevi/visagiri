@@ -87,6 +87,11 @@ switch ($adminSegment) {
         require __DIR__ . '/pages/enquiry-document-download.php';
         exit;
 
+    case 'recycle-bin':
+        require_admin_login();
+        require __DIR__ . '/pages/recycle-bin.php';
+        exit;
+
     case 'grievances':
         require_admin_login();
         require __DIR__ . '/pages/grievances.php';
