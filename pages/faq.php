@@ -24,7 +24,7 @@ $structuredData = $faqs ? [[
 require __DIR__ . '/../includes/header.php';
 ?>
 <section class="section" style="padding-top:var(--space-8)">
-    <div class="container" style="max-width:760px">
+    <div class="container">
         <div class="section-heading" style="text-align:left;margin-left:0;max-width:none">
             <span class="section-eyebrow">FAQ</span>
             <h1>Frequently Asked Questions</h1>

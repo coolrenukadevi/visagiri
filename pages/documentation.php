@@ -158,7 +158,7 @@ $renderCardGroup = static function (array $items): void {
         </div>
 
         <?php if ($faqs): ?>
-        <div style="margin-top:var(--space-10);max-width:760px">
+        <div style="margin-top:var(--space-10)">
             <h2 class="country-directory__subheading">Frequently Asked Questions</h2>
             <?php foreach ($faqs as $faq): ?>
             <div class="accordion-item">

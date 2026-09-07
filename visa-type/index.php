@@ -80,7 +80,7 @@ if ($typeSlug !== null) {
             <p style="margin-top:var(--space-5)"><a href="/countries/">Explore <?= e($visaType['name']) ?> for all 200+ destinations &rarr;</a></p>
 
             <?php if ($faqs): ?>
-            <div style="margin-top:var(--space-10);max-width:760px">
+            <div style="margin-top:var(--space-10)">
                 <h2 class="country-directory__subheading">Frequently Asked Questions</h2>
                 <?php foreach ($faqs as $faq): ?>
                 <div class="accordion-item">

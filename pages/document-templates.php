@@ -91,7 +91,7 @@ $canonicalUrl = APP_URL . "/document-templates/{$templateSlug}/";
 require __DIR__ . '/../includes/header.php';
 ?>
 <section class="visa-detail">
-    <div class="container" style="max-width:760px">
+    <div class="container">
         <ul class="breadcrumb">
             <li><a href="/">Home</a></li>
             <li><a href="/document-templates/">Document Templates</a></li>
