@@ -150,21 +150,6 @@
   height: 32px;
 }
 
-/* Kept for the footer brand block (includes/footer.php), which still
-   renders the wordmark as text — its navy "VISA" would be invisible
-   against the footer's own dark background if it used this same
-   colour raster logo image. */
-.site-header__logo-mark {
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-bold);
-  color: var(--visa-blue);
-  letter-spacing: 0.01em;
-}
-
-.site-header__logo-mark span {
-  color: var(--visa-gold-dark);
-}
-
 .site-header__nav {
   flex: 1;
   display: none;
@@ -1135,13 +1120,10 @@
   padding-bottom: var(--space-10);
 }
 
-.site-footer .site-header__logo-mark {
-  color: var(--white);
-  font-size: var(--font-size-2xl);
-}
-
-.site-footer .site-header__logo-mark span {
-  color: var(--visa-gold);
+.site-footer__logo {
+  display: block;
+  height: 40px;
+  width: auto;
 }
 
 .site-footer__tagline {
@@ -1225,7 +1207,7 @@
 
 .site-footer__disclaimer {
   border-top: 1px solid rgba(255, 255, 255, 0.12);
-  padding: var(--space-5) var(--space-6);
+  padding: var(--space-5) 0;
 }
 
 .site-footer__disclaimer p {

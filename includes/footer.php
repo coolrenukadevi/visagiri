@@ -15,7 +15,7 @@ declare(strict_types=1);
 <footer class="site-footer">
     <div class="container site-footer__grid">
         <div class="site-footer__brand">
-            <div class="site-header__logo-mark">VISA<span>GIRI</span></div>
+            <img class="site-footer__logo" src="<?= e(asset_url('/assets/images/logo-horizontal-white.png')) ?>" alt="Visagiri - Visa Management" width="700" height="175">
             <p class="site-footer__tagline">Seamless Visas. Limitless Journeys.</p>
             <p class="site-footer__muted">Visagiri drives innovation with smart, future-ready digital solutions that empower growth and transformation. A Unit of Tripgation Pvt Ltd.</p>
             <div class="site-footer__social">
@@ -122,7 +122,9 @@ declare(strict_types=1);
     </div>
 
     <div class="site-footer__disclaimer">
-        <p>Disclaimer: Visa decisions are made solely by the relevant embassy, consulate, or government immigration authority. Visagiri provides visa consultancy and application-management assistance and does not guarantee visa approval.</p>
+        <div class="container">
+            <p>Disclaimer: Visa decisions are made solely by the relevant embassy, consulate, or government immigration authority. Visagiri provides visa consultancy and application-management assistance and does not guarantee visa approval.</p>
+        </div>
     </div>
 
     <div class="site-footer__legal-row">
