@@ -116,7 +116,7 @@ declare(strict_types=1);
                     endforeach;
                 endforeach;
                 ?>
-                <li><a href="/partner-program/">Become a B2B Partner</a></li>
+                <li><a href="/partners/">Become a B2B Partner</a></li>
             </ul>
         </div>
     </div>

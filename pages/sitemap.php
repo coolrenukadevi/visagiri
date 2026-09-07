@@ -98,7 +98,7 @@ $sections = [
         'links' => [
             '/contact/' => 'Contact Us',
             '/grievance/' => 'Grievance Redressal',
-            '/partner-program/' => 'Become a B2B Partner',
+            '/partners/' => 'Become a B2B Partner',
         ],
     ],
     'Legal & Policies' => [

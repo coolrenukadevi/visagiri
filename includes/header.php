@@ -134,7 +134,7 @@ $companyMenu = [
         ['label' => 'Careers', 'desc' => 'Opportunities to join our team', 'href' => '/careers/', 'icon' => 'briefcase'],
     ],
     'Trust & Connect' => [
-        ['label' => 'Partners', 'desc' => 'Our business and strategic partners', 'href' => '/partners/', 'icon' => 'link'],
+        ['label' => 'Become a Partner', 'desc' => 'Join our B2B travel & visa referral partner program', 'href' => '/partners/', 'icon' => 'link'],
         ['label' => 'Affiliations & Accreditations', 'desc' => 'Industry relationships and credentials', 'href' => '/affiliations/', 'icon' => 'award'],
         ['label' => 'Contact Us', 'desc' => 'Speak with our experts', 'href' => '/contact/', 'icon' => 'mail'],
     ],
