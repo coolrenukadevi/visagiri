@@ -2,18 +2,15 @@
 declare(strict_types=1);
 
 /**
- * Leadership page. Two real directors — names, titles, and LinkedIn
- * profiles confirmed directly by the client in chat. Their photos
- * were only shared inline in chat, not uploaded as real file
- * attachments (the same limitation that's blocked the real logo file
- * since Phase 6 — see AUDIT.md), so this uses initials avatars rather
- * than the photos until they arrive as actual uploads. No bios are
- * invented beyond the confirmed name/title/profile-link facts.
+ * Leadership page. Two real directors — names, titles, LinkedIn
+ * profiles, and photos confirmed/supplied directly by the client. No
+ * bios are invented beyond the confirmed name/title/profile-link
+ * facts.
  */
 
 $leaders = [
-    ['name' => 'Anisha Bharti', 'title' => 'Director', 'linkedin' => 'https://www.linkedin.com/in/coolanishabharti'],
-    ['name' => 'Renuka Devi', 'title' => 'Director', 'linkedin' => 'https://www.linkedin.com/in/coolrenukadevi/'],
+    ['name' => 'Anisha Bharti', 'title' => 'Director', 'linkedin' => 'https://www.linkedin.com/in/coolanishabharti', 'photo' => '/assets/images/leadership/anisha-bharti.jpg'],
+    ['name' => 'Renuka Devi', 'title' => 'Director', 'linkedin' => 'https://www.linkedin.com/in/coolrenukadevi/', 'photo' => '/assets/images/leadership/renuka-devi.jpg'],
 ];
 
 $pageTitle = 'Leadership Team - Visagiri Directors';
@@ -38,14 +35,8 @@ require __DIR__ . '/../includes/header.php';
     <div class="container">
         <div class="card-grid" style="max-width:680px;margin:0 auto">
             <?php foreach ($leaders as $leader): ?>
-            <?php
-            $initials = '';
-            foreach (explode(' ', $leader['name']) as $namePart) {
-                $initials .= mb_substr($namePart, 0, 1);
-            }
-            ?>
             <div class="card leader-card">
-                <div class="leader-card__avatar" aria-hidden="true"><?= e($initials) ?></div>
+                <img class="leader-card__avatar" src="<?= e(asset_url($leader['photo'])) ?>" alt="<?= e($leader['name']) ?>" width="88" height="88" loading="lazy">
                 <div class="card-title"><?= e($leader['name']) ?></div>
                 <p class="leader-card__title"><?= e($leader['title']) ?></p>
                 <a href="<?= e($leader['linkedin']) ?>" target="_blank" rel="noopener noreferrer" class="leader-card__social">

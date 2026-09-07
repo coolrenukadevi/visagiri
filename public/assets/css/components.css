@@ -77,19 +77,13 @@
 }
 
 .leader-card__avatar {
+  display: block;
   width: 88px;
   height: 88px;
   margin: 0 auto var(--space-4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   border-radius: var(--radius-full);
-  background: var(--visa-blue);
   border: 3px solid var(--visa-gold);
-  color: var(--white);
-  font-size: var(--font-size-2xl);
-  font-weight: var(--font-weight-bold);
-  letter-spacing: 0.02em;
+  object-fit: cover;
 }
 
 .leader-card__title {
