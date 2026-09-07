@@ -47,6 +47,8 @@ require_once "$root/includes/documents.php";
 require_once "$root/includes/hrms.php";
 require_once "$root/includes/forex.php";
 require_once "$root/includes/mail.php";
+require_once "$root/includes/enquiry.php";
+require_once "$root/includes/pdf.php";
 require_once "$root/includes/partner-enrollment.php";
 require_once "$root/includes/csv-export.php";
 require_once "$root/includes/legal-layout.php";
@@ -179,7 +181,13 @@ switch ($segments[0] ?? '') {
         $dispatch("$root/blog/index.php");
 
     case 'enquire':
+        if (($segments[1] ?? null) === 'pdf') {
+            $dispatch("$root/pages/enquiry-pdf-download.php");
+        }
         $dispatch("$root/pages/enquire.php");
+
+    case 'track':
+        $dispatch("$root/pages/track.php");
 
     case 'partner-program':
         $dispatch("$root/pages/partner-program.php");
