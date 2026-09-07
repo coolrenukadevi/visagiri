@@ -108,20 +108,35 @@ function whatsapp_enquiry_href(string $message): string
     return 'https://wa.me/' . $number . '?text=' . rawurlencode($message);
 }
 
-/** A distinctive icon per visa type (slug), used on the /visa-type/ hub and detail pages. */
+/**
+ * A distinctive icon per visa type (slug) — used on the /visa-type/
+ * hub and detail pages, the homepage's Visa Services cards, and the
+ * "Find Visa By Purpose" mega-menu grid (desktop + mobile). Same
+ * minimal stroke-SVG line-icon language as company_nav_icon() (no
+ * fill, stroke="currentColor", round caps/joins) rather than the
+ * plain emoji used here previously — that switch was made deliberately
+ * for Company's mega-menu specifically to read as premium/corporate,
+ * and this brings Visa Services in line with it. width/height="1em"
+ * (not a fixed px size, unlike company_nav_icon()) since this
+ * function renders at several different sizes across those five call
+ * sites — sizing follows the container's own font-size exactly the
+ * way the emoji it replaces already did, so no CSS elsewhere needed
+ * to change.
+ */
 function visa_type_icon(string $slug): string
 {
+    $attrs = 'width="1em" height="1em" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-0.15em"';
     return match ($slug) {
-        'tourist' => '🧳',
-        'business' => '💼',
-        'student' => '🎓',
-        'work' => '🏢',
-        'family' => '👨‍👩‍👧‍👦',
-        'transit' => '✈️',
-        'medical' => '🏥',
-        'conference' => '🎤',
-        'sports' => '🏅',
-        default => '📄',
+        'tourist' => "<svg $attrs><circle cx=\"10\" cy=\"10\" r=\"7.5\"/><path d=\"M13.2 6.8 10.8 10.8 6.8 13.2 9.2 9.2Z\"/></svg>",
+        'business' => "<svg $attrs><rect x=\"3\" y=\"7.5\" width=\"14\" height=\"9\" rx=\"1.3\"/><path d=\"M7 7.5V5.8C7 5 7.6 4.4 8.4 4.4H11.6C12.4 4.4 13 5 13 5.8V7.5\"/><line x1=\"3\" y1=\"11.5\" x2=\"17\" y2=\"11.5\"/></svg>",
+        'student' => "<svg $attrs><path d=\"M10 3 18 7 10 11 2 7Z\"/><path d=\"M5.5 8.8V13C5.5 14.5 7.5 15.8 10 15.8C12.5 15.8 14.5 14.5 14.5 13V8.8\"/><line x1=\"18\" y1=\"7\" x2=\"18\" y2=\"12.5\"/></svg>",
+        'work' => "<svg $attrs><rect x=\"5\" y=\"3\" width=\"10\" height=\"14\" rx=\"0.8\"/><circle cx=\"7.7\" cy=\"6.5\" r=\"0.6\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"12.3\" cy=\"6.5\" r=\"0.6\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"7.7\" cy=\"10\" r=\"0.6\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"12.3\" cy=\"10\" r=\"0.6\" fill=\"currentColor\" stroke=\"none\"/><rect x=\"8.5\" y=\"13\" width=\"3\" height=\"4\" rx=\"0.3\"/></svg>",
+        'family' => "<svg $attrs><circle cx=\"7\" cy=\"7.5\" r=\"2.3\"/><path d=\"M2.8 16C2.8 12.9 4.7 11.3 7 11.3C9.3 11.3 11.2 12.9 11.2 16\"/><circle cx=\"13.5\" cy=\"8.2\" r=\"1.9\"/><path d=\"M12.3 11.5C14.4 11.5 16.1 12.9 16.2 15.6\"/></svg>",
+        'transit' => "<svg $attrs><path d=\"M17 3 3 9.5 8.5 11 10 16.5 12 11.5Z\"/><line x1=\"8.5\" y1=\"11\" x2=\"17\" y2=\"3\"/></svg>",
+        'medical' => "<svg $attrs><circle cx=\"10\" cy=\"10\" r=\"7.5\"/><line x1=\"10\" y1=\"6.5\" x2=\"10\" y2=\"13.5\"/><line x1=\"6.5\" y1=\"10\" x2=\"13.5\" y2=\"10\"/></svg>",
+        'conference' => "<svg $attrs><rect x=\"7.7\" y=\"2.5\" width=\"4.6\" height=\"8.5\" rx=\"2.3\"/><path d=\"M4.5 9.5C4.5 13 7 15.3 10 15.3C13 15.3 15.5 13 15.5 9.5\"/><line x1=\"10\" y1=\"15.3\" x2=\"10\" y2=\"17.5\"/><line x1=\"7\" y1=\"17.5\" x2=\"13\" y2=\"17.5\"/></svg>",
+        'sports' => "<svg $attrs><circle cx=\"10\" cy=\"7.5\" r=\"4.5\"/><path d=\"M7.2 11.3 6 17.5 10 15.3 14 17.5 12.8 11.3\"/></svg>",
+        default => "<svg $attrs><path d=\"M6 2.5H12L15.5 6V17.5H6Z\"/><path d=\"M12 2.5V6H15.5\"/><line x1=\"8\" y1=\"10\" x2=\"13.5\" y2=\"10\"/><line x1=\"8\" y1=\"13\" x2=\"13.5\" y2=\"13\"/></svg>",
     };
 }
 
