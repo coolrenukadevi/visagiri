@@ -247,7 +247,7 @@ foreach ([
             <ul>
                 <li class="has-dropdown has-mega-menu">
                     <a href="/visa-type/" id="visa-services-mega-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="visa-services-mega-menu"<?= $isActive('/visa-type/') ? ' class="is-active"' : '' ?>><span class="site-header__nav-icon"><?= primary_nav_icon('visa-services') ?></span>Visa Services</a>
-                    <div class="mega-menu" id="visa-services-mega-menu" aria-labelledby="visa-services-mega-trigger">
+                    <div class="mega-menu mega-menu--visa-services" id="visa-services-mega-menu" aria-labelledby="visa-services-mega-trigger">
                         <div class="mega-menu__columns mega-menu__columns--visa-services">
                             <?php foreach ($visaTypesRaw as $vt): ?>
                             <a href="/visa-type/<?= e($vt['slug']) ?>/" class="mega-menu__company-link">
