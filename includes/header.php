@@ -240,8 +240,7 @@ foreach ([
     </div>
     <div class="container site-header__bar">
         <a href="/" class="site-header__logo" aria-label="Visagiri home">
-            <span class="site-header__logo-mark">VISA<span>GIRI</span></span>
-            <span class="site-header__logo-sub">Visa Management</span>
+            <img src="<?= e(asset_url('/assets/images/logo-horizontal.png')) ?>" alt="Visagiri - Visa Management" width="700" height="175">
         </a>
 
         <nav class="site-header__nav" aria-label="Primary">
