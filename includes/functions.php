@@ -104,7 +104,7 @@ function flag_emoji(?string $iso2): string
  */
 function whatsapp_enquiry_href(string $message): string
 {
-    $number = setting('whatsapp_number', '917065819819');
+    $number = setting('whatsapp_number', '917844819819');
     return 'https://wa.me/' . $number . '?text=' . rawurlencode($message);
 }
 

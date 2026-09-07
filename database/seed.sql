@@ -2124,7 +2124,7 @@ INSERT INTO `visa_faqs` (`id`, `question`, `answer`, `country_id`, `visa_type_id
 -- Site settings (edit these later from /admin/settings/)
 INSERT INTO `site_settings` (`id`, `setting_key`, `setting_value`, `updated_at`) VALUES (1,'contact_phone_display','+91 7065 819 819','2026-08-12 20:32:06');
 INSERT INTO `site_settings` (`id`, `setting_key`, `setting_value`, `updated_at`) VALUES (2,'contact_phone_dial','+917065819819','2026-08-12 20:32:06');
-INSERT INTO `site_settings` (`id`, `setting_key`, `setting_value`, `updated_at`) VALUES (3,'whatsapp_number','917065819819','2026-08-12 20:32:06');
+INSERT INTO `site_settings` (`id`, `setting_key`, `setting_value`, `updated_at`) VALUES (3,'whatsapp_number','917844819819','2026-08-12 20:32:06');
 INSERT INTO `site_settings` (`id`, `setting_key`, `setting_value`, `updated_at`) VALUES (4,'contact_email','info@visagiri.com','2026-08-12 20:32:06');
 INSERT INTO `site_settings` (`id`, `setting_key`, `setting_value`, `updated_at`) VALUES (5,'mail_from_name','Visagiri Website','2026-08-12 20:32:06');
 INSERT INTO `site_settings` (`id`, `setting_key`, `setting_value`, `updated_at`) VALUES (6,'mail_from_address','info@visagiri.com','2026-08-12 20:32:06');
