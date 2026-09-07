@@ -46,6 +46,10 @@ rsync -a \
   --exclude '.DS_Store' \
   --exclude 'config/database.php' \
   --exclude 'config/encryption.php' \
+  --exclude 'storage/documents/*' \
+  --exclude 'storage/cache/*' \
+  --exclude 'storage/forex-documents/*' \
+  --exclude 'storage/hrms-documents/*' \
   ./ "$BUILD_DIR/"
 
 # config/database.php and config/encryption.php are gitignored for a
@@ -109,12 +113,20 @@ echo "       database/schema-b2b-phase6.sql              (no seed file — schem
 echo "       database/schema-b2b-phase7.sql              (no seed file — schema only)"
 echo "       database/schema-b2b-phase8.sql              (no seed file — schema only)"
 echo "       database/schema-b2b-phase9.sql              (no seed file — schema only)"
+echo "       database/schema-enquiry-v2.sql              database/seed-enquiry-v2.sql"
+echo "       database/seed-recycle-bin.sql               (no schema file — seed only)"
 echo "       database/schema-legal-phase1.sql           database/seed-legal-phase1.sql"
 echo "       database/schema-location-seo.sql           database/seed-location-seo.sql"
 echo "                                                    database/seed-location-seo-phase2.sql"
 echo "                                                    database/seed-location-seo-phase3.sql"
 echo "                                                    database/seed-location-seo-phase4.sql"
 echo "                                                    database/seed-location-seo-phase5.sql"
+echo "       database/schema-b2b-portal.sql              database/seed-b2b-portal.sql"
+echo "       database/schema-b2b-portal-b6.sql           (no seed file — schema only)"
+echo "       database/schema-b2b-portal-b7.sql           (no seed file — schema only)"
+echo "       database/schema-b2b-portal-b8.sql           (no seed file — schema only)"
+echo "     (this exact order was re-verified against a fresh test database before this package was built —"
+echo "     see AUDIT.md for the cPanel packaging entry.)"
 echo "  3. config/database.php and config/encryption.php ship as their .example.php templates"
 echo "     (CHANGE-ME placeholders) — the real secrets never leave the dev sandbox. On the server:"
 echo "       - Edit config/database.php with the real DB host/name/user/password."
