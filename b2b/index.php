@@ -54,6 +54,16 @@ switch ($segments[1] ?? null) {
         require __DIR__ . '/pages/dashboard.php';
         exit;
 
+    case 'enquiries':
+        require_b2b_partner_login();
+        require __DIR__ . '/pages/enquiries.php';
+        exit;
+
+    case 'enquiry-create':
+        require_b2b_partner_login();
+        require __DIR__ . '/pages/enquiry-create.php';
+        exit;
+
     default:
         redirect('/b2b-partner/');
 }

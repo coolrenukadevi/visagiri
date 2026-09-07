@@ -62,6 +62,16 @@ switch ($adminSegment) {
         require __DIR__ . '/pages/b2b-partner-document-download.php';
         exit;
 
+    case 'b2b-enquiries':
+        require_admin_login();
+        require __DIR__ . '/pages/b2b-enquiries.php';
+        exit;
+
+    case 'b2b-enquiry-document-download':
+        require_admin_login();
+        require __DIR__ . '/pages/b2b-enquiry-document-download.php';
+        exit;
+
     case 'partner-tiers':
         require_admin_login();
         require __DIR__ . '/pages/partner-tiers.php';

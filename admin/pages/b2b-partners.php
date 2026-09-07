@@ -160,6 +160,19 @@ if ($action === 'view' && $id) {
     $countriesStmt->execute(['id' => $id]);
     $partnerCountries = $countriesStmt->fetchAll(PDO::FETCH_COLUMN);
 
+    $enquiriesStmt = $pdo->prepare(
+        'SELECT e.id, e.enquiry_reference_no, e.status, e.created_at, c.name AS country_name
+         FROM b2b_visa_enquiries e JOIN countries c ON c.id = e.destination_country_id
+         WHERE e.b2b_partner_id = :id AND e.deleted_at IS NULL ORDER BY e.created_at DESC LIMIT 10'
+    );
+    $enquiriesStmt->execute(['id' => $id]);
+    $partnerEnquiries = $enquiriesStmt->fetchAll();
+    $enquiryStatusBadgeMap = [
+        'new' => 'info', 'in_progress' => 'warning', 'documents_pending' => 'warning',
+        'submitted' => 'info', 'payment_pending' => 'warning', 'completed' => 'success',
+        'rejected' => 'danger', 'cancelled' => 'neutral',
+    ];
+
     $canViewBilling = has_permission('b2b_travel_partners.billing.view');
     $billing = null;
     if ($canViewBilling) {
@@ -249,6 +262,22 @@ if ($action === 'view' && $id) {
         </tr>
         <?php endforeach; ?>
     </tbody></table>
+
+    <h2 class="country-directory__subheading">Visa Enquiries <a href="/admin/b2b-enquiries/?q=<?= urlencode($partner['legal_business_name']) ?>" class="btn btn-outline btn-sm" style="font-weight:normal;text-transform:none">View All</a></h2>
+    <?php if (!$partnerEnquiries): ?>
+    <p class="empty-state">No visa enquiries submitted yet.</p>
+    <?php else: ?>
+    <table class="admin-table" style="margin-bottom:var(--space-6)"><thead><tr><th>Reference</th><th>Destination</th><th>Status</th><th>Created</th></tr></thead><tbody>
+        <?php foreach ($partnerEnquiries as $e): ?>
+        <tr>
+            <td><a href="/admin/b2b-enquiries/?action=view&id=<?= (int) $e['id'] ?>"><?= e($e['enquiry_reference_no']) ?></a></td>
+            <td><?= e($e['country_name']) ?></td>
+            <td><?= status_badge((string) $e['status'], $enquiryStatusBadgeMap) ?></td>
+            <td><?= e(date('d M Y', strtotime((string) $e['created_at']))) ?></td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody></table>
+    <?php endif; ?>
 
     <h2 class="country-directory__subheading">Services &amp; Countries</h2>
     <div class="admin-form-card" style="max-width:900px;margin-bottom:var(--space-6)">

@@ -52,6 +52,7 @@ require_once "$root/includes/pdf.php";
 require_once "$root/includes/partner-enrollment.php";
 require_once "$root/includes/b2b-partner.php";
 require_once "$root/includes/b2b-partner-auth.php";
+require_once "$root/includes/b2b-enquiry.php";
 require_once "$root/includes/csv-export.php";
 require_once "$root/includes/legal-layout.php";
 
