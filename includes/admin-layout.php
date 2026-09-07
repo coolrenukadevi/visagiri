@@ -113,7 +113,8 @@ const ADMIN_SUBNAV_GROUPS = [
         ['nav' => 'locations', 'label' => 'Locations (States/Cities)', 'href' => '/admin/locations/', 'permission' => 'content.manage'],
     ],
     'system' => [
-        ['nav' => 'users', 'label' => 'Users &amp; Roles', 'href' => '/admin/users/', 'permission' => 'users.manage'],
+        ['nav' => 'users', 'label' => 'Users', 'href' => '/admin/users/', 'permission' => 'users.manage'],
+        ['nav' => 'roles', 'label' => 'Roles &amp; Permissions', 'href' => '/admin/roles/', 'permission' => 'users.manage'],
         ['nav' => 'audit-log', 'label' => 'Audit Log', 'href' => '/admin/audit-log/', 'permission' => 'audit.view'],
         ['nav' => 'settings', 'label' => 'Settings', 'href' => '/admin/settings/', 'permission' => 'settings.manage'],
         ['nav' => 'mail-log', 'label' => 'Mail Log', 'href' => '/admin/mail-log/', 'permission' => 'settings.manage'],

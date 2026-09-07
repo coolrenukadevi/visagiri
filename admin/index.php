@@ -207,6 +207,11 @@ switch ($adminSegment) {
         require __DIR__ . '/pages/users.php';
         exit;
 
+    case 'roles':
+        require_admin_login();
+        require __DIR__ . '/pages/roles.php';
+        exit;
+
     case 'audit-log':
         require_admin_login();
         require __DIR__ . '/pages/audit-log.php';

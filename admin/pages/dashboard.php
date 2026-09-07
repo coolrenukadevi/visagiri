@@ -142,7 +142,7 @@ admin_header_start('Dashboard', 'dashboard');
     <a href="/admin/users/" class="admin-module-tile">
         <span class="admin-module-tile__icon">⚙️</span>
         <span class="admin-module-tile__title">System</span>
-        <span class="admin-module-tile__desc">Users &amp; roles, audit log, site settings, and mail log.</span>
+        <span class="admin-module-tile__desc">Users, roles &amp; permissions, audit log, site settings, and mail log.</span>
     </a>
     <?php endif; ?>
 
