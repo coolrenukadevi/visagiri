@@ -52,12 +52,18 @@ function send_mail(string $toEmail, string $subject, string $htmlBody, ?string $
 {
     $config = smtp_config();
     if ($config === null) {
+        error_log("[SMTP] send to $toEmail failed: config/smtp.php is missing or not an array");
         return false;
     }
 
     try {
-        return smtp_send($config, $toEmail, $toName, $subject, $htmlBody, $replyTo);
-    } catch (Throwable) {
+        $ok = smtp_send($config, $toEmail, $toName, $subject, $htmlBody, $replyTo);
+        if (!$ok) {
+            error_log("[SMTP] send to $toEmail failed — see preceding [SMTP] log line for the reason");
+        }
+        return $ok;
+    } catch (Throwable $e) {
+        error_log("[SMTP] send to $toEmail threw: " . $e->getMessage());
         return false;
     }
 }
@@ -73,6 +79,7 @@ function smtp_send(array $config, string $toEmail, ?string $toName, string $subj
     $fromName = (string) ($config['from_name'] ?? 'Visagiri');
 
     if ($host === '') {
+        error_log('[SMTP] config/smtp.php has no host set');
         return false;
     }
 
@@ -80,30 +87,36 @@ function smtp_send(array $config, string $toEmail, ?string $toName, string $subj
     $context = stream_context_create(['ssl' => ['verify_peer' => true, 'verify_peer_name' => true]]);
     $socket = @stream_socket_client($remote, $errno, $errstr, 10, STREAM_CLIENT_CONNECT, $context);
     if ($socket === false) {
+        error_log("[SMTP] could not connect to $remote — errno $errno: $errstr (if this is a shared-hosting server, outbound SMTP to external hosts is often blocked by default — ask the host to whitelist it, or use their local mail server instead)");
         return false;
     }
 
     try {
         if (!smtp_expect($socket, 220)) {
+            error_log('[SMTP] server did not send the expected 220 greeting after connecting');
             return false;
         }
 
         $localHost = parse_url(APP_URL, PHP_URL_HOST) ?: 'localhost';
         smtp_command($socket, 'EHLO ' . $localHost);
         if (!smtp_expect($socket, 250)) {
+            error_log('[SMTP] EHLO was not accepted (expected 250)');
             return false;
         }
 
         if ($encryption === 'tls') {
             smtp_command($socket, 'STARTTLS');
             if (!smtp_expect($socket, 220)) {
+                error_log('[SMTP] STARTTLS was not accepted (expected 220)');
                 return false;
             }
             if (!@stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
+                error_log('[SMTP] TLS handshake failed after STARTTLS');
                 return false;
             }
             smtp_command($socket, 'EHLO ' . $localHost);
             if (!smtp_expect($socket, 250)) {
+                error_log('[SMTP] EHLO after STARTTLS was not accepted (expected 250)');
                 return false;
             }
         }
@@ -116,29 +129,35 @@ function smtp_send(array $config, string $toEmail, ?string $toName, string $subj
         if ($username !== '') {
             smtp_command($socket, 'AUTH LOGIN');
             if (!smtp_expect($socket, 334)) {
+                error_log('[SMTP] AUTH LOGIN was not accepted (expected 334)');
                 return false;
             }
             smtp_command($socket, base64_encode($username));
             if (!smtp_expect($socket, 334)) {
+                error_log("[SMTP] username was rejected (expected 334) — check config/smtp.php's username");
                 return false;
             }
             smtp_command($socket, base64_encode($password));
             if (!smtp_expect($socket, 235)) {
+                error_log("[SMTP] authentication failed (expected 235) — check config/smtp.php's password/App Password is correct and not expired/revoked");
                 return false;
             }
         }
 
         smtp_command($socket, 'MAIL FROM:<' . $fromEmail . '>');
         if (!smtp_expect($socket, 250)) {
+            error_log("[SMTP] MAIL FROM:<$fromEmail> was rejected (expected 250) — from_email may need to match the authenticated username or a verified alias");
             return false;
         }
         smtp_command($socket, 'RCPT TO:<' . $toEmail . '>');
         if (!smtp_expect($socket, 250)) {
+            error_log("[SMTP] RCPT TO:<$toEmail> was rejected (expected 250)");
             return false;
         }
 
         smtp_command($socket, 'DATA');
         if (!smtp_expect($socket, 354)) {
+            error_log('[SMTP] DATA was not accepted (expected 354)');
             return false;
         }
 
@@ -169,6 +188,7 @@ function smtp_send(array $config, string $toEmail, ?string $toName, string $subj
         $message = implode("\r\n", $headers) . "\r\n\r\n" . $escapedBody . "\r\n.";
         smtp_command($socket, $message);
         if (!smtp_expect($socket, 250)) {
+            error_log('[SMTP] message body was rejected after DATA (expected 250)');
             return false;
         }
 
