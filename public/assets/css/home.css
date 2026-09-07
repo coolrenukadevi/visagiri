@@ -9,7 +9,7 @@
   background: var(--visa-blue-dark);
   background-image: radial-gradient(circle at 85% 20%, rgba(244, 180, 0, 0.12), transparent 55%);
   color: var(--white);
-  padding-top: var(--space-12);
+  padding-top: var(--space-6);
   padding-bottom: var(--space-10);
   position: relative;
   overflow: hidden;
@@ -29,19 +29,19 @@
   font-weight: var(--font-weight-bold);
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-3);
 }
 
 .hero h1 {
   color: var(--white);
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-3);
 }
 
 .hero__subtitle {
   color: var(--visa-blue-light);
   font-size: var(--font-size-lg);
   max-width: 46ch;
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-4);
 }
 
 .hero__actions {
@@ -85,7 +85,7 @@
   background: var(--surface);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
-  padding: var(--space-6);
+  padding: var(--space-4) var(--space-5);
 }
 
 .search-widget__title {
@@ -95,12 +95,12 @@
 .search-widget__hint {
   color: var(--text-muted);
   font-size: var(--font-size-sm);
-  margin-bottom: var(--space-5);
+  margin-bottom: var(--space-2);
 }
 
 .search-widget__grid {
   display: grid;
-  gap: var(--space-4);
+  gap: var(--space-3);
   grid-template-columns: 1fr;
   align-items: end;
 }

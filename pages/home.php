@@ -69,7 +69,7 @@ require __DIR__ . '/../includes/header.php';
             <h2 class="search-widget__title">Find the Right Visa</h2>
             <p class="search-widget__hint">Search any of our 200+ destinations, visa types, or continents instantly.</p>
             <?php render_visa_search_widget('home', 'Try "Singapore", "Student Visa", or "Europe"…'); ?>
-            <p class="search-widget__hint" style="margin-top:var(--space-6)">Or use the detailed search below:</p>
+            <p class="search-widget__hint" style="margin-top:var(--space-3)">Or use the detailed search below:</p>
             <form class="search-widget__grid" action="/visa-search/" method="get">
                 <div class="form-group">
                     <label class="form-label" for="search-country">Where are you travelling?</label>
