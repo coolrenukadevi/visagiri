@@ -32,6 +32,16 @@ switch ($adminSegment) {
         require __DIR__ . '/pages/dashboard.php';
         exit;
 
+    case 'sales-crm':
+        require_admin_login();
+        require __DIR__ . '/pages/sales-crm.php';
+        exit;
+
+    case 'finance':
+        require_admin_login();
+        require __DIR__ . '/pages/finance.php';
+        exit;
+
     case 'customers':
         require_admin_login();
         require __DIR__ . '/pages/customers.php';

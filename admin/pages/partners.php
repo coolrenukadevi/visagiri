@@ -670,11 +670,15 @@ $partners = $stmt->fetchAll();
 
 $pendingCountStmt = $pdo->query("SELECT COUNT(*) FROM partners WHERE status = 'pending' AND deleted_at IS NULL");
 $pendingCount = (int) $pendingCountStmt->fetchColumn();
+$pendingEnquiryCount = (int) $pdo->query("SELECT COUNT(*) FROM partner_enquiries WHERE deleted_at IS NULL AND status = 'new'")->fetchColumn();
 
 admin_header_start('Partners', 'partners');
 ?>
 <?php if ($pendingCount > 0): ?>
 <div class="alert alert-warning"><?= $pendingCount ?> partner<?= $pendingCount === 1 ? '' : 's' ?> awaiting approval.</div>
+<?php endif; ?>
+<?php if ($pendingEnquiryCount > 0): ?>
+<div class="alert alert-info"><?= $pendingEnquiryCount ?> new B2B partner enquir<?= $pendingEnquiryCount === 1 ? 'y' : 'ies' ?> not yet onboarded — see <a href="/admin/partner-enquiries/">Partner Enquiries</a> or the combined view in <a href="/admin/sales-crm/?type=partner">Sales CRM</a>.</div>
 <?php endif; ?>
 <div class="admin-toolbar">
     <form method="get" action="/admin/partners/" style="display:flex;gap:var(--space-2);flex-wrap:wrap">

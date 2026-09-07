@@ -47,6 +47,9 @@ function admin_header_start(string $pageTitle, string $activeNav): void
         <div class="admin-sidebar__brand">VISA<span>GIRI</span> <small>Admin</small></div>
         <nav class="admin-sidebar__nav">
             <a href="/admin/dashboard/" class="<?= $activeNav === 'dashboard' ? 'is-active' : '' ?>">Dashboard</a>
+            <?php if (has_permission('enquiries.view') || has_permission('general_enquiries.view') || has_permission('forex.requests.view') || has_permission('partners.view')): ?>
+            <a href="/admin/sales-crm/" class="<?= $activeNav === 'sales-crm' ? 'is-active' : '' ?>">Sales CRM</a>
+            <?php endif; ?>
             <?php if (has_permission('customers.view')): ?>
             <a href="/admin/customers/" class="<?= $activeNav === 'customers' ? 'is-active' : '' ?>">Customers</a>
             <?php endif; ?>
@@ -59,7 +62,10 @@ function admin_header_start(string $pageTitle, string $activeNav): void
             <?php endif; ?>
             <?php if (has_permission('partners.view')): ?>
             <a href="/admin/partner-document-expiry/" class="<?= $activeNav === 'partner-document-expiry' ? 'is-active' : '' ?>">Document Expiry</a>
-            <a href="/admin/partner-enquiries/" class="<?= $activeNav === 'partner-enquiries' ? 'is-active' : '' ?>">Partner Enquiries</a>
+            <a href="/admin/partner-enquiries/" class="<?= $activeNav === 'partner-enquiries' ? 'is-active' : '' ?>">Partner Enquiries<?php $pendingPartnerEnquiries = (int) db()->query("SELECT COUNT(*) FROM partner_enquiries WHERE deleted_at IS NULL AND status = 'new'")->fetchColumn(); if ($pendingPartnerEnquiries > 0): ?> <span class="admin-sidebar__badge"><?= $pendingPartnerEnquiries ?></span><?php endif; ?></a>
+            <?php endif; ?>
+            <?php if (has_permission('partners.manage') || has_permission('forex.requests.view')): ?>
+            <a href="/admin/finance/" class="<?= $activeNav === 'finance' ? 'is-active' : '' ?>">Finance</a>
             <?php endif; ?>
             <?php if (has_permission('enquiries.view')): ?>
             <a href="/admin/enquiries/" class="<?= $activeNav === 'enquiries' ? 'is-active' : '' ?>">Enquiries (Visa + Apostille)</a>

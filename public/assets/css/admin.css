@@ -107,6 +107,57 @@
 .admin-stat-card__value { font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--visa-blue); line-height: 1.2; }
 .admin-stat-card__label { color: var(--text-muted); font-size: var(--font-size-sm); margin-top: var(--space-1); }
 
+/* Sidebar count badge (e.g. pending B2B partner enquiries) — small,
+   attention-drawing pill next to the nav label it belongs to. */
+.admin-sidebar__badge {
+    display: inline-block;
+    background: var(--visa-gold);
+    color: var(--visa-blue);
+    font-size: 0.7rem;
+    font-weight: var(--font-weight-bold);
+    line-height: 1;
+    padding: 0.2em 0.5em;
+    border-radius: var(--radius-full, 999px);
+    margin-left: var(--space-2);
+    vertical-align: middle;
+}
+
+/* Dashboard module-launcher tiles — the "single window" front door:
+   one big clickable tile per business module, each linking into that
+   module's own pages (which keep their own nav/permissions/detail
+   views unchanged). Bigger and more visually distinct than the plain
+   stat cards above so it reads as "go here", not "here's a number". */
+.admin-module-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: var(--space-5); margin-bottom: var(--space-7); }
+.admin-module-tile {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    background: var(--white);
+    border-radius: var(--radius-lg, var(--radius-md));
+    padding: var(--space-6) var(--space-5);
+    box-shadow: var(--shadow-sm);
+    border-top: 4px solid var(--visa-gold);
+    text-decoration: none;
+    color: inherit;
+    transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+    position: relative;
+}
+.admin-module-tile:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+.admin-module-tile__icon { font-size: 1.75rem; line-height: 1; }
+.admin-module-tile__title { font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--visa-blue); }
+.admin-module-tile__desc { color: var(--text-muted); font-size: var(--font-size-sm); flex: 1; }
+.admin-module-tile__badge {
+    position: absolute;
+    top: var(--space-4);
+    right: var(--space-4);
+    background: var(--danger, #c0392b);
+    color: var(--white);
+    font-size: 0.75rem;
+    font-weight: var(--font-weight-bold);
+    padding: 0.15em 0.55em;
+    border-radius: var(--radius-full, 999px);
+}
+
 .admin-form-card { background: var(--white); border-radius: var(--radius-md); padding: var(--space-6); box-shadow: var(--shadow-sm); max-width: 720px; }
 .admin-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
 .admin-form-grid--single { grid-template-columns: 1fr; }
