@@ -1234,7 +1234,6 @@
   font-size: var(--font-size-xs);
   margin: 0;
   text-align: justify;
-  text-align-last: justify;
 }
 
 .site-footer__bottom {
