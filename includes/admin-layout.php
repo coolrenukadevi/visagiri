@@ -70,6 +70,7 @@ function admin_header_start(string $pageTitle, string $activeNav): void
             <?php if (has_permission('b2b_travel_partners.view')): ?>
             <a href="/admin/b2b-partners/" class="<?= $activeNav === 'b2b-partners' ? 'is-active' : '' ?>">B2B Travel Partners<?php $pendingB2bPartners = (int) db()->query("SELECT COUNT(*) FROM b2b_partners WHERE deleted_at IS NULL AND status IN ('submitted', 'under_review')")->fetchColumn(); if ($pendingB2bPartners > 0): ?> <span class="admin-sidebar__badge"><?= $pendingB2bPartners ?></span><?php endif; ?></a>
             <a href="/admin/b2b-enquiries/" class="<?= $activeNav === 'b2b-enquiries' ? 'is-active' : '' ?>">B2B Visa Enquiries<?php $pendingB2bEnquiries = (int) db()->query("SELECT COUNT(*) FROM b2b_visa_enquiries WHERE deleted_at IS NULL AND status = 'new'")->fetchColumn(); if ($pendingB2bEnquiries > 0): ?> <span class="admin-sidebar__badge"><?= $pendingB2bEnquiries ?></span><?php endif; ?></a>
+            <a href="/admin/b2b-support-tickets/" class="<?= $activeNav === 'b2b-support-tickets' ? 'is-active' : '' ?>">B2B Support Tickets<?php $openB2bTickets = (int) db()->query("SELECT COUNT(*) FROM b2b_support_tickets WHERE status = 'open'")->fetchColumn(); if ($openB2bTickets > 0): ?> <span class="admin-sidebar__badge"><?= $openB2bTickets ?></span><?php endif; ?></a>
             <?php endif; ?>
             <?php if (has_permission('enquiries.view')): ?>
             <a href="/admin/enquiries/" class="<?= $activeNav === 'enquiries' ? 'is-active' : '' ?>">Enquiries (Visa + Apostille)</a>

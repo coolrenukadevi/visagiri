@@ -75,6 +75,25 @@ function b2b_change_enquiry_status(int $enquiryId, string $newStatus, ?int $chan
         'partner_user' => $changedByPartnerUser,
         'reason' => $reason,
     ]);
+
+    // Only notify on an admin-initiated transition — a partner acting
+    // on their own enquiry (e.g. cancelling it) doesn't need telling
+    // about something they just did themselves.
+    if ($changedByAdmin !== null) {
+        $refStmt = db()->prepare('SELECT b2b_partner_id, enquiry_reference_no FROM b2b_visa_enquiries WHERE id = :id');
+        $refStmt->execute(['id' => $enquiryId]);
+        $enquiryRow = $refStmt->fetch();
+        if ($enquiryRow) {
+            $label = B2B_ENQUIRY_STATUS_LABELS[$newStatus] ?? $newStatus;
+            notify_b2b_partner(
+                (int) $enquiryRow['b2b_partner_id'],
+                'enquiry_status_change',
+                'Enquiry ' . $enquiryRow['enquiry_reference_no'] . ' — ' . $label,
+                $reason,
+                '/b2b/enquiries/?action=view&id=' . $enquiryId
+            );
+        }
+    }
 }
 
 /** Same shape as store_b2b_partner_document() — separate table, enquiry-scoped. */

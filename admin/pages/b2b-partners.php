@@ -79,6 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($email = $emailStmt->fetchColumn()) {
             send_mail((string) $email, 'Your Visagiri B2B Partner account is approved', '<p>Congratulations — your Visagiri B2B Travel Partner account is now active. You can sign in and start submitting visa enquiries.</p>', null);
         }
+        notify_b2b_partner($targetId, 'partner_status_change', 'Your partner account is now active', 'Congratulations — your Visagiri B2B Travel Partner account is now active.', '/b2b/dashboard/');
         flash_set('admin_notice', 'Partner approved and activated.');
         redirect('/admin/b2b-partners/?action=view&id=' . $targetId);
     }
@@ -96,6 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($email = $emailStmt->fetchColumn()) {
             send_mail((string) $email, $subject, '<p>' . nl2br(e($body)) . '</p>', null);
         }
+        notify_b2b_partner($targetId, 'partner_status_change', $subject, $body, '/b2b/dashboard/');
         flash_set('admin_notice', 'Status updated.');
         redirect('/admin/b2b-partners/?action=view&id=' . $targetId);
     }

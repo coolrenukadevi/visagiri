@@ -63,6 +63,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                  WHERE id = :id AND b2b_visa_enquiry_id = :enquiry_id'
             )->execute(['status' => $verifyStatus, 'remarks' => $docRemarks, 'admin' => current_admin_id(), 'id' => $docId, 'enquiry_id' => $targetId]);
             log_action('b2b_enquiry_document_verification', 'b2b_enquiry_documents', $docId, null, $verifyStatus);
+            $enquiryRefStmt = $pdo->prepare('SELECT b2b_partner_id, enquiry_reference_no FROM b2b_visa_enquiries WHERE id = :id');
+            $enquiryRefStmt->execute(['id' => $targetId]);
+            if ($enquiryRow = $enquiryRefStmt->fetch()) {
+                notify_b2b_partner((int) $enquiryRow['b2b_partner_id'], 'enquiry_document_' . $verifyStatus, 'Document ' . $verifyStatus . ' on ' . $enquiryRow['enquiry_reference_no'], $docRemarks, '/b2b/enquiries/?action=view&id=' . $targetId);
+            }
             flash_set('admin_notice', 'Document ' . $verifyStatus . '.');
         }
         redirect('/admin/b2b-enquiries/?action=view&id=' . $targetId);
@@ -105,6 +110,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pdo->prepare("UPDATE b2b_enquiry_quotations SET status = 'sent', sent_at = NOW() WHERE id = :id AND b2b_visa_enquiry_id = :enquiry_id AND status = 'draft'")
             ->execute(['id' => $quotationId, 'enquiry_id' => $targetId]);
         log_action('b2b_quotation_send', 'b2b_enquiry_quotations', $quotationId, 'draft', 'sent');
+        $quoteRefStmt = $pdo->prepare(
+            'SELECT e.b2b_partner_id, e.enquiry_reference_no, q.quotation_reference_no, q.total_amount, q.currency
+             FROM b2b_enquiry_quotations q JOIN b2b_visa_enquiries e ON e.id = q.b2b_visa_enquiry_id WHERE q.id = :id'
+        );
+        $quoteRefStmt->execute(['id' => $quotationId]);
+        if ($quoteRow = $quoteRefStmt->fetch()) {
+            notify_b2b_partner(
+                (int) $quoteRow['b2b_partner_id'], 'quotation_sent',
+                'New quotation for ' . $quoteRow['enquiry_reference_no'],
+                'Quotation ' . $quoteRow['quotation_reference_no'] . ': ' . $quoteRow['currency'] . ' ' . number_format((float) $quoteRow['total_amount'], 2),
+                '/b2b/enquiries/?action=view&id=' . $targetId
+            );
+        }
         flash_set('admin_notice', 'Quotation sent to partner.');
         redirect('/admin/b2b-enquiries/?action=view&id=' . $targetId);
     }
@@ -147,7 +165,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                  WHERE id = :id AND b2b_visa_enquiry_id = :enquiry_id AND status = 'issued'"
             )->execute(['method' => $paymentMethod, 'ref' => $paymentReference, 'id' => $invoiceId, 'enquiry_id' => $targetId]);
             log_action('b2b_invoice_paid', 'b2b_enquiry_invoices', $invoiceId, 'issued', 'paid');
+            $invRefStmt = $pdo->prepare(
+                'SELECT e.b2b_partner_id, e.enquiry_reference_no, i.invoice_reference_no FROM b2b_enquiry_invoices i
+                 JOIN b2b_visa_enquiries e ON e.id = i.b2b_visa_enquiry_id WHERE i.id = :id'
+            );
+            $invRefStmt->execute(['id' => $invoiceId]);
+            if ($invRow = $invRefStmt->fetch()) {
+                notify_b2b_partner((int) $invRow['b2b_partner_id'], 'invoice_paid', 'Payment received for ' . $invRow['invoice_reference_no'], null, '/b2b/enquiries/?action=view&id=' . $targetId);
+            }
             flash_set('admin_notice', 'Payment recorded.');
+        }
+        redirect('/admin/b2b-enquiries/?action=view&id=' . $targetId);
+    }
+
+    if ($postAction === 'post_message' && $targetId) {
+        $messageBody = trim((string) ($_POST['message'] ?? ''));
+        if ($messageBody === '') {
+            flash_set('admin_error', 'Enter a message.');
+        } else {
+            $pdo->prepare('INSERT INTO b2b_enquiry_messages (b2b_visa_enquiry_id, sender_admin_id, message) VALUES (:id, :admin, :message)')
+                ->execute(['id' => $targetId, 'admin' => current_admin_id(), 'message' => $messageBody]);
+            $enquiryRefStmt = $pdo->prepare('SELECT b2b_partner_id, enquiry_reference_no FROM b2b_visa_enquiries WHERE id = :id');
+            $enquiryRefStmt->execute(['id' => $targetId]);
+            if ($enquiryRow = $enquiryRefStmt->fetch()) {
+                notify_b2b_partner((int) $enquiryRow['b2b_partner_id'], 'enquiry_message', 'New message on ' . $enquiryRow['enquiry_reference_no'], mb_substr($messageBody, 0, 200), '/b2b/enquiries/?action=view&id=' . $targetId);
+            }
+            flash_set('admin_notice', 'Message sent.');
         }
         redirect('/admin/b2b-enquiries/?action=view&id=' . $targetId);
     }
@@ -198,6 +241,15 @@ if ($action === 'view' && $id) {
     $invoicesStmt = $pdo->prepare('SELECT * FROM b2b_enquiry_invoices WHERE b2b_visa_enquiry_id = :id ORDER BY created_at DESC');
     $invoicesStmt->execute(['id' => $id]);
     $invoices = $invoicesStmt->fetchAll();
+
+    $messagesStmt = $pdo->prepare(
+        'SELECT m.*, a.full_name AS admin_name, u.full_name AS partner_user_name FROM b2b_enquiry_messages m
+         LEFT JOIN admin_users a ON a.id = m.sender_admin_id
+         LEFT JOIN b2b_partner_users u ON u.id = m.sender_partner_user_id
+         WHERE m.b2b_visa_enquiry_id = :id ORDER BY m.created_at ASC'
+    );
+    $messagesStmt->execute(['id' => $id]);
+    $messages = $messagesStmt->fetchAll();
 
     $canManage = has_permission('b2b_travel_partners.manage');
 
@@ -390,6 +442,24 @@ if ($action === 'view' && $id) {
         </tr>
         <?php endforeach; ?>
     </tbody></table>
+
+    <h2 class="country-directory__subheading" style="margin-top:var(--space-6)">Messages</h2>
+    <div class="admin-form-card" style="margin-bottom:var(--space-4);max-height:360px;overflow-y:auto">
+        <?php if (!$messages): ?>
+        <p class="empty-state">No messages yet.</p>
+        <?php else: ?>
+        <?php foreach ($messages as $m): ?>
+        <p style="margin-bottom:var(--space-3)"><strong><?= $m['sender_admin_id'] ? e($m['admin_name'] ?? 'Admin') : e($m['partner_user_name'] ?? 'Partner') ?>:</strong> <?= nl2br(e($m['message'])) ?><br><span style="color:var(--text-muted);font-size:var(--font-size-sm)"><?= e(date('d M Y H:i', strtotime((string) $m['created_at']))) ?></span></p>
+        <?php endforeach; ?>
+        <?php endif; ?>
+    </div>
+    <?php if ($canManage): ?>
+    <form method="post" action="/admin/b2b-enquiries/" style="margin-bottom:var(--space-6)">
+        <?= csrf_field() ?><input type="hidden" name="id" value="<?= $id ?>"><input type="hidden" name="action" value="post_message">
+        <textarea class="form-textarea" name="message" rows="2" placeholder="Reply to partner…" required style="width:100%;max-width:520px"></textarea>
+        <button type="submit" class="btn btn-outline btn-sm" style="margin-top:var(--space-2)">Send</button>
+    </form>
+    <?php endif; ?>
 
     <p style="margin-top:var(--space-6)"><a href="/admin/b2b-enquiries/">&larr; Back to all enquiries</a></p>
     <?php

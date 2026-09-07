@@ -34,23 +34,9 @@ $statusBadgeMap = [
     'rejected' => 'danger', 'blacklisted' => 'danger', 'closed' => 'neutral',
 ];
 
-$pageTitle = 'Partner Dashboard - Visagiri B2B Travel Partner Portal';
-$canonicalUrl = APP_URL . '/b2b/dashboard/';
-$noindex = true;
-require __DIR__ . '/../../includes/header.php';
-$flashNotice = flash_get('b2b_notice');
-$flashError = flash_get('b2b_error');
+render_b2b_partner_start('dashboard', 'Welcome, ' . $partner['legal_business_name']);
 ?>
-<section class="section" style="padding-top:var(--space-8)">
-    <div class="container" style="max-width:960px">
-        <div class="section-heading" style="text-align:left;margin-left:0;max-width:none">
-            <span class="section-eyebrow">B2B Travel Partner Portal</span>
-            <h1>Welcome, <?= e($partner['legal_business_name']) ?></h1>
-            <p>Partner ID: <strong><?= e($partner['partner_reference_no']) ?></strong> &nbsp; <?= status_badge($partner['status'], $statusBadgeMap) ?></p>
-        </div>
-
-        <?php if ($flashNotice): ?><div class="alert alert-success"><?= e($flashNotice) ?></div><?php endif; ?>
-        <?php if ($flashError): ?><div class="alert alert-danger"><?= e($flashError) ?></div><?php endif; ?>
+        <p>Partner ID: <strong><?= e($partner['partner_reference_no']) ?></strong> &nbsp; <?= status_badge($partner['status'], $statusBadgeMap) ?></p>
 
         <?php if ($partner['status'] === 'draft'): ?>
         <div class="alert alert-warning">Your application isn't submitted yet. <a href="/b2b/register-declaration/">Finish registration &rarr;</a></div>
@@ -90,8 +76,5 @@ $flashError = flash_get('b2b_error');
 
         <div style="display:flex;gap:var(--space-3);flex-wrap:wrap">
             <a href="/b2b/register-documents/" class="btn btn-outline">Manage KYC Documents</a>
-            <form method="post" action="/b2b/logout/" style="display:contents"><?= csrf_field() ?><button type="submit" class="btn btn-outline">Logout</button></form>
         </div>
-    </div>
-</section>
-<?php require __DIR__ . '/../../includes/footer.php'; ?>
+<?php render_b2b_partner_end(); ?>

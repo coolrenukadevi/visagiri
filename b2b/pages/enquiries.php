@@ -64,6 +64,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $id) {
         redirect('/b2b/enquiries/?action=view&id=' . $id);
     }
 
+    if ($postAction === 'post_message') {
+        $messageBody = trim((string) ($_POST['message'] ?? ''));
+        if ($messageBody === '') {
+            flash_set('b2b_error', 'Enter a message.');
+        } else {
+            $pdo->prepare('INSERT INTO b2b_enquiry_messages (b2b_visa_enquiry_id, sender_partner_user_id, message) VALUES (:id, :user, :message)')
+                ->execute(['id' => $id, 'user' => $user['id'], 'message' => $messageBody]);
+            flash_set('b2b_notice', 'Message sent.');
+        }
+        redirect('/b2b/enquiries/?action=view&id=' . $id);
+    }
+
     redirect('/b2b/enquiries/?action=view&id=' . $id);
 }
 
@@ -110,22 +122,17 @@ if (($_GET['action'] ?? '') === 'view' && $id) {
     $invoicesStmt->execute(['id' => $id]);
     $invoices = $invoicesStmt->fetchAll();
 
-    $pageTitle = $enquiry['enquiry_reference_no'] . ' - Visagiri B2B Travel Partner Portal';
-    $canonicalUrl = APP_URL . '/b2b/enquiries/';
-    $noindex = true;
-    require __DIR__ . '/../../includes/header.php';
-    $flashNotice = flash_get('b2b_notice');
-    $flashError = flash_get('b2b_error');
-    ?>
-    <section class="section" style="padding-top:var(--space-8)">
-        <div class="container" style="max-width:820px">
-            <div class="section-heading" style="text-align:left;margin-left:0;max-width:none">
-                <span class="section-eyebrow">B2B Travel Partner Portal</span>
-                <h1><?= e($enquiry['enquiry_reference_no']) ?></h1>
-            </div>
-            <?php if ($flashNotice): ?><div class="alert alert-success"><?= e($flashNotice) ?></div><?php endif; ?>
-            <?php if ($flashError): ?><div class="alert alert-danger"><?= e($flashError) ?></div><?php endif; ?>
+    $messagesStmt = $pdo->prepare(
+        'SELECT m.*, a.full_name AS admin_name, u.full_name AS partner_user_name FROM b2b_enquiry_messages m
+         LEFT JOIN admin_users a ON a.id = m.sender_admin_id
+         LEFT JOIN b2b_partner_users u ON u.id = m.sender_partner_user_id
+         WHERE m.b2b_visa_enquiry_id = :id ORDER BY m.created_at ASC'
+    );
+    $messagesStmt->execute(['id' => $id]);
+    $messages = $messagesStmt->fetchAll();
 
+    render_b2b_partner_start('enquiries', $enquiry['enquiry_reference_no']);
+    ?>
             <div class="admin-form-card" style="margin-bottom:var(--space-6)">
                 <p><strong>Status:</strong> <?= status_badge((string) $enquiry['status'], $enquiryStatusBadgeMap) ?></p>
                 <p><strong>Destination:</strong> <?= e($enquiry['country_name']) ?> &middot; <strong>Visa Type:</strong> <?= e(B2B_VISA_SERVICES[$enquiry['visa_type']] ?? $enquiry['visa_type']) ?></p>
@@ -231,11 +238,25 @@ if (($_GET['action'] ?? '') === 'view' && $id) {
                 <?php endforeach; ?>
             </tbody></table>
 
+            <h2 class="country-directory__subheading">Messages</h2>
+            <div class="admin-form-card" style="margin-bottom:var(--space-4);max-height:360px;overflow-y:auto">
+                <?php if (!$messages): ?>
+                <p class="empty-state">No messages yet. Send one below and our team will reply here.</p>
+                <?php else: ?>
+                <?php foreach ($messages as $m): ?>
+                <p style="margin-bottom:var(--space-3)"><strong><?= $m['sender_admin_id'] ? e($m['admin_name'] ?? 'Visagiri Team') : e($m['partner_user_name'] ?? 'You') ?>:</strong> <?= nl2br(e($m['message'])) ?><br><span style="color:var(--text-muted);font-size:var(--font-size-sm)"><?= e(date('d M Y H:i', strtotime((string) $m['created_at']))) ?></span></p>
+                <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+            <form method="post" action="/b2b/enquiries/" style="margin-bottom:var(--space-6)">
+                <?= csrf_field() ?><input type="hidden" name="id" value="<?= $id ?>"><input type="hidden" name="action" value="post_message">
+                <textarea class="form-textarea" name="message" rows="2" placeholder="Type a message…" required style="width:100%;max-width:520px"></textarea>
+                <button type="submit" class="btn btn-outline btn-sm" style="margin-top:var(--space-2)">Send</button>
+            </form>
+
             <p style="margin-top:var(--space-6)"><a href="/b2b/enquiries/">&larr; Back to all enquiries</a></p>
-        </div>
-    </section>
-    <?php require __DIR__ . '/../../includes/footer.php'; ?>
-    <?php
+<?php
+    render_b2b_partner_end();
     exit;
 }
 
@@ -255,22 +276,8 @@ $listStmt = $pdo->prepare(
 $listStmt->execute($params);
 $enquiries = $listStmt->fetchAll();
 
-$pageTitle = 'Visa Enquiries - Visagiri B2B Travel Partner Portal';
-$canonicalUrl = APP_URL . '/b2b/enquiries/';
-$noindex = true;
-require __DIR__ . '/../../includes/header.php';
-$flashNotice = flash_get('b2b_notice');
-$flashError = flash_get('b2b_error');
+render_b2b_partner_start('enquiries', 'Visa Enquiries');
 ?>
-<section class="section" style="padding-top:var(--space-8)">
-    <div class="container" style="max-width:900px">
-        <div class="section-heading" style="text-align:left;margin-left:0;max-width:none">
-            <span class="section-eyebrow">B2B Travel Partner Portal</span>
-            <h1>Visa Enquiries</h1>
-        </div>
-        <?php if ($flashNotice): ?><div class="alert alert-success"><?= e($flashNotice) ?></div><?php endif; ?>
-        <?php if ($flashError): ?><div class="alert alert-danger"><?= e($flashError) ?></div><?php endif; ?>
-
         <div class="admin-toolbar">
             <form method="get" action="/b2b/enquiries/">
                 <select class="form-select" name="status" onchange="this.form.submit()">
@@ -300,6 +307,4 @@ $flashError = flash_get('b2b_error');
             <?php endif; ?>
             </tbody>
         </table>
-    </div>
-</section>
-<?php require __DIR__ . '/../../includes/footer.php'; ?>
+<?php render_b2b_partner_end(); ?>

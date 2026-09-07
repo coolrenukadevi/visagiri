@@ -112,22 +112,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$pageTitle = 'New Visa Enquiry - Visagiri B2B Travel Partner Portal';
-$canonicalUrl = APP_URL . '/b2b/enquiry-create/';
-$noindex = true;
-require __DIR__ . '/../../includes/header.php';
+render_b2b_partner_start('enquiries', 'New Visa Enquiry');
 ?>
-<section class="section" style="padding-top:var(--space-8)">
-    <div class="container" style="max-width:760px">
-        <div class="section-heading" style="text-align:left;margin-left:0;max-width:none">
-            <span class="section-eyebrow">B2B Travel Partner Portal</span>
-            <h1>New Visa Enquiry</h1>
-        </div>
         <?php foreach ($errors as $error): ?>
         <div class="alert alert-danger"><?= e($error) ?></div>
         <?php endforeach; ?>
 
-        <form method="post" action="/b2b/enquiry-create/" class="card" style="padding:var(--space-6)">
+        <form method="post" action="/b2b/enquiry-create/" class="card" style="padding:var(--space-6);max-width:760px">
             <?= csrf_field() ?>
 
             <h2 class="country-directory__subheading" style="margin-top:0">Travel Details</h2>
@@ -206,7 +197,5 @@ require __DIR__ . '/../../includes/header.php';
                 <a href="/b2b/dashboard/" class="btn btn-outline">Cancel</a>
             </div>
         </form>
-    </div>
-</section>
 <script src="<?= e(asset_url('/assets/js/b2b-enquiry-applicants.js')) ?>"></script>
-<?php require __DIR__ . '/../../includes/footer.php'; ?>
+<?php render_b2b_partner_end(); ?>
