@@ -36,9 +36,14 @@ $fields = [
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_require();
-    $stmt = $pdo->prepare('INSERT INTO site_settings (setting_key, setting_value) VALUES (:k, :v) ON DUPLICATE KEY UPDATE setting_value = :v');
+    // Two distinct placeholders bound to the same value, not :v reused
+    // twice — MySQL's native (non-emulated) prepared statements don't
+    // support binding one named parameter to more than one position
+    // in the same query and raise "Invalid parameter number" if tried.
+    $stmt = $pdo->prepare('INSERT INTO site_settings (setting_key, setting_value) VALUES (:k, :v1) ON DUPLICATE KEY UPDATE setting_value = :v2');
     foreach (array_keys($fields) as $key) {
-        $stmt->execute(['k' => $key, 'v' => trim((string) ($_POST[$key] ?? ''))]);
+        $value = trim((string) ($_POST[$key] ?? ''));
+        $stmt->execute(['k' => $key, 'v1' => $value, 'v2' => $value]);
     }
     flash_set('admin_notice', 'Settings saved.');
     redirect('/admin/settings/');
