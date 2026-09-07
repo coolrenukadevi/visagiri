@@ -49,14 +49,18 @@ declare(strict_types=1);
             <h3><span class="site-footer__col-icon"><?= primary_nav_icon('attestation') ?></span>Attestation</h3>
             <ul>
                 <?php
-                // One representative service per category, kept short
-                // so the column doesn't outgrow the others now that
-                // there are 13 real services — see /attestation/ for
-                // the full, categorized list.
+                // One representative service per category, plus a
+                // second link from the two richest categories
+                // (Attestation and Documents), kept short so the
+                // column doesn't outgrow the others now that there
+                // are 13 real services — see /attestation/ for the
+                // full, categorized list.
                 $footerAttestationLinks = array_filter([
                     $attestationCategories['Apostille'][0] ?? null,
                     $attestationCategories['Attestation'][0] ?? null,
+                    $attestationCategories['Attestation'][1] ?? null,
                     $attestationCategories['Documents'][0] ?? null,
+                    $attestationCategories['Documents'][1] ?? null,
                     $attestationCategories['Legalization'][0] ?? null,
                 ]);
                 ?>
