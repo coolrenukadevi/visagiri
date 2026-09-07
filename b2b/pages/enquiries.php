@@ -54,6 +54,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $id) {
         redirect('/b2b/enquiries/?action=view&id=' . $id);
     }
 
+    if (($postAction === 'accept_quotation' || $postAction === 'reject_quotation') && !empty($_POST['quotation_id'])) {
+        $quotationId = (int) $_POST['quotation_id'];
+        $newStatus = $postAction === 'accept_quotation' ? 'accepted' : 'rejected';
+        $pdo->prepare(
+            "UPDATE b2b_enquiry_quotations SET status = :status, responded_at = NOW() WHERE id = :id AND b2b_visa_enquiry_id = :enquiry_id AND status = 'sent'"
+        )->execute(['status' => $newStatus, 'id' => $quotationId, 'enquiry_id' => $id]);
+        flash_set('b2b_notice', 'Quotation ' . ($newStatus === 'accepted' ? 'accepted' : 'declined') . '.');
+        redirect('/b2b/enquiries/?action=view&id=' . $id);
+    }
+
     redirect('/b2b/enquiries/?action=view&id=' . $id);
 }
 
@@ -89,6 +99,16 @@ if (($_GET['action'] ?? '') === 'view' && $id) {
     );
     $historyStmt->execute(['id' => $id]);
     $history = $historyStmt->fetchAll();
+
+    // Draft quotations are an internal admin working state — a partner
+    // only ever sees one once it's been sent (or later accepted/rejected).
+    $quotationsStmt = $pdo->prepare("SELECT * FROM b2b_enquiry_quotations WHERE b2b_visa_enquiry_id = :id AND status != 'draft' ORDER BY created_at DESC");
+    $quotationsStmt->execute(['id' => $id]);
+    $quotations = $quotationsStmt->fetchAll();
+
+    $invoicesStmt = $pdo->prepare('SELECT * FROM b2b_enquiry_invoices WHERE b2b_visa_enquiry_id = :id ORDER BY created_at DESC');
+    $invoicesStmt->execute(['id' => $id]);
+    $invoices = $invoicesStmt->fetchAll();
 
     $pageTitle = $enquiry['enquiry_reference_no'] . ' - Visagiri B2B Travel Partner Portal';
     $canonicalUrl = APP_URL . '/b2b/enquiries/';
@@ -158,6 +178,45 @@ if (($_GET['action'] ?? '') === 'view' && $id) {
                 <input type="file" name="document" required>
                 <button type="submit" class="btn btn-outline btn-sm">Upload</button>
             </form>
+
+            <h2 class="country-directory__subheading">Quotations</h2>
+            <?php if (!$quotations): ?>
+            <p class="empty-state">No quotations received yet.</p>
+            <?php else: ?>
+            <table class="admin-table" style="margin-bottom:var(--space-4)"><thead><tr><th>Reference</th><th>Total</th><th>Status</th><th></th></tr></thead><tbody>
+                <?php foreach ($quotations as $q): ?>
+                <tr>
+                    <td><?= e($q['quotation_reference_no']) ?></td>
+                    <td><strong><?= e($q['currency']) ?> <?= e(number_format((float) $q['total_amount'], 2)) ?></strong> <span style="color:var(--text-muted);font-size:var(--font-size-sm)">(Govt. <?= e(number_format((float) $q['government_fee'], 2)) ?> + Service <?= e(number_format((float) $q['service_fee'], 2)) ?><?= $q['other_charges'] > 0 ? ' + Other ' . e(number_format((float) $q['other_charges'], 2)) : '' ?>)</span></td>
+                    <td><span class="badge <?= $q['status'] === 'accepted' ? 'badge-success' : ($q['status'] === 'rejected' ? 'badge-danger' : 'badge-info') ?>"><?= e(B2B_QUOTATION_STATUS_LABELS[$q['status']]) ?></span></td>
+                    <td>
+                        <?php if ($q['status'] === 'sent'): ?>
+                        <form method="post" action="/b2b/enquiries/" style="display:inline"><?= csrf_field() ?><input type="hidden" name="id" value="<?= $id ?>"><input type="hidden" name="action" value="accept_quotation"><input type="hidden" name="quotation_id" value="<?= (int) $q['id'] ?>"><button type="submit" class="btn btn-primary btn-sm">Accept</button></form>
+                        <form method="post" action="/b2b/enquiries/" style="display:inline"><?= csrf_field() ?><input type="hidden" name="id" value="<?= $id ?>"><input type="hidden" name="action" value="reject_quotation"><input type="hidden" name="quotation_id" value="<?= (int) $q['id'] ?>"><button type="submit" class="btn btn-outline btn-sm">Decline</button></form>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody></table>
+            <?php endif; ?>
+
+            <h2 class="country-directory__subheading">Invoices</h2>
+            <?php if (!$invoices): ?>
+            <p class="empty-state">No invoices issued yet.</p>
+            <?php else: ?>
+            <table class="admin-table"><thead><tr><th>Reference</th><th>Amount</th><th>Status</th></tr></thead><tbody>
+                <?php foreach ($invoices as $inv): ?>
+                <tr>
+                    <td><?= e($inv['invoice_reference_no']) ?></td>
+                    <td><?= e($inv['currency']) ?> <?= e(number_format((float) $inv['amount'], 2)) ?></td>
+                    <td><span class="badge <?= $inv['status'] === 'paid' ? 'badge-success' : ($inv['status'] === 'cancelled' ? 'badge-neutral' : 'badge-warning') ?>"><?= e(B2B_INVOICE_STATUS_LABELS[$inv['status']]) ?></span></td>
+                </tr>
+                <?php if ($inv['status'] === 'issued'): ?>
+                <tr><td colspan="3"><p class="empty-state" style="text-align:left">Online payment isn't connected yet — our finance team will reach out to arrange payment for this invoice.</p></td></tr>
+                <?php endif; ?>
+                <?php endforeach; ?>
+            </tbody></table>
+            <?php endif; ?>
 
             <h2 class="country-directory__subheading">Status History</h2>
             <table class="admin-table"><thead><tr><th>From</th><th>To</th><th>Note</th><th>By</th><th>When</th></tr></thead><tbody>
