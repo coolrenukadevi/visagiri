@@ -18,7 +18,7 @@ function admin_header_start(string $pageTitle, string $activeNav): void
     $navGroups = [
         'forex' => ['forex-dashboard', 'forex', 'forex-rates', 'forex-country-rules', 'forex-fema-audit'],
         'content' => ['countries', 'visa-types', 'faqs', 'embassies', 'locations'],
-        'system' => ['users', 'audit-log', 'settings'],
+        'system' => ['users', 'audit-log', 'settings', 'mail-log'],
     ];
     $activeGroup = null;
     foreach ($navGroups as $groupKey => $groupNavs) {
@@ -117,6 +117,7 @@ function admin_header_start(string $pageTitle, string $activeNav): void
             <?php endif; ?>
             <?php if (has_permission('settings.manage')): ?>
             <a href="/admin/settings/" class="<?= $activeNav === 'settings' ? 'is-active' : '' ?>">Settings</a>
+            <a href="/admin/mail-log/" class="<?= $activeNav === 'mail-log' ? 'is-active' : '' ?>">Mail Log</a>
             <?php endif; ?>
             </div>
             <?php endif; ?>

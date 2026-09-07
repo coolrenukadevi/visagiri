@@ -20,6 +20,35 @@ declare(strict_types=1);
  * connection failed" fallback path is testable in this environment.
  */
 
+/**
+ * Appends one timestamped line to storage/logs/mail.log, in addition
+ * to PHP's own mail_log() — a server's PHP error log can be hard for
+ * a non-technical client to find (location varies by host, and cPanel
+ * doesn't always surface it clearly), whereas this file sits right
+ * next to the app and can be read directly, or via the admin-only
+ * /admin/mail-log/ viewer page.
+ */
+function mail_log(string $line): void
+{
+    error_log($line);
+
+    $dir = STORAGE_PATH . '/logs';
+    if (!is_dir($dir)) {
+        @mkdir($dir, 0755, true);
+    }
+    $path = $dir . '/mail.log';
+    $entry = '[' . date('Y-m-d H:i:s') . '] ' . $line . "\n";
+    @file_put_contents($path, $entry, FILE_APPEND | LOCK_EX);
+
+    // Keep the file from growing unbounded on a long-lived server —
+    // trim to the most recent ~500 lines whenever it crosses ~1MB.
+    if (is_file($path) && filesize($path) > 1_000_000) {
+        $lines = file($path, FILE_IGNORE_NEW_LINES) ?: [];
+        $trimmed = array_slice($lines, -500);
+        @file_put_contents($path, implode("\n", $trimmed) . "\n", LOCK_EX);
+    }
+}
+
 /** Loads config/smtp.php, or null if it doesn't exist (not configured yet). */
 function smtp_config(): ?array
 {
@@ -52,18 +81,20 @@ function send_mail(string $toEmail, string $subject, string $htmlBody, ?string $
 {
     $config = smtp_config();
     if ($config === null) {
-        error_log("[SMTP] send to $toEmail failed: config/smtp.php is missing or not an array");
+        mail_log("[SMTP] send to $toEmail failed: config/smtp.php is missing or not an array");
         return false;
     }
 
     try {
         $ok = smtp_send($config, $toEmail, $toName, $subject, $htmlBody, $replyTo);
-        if (!$ok) {
-            error_log("[SMTP] send to $toEmail failed — see preceding [SMTP] log line for the reason");
+        if ($ok) {
+            mail_log("[SMTP] send to $toEmail succeeded (\"$subject\")");
+        } else {
+            mail_log("[SMTP] send to $toEmail failed — see preceding [SMTP] log line for the reason");
         }
         return $ok;
     } catch (Throwable $e) {
-        error_log("[SMTP] send to $toEmail threw: " . $e->getMessage());
+        mail_log("[SMTP] send to $toEmail threw: " . $e->getMessage());
         return false;
     }
 }
@@ -79,7 +110,7 @@ function smtp_send(array $config, string $toEmail, ?string $toName, string $subj
     $fromName = (string) ($config['from_name'] ?? 'Visagiri');
 
     if ($host === '') {
-        error_log('[SMTP] config/smtp.php has no host set');
+        mail_log('[SMTP] config/smtp.php has no host set');
         return false;
     }
 
@@ -87,36 +118,36 @@ function smtp_send(array $config, string $toEmail, ?string $toName, string $subj
     $context = stream_context_create(['ssl' => ['verify_peer' => true, 'verify_peer_name' => true]]);
     $socket = @stream_socket_client($remote, $errno, $errstr, 10, STREAM_CLIENT_CONNECT, $context);
     if ($socket === false) {
-        error_log("[SMTP] could not connect to $remote — errno $errno: $errstr (if this is a shared-hosting server, outbound SMTP to external hosts is often blocked by default — ask the host to whitelist it, or use their local mail server instead)");
+        mail_log("[SMTP] could not connect to $remote — errno $errno: $errstr (if this is a shared-hosting server, outbound SMTP to external hosts is often blocked by default — ask the host to whitelist it, or use their local mail server instead)");
         return false;
     }
 
     try {
         if (!smtp_expect($socket, 220)) {
-            error_log('[SMTP] server did not send the expected 220 greeting after connecting');
+            mail_log('[SMTP] server did not send the expected 220 greeting after connecting');
             return false;
         }
 
         $localHost = parse_url(APP_URL, PHP_URL_HOST) ?: 'localhost';
         smtp_command($socket, 'EHLO ' . $localHost);
         if (!smtp_expect($socket, 250)) {
-            error_log('[SMTP] EHLO was not accepted (expected 250)');
+            mail_log('[SMTP] EHLO was not accepted (expected 250)');
             return false;
         }
 
         if ($encryption === 'tls') {
             smtp_command($socket, 'STARTTLS');
             if (!smtp_expect($socket, 220)) {
-                error_log('[SMTP] STARTTLS was not accepted (expected 220)');
+                mail_log('[SMTP] STARTTLS was not accepted (expected 220)');
                 return false;
             }
             if (!@stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
-                error_log('[SMTP] TLS handshake failed after STARTTLS');
+                mail_log('[SMTP] TLS handshake failed after STARTTLS');
                 return false;
             }
             smtp_command($socket, 'EHLO ' . $localHost);
             if (!smtp_expect($socket, 250)) {
-                error_log('[SMTP] EHLO after STARTTLS was not accepted (expected 250)');
+                mail_log('[SMTP] EHLO after STARTTLS was not accepted (expected 250)');
                 return false;
             }
         }
@@ -129,35 +160,35 @@ function smtp_send(array $config, string $toEmail, ?string $toName, string $subj
         if ($username !== '') {
             smtp_command($socket, 'AUTH LOGIN');
             if (!smtp_expect($socket, 334)) {
-                error_log('[SMTP] AUTH LOGIN was not accepted (expected 334)');
+                mail_log('[SMTP] AUTH LOGIN was not accepted (expected 334)');
                 return false;
             }
             smtp_command($socket, base64_encode($username));
             if (!smtp_expect($socket, 334)) {
-                error_log("[SMTP] username was rejected (expected 334) — check config/smtp.php's username");
+                mail_log("[SMTP] username was rejected (expected 334) — check config/smtp.php's username");
                 return false;
             }
             smtp_command($socket, base64_encode($password));
             if (!smtp_expect($socket, 235)) {
-                error_log("[SMTP] authentication failed (expected 235) — check config/smtp.php's password/App Password is correct and not expired/revoked");
+                mail_log("[SMTP] authentication failed (expected 235) — check config/smtp.php's password/App Password is correct and not expired/revoked");
                 return false;
             }
         }
 
         smtp_command($socket, 'MAIL FROM:<' . $fromEmail . '>');
         if (!smtp_expect($socket, 250)) {
-            error_log("[SMTP] MAIL FROM:<$fromEmail> was rejected (expected 250) — from_email may need to match the authenticated username or a verified alias");
+            mail_log("[SMTP] MAIL FROM:<$fromEmail> was rejected (expected 250) — from_email may need to match the authenticated username or a verified alias");
             return false;
         }
         smtp_command($socket, 'RCPT TO:<' . $toEmail . '>');
         if (!smtp_expect($socket, 250)) {
-            error_log("[SMTP] RCPT TO:<$toEmail> was rejected (expected 250)");
+            mail_log("[SMTP] RCPT TO:<$toEmail> was rejected (expected 250)");
             return false;
         }
 
         smtp_command($socket, 'DATA');
         if (!smtp_expect($socket, 354)) {
-            error_log('[SMTP] DATA was not accepted (expected 354)');
+            mail_log('[SMTP] DATA was not accepted (expected 354)');
             return false;
         }
 
@@ -188,7 +219,7 @@ function smtp_send(array $config, string $toEmail, ?string $toName, string $subj
         $message = implode("\r\n", $headers) . "\r\n\r\n" . $escapedBody . "\r\n.";
         smtp_command($socket, $message);
         if (!smtp_expect($socket, 250)) {
-            error_log('[SMTP] message body was rejected after DATA (expected 250)');
+            mail_log('[SMTP] message body was rejected after DATA (expected 250)');
             return false;
         }
 

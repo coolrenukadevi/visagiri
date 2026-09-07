@@ -167,6 +167,11 @@ switch ($adminSegment) {
         require __DIR__ . '/pages/settings.php';
         exit;
 
+    case 'mail-log':
+        require_admin_login();
+        require __DIR__ . '/pages/mail-log.php';
+        exit;
+
     default:
         http_response_code(404);
         exit('Admin page not found.');
