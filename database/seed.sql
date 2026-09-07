@@ -2128,7 +2128,7 @@ INSERT INTO `site_settings` (`id`, `setting_key`, `setting_value`, `updated_at`)
 INSERT INTO `site_settings` (`id`, `setting_key`, `setting_value`, `updated_at`) VALUES (4,'contact_email','info@visagiri.com','2026-08-12 20:32:06');
 INSERT INTO `site_settings` (`id`, `setting_key`, `setting_value`, `updated_at`) VALUES (5,'mail_from_name','Visagiri Website','2026-08-12 20:32:06');
 INSERT INTO `site_settings` (`id`, `setting_key`, `setting_value`, `updated_at`) VALUES (6,'mail_from_address','info@visagiri.com','2026-08-12 20:32:06');
-INSERT INTO `site_settings` (`id`, `setting_key`, `setting_value`, `updated_at`) VALUES (7,'mail_enquiry_recipients','info@visagiri.com,accounts@visagiri.com','2026-08-12 20:32:06');
+INSERT INTO `site_settings` (`id`, `setting_key`, `setting_value`, `updated_at`) VALUES (7,'mail_enquiry_recipients','info@tripgation.com','2026-08-12 20:32:06');
 INSERT INTO `site_settings` (`id`, `setting_key`, `setting_value`, `updated_at`) VALUES (8,'google_apps_script_url','','2026-08-12 20:32:06');
 INSERT INTO `site_settings` (`id`, `setting_key`, `setting_value`, `updated_at`) VALUES (9,'company_name','Visagiri','2026-08-12 20:32:06');
 INSERT INTO `site_settings` (`id`, `setting_key`, `setting_value`, `updated_at`) VALUES (10,'company_tagline','Seamless Visas. Limitless Journeys.','2026-08-12 20:32:06');

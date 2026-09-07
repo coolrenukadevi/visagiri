@@ -74,6 +74,14 @@ function submit_enquiry_to_google(array $data): bool
  * the team. Neither failing is treated as the submission failing —
  * the database row (and its reference number, for enquiries) is
  * already the durable record; these are just convenience notifications.
+ *
+ * The email goes through includes/mail.php's real SMTP client (via
+ * config/smtp.php) rather than PHP's own mail(), which relies on
+ * whatever local mail transport the server happens to have and is
+ * prone to landing in spam without the sending domain's own SPF/DKIM
+ * set up. If config/smtp.php isn't set up, send_mail() just returns
+ * false per recipient — same "notification silently doesn't go out,
+ * the DB row is still the real record" behavior as before.
  */
 function notify_enquiry_channels(array $data): void
 {
@@ -91,14 +99,16 @@ function notify_enquiry_channels(array $data): void
         'Message:',
         $data['message'],
     ];
-    $body = implode("\n", $lines);
+    $htmlBody = '<p>' . implode('<br>', array_map(static fn(string $line): string => e($line) !== '' ? e($line) : '&nbsp;', $lines)) . '</p>';
 
-    $fromName = setting('mail_from_name', 'Visagiri Website');
-    $fromAddress = setting('mail_from_address', 'info@visagiri.com');
-    $recipients = setting('mail_enquiry_recipients', 'info@visagiri.com');
+    $recipients = setting('mail_enquiry_recipients', 'info@tripgation.com');
+    // is_valid_email() at submission time already guarantees $data['email']
+    // has no control characters, so it's safe to use directly as a header value.
+    $replyTo = is_valid_email($data['email']) ? $data['email'] : null;
 
-    $headers = 'From: ' . $fromName . ' <' . $fromAddress . '>' . "\r\n"
-        . 'Reply-To: ' . $data['email'] . "\r\n";
-
-    @mail($recipients, $subject, $body, $headers);
+    foreach (array_filter(array_map('trim', explode(',', $recipients))) as $recipient) {
+        if (is_valid_email($recipient)) {
+            send_mail($recipient, $subject, $htmlBody, null, $replyTo);
+        }
+    }
 }

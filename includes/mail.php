@@ -42,8 +42,13 @@ function smtp_config(): ?array
  * Sends one HTML email. Returns true only on a confirmed successful
  * SMTP send; false for anything else (no config, connection failure,
  * auth failure, rejected recipient) — never throws.
+ *
+ * $replyTo is for cases like a customer enquiry notification, where
+ * the message is sent from the site's own mailbox but a human reading
+ * it needs a one-click reply that reaches the actual customer, not
+ * the sending account.
  */
-function send_mail(string $toEmail, string $subject, string $htmlBody, ?string $toName = null): bool
+function send_mail(string $toEmail, string $subject, string $htmlBody, ?string $toName = null, ?string $replyTo = null): bool
 {
     $config = smtp_config();
     if ($config === null) {
@@ -51,13 +56,13 @@ function send_mail(string $toEmail, string $subject, string $htmlBody, ?string $
     }
 
     try {
-        return smtp_send($config, $toEmail, $toName, $subject, $htmlBody);
+        return smtp_send($config, $toEmail, $toName, $subject, $htmlBody, $replyTo);
     } catch (Throwable) {
         return false;
     }
 }
 
-function smtp_send(array $config, string $toEmail, ?string $toName, string $subject, string $htmlBody): bool
+function smtp_send(array $config, string $toEmail, ?string $toName, string $subject, string $htmlBody, ?string $replyTo = null): bool
 {
     $host = (string) ($config['host'] ?? '');
     $port = (int) ($config['port'] ?? 587);
@@ -151,6 +156,9 @@ function smtp_send(array $config, string $toEmail, ?string $toName, string $subj
             'Content-Type: text/html; charset=UTF-8',
             'Content-Transfer-Encoding: 8bit',
         ];
+        if ($replyTo !== null && $replyTo !== '') {
+            $headers[] = 'Reply-To: ' . $replyTo;
+        }
 
         // Per RFC 5321, a line consisting of just "." ends the DATA
         // block, so any body line starting with "." must be escaped
