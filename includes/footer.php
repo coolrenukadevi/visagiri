@@ -117,6 +117,7 @@ declare(strict_types=1);
                 endforeach;
                 ?>
                 <li><a href="/partners/">Become a B2B Partner</a></li>
+                <li><a href="/b2b-partner/">B2B Travel Partner Portal</a></li>
             </ul>
         </div>
     </div>

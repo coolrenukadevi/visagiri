@@ -50,6 +50,8 @@ require_once "$root/includes/mail.php";
 require_once "$root/includes/enquiry.php";
 require_once "$root/includes/pdf.php";
 require_once "$root/includes/partner-enrollment.php";
+require_once "$root/includes/b2b-partner.php";
+require_once "$root/includes/b2b-partner-auth.php";
 require_once "$root/includes/csv-export.php";
 require_once "$root/includes/legal-layout.php";
 
@@ -238,6 +240,12 @@ switch ($segments[0] ?? '') {
 
     case 'partner':
         $dispatch("$root/partner/index.php");
+
+    case 'b2b-partner':
+        $dispatch("$root/pages/b2b-partner.php");
+
+    case 'b2b':
+        $dispatch("$root/b2b/index.php");
 
     case 'admin':
         $dispatch("$root/admin/index.php");
