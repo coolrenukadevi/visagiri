@@ -461,7 +461,7 @@ if ($action === 'view' && $id) {
     </form>
     <?php endif; ?>
 
-    <p style="margin-top:var(--space-6)"><a href="/admin/b2b-enquiries/">&larr; Back to all enquiries</a></p>
+    <p style="margin-top:var(--space-6)"><a href="/admin/b2b-enquiries/">&larr; Back to all enquiries</a> &middot; <a href="/admin/audit-log/?module=b2b_visa_enquiries">View in Audit Log</a></p>
     <?php
     admin_header_end();
     exit;

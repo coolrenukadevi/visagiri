@@ -17,6 +17,7 @@ const B2B_PARTNER_NAV = [
     'enquiries' => ['label' => 'Visa Enquiries', 'href' => '/b2b/enquiries/'],
     'notifications' => ['label' => 'Notifications', 'href' => '/b2b/notifications/'],
     'support' => ['label' => 'Support', 'href' => '/b2b/support/'],
+    'team' => ['label' => 'Team', 'href' => '/b2b/team/'],
     'documents' => ['label' => 'KYC Documents', 'href' => '/b2b/register-documents/'],
 ];
 

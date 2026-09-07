@@ -28,6 +28,17 @@ $enquiryCountsRaw = $enquiryCountsStmt->fetchAll(PDO::FETCH_KEY_PAIR);
 $enquiryCounts = array_merge(array_fill_keys(array_keys(B2B_ENQUIRY_STATUS_LABELS), 0), $enquiryCountsRaw);
 $totalEnquiries = array_sum($enquiryCounts);
 
+// Performance (Phase B9): real numbers only — a completion rate needs
+// at least one non-cancelled enquiry to mean anything, and "per month"
+// needs a real first-enquiry date rather than an assumed window.
+$decidedEnquiries = $totalEnquiries - $enquiryCounts['cancelled'];
+$completionRate = $decidedEnquiries > 0 ? round(($enquiryCounts['completed'] / $decidedEnquiries) * 100, 1) : null;
+$firstEnquiryDateStmt = db()->prepare('SELECT MIN(created_at) FROM b2b_visa_enquiries WHERE b2b_partner_id = :id AND deleted_at IS NULL');
+$firstEnquiryDateStmt->execute(['id' => $partner['id']]);
+$firstEnquiryDate = $firstEnquiryDateStmt->fetchColumn();
+$monthsActive = $firstEnquiryDate ? max(1, (int) ceil((time() - strtotime((string) $firstEnquiryDate)) / (86400 * 30))) : 0;
+$enquiriesPerMonth = $monthsActive > 0 ? round($totalEnquiries / $monthsActive, 1) : null;
+
 $statusBadgeMap = [
     'draft' => 'neutral', 'submitted' => 'info', 'under_review' => 'warning', 'documents_required' => 'warning',
     'verification_pending' => 'warning', 'approved' => 'success', 'active' => 'success', 'suspended' => 'danger',
@@ -36,7 +47,7 @@ $statusBadgeMap = [
 
 render_b2b_partner_start('dashboard', 'Welcome, ' . $partner['legal_business_name']);
 ?>
-        <p>Partner ID: <strong><?= e($partner['partner_reference_no']) ?></strong> &nbsp; <?= status_badge($partner['status'], $statusBadgeMap) ?></p>
+        <p>Partner ID: <strong><?= e($partner['partner_reference_no']) ?></strong> &nbsp; <?= status_badge($partner['status'], $statusBadgeMap) ?> &nbsp; <span class="badge badge-neutral">Your Role: <?= e(B2B_ROLES[$user['role']] ?? $user['role']) ?></span></p>
 
         <?php if ($partner['status'] === 'draft'): ?>
         <div class="alert alert-warning">Your application isn't submitted yet. <a href="/b2b/register-declaration/">Finish registration &rarr;</a></div>
@@ -63,9 +74,19 @@ render_b2b_partner_start('dashboard', 'Welcome, ' . $partner['legal_business_nam
             <div class="admin-stat-card"><div class="admin-stat-card__value"><?= $enquiryCounts['rejected'] ?></div><div class="admin-stat-card__label">Rejected</div></div>
         </div>
         <div style="display:flex;gap:var(--space-3);flex-wrap:wrap;margin-top:var(--space-4);margin-bottom:var(--space-5)">
+            <?php if (current_b2b_partner_can_manage_enquiries()): ?>
             <a href="/b2b/enquiry-create/" class="btn btn-primary">+ New Visa Enquiry</a>
+            <?php endif; ?>
             <a href="/b2b/enquiries/" class="btn btn-outline">View All Enquiries</a>
         </div>
+
+        <?php if ($totalEnquiries > 0): ?>
+        <h2 class="country-directory__subheading">Performance</h2>
+        <div class="admin-stat-grid" style="margin-bottom:var(--space-5)">
+            <div class="admin-stat-card"><div class="admin-stat-card__value"><?= $completionRate !== null ? $completionRate . '%' : '—' ?></div><div class="admin-stat-card__label">Completion Rate</div></div>
+            <div class="admin-stat-card"><div class="admin-stat-card__value"><?= $enquiriesPerMonth !== null ? $enquiriesPerMonth : '—' ?></div><div class="admin-stat-card__label">Avg. Enquiries / Month</div></div>
+        </div>
+        <?php endif; ?>
         <?php endif; ?>
 
         <h2 class="country-directory__subheading">Documents</h2>

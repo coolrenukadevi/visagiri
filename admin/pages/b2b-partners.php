@@ -350,7 +350,7 @@ if ($action === 'view' && $id) {
     </tbody></table>
     <?php endif; ?>
 
-    <p style="margin-top:var(--space-6)"><a href="/admin/b2b-partners/">&larr; Back to all B2B partners</a></p>
+    <p style="margin-top:var(--space-6)"><a href="/admin/b2b-partners/">&larr; Back to all B2B partners</a> &middot; <a href="/admin/audit-log/?module=b2b_partners">View in Audit Log</a></p>
     <?php
     admin_header_end();
     exit;

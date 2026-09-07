@@ -48,13 +48,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $id) {
         redirect('/b2b/enquiries/?action=view&id=' . $id);
     }
 
-    if ($postAction === 'cancel' && in_array($currentStatus, ['new', 'in_progress', 'documents_pending'], true)) {
+    if ($postAction === 'cancel' && current_b2b_partner_can_manage_enquiries() && in_array($currentStatus, ['new', 'in_progress', 'documents_pending'], true)) {
         b2b_change_enquiry_status($id, 'cancelled', null, $user['id'], 'Cancelled by partner.');
         flash_set('b2b_notice', 'Enquiry cancelled.');
         redirect('/b2b/enquiries/?action=view&id=' . $id);
     }
 
-    if (($postAction === 'accept_quotation' || $postAction === 'reject_quotation') && !empty($_POST['quotation_id'])) {
+    if (($postAction === 'accept_quotation' || $postAction === 'reject_quotation') && current_b2b_partner_can_view_billing() && !empty($_POST['quotation_id'])) {
         $quotationId = (int) $_POST['quotation_id'];
         $newStatus = $postAction === 'accept_quotation' ? 'accepted' : 'rejected';
         $pdo->prepare(
@@ -139,7 +139,7 @@ if (($_GET['action'] ?? '') === 'view' && $id) {
                 <p><strong>Purpose:</strong> <?= e($enquiry['purpose_of_travel'] ?? '—') ?> &middot; <strong>Intended Travel Date:</strong> <?= $enquiry['intended_travel_date'] ? e(date('d M Y', strtotime((string) $enquiry['intended_travel_date']))) : '—' ?></p>
                 <p><strong>Applicants:</strong> <?= (int) $enquiry['number_of_applicants'] ?> &middot; <strong>Relationship Manager:</strong> <?= e($enquiry['assigned_admin_name'] ?? 'Not yet assigned') ?></p>
                 <?php if ($enquiry['special_requirements']): ?><p><strong>Notes:</strong> <?= e($enquiry['special_requirements']) ?></p><?php endif; ?>
-                <?php if (in_array($enquiry['status'], ['new', 'in_progress', 'documents_pending'], true)): ?>
+                <?php if (current_b2b_partner_can_manage_enquiries() && in_array($enquiry['status'], ['new', 'in_progress', 'documents_pending'], true)): ?>
                 <form method="post" action="/b2b/enquiries/" style="margin-top:var(--space-3)">
                     <?= csrf_field() ?><input type="hidden" name="id" value="<?= $id ?>"><input type="hidden" name="action" value="cancel">
                     <button type="submit" class="btn btn-outline btn-sm">Cancel Enquiry</button>
@@ -197,9 +197,11 @@ if (($_GET['action'] ?? '') === 'view' && $id) {
                     <td><strong><?= e($q['currency']) ?> <?= e(number_format((float) $q['total_amount'], 2)) ?></strong> <span style="color:var(--text-muted);font-size:var(--font-size-sm)">(Govt. <?= e(number_format((float) $q['government_fee'], 2)) ?> + Service <?= e(number_format((float) $q['service_fee'], 2)) ?><?= $q['other_charges'] > 0 ? ' + Other ' . e(number_format((float) $q['other_charges'], 2)) : '' ?>)</span></td>
                     <td><span class="badge <?= $q['status'] === 'accepted' ? 'badge-success' : ($q['status'] === 'rejected' ? 'badge-danger' : 'badge-info') ?>"><?= e(B2B_QUOTATION_STATUS_LABELS[$q['status']]) ?></span></td>
                     <td>
-                        <?php if ($q['status'] === 'sent'): ?>
+                        <?php if ($q['status'] === 'sent' && current_b2b_partner_can_view_billing()): ?>
                         <form method="post" action="/b2b/enquiries/" style="display:inline"><?= csrf_field() ?><input type="hidden" name="id" value="<?= $id ?>"><input type="hidden" name="action" value="accept_quotation"><input type="hidden" name="quotation_id" value="<?= (int) $q['id'] ?>"><button type="submit" class="btn btn-primary btn-sm">Accept</button></form>
                         <form method="post" action="/b2b/enquiries/" style="display:inline"><?= csrf_field() ?><input type="hidden" name="id" value="<?= $id ?>"><input type="hidden" name="action" value="reject_quotation"><input type="hidden" name="quotation_id" value="<?= (int) $q['id'] ?>"><button type="submit" class="btn btn-outline btn-sm">Decline</button></form>
+                        <?php elseif ($q['status'] === 'sent'): ?>
+                        <span style="color:var(--text-muted);font-size:var(--font-size-sm)">Only account admin/finance can respond</span>
                         <?php endif; ?>
                     </td>
                 </tr>
@@ -287,7 +289,9 @@ render_b2b_partner_start('enquiries', 'Visa Enquiries');
                     <?php endforeach; ?>
                 </select>
             </form>
+            <?php if (current_b2b_partner_can_manage_enquiries()): ?>
             <a href="/b2b/enquiry-create/" class="btn btn-primary">+ New Enquiry</a>
+            <?php endif; ?>
         </div>
         <table class="admin-table">
             <thead><tr><th>Reference</th><th>Destination</th><th>Visa Type</th><th>Applicants</th><th>Status</th><th>Created</th></tr></thead>
@@ -303,7 +307,7 @@ render_b2b_partner_start('enquiries', 'Visa Enquiries');
                 </tr>
             <?php endforeach; ?>
             <?php if (!$enquiries): ?>
-                <tr><td colspan="6"><p class="empty-state">No visa enquiries yet. <a href="/b2b/enquiry-create/">Create your first enquiry &rarr;</a></p></td></tr>
+                <tr><td colspan="6"><p class="empty-state">No visa enquiries yet.<?= current_b2b_partner_can_manage_enquiries() ? ' <a href="/b2b/enquiry-create/">Create your first enquiry &rarr;</a>' : '' ?></p></td></tr>
             <?php endif; ?>
             </tbody>
         </table>

@@ -74,6 +74,15 @@ switch ($segments[1] ?? null) {
         require __DIR__ . '/pages/support.php';
         exit;
 
+    case 'team':
+        require_b2b_partner_login();
+        require __DIR__ . '/pages/team.php';
+        exit;
+
+    case 'team-accept':
+        require __DIR__ . '/pages/team-accept.php';
+        exit;
+
     default:
         redirect('/b2b-partner/');
 }

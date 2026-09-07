@@ -20,6 +20,10 @@ if ($partner['status'] !== 'active') {
     flash_set('b2b_error', 'Your partner account must be active before you can submit visa enquiries. Current status: ' . e(B2B_STATUS_LABELS[$partner['status']] ?? $partner['status']));
     redirect('/b2b/dashboard/');
 }
+if (!current_b2b_partner_can_manage_enquiries()) {
+    flash_set('b2b_error', 'Your role (' . e(B2B_ROLES[$user['role']] ?? $user['role']) . ') cannot create visa enquiries.');
+    redirect('/b2b/enquiries/');
+}
 
 $errors = [];
 $countries = countries_all();

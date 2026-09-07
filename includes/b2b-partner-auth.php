@@ -105,3 +105,58 @@ function current_b2b_partner_can_view_billing(): bool
 {
     return in_array(current_b2b_partner_role(), ['partner_admin', 'partner_finance'], true);
 }
+
+/** partner_agent/partner_finance can view enquiries but only these roles can act on them (create, cancel, respond to quotations). */
+function current_b2b_partner_can_manage_enquiries(): bool
+{
+    return in_array(current_b2b_partner_role(), ['partner_admin', 'partner_manager', 'partner_agent'], true);
+}
+
+/**
+ * B2B team invitations (Phase B9). Unlike the old partner system,
+ * which stores an invited-but-unaccepted member in a separate
+ * partner_team_members table, B2B_partner_users already models every
+ * team member as a first-class row from the start — so an invite is
+ * just a row created immediately with an unusable random password and
+ * the existing reset_token_hash/reset_token_expires_at columns
+ * repurposed as the accept-invite token (same random-32-byte,
+ * SHA-256-hashed, only-the-hash-stored shape as
+ * create_partner_password_reset_token()). The account is functionally
+ * inert until the invitee sets a real password via the link.
+ */
+function b2b_create_user_invite(int $b2bPartnerId, string $fullName, string $designation, string $email, string $mobileNumber, string $role, int $invitedByUserId): string
+{
+    $token = bin2hex(random_bytes(32));
+    db()->prepare(
+        'INSERT INTO b2b_partner_users (b2b_partner_id, full_name, designation, email, password_hash, mobile_number, role, reset_token_hash, reset_token_expires_at)
+         VALUES (:partner_id, :name, :designation, :email, :password_hash, :mobile, :role, :hash, :expires)'
+    )->execute([
+        'partner_id' => $b2bPartnerId,
+        'name' => $fullName,
+        'designation' => $designation,
+        'email' => $email,
+        'password_hash' => hash_password(bin2hex(random_bytes(32))),
+        'mobile' => $mobileNumber,
+        'role' => $role,
+        'hash' => hash('sha256', $token),
+        'expires' => date('Y-m-d H:i:s', time() + 60 * 60 * 24 * 7),
+    ]);
+    return $token;
+}
+
+function b2b_verify_invite_token(string $token): ?array
+{
+    $stmt = db()->prepare(
+        'SELECT * FROM b2b_partner_users
+         WHERE reset_token_hash = :hash AND reset_token_expires_at IS NOT NULL AND reset_token_expires_at > NOW() AND deleted_at IS NULL'
+    );
+    $stmt->execute(['hash' => hash('sha256', $token)]);
+    $user = $stmt->fetch();
+    return $user ?: null;
+}
+
+function b2b_complete_invite(int $userId, string $newPlainPassword): void
+{
+    db()->prepare('UPDATE b2b_partner_users SET password_hash = :hash, reset_token_hash = NULL, reset_token_expires_at = NULL WHERE id = :id')
+        ->execute(['hash' => hash_password($newPlainPassword), 'id' => $userId]);
+}
