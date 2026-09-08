@@ -2142,6 +2142,6 @@ INSERT INTO `site_settings` (`id`, `setting_key`, `setting_value`, `updated_at`)
 -- specific hash were provided separately, outside this file, since a
 -- password should never live in version control.
 INSERT INTO `admin_users` (`username`, `email`, `password_hash`, `full_name`, `status`) VALUES
-('admin', 'info@visagiri.com', '$2y$12$0WnS7p.QqMWYhxnwTlYzRuY3mCAvwVuLazIj5eRjiBUIN5yEiwPtG', 'Visagiri Admin', 'active');
+('admin', 'info@visagiri.com', '$2y$12$Vllc7V0FxpGCFfzqiiw/nOU/HejAwFDrJorSJmXzBNeO5MReuxxey', 'Visagiri Admin', 'active');
 
 SET FOREIGN_KEY_CHECKS = 1;

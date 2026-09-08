@@ -51,6 +51,6 @@ WHERE r.slug = 'hr-executive'
 -- Credentials for this specific hash were provided separately,
 -- outside this file, per the same rule as the main admin account.
 INSERT INTO `admin_users` (`username`, `email`, `password_hash`, `full_name`, `status`) VALUES
-('hr.admin', 'hr@visagiri.com', '$2y$12$yHDbZlOVP6b94WEvYXT/M.rYnvc79GSV8rAqKYoo4hqOoml6Q9Wwa', 'Visagiri HR Admin', 'active');
+('hr.admin', 'hr@visagiri.com', '$2y$12$SmnKf1BILeBLUkxikLYJxOF0hs8Iuyq8XuitbcI5qSyn/Schc8wCC', 'Visagiri HR Admin', 'active');
 
 UPDATE admin_users SET role_id = (SELECT id FROM roles WHERE slug = 'hr-admin') WHERE username = 'hr.admin';
