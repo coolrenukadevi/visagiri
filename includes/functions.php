@@ -590,6 +590,47 @@ function is_valid_mobile(string $value): bool
     return (bool) preg_match('/^\+?[0-9]{7,15}$/', trim($value));
 }
 
+/**
+ * Detects a file's real MIME type from its content — used everywhere
+ * an upload is validated or stored, so a renamed executable can't pass
+ * as a PDF/image/document just by its extension. Prefers the fileinfo
+ * extension; some shared-hosting PHP builds ship without it compiled
+ * in (finfo_open() undefined), so this falls back to checking the
+ * file's leading bytes against the magic numbers for exactly the
+ * types this app ever accepts, rather than hard-failing every upload
+ * on that kind of host.
+ */
+function detect_file_mime_type(string $path): ?string
+{
+    if (function_exists('finfo_open')) {
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = finfo_file($finfo, $path);
+        finfo_close($finfo);
+        if ($mime !== false) {
+            return $mime;
+        }
+    }
+
+    $handle = fopen($path, 'rb');
+    if ($handle === false) {
+        return null;
+    }
+    $header = fread($handle, 8);
+    fclose($handle);
+    if ($header === false) {
+        return null;
+    }
+
+    return match (true) {
+        str_starts_with($header, "%PDF") => 'application/pdf',
+        str_starts_with($header, "\xFF\xD8\xFF") => 'image/jpeg',
+        str_starts_with($header, "\x89PNG\r\n\x1a\n") => 'image/png',
+        str_starts_with($header, "\xD0\xCF\x11\xE0\xA1\xB1\x1A\xE1") => 'application/msword',
+        str_starts_with($header, "PK\x03\x04") => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        default => null,
+    };
+}
+
 /** Renders a real 404 inside the shared chrome with a specific, honest message. */
 function render_not_found(string $message = "The page you're looking for doesn't exist."): never
 {

@@ -60,11 +60,9 @@ function validate_document_upload(array $file): ?string
         return 'File type not allowed. Accepted: PDF, JPG, PNG, DOC, DOCX.';
     }
 
-    $finfo = finfo_open(FILEINFO_MIME_TYPE);
-    $actualMime = finfo_file($finfo, $file['tmp_name']);
-    finfo_close($finfo);
+    $actualMime = detect_file_mime_type($file['tmp_name']);
 
-    if ($actualMime === false || !in_array($actualMime, DOCUMENT_ALLOWED_TYPES[$extension], true)) {
+    if ($actualMime === null || !in_array($actualMime, DOCUMENT_ALLOWED_TYPES[$extension], true)) {
         return "File content doesn't match its extension — upload rejected.";
     }
 
@@ -97,9 +95,7 @@ function store_document_upload(
         throw new RuntimeException('Failed to store uploaded file.');
     }
 
-    $finfo = finfo_open(FILEINFO_MIME_TYPE);
-    $mimeType = finfo_file($finfo, $destination) ?: 'application/octet-stream';
-    finfo_close($finfo);
+    $mimeType = detect_file_mime_type($destination) ?? 'application/octet-stream';
 
     $stmt = db()->prepare(
         'INSERT INTO documents (customer_id, visa_application_id, general_enquiry_id, document_type, original_filename, stored_filename, storage_path, mime_type, file_size, uploaded_by)
@@ -149,9 +145,7 @@ function store_customer_document_upload(
         throw new RuntimeException('Failed to store uploaded file.');
     }
 
-    $finfo = finfo_open(FILEINFO_MIME_TYPE);
-    $mimeType = finfo_file($finfo, $destination) ?: 'application/octet-stream';
-    finfo_close($finfo);
+    $mimeType = detect_file_mime_type($destination) ?? 'application/octet-stream';
 
     $stmt = db()->prepare(
         'INSERT INTO documents (customer_id, visa_application_id, document_type, original_filename, stored_filename, storage_path, mime_type, file_size, uploaded_by_customer_id)
@@ -196,9 +190,7 @@ function store_partner_document_upload(array $file, string $documentType, int $p
         throw new RuntimeException('Failed to store uploaded file.');
     }
 
-    $finfo = finfo_open(FILEINFO_MIME_TYPE);
-    $mimeType = finfo_file($finfo, $destination) ?: 'application/octet-stream';
-    finfo_close($finfo);
+    $mimeType = detect_file_mime_type($destination) ?? 'application/octet-stream';
 
     $stmt = db()->prepare(
         'INSERT INTO partner_documents (partner_id, document_type, original_filename, stored_filename, storage_path, mime_type, file_size, uploaded_by_partner_id)
@@ -242,9 +234,7 @@ function store_grievance_document_upload(array $file, ?string $documentType, int
         throw new RuntimeException('Failed to store uploaded file.');
     }
 
-    $finfo = finfo_open(FILEINFO_MIME_TYPE);
-    $mimeType = finfo_file($finfo, $destination) ?: 'application/octet-stream';
-    finfo_close($finfo);
+    $mimeType = detect_file_mime_type($destination) ?? 'application/octet-stream';
 
     $stmt = db()->prepare(
         'INSERT INTO documents (grievance_id, document_type, original_filename, stored_filename, storage_path, mime_type, file_size)

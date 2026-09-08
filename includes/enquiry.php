@@ -232,9 +232,7 @@ function store_enquiry_document_upload(array $file, string $documentCategory, in
         throw new RuntimeException('Failed to store uploaded file.');
     }
 
-    $finfo = finfo_open(FILEINFO_MIME_TYPE);
-    $mimeType = finfo_file($finfo, $destination) ?: 'application/octet-stream';
-    finfo_close($finfo);
+    $mimeType = detect_file_mime_type($destination) ?? 'application/octet-stream';
 
     $stmt = db()->prepare(
         'INSERT INTO enquiry_documents (enquiry_id, document_category, original_filename, stored_filename, storage_path, mime_type, file_size)

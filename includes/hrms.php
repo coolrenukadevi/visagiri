@@ -99,9 +99,7 @@ function store_hrms_document_upload(array $file, string $documentType, int $appl
         throw new RuntimeException('Failed to store uploaded file.');
     }
 
-    $finfo = finfo_open(FILEINFO_MIME_TYPE);
-    $mimeType = finfo_file($finfo, $destination) ?: 'application/octet-stream';
-    finfo_close($finfo);
+    $mimeType = detect_file_mime_type($destination) ?? 'application/octet-stream';
 
     $stmt = db()->prepare(
         'INSERT INTO hr_documents (application_id, document_type, original_filename, stored_filename, storage_path, mime_type, file_size)

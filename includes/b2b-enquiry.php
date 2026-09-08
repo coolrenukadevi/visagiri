@@ -112,9 +112,7 @@ function store_b2b_enquiry_document(array $file, string $documentType, int $enqu
         throw new RuntimeException('Failed to store uploaded file.');
     }
 
-    $finfo = finfo_open(FILEINFO_MIME_TYPE);
-    $mimeType = finfo_file($finfo, $destination) ?: 'application/octet-stream';
-    finfo_close($finfo);
+    $mimeType = detect_file_mime_type($destination) ?? 'application/octet-stream';
 
     $stmt = db()->prepare(
         'INSERT INTO b2b_enquiry_documents (b2b_visa_enquiry_id, document_type, original_filename, stored_filename, storage_path, mime_type, file_size, uploaded_by)
