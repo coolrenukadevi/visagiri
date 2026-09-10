@@ -41,6 +41,12 @@ function admin_header_start(string $pageTitle, string $activeNav): void
     <div class="admin-main">
         <header class="admin-topbar">
             <h1><?= e($pageTitle) ?></h1>
+            <form method="get" action="/admin/search/" class="admin-topbar__search" role="search">
+                <button type="submit" aria-label="Search">
+                    <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="M17 17L13.5 13.5"/></svg>
+                </button>
+                <input type="search" name="q" placeholder="Search enquiries, customers, partners…" aria-label="Global search">
+            </form>
             <div class="admin-topbar__right">
                 <?php $unreadNotifCount = admin_unread_notification_count((int) $admin['id']); ?>
                 <div class="admin-bell">

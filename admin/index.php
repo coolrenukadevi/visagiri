@@ -243,6 +243,11 @@ switch ($adminSegment) {
         require __DIR__ . '/pages/reminders.php';
         exit;
 
+    case 'search':
+        require_admin_login();
+        require __DIR__ . '/pages/search.php';
+        exit;
+
     case 'settings':
         require_admin_login();
         require __DIR__ . '/pages/settings.php';

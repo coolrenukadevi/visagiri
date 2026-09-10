@@ -50,6 +50,27 @@
 .admin-topbar__account { display: flex; align-items: center; gap: var(--space-3); font-size: var(--font-size-sm); color: var(--text-muted); font-weight: var(--font-weight-medium); }
 .admin-topbar__right { display: flex; align-items: center; gap: var(--space-4); }
 
+/* Global search — pushed right via margin-left:auto so h1 stays left
+   and the search box sits directly beside the bell/profile cluster. */
+.admin-topbar__search {
+    display: flex; align-items: center; gap: var(--space-2);
+    margin-left: auto; margin-right: var(--space-4);
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-md); padding: 0 var(--space-3); height: 36px;
+    color: var(--text-muted);
+}
+.admin-topbar__search input[type="search"] {
+    border: none; background: transparent; outline: none;
+    font-size: var(--font-size-sm); width: 220px; color: var(--text-dark);
+}
+.admin-topbar__search button {
+    background: none; border: none; padding: 0; cursor: pointer;
+    display: flex; align-items: center; color: inherit;
+}
+@media (max-width: 900px) {
+    .admin-topbar__search { display: none; }
+}
+
 /* Notification bell — same click-to-toggle dropdown pattern as the
    profile menu, positioned to its left in the topbar. */
 .admin-bell { position: relative; }

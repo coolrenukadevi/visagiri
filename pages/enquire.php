@@ -199,12 +199,12 @@ if (!isset($confirmed) && $_SERVER['REQUEST_METHOD'] === 'POST') {
                             (enquiry_number, tracking_token, service_category, name, mobile_country_code, mobile_number, mobile_normalized, email,
                              current_city, current_state, destination_country_id, visa_type_id, passport_number_encrypted, passport_number_hash,
                              passport_issued_from, journey_date, pax_count, apostille_service_type, apostille_document_type, apostille_document_count,
-                             apostille_destination_country_id, apostille_purpose, remarks, declaration_accepted_at, ip_address, source_page)
+                             apostille_destination_country_id, apostille_purpose, remarks, declaration_accepted_at, ip_address, source_page, sla_due_at)
                          VALUES
                             (:enq_num, :track, :category, :name, :cc, :mobile, :mobile_norm, :email,
                              :city, :state, :country_id, :visa_type_id, :passport_enc, :passport_hash,
                              :passport_from, :journey_date, :pax, :apo_service, :apo_doc_type, :apo_doc_count,
-                             :apo_country_id, :apo_purpose, :remarks, NOW(), :ip, :source)'
+                             :apo_country_id, :apo_purpose, :remarks, NOW(), :ip, :source, DATE_ADD(NOW(), INTERVAL :sla_hours HOUR))'
                     );
                     $stmt->execute([
                         'enq_num' => $enquiryNumber,
@@ -232,6 +232,7 @@ if (!isset($confirmed) && $_SERVER['REQUEST_METHOD'] === 'POST') {
                         'remarks' => $values['remarks'] !== '' ? $values['remarks'] : null,
                         'ip' => $_SERVER['REMOTE_ADDR'] ?? null,
                         'source' => '/enquire/',
+                        'sla_hours' => enquiry_sla_hours_for_priority('normal'),
                     ]);
                     break;
                 } catch (PDOException $e) {

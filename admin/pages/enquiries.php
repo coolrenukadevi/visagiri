@@ -39,8 +39,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (array_key_exists($newStatus, $statuses)) {
                 change_enquiry_status($postId, $newStatus, current_admin_id(), $remarks);
             }
-            $pdo->prepare('UPDATE enquiries SET priority = :priority, assigned_user = :assigned WHERE id = :id')
-                ->execute(['priority' => $newPriority, 'assigned' => $assignedUser, 'id' => $postId]);
+
+            // The SLA workflow trigger: changing priority automatically
+            // retargets the deadline from now, using the new priority's
+            // configured window (/admin/settings/) — not a one-time
+            // value set only at creation.
+            if ($prev['priority'] !== $newPriority) {
+                $pdo->prepare('UPDATE enquiries SET priority = :priority, assigned_user = :assigned, sla_due_at = DATE_ADD(NOW(), INTERVAL :sla_hours HOUR), sla_breach_notified_at = NULL WHERE id = :id')
+                    ->execute(['priority' => $newPriority, 'assigned' => $assignedUser, 'sla_hours' => enquiry_sla_hours_for_priority($newPriority), 'id' => $postId]);
+            } else {
+                $pdo->prepare('UPDATE enquiries SET priority = :priority, assigned_user = :assigned WHERE id = :id')
+                    ->execute(['priority' => $newPriority, 'assigned' => $assignedUser, 'id' => $postId]);
+            }
 
             if ($prev['priority'] !== $newPriority) {
                 log_action('update', 'enquiries', $postId, $prev['priority'], $newPriority);
@@ -49,6 +59,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 log_action('assignment', 'enquiries', $postId, (string) $prev['assigned_user'], (string) $assignedUser);
             }
             flash_set('admin_notice', 'Enquiry updated.');
+        }
+        redirect('/admin/enquiries/?id=' . $postId);
+    }
+
+    if ($postAction === 'escalate' && $postId) {
+        $before = $pdo->prepare('SELECT assigned_user FROM enquiries WHERE id = :id AND deleted_at IS NULL');
+        $before->execute(['id' => $postId]);
+        $prev = $before->fetch();
+
+        $newAssignee = (int) ($_POST['escalate_to'] ?? 0);
+        $reason = trim((string) ($_POST['escalation_reason'] ?? ''));
+        $eligible = enquiry_eligible_escalation_admins();
+
+        if ($prev && $newAssignee && isset($eligible[$newAssignee]) && $reason !== '') {
+            $pdo->prepare(
+                'UPDATE enquiries SET assigned_user = :new_assignee, escalated_at = NOW(), escalated_from_user = :prev_assignee, escalation_reason = :reason WHERE id = :id'
+            )->execute([
+                'new_assignee' => $newAssignee,
+                'prev_assignee' => $prev['assigned_user'] ?? null,
+                'reason' => $reason,
+                'id' => $postId,
+            ]);
+            log_action('escalation', 'enquiries', $postId, (string) ($prev['assigned_user'] ?? ''), (string) $newAssignee);
+            flash_set('admin_notice', 'Enquiry escalated.');
+        } else {
+            flash_set('admin_error', 'Select who to escalate to and provide a reason.');
         }
         redirect('/admin/enquiries/?id=' . $postId);
     }
@@ -88,13 +124,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 if ($id) {
     $stmt = $pdo->prepare(
         'SELECT e.*, dc.name AS destination_country_name, vt.name AS visa_type_name, ac.name AS apostille_country_name,
-                cust.customer_reference_no, emp.full_name AS assigned_name
+                cust.customer_reference_no, emp.full_name AS assigned_name, esc.full_name AS escalated_from_name
          FROM enquiries e
          LEFT JOIN countries dc ON dc.id = e.destination_country_id
          LEFT JOIN visa_types vt ON vt.id = e.visa_type_id
          LEFT JOIN countries ac ON ac.id = e.apostille_destination_country_id
          LEFT JOIN customers cust ON cust.id = e.customer_id
          LEFT JOIN admin_users emp ON emp.id = e.assigned_user
+         LEFT JOIN admin_users esc ON esc.id = e.escalated_from_user
          WHERE e.id = :id AND e.deleted_at IS NULL'
     );
     $stmt->execute(['id' => $id]);
@@ -163,6 +200,19 @@ if ($id) {
         &nbsp; <a href="/enquire/pdf/?ref=<?= e(urlencode($enquiry['enquiry_number'])) ?>&amp;token=<?= e(urlencode($enquiry['tracking_token'])) ?>" target="_blank" rel="noopener">Download PDF</a>
         <?php endif; ?>
         </p>
+        <p>
+            <strong>SLA Due:</strong>
+            <?php if ($enquiry['sla_due_at'] === null): ?>
+            <span class="badge badge-neutral">Not set</span>
+            <?php elseif (enquiry_is_breached($enquiry)): ?>
+            <span class="badge badge-danger">SLA Breached &mdash; was due <?= e(date('d M Y H:i', strtotime((string) $enquiry['sla_due_at']))) ?></span>
+            <?php else: ?>
+            <span class="badge badge-info">Due <?= e(date('d M Y H:i', strtotime((string) $enquiry['sla_due_at']))) ?></span>
+            <?php endif; ?>
+        </p>
+        <?php if ($enquiry['escalated_at']): ?>
+        <p><strong>Escalated:</strong> from <?= e($enquiry['escalated_from_name'] ?? 'Unassigned') ?> on <?= e(date('d M Y H:i', strtotime((string) $enquiry['escalated_at']))) ?> &mdash; <?= e($enquiry['escalation_reason']) ?></p>
+        <?php endif; ?>
 
         <?php if (has_permission('enquiries.manage')): ?>
         <form method="post" action="/admin/enquiries/?id=<?= (int) $enquiry['id'] ?>" style="margin-top:var(--space-5)">
@@ -201,6 +251,29 @@ if ($id) {
                 <input class="form-input" type="text" id="status_remarks" name="status_remarks" placeholder="Visible only to staff, recorded in status history">
             </div>
             <button type="submit" class="btn btn-primary">Update</button>
+        </form>
+
+        <?php $eligibleAdmins = enquiry_eligible_escalation_admins(); ?>
+        <form method="post" action="/admin/enquiries/?id=<?= (int) $enquiry['id'] ?>" style="margin-top:var(--space-4)">
+            <?= csrf_field() ?>
+            <input type="hidden" name="action" value="escalate">
+            <input type="hidden" name="id" value="<?= (int) $enquiry['id'] ?>">
+            <div class="admin-form-grid">
+                <div class="form-group">
+                    <label class="form-label" for="escalate_to">Escalate To</label>
+                    <select class="form-select" id="escalate_to" name="escalate_to" required>
+                        <option value="">Select an admin</option>
+                        <?php foreach ($eligibleAdmins as $adminId => $adminName): ?>
+                        <option value="<?= (int) $adminId ?>"><?= e($adminName) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="escalation_reason">Reason</label>
+                    <input class="form-input" type="text" id="escalation_reason" name="escalation_reason" placeholder="Why this needs more senior attention" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-outline">Escalate</button>
         </form>
         <?php endif; ?>
 
@@ -304,6 +377,7 @@ if ($id) {
 
 $statusFilter = array_key_exists($_GET['status'] ?? '', $statuses) ? $_GET['status'] : null;
 $categoryFilter = in_array($_GET['category'] ?? '', ['visa', 'apostille'], true) ? $_GET['category'] : null;
+$slaFilter = ($_GET['sla'] ?? '') === 'breached';
 $search = trim((string) ($_GET['q'] ?? ''));
 
 $where = ['e.deleted_at IS NULL'];
@@ -315,6 +389,9 @@ if ($statusFilter) {
 if ($categoryFilter) {
     $where[] = 'e.service_category = :category';
     $params['category'] = $categoryFilter;
+}
+if ($slaFilter) {
+    $where[] = "e.sla_due_at IS NOT NULL AND e.sla_due_at < NOW() AND e.status NOT IN ('completed', 'closed')";
 }
 if ($scopedToAssigned) {
     $where[] = 'e.assigned_user = :me';
@@ -355,11 +432,12 @@ admin_subnav('leads', 'enquiries');
         <?php foreach ($statuses as $sk => $sl): ?>
         <a href="/admin/enquiries/?status=<?= e($sk) ?>" class="btn btn-sm <?= $statusFilter === $sk ? 'btn-primary' : 'btn-outline' ?>"><?= e($sl) ?></a>
         <?php endforeach; ?>
+        <a href="/admin/enquiries/?sla=breached" class="btn btn-sm <?= $slaFilter ? 'btn-danger' : 'btn-outline' ?>">SLA Breached</a>
     </div>
 </div>
 <?php if ($enquiries): ?>
 <table class="admin-table">
-    <thead><tr><th>Enquiry No.</th><th>Name</th><th>Service</th><th>Destination</th><th>Priority</th><th>Status</th><th>Received</th><th></th></tr></thead>
+    <thead><tr><th>Enquiry No.</th><th>Name</th><th>Service</th><th>Destination</th><th>Priority</th><th>Status</th><th>SLA</th><th>Received</th><th></th></tr></thead>
     <tbody>
     <?php foreach ($enquiries as $enq): ?>
         <tr>
@@ -369,6 +447,13 @@ admin_subnav('leads', 'enquiries');
             <td><?= e($enq['destination_country_name'] ?? '—') ?></td>
             <td><span class="badge badge-neutral"><?= e(ucfirst($enq['priority'])) ?></span></td>
             <td><?= status_badge($enq['status'], $statusBadgeMap) ?></td>
+            <td>
+                <?php if (enquiry_is_breached($enq)): ?>
+                <span class="badge badge-danger">Breached</span>
+                <?php elseif ($enq['sla_due_at'] !== null): ?>
+                <span class="badge badge-neutral">On track</span>
+                <?php endif; ?>
+            </td>
             <td><?= e(date('d M Y H:i', strtotime((string) $enq['created_at']))) ?></td>
             <td class="actions"><a href="/admin/enquiries/?id=<?= (int) $enq['id'] ?>" class="btn btn-outline btn-sm">View</a></td>
         </tr>

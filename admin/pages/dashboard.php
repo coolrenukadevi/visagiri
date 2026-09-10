@@ -102,6 +102,14 @@ if (has_permission('reminders.manage')) {
     $reminderCounts = reminder_due_counts($scopedToAssigned ? $myId : null);
 }
 
+$slaBreachedCount = 0;
+if (has_permission('enquiries.view')) {
+    notify_breached_enquiry_slas();
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM enquiries WHERE deleted_at IS NULL AND sla_due_at IS NOT NULL AND sla_due_at < NOW() AND status NOT IN ('completed', 'closed')$enqScopeSql");
+    $stmt->execute($enqScopeParams);
+    $slaBreachedCount = (int) $stmt->fetchColumn();
+}
+
 $recentActivity = [];
 if (has_permission('audit.view')) {
     $stmt = $pdo->query(
@@ -182,6 +190,16 @@ admin_header_start('Dashboard', 'dashboard');
         <li class="admin-work-queue__item is-internal"><span class="admin-work-queue__dot"></span><span class="admin-work-queue__label">Upcoming</span><span class="admin-work-queue__count"><?= $reminderCounts['upcoming'] ?></span></li>
     </ul>
     <p style="margin-top:var(--space-3)"><a href="/admin/reminders/">View all reminders &rarr;</a></p>
+</div>
+<?php endif; ?>
+
+<?php if (has_permission('enquiries.view') && $slaBreachedCount > 0): ?>
+<div class="admin-panel">
+    <h2 class="admin-panel__title">Enquiry SLA</h2>
+    <ul class="admin-work-queue">
+        <li class="admin-work-queue__item is-urgent"><span class="admin-work-queue__dot"></span><span class="admin-work-queue__label">SLA Breached</span><span class="admin-work-queue__count"><?= $slaBreachedCount ?></span></li>
+    </ul>
+    <p style="margin-top:var(--space-3)"><a href="/admin/enquiries/?sla=breached">View breached enquiries &rarr;</a></p>
 </div>
 <?php endif; ?>
 

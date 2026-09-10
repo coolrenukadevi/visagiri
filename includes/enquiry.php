@@ -96,6 +96,85 @@ function enquiry_customer_status_label(string $status): string
     return ENQUIRY_STATUS_MAP[$status] ?? 'Enquiry Received';
 }
 
+/** Priority-driven SLA window in hours, admin-editable via /admin/settings/ — see database/schema-enquiry-sla.sql. */
+function enquiry_sla_hours_for_priority(string $priority): int
+{
+    $key = match ($priority) {
+        'urgent' => 'enquiry_sla_hours_urgent',
+        'high' => 'enquiry_sla_hours_high',
+        'low' => 'enquiry_sla_hours_low',
+        default => 'enquiry_sla_hours_normal',
+    };
+    return max(1, (int) setting($key, '72'));
+}
+
+/**
+ * Render-time-computed breach check — sla_due_at is never a stored
+ * "is breached" flag, matching the identical grievance_is_breached()
+ * pattern (admin/pages/grievances.php) this was copied from.
+ */
+function enquiry_is_breached(array $enquiry): bool
+{
+    return $enquiry['sla_due_at'] !== null
+        && strtotime((string) $enquiry['sla_due_at']) < time()
+        && !in_array($enquiry['status'], ['completed', 'closed'], true);
+}
+
+/** @return array<int,string> id => full_name, for admins holding enquiries.manage — the eligible Escalate-To list. */
+function enquiry_eligible_escalation_admins(): array
+{
+    $rows = db()->query(
+        "SELECT DISTINCT au.id, au.full_name FROM admin_users au
+         JOIN role_permissions rp ON rp.role_id = au.role_id
+         JOIN permissions p ON p.id = rp.permission_id
+         WHERE p.permission_key = 'enquiries.manage' AND au.status = 'active'
+         ORDER BY au.full_name"
+    )->fetchAll();
+    $out = [];
+    foreach ($rows as $row) {
+        $out[(int) $row['id']] = $row['full_name'];
+    }
+    return $out;
+}
+
+/**
+ * The automatic half of the SLA workflow: fans out an admin_notification
+ * (reusing the existing bell system, not a new channel) the first time
+ * an enquiry's SLA is breached — guarded by sla_breach_notified_at so
+ * it only ever fires once per breach. Called opportunistically from
+ * admin/pages/dashboard.php, same "admin-triggered, not cron" pattern
+ * as notify_due_reminders() (includes/reminders.php) — no cron
+ * infrastructure exists anywhere in this project. Never throws.
+ */
+function notify_breached_enquiry_slas(): void
+{
+    try {
+        $pdo = db();
+        $stmt = $pdo->query(
+            "SELECT id, enquiry_number, name, assigned_user FROM enquiries
+             WHERE deleted_at IS NULL AND sla_due_at IS NOT NULL AND sla_due_at < NOW()
+                   AND status NOT IN ('completed', 'closed') AND sla_breach_notified_at IS NULL"
+        );
+        $breached = $stmt->fetchAll();
+
+        foreach ($breached as $enquiry) {
+            $link = '/admin/enquiries/?id=' . (int) $enquiry['id'];
+            $title = 'SLA Breached: ' . $enquiry['enquiry_number'];
+            $body = $enquiry['name'] . ' — this enquiry has passed its SLA deadline.';
+
+            if ($enquiry['assigned_user']) {
+                create_admin_notification((int) $enquiry['assigned_user'], 'sla_breach', $title, $body, $link);
+            } else {
+                notify_admins_by_permission('enquiries.manage', 'sla_breach', $title, $body, $link);
+            }
+
+            $pdo->prepare('UPDATE enquiries SET sla_breach_notified_at = NOW() WHERE id = :id')->execute(['id' => $enquiry['id']]);
+        }
+    } catch (Throwable $e) {
+        error_log('notify_breached_enquiry_slas failed: ' . $e->getMessage());
+    }
+}
+
 /** Renders the 1-5 step indicator at the top of every wizard page, matching render_partner_enrollment_steps()'s pattern. */
 function render_enquiry_steps(int $currentStep): void
 {
