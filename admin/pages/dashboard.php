@@ -96,6 +96,12 @@ if (has_permission('enquiries.view')) {
     $recentEnquiries = $stmt->fetchAll();
 }
 
+$reminderCounts = ['overdue' => 0, 'today' => 0, 'upcoming' => 0];
+if (has_permission('reminders.manage')) {
+    notify_due_reminders();
+    $reminderCounts = reminder_due_counts($scopedToAssigned ? $myId : null);
+}
+
 $recentActivity = [];
 if (has_permission('audit.view')) {
     $stmt = $pdo->query(
@@ -166,6 +172,18 @@ admin_header_start('Dashboard', 'dashboard');
         <?php endif; ?>
     </div>
 </div>
+
+<?php if (has_permission('reminders.manage') && ($reminderCounts['overdue'] || $reminderCounts['today'] || $reminderCounts['upcoming'])): ?>
+<div class="admin-panel">
+    <h2 class="admin-panel__title">Reminders Due</h2>
+    <ul class="admin-work-queue">
+        <li class="admin-work-queue__item is-urgent"><span class="admin-work-queue__dot"></span><span class="admin-work-queue__label">Overdue</span><span class="admin-work-queue__count"><?= $reminderCounts['overdue'] ?></span></li>
+        <li class="admin-work-queue__item is-pending"><span class="admin-work-queue__dot"></span><span class="admin-work-queue__label">Due Today</span><span class="admin-work-queue__count"><?= $reminderCounts['today'] ?></span></li>
+        <li class="admin-work-queue__item is-internal"><span class="admin-work-queue__dot"></span><span class="admin-work-queue__label">Upcoming</span><span class="admin-work-queue__count"><?= $reminderCounts['upcoming'] ?></span></li>
+    </ul>
+    <p style="margin-top:var(--space-3)"><a href="/admin/reminders/">View all reminders &rarr;</a></p>
+</div>
+<?php endif; ?>
 
 <div class="admin-panel">
     <h2 class="admin-panel__title">Recent Enquiries</h2>

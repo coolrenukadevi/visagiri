@@ -145,6 +145,7 @@ const ADMIN_SUBNAV_GROUPS = [
         ['nav' => 'enquiries', 'label' => 'Enquiries (Visa + Apostille)', 'href' => '/admin/enquiries/', 'permission' => 'enquiries.view'],
         ['nav' => 'visa-enquiries', 'label' => 'Visa Enquiries (Legacy)', 'href' => '/admin/visa-enquiries/', 'permission' => 'visa.view'],
         ['nav' => 'general-enquiries', 'label' => 'General &amp; Attestation Enquiries', 'href' => '/admin/general-enquiries/', 'permission' => 'general_enquiries.view'],
+        ['nav' => 'reminders', 'label' => 'Reminders', 'href' => '/admin/reminders/', 'permission' => 'reminders.manage'],
     ],
     'forex' => [
         ['nav' => 'forex-dashboard', 'label' => 'Forex Dashboard', 'href' => '/admin/forex-dashboard/', 'permission' => 'forex.requests.view'],
@@ -165,6 +166,7 @@ const ADMIN_SUBNAV_GROUPS = [
         ['nav' => 'users', 'label' => 'Users', 'href' => '/admin/users/', 'permission' => 'users.manage'],
         ['nav' => 'roles', 'label' => 'Roles &amp; Permissions', 'href' => '/admin/roles/', 'permission' => 'users.manage'],
         ['nav' => 'audit-log', 'label' => 'Audit Log', 'href' => '/admin/audit-log/', 'permission' => 'audit.view'],
+        ['nav' => 'login-audit', 'label' => 'Login Audit', 'href' => '/admin/login-audit/', 'permission' => 'audit.view'],
         ['nav' => 'settings', 'label' => 'Settings', 'href' => '/admin/settings/', 'permission' => 'settings.manage'],
         ['nav' => 'mail-log', 'label' => 'Mail Log', 'href' => '/admin/mail-log/', 'permission' => 'settings.manage'],
         ['nav' => 'recycle-bin', 'label' => 'Recycle Bin', 'href' => '/admin/recycle-bin/', 'permission' => 'recycle_bin.manage'],

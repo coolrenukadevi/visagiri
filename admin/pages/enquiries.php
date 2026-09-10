@@ -252,6 +252,41 @@ if ($id) {
         <?php endif; ?>
     </div>
 
+    <?php if (has_permission('reminders.manage')):
+        $enquiryReminders = reminders_for_enquiry((int) $enquiry['id']);
+    ?>
+    <div class="admin-form-card" style="margin-top:var(--space-5)">
+        <h3>Reminders</h3>
+        <?php if ($enquiryReminders): ?>
+        <ul class="hrms-timeline">
+            <?php foreach ($enquiryReminders as $r): ?>
+            <li>
+                <?= e(date('d M Y', strtotime((string) $r['due_date']))) ?> — <?= e($r['title']) ?>
+                <?= $r['assigned_name'] ? ' (' . e($r['assigned_name']) . ')' : '' ?>
+                <?= $r['status'] === 'done' ? '<span class="badge badge-success">Done</span>' : '' ?>
+            </li>
+            <?php endforeach; ?>
+        </ul>
+        <?php endif; ?>
+        <form method="post" action="/admin/reminders/" style="margin-top:var(--space-4)">
+            <?= csrf_field() ?>
+            <input type="hidden" name="action" value="create">
+            <input type="hidden" name="enquiry_id" value="<?= (int) $enquiry['id'] ?>">
+            <div class="admin-form-grid">
+                <div class="form-group">
+                    <label class="form-label" for="reminder_title">Title <span class="required-mark">*</span></label>
+                    <input class="form-input" type="text" id="reminder_title" name="title" required placeholder="e.g. Follow up on passport copy">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="reminder_due_date">Due Date <span class="required-mark">*</span></label>
+                    <input class="form-input" type="date" id="reminder_due_date" name="due_date" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-outline btn-sm">Add Reminder</button>
+        </form>
+    </div>
+    <?php endif; ?>
+
     <?php if (has_permission('enquiries.manage')): ?>
     <form method="post" action="/admin/enquiries/?id=<?= (int) $enquiry['id'] ?>" style="margin-top:var(--space-5)" data-confirm="Move this enquiry to the Recycle Bin?">
         <?= csrf_field() ?>

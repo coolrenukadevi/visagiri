@@ -233,6 +233,16 @@ switch ($adminSegment) {
         require __DIR__ . '/pages/audit-log.php';
         exit;
 
+    case 'login-audit':
+        require_admin_login();
+        require __DIR__ . '/pages/login-audit.php';
+        exit;
+
+    case 'reminders':
+        require_admin_login();
+        require __DIR__ . '/pages/reminders.php';
+        exit;
+
     case 'settings':
         require_admin_login();
         require __DIR__ . '/pages/settings.php';

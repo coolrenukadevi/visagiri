@@ -49,6 +49,13 @@ function require_admin_login(): void
         $_SESSION['admin_redirect_after_login'] = $_SERVER['REQUEST_URI'] ?? '/admin/';
         redirect('/admin/login/');
     }
+
+    // Touches user_sessions.last_activity_at so the Active Sessions
+    // panel (admin/pages/login-audit.php) reflects genuine recent
+    // activity, not just the original login time — previously this
+    // column was set once at login and never updated again.
+    db()->prepare('UPDATE user_sessions SET last_activity_at = NOW() WHERE session_token_hash = :hash AND expired_at IS NULL')
+        ->execute(['hash' => hash('sha256', session_id())]);
 }
 
 function hash_password(string $plainPassword): string
