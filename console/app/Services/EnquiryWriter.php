@@ -2,9 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Customer;
 use App\Models\Enquiry;
-use App\Models\Party;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 
@@ -51,27 +49,8 @@ class EnquiryWriter
             return $existing;
         }
 
-        return DB::transaction(function () use ($serviceType, $name, $email, $mobile, $customer, $serviceData, $source, $dedupeKey, $createdBy) {
-            $customerModel = Customer::where(function ($q) use ($email, $mobile) {
-                if ($email !== '') {
-                    $q->orWhere('email', $email);
-                }
-                if ($mobile !== '') {
-                    $q->orWhere('mobile', $mobile);
-                }
-            })->first();
-
-            if (! $customerModel) {
-                $customerModel = Customer::create([
-                    'name' => $name,
-                    'email' => $email ?: null,
-                    'mobile' => $mobile ?: null,
-                    'nationality' => $customer['nationality'] ?? null,
-                    'source' => $source,
-                ]);
-            }
-
-            $party = Party::resolveFor($customerModel, 'customer');
+        return DB::transaction(function () use ($serviceType, $customer, $serviceData, $source, $dedupeKey, $createdBy) {
+            [$customerModel, $party] = PartyResolver::resolve($customer, $source);
 
             $enquiry = Enquiry::create([
                 'reference_no' => EnquiryReferenceGenerator::next(),

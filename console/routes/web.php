@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\AttestationCaseController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\EnquiryController;
 use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\ProfileController;
@@ -29,6 +31,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/enquiries/{enquiry}/followups', [EnquiryController::class, 'addFollowup'])->name('enquiries.followups.store');
     Route::post('/enquiries/{enquiry}/followups/{followup}/complete', [EnquiryController::class, 'completeFollowup'])->name('enquiries.followups.complete');
     Route::delete('/enquiries/{enquiry}', [EnquiryController::class, 'destroy'])->name('enquiries.destroy');
+
+    Route::get('/attestation', [AttestationCaseController::class, 'index'])->name('attestation.index')->middleware('can:attestation.access');
+    Route::get('/attestation/create', [AttestationCaseController::class, 'create'])->name('attestation.create')->middleware('can:attestation.create');
+    Route::post('/attestation', [AttestationCaseController::class, 'store'])->name('attestation.store')->middleware('can:attestation.create');
+    Route::get('/attestation/{case}', [AttestationCaseController::class, 'show'])->name('attestation.show');
+    Route::post('/attestation/{case}/transition', [AttestationCaseController::class, 'transition'])->name('attestation.transition');
+    Route::post('/attestation/{case}/documents', [AttestationCaseController::class, 'uploadDocument'])->name('attestation.documents.store');
+
+    Route::get('/documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download')->middleware('signed');
+    Route::delete('/documents/{document}', [DocumentController::class, 'destroy'])->name('documents.destroy');
 });
 
 Route::middleware('auth')->group(function () {

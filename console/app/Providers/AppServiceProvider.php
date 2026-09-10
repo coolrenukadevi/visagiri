@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\AttestationCase;
 use App\Models\Customer;
+use App\Services\AttestationScope;
 use App\Services\EnquiryScope;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Gate;
@@ -25,10 +27,12 @@ class AppServiceProvider extends ServiceProvider
     {
         Relation::morphMap([
             'customer' => Customer::class,
+            'attestation_case' => AttestationCase::class,
         ]);
 
-        // Route-level gate for "holds any enquiries.view.* tier" — the fine-grained
-        // own/team/all filtering itself happens in EnquiryScope::visibleTo().
+        // Route-level gates for "holds any {module}.view.* tier" — the fine-grained
+        // own/team/all filtering itself happens in each Scope::visibleTo().
         Gate::define('enquiries.access', fn ($user) => EnquiryScope::hasAnyViewPermission($user));
+        Gate::define('attestation.access', fn ($user) => AttestationScope::hasAnyViewPermission($user));
     }
 }
