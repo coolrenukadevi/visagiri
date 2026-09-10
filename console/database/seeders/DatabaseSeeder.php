@@ -36,6 +36,7 @@ class DatabaseSeeder extends Seeder
             ['Forex Consultant', 'forex.consultant@videshia.com', 'forex_consultant', 'forex'],
             ['Travel Consultant', 'travel.consultant@videshia.com', 'travel_consultant', 'travel-services'],
             ['Operations User', 'operations@videshia.com', 'operations', 'operations'],
+            ['Finance Executive', 'finance.executive@videshia.com', 'finance_executive', 'operations'],
         ];
 
         foreach ($demoUsers as [$name, $email, $role, $deptSlug]) {

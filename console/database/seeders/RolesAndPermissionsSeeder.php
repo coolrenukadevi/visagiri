@@ -11,8 +11,13 @@ use Spatie\Permission\PermissionRegistrar;
  * Seeds the same 7 roles that exist in the current PHP/SQLite `roles` table
  * (see includes/crm-auth.php in the main site repo), plus each shipped
  * module's own Module.Feature.Action permission set (enquiries.* from
- * Milestone 2, attestation.* from Milestone 3). Every future module adds
- * its own permissions the same way, without touching this file's shape.
+ * Milestone 2, attestation.* from Milestone 3, finance.* and b2b.* from
+ * Milestone 4). Every future module adds its own permissions the same
+ * way, without touching this file's shape.
+ *
+ * finance_executive is a net-new role (Finance has no legacy equivalent
+ * to migrate 1:1, unlike the other 7): it can raise and pay invoices but
+ * deliberately cannot approve them — four-eyes needs a second role.
  */
 class RolesAndPermissionsSeeder extends Seeder
 {
@@ -41,6 +46,15 @@ class RolesAndPermissionsSeeder extends Seeder
             'attestation.documents.upload',
             'attestation.documents.download',
             'attestation.delete',
+            'finance.invoices.view.own',
+            'finance.invoices.view.department',
+            'finance.invoices.view.all',
+            'finance.invoices.create',
+            'finance.invoices.approve',
+            'finance.payments.record',
+            'finance.export',
+            'b2b.partners.view',
+            'b2b.partners.manage',
             'users.manage',
             'roles.manage',
             'audit.view',
@@ -59,6 +73,8 @@ class RolesAndPermissionsSeeder extends Seeder
                 'enquiries.assign', 'enquiries.export', 'enquiries.delete',
                 'attestation.view.all', 'attestation.create', 'attestation.edit.all', 'attestation.assign',
                 'attestation.documents.upload', 'attestation.documents.download', 'attestation.delete',
+                'finance.invoices.view.all', 'finance.invoices.create', 'finance.invoices.approve',
+                'finance.payments.record', 'finance.export', 'b2b.partners.view', 'b2b.partners.manage',
                 'users.manage', 'audit.view',
             ],
             'sales_manager' => [
@@ -69,6 +85,8 @@ class RolesAndPermissionsSeeder extends Seeder
             ],
             'operations' => [
                 'dashboard.view', 'enquiries.view.all', 'enquiries.export',
+                'finance.invoices.view.department', 'finance.invoices.approve', 'finance.payments.record',
+                'b2b.partners.view',
             ],
             'visa_consultant' => [
                 'dashboard.view', 'enquiries.view.own', 'enquiries.create', 'enquiries.edit.own',
@@ -80,6 +98,9 @@ class RolesAndPermissionsSeeder extends Seeder
             ],
             'travel_consultant' => [
                 'dashboard.view', 'enquiries.view.own', 'enquiries.create', 'enquiries.edit.own',
+            ],
+            'finance_executive' => [
+                'dashboard.view', 'finance.invoices.view.own', 'finance.invoices.create', 'finance.payments.record',
             ],
         ];
 

@@ -6,6 +6,7 @@ use App\Models\AttestationCase;
 use App\Models\Customer;
 use App\Services\AttestationScope;
 use App\Services\EnquiryScope;
+use App\Services\FinanceScope;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -34,5 +35,6 @@ class AppServiceProvider extends ServiceProvider
         // own/team/all filtering itself happens in each Scope::visibleTo().
         Gate::define('enquiries.access', fn ($user) => EnquiryScope::hasAnyViewPermission($user));
         Gate::define('attestation.access', fn ($user) => AttestationScope::hasAnyViewPermission($user));
+        Gate::define('finance.access', fn ($user) => FinanceScope::hasAnyViewPermission($user));
     }
 }
