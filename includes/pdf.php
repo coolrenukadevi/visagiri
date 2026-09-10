@@ -252,6 +252,50 @@ final class SimplePdfWriter
 }
 
 /**
+ * Draws the official Visagiri letterhead (logo, "Your Journey Our
+ * Expertise" tagline, centered VG watermark, and the navy contact-info
+ * footer bar) as a full-page background image — the exact branded
+ * letterhead asset supplied by the client, embedded once per PDF (this
+ * writer supports exactly one embedded JPEG per document) and drawn
+ * behind the receipt content on every page. Must be called before any
+ * text/line drawing on a page, since PDF content paints in stream
+ * order and a later draw would otherwise cover this image.
+ */
+function pdf_draw_letterhead_background(SimplePdfWriter $pdf, float $pageW, float $pageH): void
+{
+    $bgPath = __DIR__ . '/../public/assets/images/pdf-letterhead-bg.jpg';
+    if (is_file($bgPath)) {
+        $pdf->embedJpegLogo($bgPath);
+        $pdf->image(0, 0, $pageW, $pageH);
+    }
+}
+
+/**
+ * Starts a fresh page with the letterhead background already drawn,
+ * returning the y position where receipt content should begin — just
+ * below the letterhead's header block. Used both for a PDF's first
+ * page and for any continuation page a long document list overflows
+ * onto (see PDF_CONTENT_TOP_Y / PDF_CONTENT_BOTTOM_Y below).
+ */
+function pdf_start_page(SimplePdfWriter $pdf, bool $isFirstPage = false): float
+{
+    $pageW = SimplePdfWriter::pageWidth();
+    $pageH = SimplePdfWriter::pageHeight();
+    if (!$isFirstPage) {
+        $pdf->newPage();
+    }
+    pdf_draw_letterhead_background($pdf, $pageW, $pageH);
+    return PDF_CONTENT_TOP_Y;
+}
+
+// The letterhead background reserves its header block (logo + tagline)
+// above PDF_CONTENT_TOP_Y and its navy contact-footer bar below
+// PDF_CONTENT_BOTTOM_Y — receipt content must stay between the two so
+// it never overlaps the branded artwork.
+const PDF_CONTENT_TOP_Y = 700.0;
+const PDF_CONTENT_BOTTOM_Y = 100.0;
+
+/**
  * Builds the official Visagiri enquiry receipt PDF for one enquiry
  * row (as fetched by admin/pages/enquiries.php or pages/enquire.php's
  * confirmation step) and saves it under storage/documents/enquiry-pdfs/,
@@ -262,29 +306,18 @@ final class SimplePdfWriter
 function build_enquiry_pdf(array $enquiry, array $documents): string
 {
     $pdf = new SimplePdfWriter();
-    $logoPath = __DIR__ . '/../public/assets/images/logo-pdf.jpg';
-    if (is_file($logoPath)) {
-        $pdf->embedJpegLogo($logoPath);
-    }
-
     $pageW = SimplePdfWriter::pageWidth();
     $margin = 48;
     $contentW = $pageW - ($margin * 2);
-    $y = SimplePdfWriter::pageHeight() - 50;
 
     $navy = [0.031, 0.165, 0.404]; // #082A67
     $gold = [0.957, 0.706, 0.0];   // #F4B400
     $gray = [0.4, 0.4, 0.4];
     $dark = [0.1, 0.1, 0.1];
 
-    if (is_file($logoPath)) {
-        $logoW = 160;
-        $logoH = $logoW * (175 / 700);
-        $pdf->image($margin, $y - $logoH + 10, $logoW, $logoH);
-    }
-    $pdf->text($pageW - $margin - 180, $y, 'ENQUIRY RECEIPT', 16, true, $navy);
-    $y -= 45;
-
+    $y = pdf_start_page($pdf, true);
+    $pdf->text($margin, $y, 'ENQUIRY RECEIPT', 16, true, $navy);
+    $y -= 22;
     $pdf->line($margin, $y, $pageW - $margin, $y, 1.2, $gold);
     $y -= 28;
 
@@ -359,20 +392,14 @@ function build_enquiry_pdf(array $enquiry, array $documents): string
             $pdf->checkmark($margin, $y - 1, 8);
             $pdf->text($margin + 16, $y, $label, 9.5, false, $dark);
             $y -= 16;
-            if ($y < 120) {
-                $pdf->newPage();
-                $y = SimplePdfWriter::pageHeight() - 60;
+            if ($y < PDF_CONTENT_BOTTOM_Y + 20) {
+                $y = pdf_start_page($pdf);
             }
         }
     }
 
-    // Footer disclaimer + contact, pinned near the bottom of the current page
-    $footerY = 70;
-    $pdf->line($margin, $footerY + 30, $pageW - $margin, $footerY + 30, 0.75, $gray);
-    $phone = setting('contact_phone_display', '+91 7065 819 819');
-    $email = setting('contact_email', 'info@visagiri.com');
-    $pdf->text($margin, $footerY + 14, "Phone: $phone   |   Email: $email", 8.5, false, $gray);
-    $pdf->textBlock($margin, $footerY, enquiry_disclaimer_text(), 7.5, $contentW, 10, false, $gray);
+    // Disclaimer, pinned just above the letterhead's contact-footer bar
+    $pdf->textBlock($margin, PDF_CONTENT_BOTTOM_Y, enquiry_disclaimer_text(), 7.5, $contentW, 10, false, $gray);
 
     $bytes = $pdf->output();
 
@@ -396,4 +423,159 @@ function pdf_render_kv_rows(SimplePdfWriter $pdf, float $x, float $y, array $row
         $y -= 16;
     }
     return $y;
+}
+
+/**
+ * Builds the PDF receipt for one general_enquiries row — the
+ * pages/contact.php Visa/Attestation/Forex/Travel/General service-type
+ * selector, the site's one non-visa-specific contact channel. Same
+ * letterhead and reference+tracking-token download gate as the
+ * unified Visa/Apostille enquiry system, via general_enquiries' own
+ * tracking_token column (database/schema-enquiry-pdf-downloads.sql).
+ * Saved under storage/documents/general-enquiry-pdfs/.
+ */
+function build_general_enquiry_pdf(array $row): string
+{
+    // Mirrors pages/contact.php's CONTACT_SERVICES labels. Kept as a
+    // small standalone map (rather than depending on that page's
+    // constant) so this file never needs pages/contact.php loaded just
+    // to render a receipt from the on-demand download route.
+    $serviceLabels = [
+        'visa' => 'Visa Assistance',
+        'attestation' => 'Apostille & Attestation',
+        'forex' => 'Forex',
+        'travel' => 'Travel Services',
+        'general' => 'General Enquiry',
+    ];
+
+    $pdf = new SimplePdfWriter();
+    $pageW = SimplePdfWriter::pageWidth();
+    $margin = 48;
+    $contentW = $pageW - ($margin * 2);
+
+    $navy = [0.031, 0.165, 0.404];
+    $gold = [0.957, 0.706, 0.0];
+    $gray = [0.4, 0.4, 0.4];
+    $dark = [0.1, 0.1, 0.1];
+
+    $y = pdf_start_page($pdf, true);
+    $pdf->text($margin, $y, 'ENQUIRY RECEIPT', 16, true, $navy);
+    $y -= 22;
+    $pdf->line($margin, $y, $pageW - $margin, $y, 1.2, $gold);
+    $y -= 28;
+
+    $pdf->text($margin, $y, 'ENQUIRY INFORMATION', 11, true, $navy);
+    $y -= 18;
+    $enquiryRows = [
+        ['Reference No.', $row['enquiry_reference_no']],
+        ['Tracking No.', $row['tracking_token'] ?? '—'],
+        ['Submission Date', date('d M Y, h:i A', strtotime($row['created_at']))],
+        ['Service Type', $serviceLabels[$row['service_type']] ?? ucfirst($row['service_type'])],
+        ['Current Status', ucwords(str_replace('_', ' ', $row['status']))],
+    ];
+    $y = pdf_render_kv_rows($pdf, $margin, $y, $enquiryRows, $dark, $gray);
+    $y -= 12;
+
+    $pdf->text($margin, $y, 'CUSTOMER DETAILS', 11, true, $navy);
+    $y -= 18;
+    $customerRows = [
+        ['Name', $row['name']],
+        ['Email', $row['email']],
+        ['Phone', $row['phone'] ?? '—'],
+    ];
+    $y = pdf_render_kv_rows($pdf, $margin, $y, $customerRows, $dark, $gray);
+    $y -= 12;
+
+    if (!empty($row['subject'])) {
+        $pdf->text($margin, $y, 'SUBJECT', 11, true, $navy);
+        $y -= 16;
+        $y = $pdf->textBlock($margin, $y, (string) $row['subject'], 9.5, $contentW, 13, false, $dark);
+        $y -= 10;
+    }
+
+    $pdf->text($margin, $y, 'MESSAGE', 11, true, $navy);
+    $y -= 16;
+    $y = $pdf->textBlock($margin, $y, (string) $row['description'], 9.5, $contentW, 13, false, $dark);
+
+    $pdf->textBlock($margin, PDF_CONTENT_BOTTOM_Y, enquiry_disclaimer_text(), 7.5, $contentW, 10, false, $gray);
+
+    $bytes = $pdf->output();
+
+    $dir = STORAGE_PATH . '/documents/general-enquiry-pdfs';
+    if (!is_dir($dir)) {
+        mkdir($dir, 0755, true);
+    }
+    $filename = $row['enquiry_reference_no'] . '.pdf';
+    $path = $dir . '/' . $filename;
+    file_put_contents($path, $bytes);
+
+    return 'storage/documents/general-enquiry-pdfs/' . $filename;
+}
+
+/**
+ * Builds the PDF receipt for one forex_requests row. Reachable only
+ * from the public /forex/track/ page, which already re-verifies the
+ * customer via reference number + registered mobile number before
+ * calling this — forex_requests has no customer-held token, since
+ * every request is staff-created (see
+ * database/schema-enquiry-pdf-downloads.sql). Shows only the same
+ * customer-safe fields /forex/track/ itself already displays — no
+ * internal staff remarks, quotation margins, or compliance notes.
+ * Saved under storage/documents/forex-pdfs/.
+ */
+function build_forex_request_pdf(array $row): string
+{
+    $pdf = new SimplePdfWriter();
+    $pageW = SimplePdfWriter::pageWidth();
+    $margin = 48;
+    $contentW = $pageW - ($margin * 2);
+
+    $navy = [0.031, 0.165, 0.404];
+    $gold = [0.957, 0.706, 0.0];
+    $gray = [0.4, 0.4, 0.4];
+    $dark = [0.1, 0.1, 0.1];
+
+    $y = pdf_start_page($pdf, true);
+    $pdf->text($margin, $y, 'FOREX REQUEST RECEIPT', 16, true, $navy);
+    $y -= 22;
+    $pdf->line($margin, $y, $pageW - $margin, $y, 1.2, $gold);
+    $y -= 28;
+
+    $pdf->text($margin, $y, 'REQUEST INFORMATION', 11, true, $navy);
+    $y -= 18;
+    $rows = [
+        ['Reference No.', $row['forex_reference_no']],
+        ['Submission Date', date('d M Y, h:i A', strtotime($row['created_at']))],
+        ['Currency', $row['currency_code']],
+        ['Amount Required', number_format((float) $row['amount_required'], 2)],
+        ['Current Status', forex_customer_status_label($row['status'])],
+    ];
+    if (!empty($row['country_of_visit'])) {
+        $rows[] = ['Country of Visit', $row['country_of_visit']];
+    }
+    if (!empty($row['purpose_of_travel'])) {
+        $rows[] = ['Purpose of Travel', ucwords(str_replace('_', ' ', $row['purpose_of_travel']))];
+    }
+    if (!empty($row['departure_date'])) {
+        $rows[] = ['Departure Date', date('d M Y', strtotime($row['departure_date']))];
+    }
+    if (!empty($row['return_date'])) {
+        $rows[] = ['Return Date', date('d M Y', strtotime($row['return_date']))];
+    }
+    $y = pdf_render_kv_rows($pdf, $margin, $y, $rows, $dark, $gray);
+
+    $disclaimer = 'This receipt confirms the details of your forex request as recorded with Visagiri. Exchange rates and final payable amounts are subject to confirmation at the time of transaction and applicable RBI/FEMA regulations.';
+    $pdf->textBlock($margin, PDF_CONTENT_BOTTOM_Y, $disclaimer, 7.5, $contentW, 10, false, $gray);
+
+    $bytes = $pdf->output();
+
+    $dir = STORAGE_PATH . '/documents/forex-pdfs';
+    if (!is_dir($dir)) {
+        mkdir($dir, 0755, true);
+    }
+    $filename = $row['forex_reference_no'] . '.pdf';
+    $path = $dir . '/' . $filename;
+    file_put_contents($path, $bytes);
+
+    return 'storage/documents/forex-pdfs/' . $filename;
 }

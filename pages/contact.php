@@ -59,6 +59,8 @@ $forexPrefill = $serviceType === 'forex' && ($_SERVER['REQUEST_METHOD'] ?? '') !
 $submitted = false;
 $success = false;
 $errors = [];
+$referenceNumber = null;
+$trackingToken = null;
 $values = [
     'name' => '', 'email' => '', 'phone' => '', 'destination' => '',
     'message' => $forexPrefill,
@@ -100,15 +102,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Retry once on the rare chance two submissions in the same
             // instant generate the same COUNT-based reference number —
             // the UNIQUE constraint catches it, we just regenerate.
+            $trackingToken = generate_tracking_token();
+            $insertedId = null;
             for ($attempt = 0; $attempt < 2; $attempt++) {
                 $referenceNumber = generate_reference_number('GEN', 'general_enquiries', 'enquiry_reference_no');
                 try {
                     $stmt = db()->prepare(
-                        'INSERT INTO general_enquiries (enquiry_reference_no, service_type, name, email, phone, subject, description, source_page, ip_address)
-                         VALUES (:ref, :service_type, :name, :email, :phone, :subject, :description, :source_page, :ip)'
+                        'INSERT INTO general_enquiries (enquiry_reference_no, tracking_token, service_type, name, email, phone, subject, description, source_page, ip_address)
+                         VALUES (:ref, :token, :service_type, :name, :email, :phone, :subject, :description, :source_page, :ip)'
                     );
                     $stmt->execute([
                         'ref' => $referenceNumber,
+                        'token' => $trackingToken,
                         'service_type' => $serviceType,
                         'name' => $values['name'],
                         'email' => $values['email'],
@@ -120,6 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         'source_page' => '/contact/',
                         'ip' => $_SERVER['REMOTE_ADDR'] ?? null,
                     ]);
+                    $insertedId = (int) db()->lastInsertId();
                     break;
                 } catch (PDOException $e) {
                     if ($e->getCode() === '23000' && $attempt === 0) {
@@ -129,6 +135,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
             $success = true;
+
+            // Best-effort: the success page still works via on-demand
+            // regeneration (pages/general-enquiry-pdf-download.php) if
+            // this fails, so a PDF error must never fail the enquiry
+            // submission itself.
+            if ($insertedId !== null) {
+                try {
+                    $pdfRow = [
+                        'enquiry_reference_no' => $referenceNumber,
+                        'tracking_token' => $trackingToken,
+                        'service_type' => $serviceType,
+                        'name' => $values['name'],
+                        'email' => $values['email'],
+                        'phone' => $values['phone'] !== '' ? $values['phone'] : null,
+                        'subject' => null,
+                        'description' => $values['destination'] !== ''
+                            ? "Destination: {$values['destination']}\n\n{$values['message']}"
+                            : $values['message'],
+                        'status' => 'new',
+                        'created_at' => date('Y-m-d H:i:s'),
+                    ];
+                    $relativePath = build_general_enquiry_pdf($pdfRow);
+                    db()->prepare('UPDATE general_enquiries SET pdf_path = :path WHERE id = :id')
+                        ->execute(['path' => $relativePath, 'id' => $insertedId]);
+                } catch (Throwable $e) {
+                    if (APP_DEBUG) {
+                        error_log('[contact.php] PDF generation failed: ' . $e->getMessage());
+                    }
+                }
+            }
 
             notify_enquiry_channels([
                 'name' => $values['name'],
@@ -178,6 +214,13 @@ require __DIR__ . '/../includes/header.php';
         <div class="alert alert-success" role="status">
             <strong>Thank you.</strong> We've received your message and will get back to you soon. For a faster response, you can also
             <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I just submitted a contact form.")) ?>" target="_blank" rel="noopener noreferrer">message us on WhatsApp</a>.
+            <?php if ($referenceNumber !== null && $trackingToken !== null): ?>
+            <p style="margin-top:var(--space-3)">
+                Your reference number is <strong><?= e($referenceNumber) ?></strong>. Keep it handy for any follow-up.
+                <br>
+                <a href="/contact/pdf/?ref=<?= e(rawurlencode($referenceNumber)) ?>&amp;token=<?= e(rawurlencode($trackingToken)) ?>" class="btn btn-outline btn-sm" style="margin-top:var(--space-2)">Download PDF Receipt</a>
+            </p>
+            <?php endif; ?>
         </div>
         <?php elseif ($submitted && !$success): ?>
         <div class="alert alert-danger" role="alert">

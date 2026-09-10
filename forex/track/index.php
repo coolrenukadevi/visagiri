@@ -106,6 +106,12 @@ require __DIR__ . '/../../includes/header.php';
                 <li><?= $step['done'] ? '✓' : '○' ?> <?= e($step['label']) ?></li>
                 <?php endforeach; ?>
             </ul>
+            <form method="post" action="/forex/track/pdf/" style="margin-top:var(--space-4)">
+                <?= csrf_field() ?>
+                <input type="hidden" name="reference" value="<?= e($reference) ?>">
+                <input type="hidden" name="mobile" value="<?= e($mobile) ?>">
+                <button type="submit" class="btn btn-outline btn-sm">Download PDF Receipt</button>
+            </form>
         </div>
         <?php elseif ($submitted): ?>
         <div class="alert alert-danger">We couldn't find a matching forex request. Please check your reference number and registered mobile number, or contact us for assistance.</div>

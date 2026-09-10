@@ -92,6 +92,9 @@ switch ($segments[0] ?? '') {
         $dispatch("$root/pages/about.php");
 
     case 'contact':
+        if (($segments[1] ?? null) === 'pdf') {
+            $dispatch("$root/pages/general-enquiry-pdf-download.php");
+        }
         $dispatch("$root/pages/contact.php");
 
     case 'faq':
@@ -223,6 +226,9 @@ switch ($segments[0] ?? '') {
 
     case 'forex':
         if (($segments[1] ?? null) === 'track') {
+            if (($segments[2] ?? null) === 'pdf') {
+                $dispatch("$root/pages/forex-pdf-download.php");
+            }
             $dispatch("$root/forex/track/index.php");
         }
         $dispatch("$root/pages/404.php");
