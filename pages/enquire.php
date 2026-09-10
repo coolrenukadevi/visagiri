@@ -271,6 +271,13 @@ if (!isset($confirmed) && $_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             send_enquiry_confirmation_email($enquiryRow);
+            notify_admins_by_permission(
+                'enquiries.view',
+                'new_enquiry',
+                'New ' . ($values['service_category'] === 'visa' ? 'Visa' : 'Apostille') . ' Enquiry — ' . $values['name'],
+                'Reference: ' . $enquiryNumber,
+                '/admin/enquiries/?id=' . $enquiryId
+            );
             notify_enquiry_channels([
                 'reference_number' => $enquiryNumber,
                 'name' => $values['name'],

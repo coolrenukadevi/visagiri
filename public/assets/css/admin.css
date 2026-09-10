@@ -48,6 +48,82 @@
 }
 .admin-topbar h1 { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); margin: 0; }
 .admin-topbar__account { display: flex; align-items: center; gap: var(--space-3); font-size: var(--font-size-sm); color: var(--text-muted); font-weight: var(--font-weight-medium); }
+.admin-topbar__right { display: flex; align-items: center; gap: var(--space-4); }
+
+/* Notification bell — same click-to-toggle dropdown pattern as the
+   profile menu, positioned to its left in the topbar. */
+.admin-bell { position: relative; }
+.admin-bell__trigger {
+    position: relative; background: none; border: none; cursor: pointer;
+    color: var(--text-muted); padding: var(--space-2); border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    transition: background var(--transition-fast), color var(--transition-fast);
+}
+.admin-bell__trigger:hover { background: var(--surface); color: var(--text-dark); }
+.admin-bell__badge[hidden] { display: none; }
+.admin-bell__badge {
+    position: absolute; top: 2px; right: 2px;
+    background: var(--danger); color: var(--white);
+    font-size: 0.65rem; font-weight: var(--font-weight-bold);
+    line-height: 1; min-width: 16px; height: 16px; padding: 0 3px;
+    border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center;
+}
+.admin-bell__menu {
+    display: none;
+    position: absolute; top: calc(100% + var(--space-2)); right: 0;
+    width: 340px; max-width: 90vw;
+    background: var(--white); border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg); border: 1px solid var(--border);
+    z-index: 20;
+}
+.admin-bell__menu.is-open { display: block; }
+.admin-bell__menu-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--border);
+    font-weight: var(--font-weight-bold); font-size: var(--font-size-sm); color: var(--text-dark);
+}
+.admin-bell__mark-all { background: none; border: none; color: var(--visa-blue); font-size: var(--font-size-xs); font-weight: var(--font-weight-medium); cursor: pointer; font-family: inherit; }
+.admin-bell__mark-all:hover { text-decoration: underline; }
+.admin-bell__list { max-height: 360px; overflow-y: auto; }
+.admin-bell__empty { padding: var(--space-5) var(--space-4); text-align: center; color: var(--text-muted); font-size: var(--font-size-sm); }
+.admin-bell__item { border-bottom: 1px solid var(--border); }
+.admin-bell__item:last-child { border-bottom: none; }
+.admin-bell__item button {
+    width: 100%; text-align: left; background: none; border: none; cursor: pointer;
+    font-family: inherit; padding: var(--space-3) var(--space-4);
+    display: flex; flex-direction: column; gap: 2px;
+    transition: background var(--transition-fast);
+}
+.admin-bell__item button:hover { background: var(--surface); }
+.admin-bell__item.is-unread button { background: var(--visa-blue-light); }
+.admin-bell__item-title { font-size: var(--font-size-sm); color: var(--text-dark); font-weight: var(--font-weight-medium); }
+.admin-bell__item-time { font-size: var(--font-size-xs); color: var(--text-muted); }
+.admin-bell__view-all {
+    display: block; text-align: center; padding: var(--space-3);
+    font-size: var(--font-size-sm); font-weight: var(--font-weight-medium); color: var(--visa-blue);
+    border-top: 1px solid var(--border);
+}
+.admin-bell__view-all:hover { background: var(--surface); }
+
+/* Notification Center page */
+.admin-tabs { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+.admin-notification-list { background: var(--white); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); overflow: hidden; }
+.admin-notification-item { border-bottom: 1px solid var(--border); }
+.admin-notification-item:last-child { border-bottom: none; }
+.admin-notification-item__button {
+    width: 100%; display: flex; align-items: flex-start; gap: var(--space-3);
+    background: none; border: none; cursor: pointer; font-family: inherit; text-align: left;
+    padding: var(--space-4) var(--space-5);
+    transition: background var(--transition-fast);
+}
+.admin-notification-item__button:hover { background: var(--surface); }
+.admin-notification-item.is-unread .admin-notification-item__button { background: var(--visa-blue-light); }
+.admin-notification-item__dot { width: 8px; height: 8px; border-radius: var(--radius-full); background: var(--visa-blue); margin-top: 6px; flex-shrink: 0; visibility: hidden; }
+.admin-notification-item.is-unread .admin-notification-item__dot { visibility: visible; }
+.admin-notification-item__body { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.admin-notification-item__title { font-weight: var(--font-weight-semibold); color: var(--text-dark); font-size: var(--font-size-sm); }
+.admin-notification-item__desc { color: var(--text-muted); font-size: var(--font-size-sm); }
+.admin-notification-item__time { color: var(--text-muted); font-size: var(--font-size-xs); white-space: nowrap; }
 
 /* Profile dropdown — replaces the plain "name + Logout" topbar block.
    Toggled via admin.js (same delegated-listener pattern as the public

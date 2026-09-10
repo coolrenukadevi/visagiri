@@ -41,6 +41,7 @@ require_once "$root/includes/customer-auth.php";
 require_once "$root/includes/partner-auth.php";
 require_once "$root/includes/rbac.php";
 require_once "$root/includes/audit.php";
+require_once "$root/includes/admin-notifications.php";
 require_once "$root/includes/encryption.php";
 require_once "$root/includes/reference-numbers.php";
 require_once "$root/includes/documents.php";

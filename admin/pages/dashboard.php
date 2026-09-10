@@ -84,7 +84,7 @@ if (has_permission('enquiries.view')) {
     $workQueue['internal'] = ($statusCounts['under_review'] ?? 0) + ($statusCounts['processing'] ?? 0) + ($statusCounts['documents_verified'] ?? 0);
     $workQueue['resolved_today'] = $resolvedToday;
 
-    $sql = "SELECT e.enquiry_number, e.name, e.service_category, e.status, e.priority, e.created_at,
+    $sql = "SELECT e.id, e.enquiry_number, e.name, e.service_category, e.status, e.priority, e.created_at,
                     co.name AS country_name, emp.full_name AS assigned_name
              FROM enquiries e
              LEFT JOIN countries co ON co.id = e.destination_country_id
@@ -178,7 +178,7 @@ admin_header_start('Dashboard', 'dashboard');
         <tbody>
         <?php foreach ($recentEnquiries as $enq): ?>
         <tr>
-            <td><a href="/admin/enquiries/?action=view&amp;enquiry_number=<?= e($enq['enquiry_number']) ?>"><?= e($enq['enquiry_number']) ?></a></td>
+            <td><a href="/admin/enquiries/?id=<?= (int) $enq['id'] ?>"><?= e($enq['enquiry_number']) ?></a></td>
             <td><?= e($enq['name']) ?></td>
             <td><?= e(ucfirst($enq['service_category'])) ?><?= $enq['country_name'] ? ' — ' . e($enq['country_name']) : '' ?></td>
             <td><span class="badge badge-info"><?= e(enquiry_customer_status_label($enq['status'])) ?></span></td>

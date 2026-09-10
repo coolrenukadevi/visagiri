@@ -41,22 +41,57 @@ function admin_header_start(string $pageTitle, string $activeNav): void
     <div class="admin-main">
         <header class="admin-topbar">
             <h1><?= e($pageTitle) ?></h1>
-            <div class="admin-profile">
-                <button type="button" class="admin-profile__trigger" id="admin-profile-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="admin-profile-menu">
-                    <span class="admin-profile__avatar"><?= e(admin_initials($admin['full_name'] ?? '')) ?></span>
-                    <span><?= e($admin['full_name'] ?? '') ?></span>
-                    <?= nav_chevron_icon() ?>
-                </button>
-                <div class="admin-profile__menu" id="admin-profile-menu">
-                    <div class="admin-profile__menu-header">
-                        <div class="admin-profile__menu-name"><?= e($admin['full_name'] ?? '') ?></div>
-                        <div class="admin-profile__menu-role"><?= e($admin['role_name'] ?? '') ?></div>
+            <div class="admin-topbar__right">
+                <?php $unreadNotifCount = admin_unread_notification_count((int) $admin['id']); ?>
+                <div class="admin-bell">
+                    <button type="button" class="admin-bell__trigger" id="admin-bell-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="admin-bell-menu" aria-label="Notifications">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8C5 5.2 7.2 3 10 3S15 5.2 15 8V11.5L16.5 14H3.5L5 11.5Z"/><path d="M8.2 14.5C8.2 15.6 9 16.5 10 16.5S11.8 15.6 11.8 14.5"/></svg>
+                        <span class="admin-bell__badge" id="admin-bell-badge"<?= $unreadNotifCount > 0 ? '' : ' hidden' ?>><?= $unreadNotifCount > 99 ? '99+' : $unreadNotifCount ?></span>
+                    </button>
+                    <div class="admin-bell__menu" id="admin-bell-menu">
+                        <div class="admin-bell__menu-header">
+                            <span>Notifications</span>
+                            <?php if ($unreadNotifCount > 0): ?>
+                            <form method="post" action="/admin/notifications/"><?= csrf_field() ?><input type="hidden" name="form" value="mark_all_read"><button type="submit" class="admin-bell__mark-all">Mark all as read</button></form>
+                            <?php endif; ?>
+                        </div>
+                        <div class="admin-bell__list">
+                            <?php $recentNotifs = admin_recent_notifications((int) $admin['id'], 6); ?>
+                            <?php if (!$recentNotifs): ?>
+                            <p class="admin-bell__empty">No notifications yet.</p>
+                            <?php else: foreach ($recentNotifs as $n): ?>
+                            <form method="post" action="/admin/notifications/" class="admin-bell__item<?= $n['is_read'] ? '' : ' is-unread' ?>">
+                                <?= csrf_field() ?>
+                                <input type="hidden" name="form" value="open">
+                                <input type="hidden" name="notification_id" value="<?= (int) $n['id'] ?>">
+                                <button type="submit">
+                                    <span class="admin-bell__item-title"><?= e($n['title']) ?></span>
+                                    <span class="admin-bell__item-time"><?= e(date('d M, H:i', strtotime($n['created_at']))) ?></span>
+                                </button>
+                            </form>
+                            <?php endforeach; endif; ?>
+                        </div>
+                        <a href="/admin/notifications/" class="admin-bell__view-all">View All Notifications</a>
                     </div>
-                    <a href="/admin/profile/">My Profile</a>
-                    <?php if (has_permission('settings.manage')): ?>
-                    <a href="/admin/settings/">Settings</a>
-                    <?php endif; ?>
-                    <form method="post" action="/admin/logout/"><?= csrf_field() ?><button type="submit">Logout</button></form>
+                </div>
+
+                <div class="admin-profile">
+                    <button type="button" class="admin-profile__trigger" id="admin-profile-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="admin-profile-menu">
+                        <span class="admin-profile__avatar"><?= e(admin_initials($admin['full_name'] ?? '')) ?></span>
+                        <span><?= e($admin['full_name'] ?? '') ?></span>
+                        <?= nav_chevron_icon() ?>
+                    </button>
+                    <div class="admin-profile__menu" id="admin-profile-menu">
+                        <div class="admin-profile__menu-header">
+                            <div class="admin-profile__menu-name"><?= e($admin['full_name'] ?? '') ?></div>
+                            <div class="admin-profile__menu-role"><?= e($admin['role_name'] ?? '') ?></div>
+                        </div>
+                        <a href="/admin/profile/">My Profile</a>
+                        <?php if (has_permission('settings.manage')): ?>
+                        <a href="/admin/settings/">Settings</a>
+                        <?php endif; ?>
+                        <form method="post" action="/admin/logout/"><?= csrf_field() ?><button type="submit">Logout</button></form>
+                    </div>
                 </div>
             </div>
         </header>

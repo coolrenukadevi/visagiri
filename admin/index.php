@@ -217,6 +217,17 @@ switch ($adminSegment) {
         require __DIR__ . '/pages/profile.php';
         exit;
 
+    case 'notifications':
+        require_admin_login();
+        require __DIR__ . '/pages/notifications.php';
+        exit;
+
+    case 'notifications-unread-count':
+        require_admin_login();
+        header('Content-Type: application/json');
+        echo json_encode(['count' => admin_unread_notification_count((int) current_admin_id())]);
+        exit;
+
     case 'audit-log':
         require_admin_login();
         require __DIR__ . '/pages/audit-log.php';
