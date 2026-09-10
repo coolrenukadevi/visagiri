@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+    <defs>
+        <linearGradient id="fnavy" x1="10" y1="6" x2="60" y2="108" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#0A1B3D"/>
+            <stop offset="1" stop-color="#1B63B8"/>
+        </linearGradient>
+        <linearGradient id="fteal" x1="110" y1="6" x2="58" y2="108" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#22D3D9"/>
+            <stop offset="1" stop-color="#0F4C81"/>
+        </linearGradient>
+        <linearGradient id="fedge" x1="50" y1="84" x2="58" y2="100" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#B6F5F3"/>
+            <stop offset="1" stop-color="#B6F5F3" stop-opacity="0"/>
+        </linearGradient>
+    </defs>
+    <rect width="120" height="120" rx="26" fill="#060F24"/>
+    <path d="M14 16 L36 16 L67 96 L47 96 Z" fill="url(#fnavy)"/>
+    <path d="M106 16 L84 16 L53 96 L73 96 Z" fill="url(#fteal)"/>
+    <path d="M48 80 L62 80 L57 96 L49 96 Z" fill="url(#fedge)" opacity="0.6"/>
+</svg>

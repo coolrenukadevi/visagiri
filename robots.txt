@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+Disallow: /crm/
+Disallow: /includes/
+Disallow: /database/
+Disallow: /data/
+Disallow: /enquiry-submit.php
+Disallow: /thank-you.php
+Disallow: /dashboard.php
+Disallow: /logout.php
+Disallow: /router.php
+
+Sitemap: https://videshia.com/sitemap.xml
