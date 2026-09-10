@@ -94,7 +94,6 @@ declare(strict_types=1);
                 <li><a href="/faq/">Visa FAQs</a></li>
                 <li><a href="/track-visa/">Track Application</a></li>
                 <li><a href="/blog/">Visa Updates</a></li>
-                <li><a href="/enquire/">Submit a Visa Enquiry</a></li>
             </ul>
         </div>
 
@@ -102,12 +101,12 @@ declare(strict_types=1);
             <h3><span class="site-footer__col-icon"><?= primary_nav_icon('company') ?></span>Company</h3>
             <ul>
                 <?php
-                // Careers and Affiliations & Accreditations kept out of
-                // the footer by request — still reachable via the
-                // header's Company mega-menu.
+                // Careers, Affiliations & Accreditations, and Become a
+                // Partner kept out of the footer by request — still
+                // reachable via the header's Company mega-menu.
                 foreach ($companyMenu as $footerCompanyGroup):
                     foreach ($footerCompanyGroup as $footerCompanyItem):
-                        if (in_array($footerCompanyItem['label'], ['Careers', 'Affiliations & Accreditations'], true)) {
+                        if (in_array($footerCompanyItem['label'], ['Careers', 'Affiliations & Accreditations', 'Become a Partner'], true)) {
                             continue;
                         }
                 ?>
@@ -116,8 +115,6 @@ declare(strict_types=1);
                     endforeach;
                 endforeach;
                 ?>
-                <li><a href="/partners/">Become a B2B Partner</a></li>
-                <li><a href="/b2b-partner/">B2B Travel Partner Portal</a></li>
             </ul>
         </div>
     </div>
