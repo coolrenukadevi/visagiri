@@ -123,7 +123,7 @@ if ($typeSlug !== null) {
             <?php if ($requirement): ?>
 
             <?php if (!empty($requirement['overview'])): ?>
-            <div class="prose" style="max-width:80ch;margin-bottom:var(--space-6)">
+            <div class="prose" style="margin-bottom:var(--space-6)">
                 <?= nl2br(e($requirement['overview'])) ?>
             </div>
             <?php endif; ?>
@@ -131,7 +131,7 @@ if ($typeSlug !== null) {
             <?php if (!empty($requirement['who_should_apply'])): ?>
             <div style="margin-bottom:var(--space-6)">
                 <h2 class="country-directory__subheading">Who Should Apply</h2>
-                <div class="prose" style="max-width:80ch"><?= nl2br(e($requirement['who_should_apply'])) ?></div>
+                <div class="prose"><?= nl2br(e($requirement['who_should_apply'])) ?></div>
             </div>
             <?php endif; ?>
 
@@ -255,7 +255,7 @@ if ($typeSlug !== null) {
             <div class="final-cta" style="margin-top:var(--space-10)">
                 <h2>Ready to start your <?= e($country['name']) ?> <?= e(strtolower($visaType['name'])) ?> application?</h2>
                 <div class="button-group" style="justify-content:center">
-                    <a href="/enquire/?country=<?= e($country['slug']) ?>&amp;visa_type=<?= e($visaType['slug']) ?>" class="btn btn-gold btn-lg">Start Your Visa Enquiry</a>
+                    <a href="/enquire/?country=<?= e($country['slug']) ?>&amp;visa_type=<?= e($visaType['slug']) ?>" class="btn btn-gold btn-lg" data-open-enquiry-modal>Start Your Visa Enquiry</a>
                     <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to know more about {$visaType['name']} for {$country['name']}.")) ?>" class="btn btn-outline btn-lg" target="_blank" rel="noopener noreferrer">Talk to a Visa Expert</a>
                 </div>
             </div>
@@ -341,13 +341,13 @@ require __DIR__ . '/../includes/header.php';
                 <div class="button-group" style="margin-top:var(--space-4)">
                     <a href="#visa-categories" class="btn btn-gold">Check <?= e($country['name']) ?> Visa Requirements</a>
                     <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to talk to a visa expert about {$country['name']}.")) ?>" class="btn btn-outline" target="_blank" rel="noopener noreferrer">Talk to a Visa Expert</a>
-                    <a href="/enquire/?country=<?= e($country['slug']) ?>" class="btn btn-outline">Start Your Visa Enquiry</a>
+                    <a href="/enquire/?country=<?= e($country['slug']) ?>" class="btn btn-outline" data-open-enquiry-modal>Start Your Visa Enquiry</a>
                 </div>
             </div>
         </div>
 
         <?php if ($hasRichContent && !empty($countryContent['overview'])): ?>
-        <div class="prose" style="max-width:80ch;margin:var(--space-8) 0">
+        <div class="prose" style="margin:var(--space-8) 0">
             <?= nl2br(e($countryContent['overview'])) ?>
         </div>
         <?php endif; ?>
@@ -368,28 +368,28 @@ require __DIR__ . '/../includes/header.php';
         <?php if ($hasRichContent && !empty($countryContent['who_needs_visa'])): ?>
         <div style="margin-top:var(--space-10)">
             <h2 class="country-directory__subheading">Who Needs a <?= e($country['name']) ?> Visa?</h2>
-            <div class="prose" style="max-width:80ch"><?= nl2br(e($countryContent['who_needs_visa'])) ?></div>
+            <div class="prose"><?= nl2br(e($countryContent['who_needs_visa'])) ?></div>
         </div>
         <?php endif; ?>
 
         <?php if ($hasRichContent && !empty($countryContent['common_mistakes'])): ?>
         <div style="margin-top:var(--space-10)">
             <h2 class="country-directory__subheading">Reasons Applications Can Face Delays or Refusal</h2>
-            <div class="prose" style="max-width:80ch"><?= nl2br(e($countryContent['common_mistakes'])) ?></div>
+            <div class="prose"><?= nl2br(e($countryContent['common_mistakes'])) ?></div>
         </div>
         <?php endif; ?>
 
         <?php if ($hasRichContent && !empty($countryContent['local_seo_patna'])): ?>
         <div style="margin-top:var(--space-10)" id="patna">
             <h2 class="country-directory__subheading"><?= e($country['name']) ?> Visa Consultant in Patna</h2>
-            <div class="prose" style="max-width:80ch"><?= nl2br(e($countryContent['local_seo_patna'])) ?></div>
+            <div class="prose"><?= nl2br(e($countryContent['local_seo_patna'])) ?></div>
         </div>
         <?php endif; ?>
 
         <?php if ($hasRichContent && !empty($countryContent['services_across_india'])): ?>
         <div style="margin-top:var(--space-10)">
             <h2 class="country-directory__subheading"><?= e($country['name']) ?> Visa Services Across India</h2>
-            <div class="prose" style="max-width:80ch"><?= nl2br(e($countryContent['services_across_india'])) ?></div>
+            <div class="prose"><?= nl2br(e($countryContent['services_across_india'])) ?></div>
         </div>
         <?php endif; ?>
 
@@ -435,7 +435,7 @@ require __DIR__ . '/../includes/header.php';
         <div class="final-cta" style="margin-top:var(--space-10)">
             <h2>Ready to start your <?= e($country['name']) ?> visa journey?</h2>
             <div class="button-group" style="justify-content:center">
-                <a href="/enquire/?country=<?= e($country['slug']) ?>" class="btn btn-gold btn-lg">Start Your Visa Enquiry</a>
+                <a href="/enquire/?country=<?= e($country['slug']) ?>" class="btn btn-gold btn-lg" data-open-enquiry-modal>Start Your Visa Enquiry</a>
                 <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to know more about {$country['name']} visas.")) ?>" class="btn btn-outline btn-lg" target="_blank" rel="noopener noreferrer">WhatsApp a Visa Expert</a>
             </div>
         </div>
