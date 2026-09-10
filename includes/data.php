@@ -62,6 +62,29 @@ function visa_types_all(): array
     return $types;
 }
 
+/**
+ * Visa types actually marked available for a given country via
+ * country_visa_types (defaults to every type for every country unless
+ * an admin has explicitly marked a combination unavailable — see
+ * schema-visa-portal.sql). The country hub page uses this instead of
+ * visa_types_all() so a country with a type marked unavailable doesn't
+ * link to a category it doesn't actually offer there.
+ *
+ * @return list<array<string,mixed>>
+ */
+function visa_types_for_country(int $countryId): array
+{
+    $stmt = db()->prepare(
+        'SELECT vt.id, vt.name, vt.slug, vt.description, vt.icon, vt.sort_order
+         FROM visa_types vt
+         INNER JOIN country_visa_types cvt ON cvt.visa_type_id = vt.id AND cvt.country_id = :country_id
+         WHERE vt.is_active = 1 AND cvt.is_available = 1
+         ORDER BY vt.sort_order'
+    );
+    $stmt->execute(['country_id' => $countryId]);
+    return $stmt->fetchAll();
+}
+
 function visa_type_by_slug(string $slug): ?array
 {
     foreach (visa_types_all() as $t) {
@@ -86,20 +109,52 @@ function faqs_general(): array
     return $faqs;
 }
 
-/** FAQs relevant to a specific country/visa-type page: general ones plus any tagged to that country or type. */
+/**
+ * FAQs for a specific country+visa-type detail page: general ones plus
+ * any tagged to that exact country+type pair. Deliberately an exact
+ * match rather than "country_id = X OR visa_type_id = Y" (which would
+ * leak every other Singapore page's FAQs onto this one via the country
+ * match alone, and every other country's Tourist-visa FAQs onto this
+ * one via the type match alone) — each country+type pair gets its own
+ * distinct FAQ set, matching the "no duplicate content across pages"
+ * requirement these were built for.
+ */
 function fetch_relevant_faqs(?int $countryId = null, ?int $visaTypeId = null): array
 {
     $stmt = db()->prepare(
         'SELECT question, answer FROM visa_faqs
          WHERE is_active = 1 AND (
              (country_id IS NULL AND visa_type_id IS NULL)
-             OR country_id = :country_id
-             OR visa_type_id = :visa_type_id
+             OR (country_id = :country_id AND visa_type_id = :visa_type_id)
          )
          ORDER BY sort_order'
     );
     $stmt->execute(['country_id' => $countryId, 'visa_type_id' => $visaTypeId]);
     return $stmt->fetchAll();
+}
+
+/** FAQs for a country's hub page (/visa/{country}/): general ones plus any tagged to that country with no specific visa type. */
+function fetch_country_faqs(int $countryId): array
+{
+    $stmt = db()->prepare(
+        'SELECT question, answer FROM visa_faqs
+         WHERE is_active = 1 AND (
+             (country_id IS NULL AND visa_type_id IS NULL)
+             OR (country_id = :country_id AND visa_type_id IS NULL)
+         )
+         ORDER BY sort_order'
+    );
+    $stmt->execute(['country_id' => $countryId]);
+    return $stmt->fetchAll();
+}
+
+/** Rich hub-page content for a country (overview, who-needs-a-visa, local SEO sections), or null if not yet published. */
+function fetch_country_content(int $countryId): ?array
+{
+    $stmt = db()->prepare('SELECT * FROM country_content WHERE country_id = :id LIMIT 1');
+    $stmt->execute(['id' => $countryId]);
+    $row = $stmt->fetch();
+    return $row ?: null;
 }
 
 /**
@@ -132,6 +187,26 @@ function fetch_visa_requirement(int $countryId, int $visaTypeId): ?array
     $stmt->execute(['country_id' => $countryId, 'visa_type_id' => $visaTypeId]);
     $row = $stmt->fetch();
     return $row ?: null;
+}
+
+/**
+ * Country+visa-type slug pairs that have a real, published
+ * visa_requirements row — used by the XML sitemap to submit only the
+ * /visa/{country}/{type}/ leaf pages with genuine content, same
+ * "don't submit thin pages" discipline as the rest of sitemap-xml.php.
+ *
+ * @return list<array{country_slug: string, type_slug: string}>
+ */
+function published_visa_requirement_slugs(): array
+{
+    return db()->query(
+        "SELECT c.slug AS country_slug, vt.slug AS type_slug
+         FROM visa_requirements vr
+         INNER JOIN countries c ON c.id = vr.country_id
+         INNER JOIN visa_types vt ON vt.id = vr.visa_type_id
+         WHERE c.is_active = 1 AND vt.is_active = 1
+         ORDER BY c.slug, vt.sort_order"
+    )->fetchAll();
 }
 
 /**

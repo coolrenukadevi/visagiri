@@ -7,7 +7,10 @@ declare(strict_types=1);
  * non-stub content. Per-country visa overview pages (/visa/{c}/) are
  * included since they always have real structure (visa-type list,
  * embassy/consulate info where published); the individual
- * /visa/{country}/{type}/ leaf pages are NOT included even though
+ * /visa/{country}/{type}/ leaf pages are only included once real
+ * content has actually been published for that pair (see
+ * published_visa_requirement_slugs()) — most others still show the
+ * honest "requirements not yet verified" state, so are NOT included even though
  * they're real, reachable pages — most show the honest "requirements
  * not yet verified" state today, and submitting ~1,600 thin pages to
  * search engines at once is bad practice. They're still crawlable via
@@ -74,6 +77,13 @@ echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
         <loc><?= e(APP_URL . '/visa/' . $c['slug'] . '/') ?></loc>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
+    </url>
+<?php endforeach; ?>
+<?php foreach (published_visa_requirement_slugs() as $pair): ?>
+    <url>
+        <loc><?= e(APP_URL . '/visa/' . $pair['country_slug'] . '/' . $pair['type_slug'] . '/') ?></loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
     </url>
 <?php endforeach; ?>
 <?php

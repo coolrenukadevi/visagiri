@@ -17,6 +17,16 @@ declare(strict_types=1);
 $countrySlug = $segments[1] ?? null;
 $typeSlug = $segments[2] ?? null;
 
+// A handful of URLs used in past marketing briefs don't match the real
+// visa_types catalog (e.g. "students"/"employment" instead of the
+// catalog's "student"/"work") — redirect rather than duplicating the
+// catalog with near-identical entries, so search engines consolidate
+// on one canonical URL per real visa type.
+const VISA_TYPE_SLUG_ALIASES = ['students' => 'student', 'employment' => 'work'];
+if ($typeSlug !== null && isset(VISA_TYPE_SLUG_ALIASES[$typeSlug])) {
+    redirect("/visa/{$countrySlug}/" . VISA_TYPE_SLUG_ALIASES[$typeSlug] . '/', 301);
+}
+
 if ($countrySlug === null) {
     require __DIR__ . '/hub.php';
     exit;
@@ -49,9 +59,14 @@ if ($typeSlug !== null) {
     $contactPoints = fetch_country_contact_points((int) $country['id']);
     $countryName = $country['name'];
     $faqs = fetch_relevant_faqs((int) $country['id'], (int) $visaType['id']);
+    $hasRichRequirement = $requirement !== null && !empty($requirement['overview']);
 
-    $pageTitle = "{$visaType['name']} for {$country['name']} - Visagiri";
-    $pageDescription = "{$visaType['name']} eligibility, required documents, fees, and processing time for {$country['name']} — enquire with Visagiri.";
+    $pageTitle = $hasRichRequirement
+        ? "{$country['name']} {$visaType['name']} Consultant in India | Visagiri"
+        : "{$visaType['name']} for {$country['name']} - Visagiri";
+    $pageDescription = $hasRichRequirement
+        ? "{$country['name']} {$visaType['name']} eligibility, documents, application process, and consultant support for Indian applicants, including Patna and Bihar — enquire with Visagiri."
+        : "{$visaType['name']} eligibility, required documents, fees, and processing time for {$country['name']} — enquire with Visagiri.";
     $canonicalUrl = APP_URL . "/visa/{$country['slug']}/{$visaType['slug']}/";
     $structuredData = [[
         '@context' => 'https://schema.org',
@@ -88,7 +103,7 @@ if ($typeSlug !== null) {
             <div class="visa-detail__header">
                 <span class="destination-card__flag"><?= flag_emoji($country['iso2']) ?></span>
                 <div>
-                    <h1><?= e($visaType['name']) ?> &mdash; <?= e($country['name']) ?></h1>
+                    <h1><?= $hasRichRequirement ? e("{$country['name']} {$visaType['name']} Consultant in India") : (e($visaType['name']) . ' &mdash; ' . e($country['name'])) ?></h1>
                     <p><?= e($visaType['description'] ?? '') ?></p>
                     <div class="button-group">
                         <a href="/enquire/?country=<?= e($country['slug']) ?>&amp;visa_type=<?= e($visaType['slug']) ?>" class="btn btn-gold">Submit Enquiry</a>
@@ -106,6 +121,20 @@ if ($typeSlug !== null) {
             <?php endif; ?>
 
             <?php if ($requirement): ?>
+
+            <?php if (!empty($requirement['overview'])): ?>
+            <div class="prose" style="max-width:80ch;margin-bottom:var(--space-6)">
+                <?= nl2br(e($requirement['overview'])) ?>
+            </div>
+            <?php endif; ?>
+
+            <?php if (!empty($requirement['who_should_apply'])): ?>
+            <div style="margin-bottom:var(--space-6)">
+                <h2 class="country-directory__subheading">Who Should Apply</h2>
+                <div class="prose" style="max-width:80ch"><?= nl2br(e($requirement['who_should_apply'])) ?></div>
+            </div>
+            <?php endif; ?>
+
             <div class="visa-spec-grid">
                 <div class="card"><div class="card-title">Eligibility</div><p><?= nl2br(e($requirement['eligibility'] ?? 'Not specified')) ?></p></div>
                 <div class="card">
@@ -127,10 +156,15 @@ if ($typeSlug !== null) {
                     <?php endif; ?>
                 </div>
                 <div class="card"><div class="card-title">Application Process</div><p><?= nl2br(e($requirement['application_process'] ?? 'Not specified')) ?></p></div>
-                <div class="card"><div class="card-title">Processing Time</div><p><?= e($requirement['processing_time'] ?? 'Not specified') ?></p></div>
+                <div class="card"><div class="card-title">Processing Time</div><p>
+                    <?= e($requirement['processing_time'] ?? 'Not specified') ?>
+                    <br><span style="font-size:var(--font-size-xs);color:var(--text-muted)">Processing times can vary depending on visa category, applicant profile, completeness of documents, and immigration authority workload.</span>
+                </p></div>
                 <div class="card"><div class="card-title">Fees</div><p>
                     <?php if ($requirement['government_fee']): ?>Government fee: <?= e(format_money((float) $requirement['government_fee'], $requirement['currency'])) ?><br><?php endif; ?>
-                    <?php if ($requirement['service_fee']): ?>Service fee: <?= e(format_money((float) $requirement['service_fee'], $requirement['currency'])) ?><?php endif; ?>
+                    <?php if ($requirement['service_fee']): ?>Visagiri service fee: <?= e(format_money((float) $requirement['service_fee'], $requirement['currency'])) ?><br><?php endif; ?>
+                    <?php if (!$requirement['government_fee'] && !$requirement['service_fee']): ?>Not specified<?php endif; ?>
+                    <?php if (!empty($requirement['fee_notes'])): ?><span style="font-size:var(--font-size-xs);color:var(--text-muted)"><?= e($requirement['fee_notes']) ?></span><?php endif; ?>
                 </p></div>
                 <div class="card"><div class="card-title">Validity &amp; Stay</div><p>
                     Validity: <?= e($requirement['validity_period'] ?? 'Not specified') ?><br>
@@ -144,7 +178,18 @@ if ($typeSlug !== null) {
                 <?php if (!empty($requirement['notes'])): ?>
                 <div class="card"><div class="card-title">Important Notes</div><p><?= nl2br(e($requirement['notes'])) ?></p></div>
                 <?php endif; ?>
+                <?php if (!empty($requirement['common_mistakes'])): ?>
+                <div class="card"><div class="card-title">Common Mistakes &amp; Reasons for Delay or Refusal</div><p><?= nl2br(e($requirement['common_mistakes'])) ?></p></div>
+                <?php endif; ?>
             </div>
+
+            <?php if (!empty($requirement['local_notes'])): ?>
+            <div class="card" style="margin-top:var(--space-6)">
+                <div class="card-title"><?= e($visaType['name']) ?> Consultant Across India</div>
+                <p><?= nl2br(e($requirement['local_notes'])) ?></p>
+            </div>
+            <?php endif; ?>
+
             <p class="visa-detail__verified">
                 <?php if (!empty($requirement['last_verified_at'])): ?>Last verified: <?= e(date('d M Y', strtotime((string) $requirement['last_verified_at']))) ?><?php endif; ?>
                 <?php if (!empty($requirement['source_url'])): ?> &middot; <a href="<?= e($requirement['source_url']) ?>" rel="nofollow noopener" target="_blank">Official source</a><?php endif; ?>
@@ -167,6 +212,32 @@ if ($typeSlug !== null) {
                 <?php require __DIR__ . '/../includes/contact-points.php'; ?>
             </div>
 
+            <div style="margin-top:var(--space-10)">
+                <h2 class="country-directory__subheading">Why Choose Visagiri</h2>
+                <div class="card-grid">
+                    <?php foreach (why_visagiri_features() as $f): ?>
+                    <div class="card feature-card">
+                        <div class="card-title"><?= e($f['title']) ?></div>
+                        <p><?= e($f['desc']) ?></p>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <?php
+            $otherTypes = array_values(array_filter(visa_types_for_country((int) $country['id']), static fn(array $t): bool => $t['id'] !== $visaType['id']));
+            ?>
+            <?php if ($otherTypes): ?>
+            <div style="margin-top:var(--space-10)">
+                <h2 class="country-directory__subheading">Other <?= e($country['name']) ?> Visa Categories</h2>
+                <div style="display:flex;gap:var(--space-3);flex-wrap:wrap">
+                    <?php foreach ($otherTypes as $ot): ?>
+                    <a href="/visa/<?= e($country['slug']) ?>/<?= e($ot['slug']) ?>/" class="btn btn-outline"><?= e($country['name']) ?> <?= e($ot['name']) ?> &rarr;</a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php endif; ?>
+
             <?php if ($faqs): ?>
             <div style="margin-top:var(--space-10)">
                 <h2 class="country-directory__subheading">Frequently Asked Questions</h2>
@@ -180,6 +251,14 @@ if ($typeSlug !== null) {
                 <?php endforeach; ?>
             </div>
             <?php endif; ?>
+
+            <div class="final-cta" style="margin-top:var(--space-10)">
+                <h2>Ready to start your <?= e($country['name']) ?> <?= e(strtolower($visaType['name'])) ?> application?</h2>
+                <div class="button-group" style="justify-content:center">
+                    <a href="/enquire/?country=<?= e($country['slug']) ?>&amp;visa_type=<?= e($visaType['slug']) ?>" class="btn btn-gold btn-lg">Start Your Visa Enquiry</a>
+                    <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to know more about {$visaType['name']} for {$country['name']}.")) ?>" class="btn btn-outline btn-lg" target="_blank" rel="noopener noreferrer">Talk to a Visa Expert</a>
+                </div>
+            </div>
         </div>
     </section>
     <?php
@@ -188,13 +267,22 @@ if ($typeSlug !== null) {
 }
 
 // Country overview: no specific visa type requested — list the
-// catalog of visa types to explore for this country.
-$visaTypes = visa_types_all();
+// catalog of visa types actually available for this country, plus any
+// rich hub-level content (country_content) an admin has published.
+$visaTypes = visa_types_for_country((int) $country['id']);
 $contactPoints = fetch_country_contact_points((int) $country['id']);
+$countryContent = fetch_country_content((int) $country['id']);
+$countryFaqs = fetch_country_faqs((int) $country['id']);
 $countryName = $country['name'];
 
-$pageTitle = "{$country['name']} Visa Requirements - Visagiri";
-$pageDescription = "Visa types, eligibility, and application information for {$country['name']}. Explore requirements by visa type and enquire with Visagiri.";
+$hasRichContent = $countryContent !== null;
+
+$pageTitle = $hasRichContent
+    ? "{$country['name']} Visa Consultant in India | {$country['name']} Visa Services | Visagiri"
+    : "{$country['name']} Visa Requirements - Visagiri";
+$pageDescription = $hasRichContent
+    ? "Visagiri is a {$country['name']} visa consultant serving Indian applicants nationwide, with local support for Patna and Bihar — eligibility, documents, application assistance, and enquiry support for every {$country['name']} visa category."
+    : "Visa types, eligibility, and application information for {$country['name']}. Explore requirements by visa type and enquire with Visagiri.";
 $canonicalUrl = APP_URL . "/visa/{$country['slug']}/";
 $structuredData = [[
     '@context' => 'https://schema.org',
@@ -205,6 +293,28 @@ $structuredData = [[
         ['@type' => 'ListItem', 'position' => 3, 'name' => $country['name'], 'item' => $canonicalUrl],
     ],
 ]];
+if ($hasRichContent) {
+    $structuredData[] = [
+        '@context' => 'https://schema.org',
+        '@type' => 'Service',
+        'serviceType' => "{$country['name']} Visa Consultancy",
+        'provider' => ['@type' => 'Organization', 'name' => setting('company_name', 'Visagiri')],
+        'areaServed' => ['@type' => 'Country', 'name' => 'India'],
+        'name' => "{$country['name']} Visa Consultant in India",
+        'description' => $pageDescription,
+    ];
+}
+if ($countryFaqs) {
+    $structuredData[] = [
+        '@context' => 'https://schema.org',
+        '@type' => 'FAQPage',
+        'mainEntity' => array_map(static fn($f) => [
+            '@type' => 'Question',
+            'name' => $f['question'],
+            'acceptedAnswer' => ['@type' => 'Answer', 'text' => $f['answer']],
+        ], $countryFaqs),
+    ];
+}
 require __DIR__ . '/../includes/header.php';
 ?>
 <section class="visa-detail">
@@ -218,27 +328,116 @@ require __DIR__ . '/../includes/header.php';
         <div class="visa-detail__header">
             <span class="destination-card__flag"><?= flag_emoji($country['iso2']) ?></span>
             <div>
-                <h1><?= e($country['name']) ?> Visa Requirements</h1>
+                <h1><?= $hasRichContent ? e("{$country['name']} Visa Consultant in India") : e("{$country['name']} Visa Requirements") ?></h1>
                 <?php if (!empty($country['region'])): ?><span class="badge badge-neutral"><?= e($country['region']) ?></span><?php endif; ?>
                 <p style="margin-top:var(--space-3)">
-                    Visa requirements for <?= e($country['name']) ?> vary by nationality, purpose of travel, and visa type.
-                    Select a visa type below to check eligibility, required documents, fees, and processing time.
+                    <?php if ($hasRichContent && !empty($countryContent['hero_tagline'])): ?>
+                        <?= e($countryContent['hero_tagline']) ?>
+                    <?php else: ?>
+                        Visa requirements for <?= e($country['name']) ?> vary by nationality, purpose of travel, and visa type.
+                        Select a visa type below to check eligibility, required documents, fees, and processing time.
+                    <?php endif; ?>
                 </p>
+                <div class="button-group" style="margin-top:var(--space-4)">
+                    <a href="#visa-categories" class="btn btn-gold">Check <?= e($country['name']) ?> Visa Requirements</a>
+                    <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to talk to a visa expert about {$country['name']}.")) ?>" class="btn btn-outline" target="_blank" rel="noopener noreferrer">Talk to a Visa Expert</a>
+                    <a href="/enquire/?country=<?= e($country['slug']) ?>" class="btn btn-outline">Start Your Visa Enquiry</a>
+                </div>
             </div>
         </div>
 
-        <div class="card-grid">
-            <?php foreach ($visaTypes as $t): ?>
-            <a href="/visa/<?= e($country['slug']) ?>/<?= e($t['slug']) ?>/" class="card service-card">
-                <div class="service-card__icon">&#128196;</div>
-                <div class="card-title"><?= e($t['name']) ?></div>
-                <p><?= e($t['description']) ?></p>
-            </a>
-            <?php endforeach; ?>
+        <?php if ($hasRichContent && !empty($countryContent['overview'])): ?>
+        <div class="prose" style="max-width:80ch;margin:var(--space-8) 0">
+            <?= nl2br(e($countryContent['overview'])) ?>
         </div>
+        <?php endif; ?>
+
+        <div id="visa-categories" style="margin-top:var(--space-8)">
+            <h2 class="country-directory__subheading"><?= e($country['name']) ?> Visa Categories</h2>
+            <div class="card-grid">
+                <?php foreach ($visaTypes as $t): ?>
+                <a href="/visa/<?= e($country['slug']) ?>/<?= e($t['slug']) ?>/" class="card service-card">
+                    <div class="service-card__icon">&#128196;</div>
+                    <div class="card-title"><?= e($country['name']) ?> <?= e($t['name']) ?></div>
+                    <p><?= e($t['description']) ?></p>
+                </a>
+                <?php endforeach; ?>
+            </div>
+        </div>
+
+        <?php if ($hasRichContent && !empty($countryContent['who_needs_visa'])): ?>
+        <div style="margin-top:var(--space-10)">
+            <h2 class="country-directory__subheading">Who Needs a <?= e($country['name']) ?> Visa?</h2>
+            <div class="prose" style="max-width:80ch"><?= nl2br(e($countryContent['who_needs_visa'])) ?></div>
+        </div>
+        <?php endif; ?>
+
+        <?php if ($hasRichContent && !empty($countryContent['common_mistakes'])): ?>
+        <div style="margin-top:var(--space-10)">
+            <h2 class="country-directory__subheading">Reasons Applications Can Face Delays or Refusal</h2>
+            <div class="prose" style="max-width:80ch"><?= nl2br(e($countryContent['common_mistakes'])) ?></div>
+        </div>
+        <?php endif; ?>
+
+        <?php if ($hasRichContent && !empty($countryContent['local_seo_patna'])): ?>
+        <div style="margin-top:var(--space-10)" id="patna">
+            <h2 class="country-directory__subheading"><?= e($country['name']) ?> Visa Consultant in Patna</h2>
+            <div class="prose" style="max-width:80ch"><?= nl2br(e($countryContent['local_seo_patna'])) ?></div>
+        </div>
+        <?php endif; ?>
+
+        <?php if ($hasRichContent && !empty($countryContent['services_across_india'])): ?>
+        <div style="margin-top:var(--space-10)">
+            <h2 class="country-directory__subheading"><?= e($country['name']) ?> Visa Services Across India</h2>
+            <div class="prose" style="max-width:80ch"><?= nl2br(e($countryContent['services_across_india'])) ?></div>
+        </div>
+        <?php endif; ?>
+
+        <?php if ($hasRichContent): ?>
+        <div style="margin-top:var(--space-10)">
+            <h2 class="country-directory__subheading">Why Choose Visagiri</h2>
+            <div class="card-grid">
+                <?php foreach (why_visagiri_features() as $f): ?>
+                <div class="card feature-card">
+                    <div class="card-title"><?= e($f['title']) ?></div>
+                    <p><?= e($f['desc']) ?></p>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php endif; ?>
 
         <div style="margin-top:var(--space-10)">
             <?php require __DIR__ . '/../includes/contact-points.php'; ?>
+        </div>
+
+        <?php if ($countryFaqs): ?>
+        <div style="margin-top:var(--space-10)">
+            <h2 class="country-directory__subheading"><?= e($country['name']) ?> Visa FAQ</h2>
+            <?php foreach ($countryFaqs as $faq): ?>
+            <div class="accordion-item">
+                <details>
+                    <summary><?= e($faq['question']) ?></summary>
+                    <div class="accordion-body"><?= e($faq['answer']) ?></div>
+                </details>
+            </div>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+
+        <?php if (!empty($countryContent['last_reviewed_at']) || !empty($countryContent['source_url'])): ?>
+        <p class="visa-detail__verified">
+            <?php if (!empty($countryContent['last_reviewed_at'])): ?>Last reviewed: <?= e(date('d M Y', strtotime((string) $countryContent['last_reviewed_at']))) ?><?php endif; ?>
+            <?php if (!empty($countryContent['source_url'])): ?> &middot; <a href="<?= e($countryContent['source_url']) ?>" rel="nofollow noopener" target="_blank">Official source</a><?php endif; ?>
+        </p>
+        <?php endif; ?>
+
+        <div class="final-cta" style="margin-top:var(--space-10)">
+            <h2>Ready to start your <?= e($country['name']) ?> visa journey?</h2>
+            <div class="button-group" style="justify-content:center">
+                <a href="/enquire/?country=<?= e($country['slug']) ?>" class="btn btn-gold btn-lg">Start Your Visa Enquiry</a>
+                <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to know more about {$country['name']} visas.")) ?>" class="btn btn-outline btn-lg" target="_blank" rel="noopener noreferrer">WhatsApp a Visa Expert</a>
+            </div>
         </div>
     </div>
 </section>
