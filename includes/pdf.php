@@ -263,8 +263,21 @@ final class SimplePdfWriter
  */
 function pdf_draw_letterhead_background(SimplePdfWriter $pdf, float $pageW, float $pageH): void
 {
-    $bgPath = __DIR__ . '/../public/assets/images/pdf-letterhead-bg.jpg';
-    if (is_file($bgPath)) {
+    // Same dual-layout check as asset_url() (includes/functions.php):
+    // the two-folder dev layout keeps assets under public/, but
+    // bin/package-cpanel.sh's flattened cPanel package moves public/'s
+    // contents up to be siblings of includes/ — hardcoding only the
+    // first path silently skipped the whole letterhead on a flattened
+    // deployment (is_file() just returned false, no error), producing
+    // a real, live PDF with every field correct but no logo at all.
+    $bgPath = null;
+    foreach ([__DIR__ . '/../public/assets/images/pdf-letterhead-bg.jpg', __DIR__ . '/../assets/images/pdf-letterhead-bg.jpg'] as $candidate) {
+        if (is_file($candidate)) {
+            $bgPath = $candidate;
+            break;
+        }
+    }
+    if ($bgPath !== null) {
         $pdf->embedJpegLogo($bgPath);
         $pdf->image(0, 0, $pageW, $pageH);
     }
