@@ -29,6 +29,14 @@ PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$PROJECT_ROOT"
 
 OUTPUT_ZIP="${1:-$PROJECT_ROOT/visagiri-cpanel-$(date +%Y%m%d).zip}"
+# A relative path here would otherwise resolve against $BUILD_DIR once the
+# zip step below cd's into it, silently writing (and then, via the EXIT
+# trap, deleting) the zip inside the temp dir instead of where the caller
+# expected it — this only bit when a caller passed a plain filename.
+case "$OUTPUT_ZIP" in
+    /*) ;;
+    *) OUTPUT_ZIP="$PROJECT_ROOT/$OUTPUT_ZIP" ;;
+esac
 BUILD_DIR="$(mktemp -d)"
 trap 'rm -rf "$BUILD_DIR"' EXIT
 
