@@ -9,9 +9,9 @@
 
 return [
     ['label' => 'Dashboard', 'route' => 'dashboard', 'icon' => 'home', 'permission' => 'dashboard.view', 'built' => true],
-    ['label' => 'Sales CRM', 'route' => 'modules.comingSoon', 'params' => ['module' => 'sales-crm'], 'icon' => 'chart', 'permission' => 'enquiries.view.own', 'built' => false],
-    ['label' => 'General Enquiry', 'route' => 'modules.comingSoon', 'params' => ['module' => 'general-enquiry'], 'icon' => 'inbox', 'permission' => 'enquiries.view.own', 'built' => false],
-    ['label' => 'Attestation', 'route' => 'modules.comingSoon', 'params' => ['module' => 'attestation'], 'icon' => 'stamp', 'permission' => 'enquiries.view.own', 'built' => false],
+    ['label' => 'Sales CRM', 'route' => 'sales-crm.index', 'icon' => 'chart', 'permission' => 'enquiries.access', 'built' => true],
+    ['label' => 'General Enquiry', 'route' => 'general-enquiry.index', 'icon' => 'inbox', 'permission' => 'enquiries.access', 'built' => true],
+    ['label' => 'Attestation', 'route' => 'modules.comingSoon', 'params' => ['module' => 'attestation'], 'icon' => 'stamp', 'permission' => 'enquiries.access', 'built' => false],
     ['label' => 'B2B Partners', 'route' => 'modules.comingSoon', 'params' => ['module' => 'b2b-partners'], 'icon' => 'handshake', 'permission' => 'enquiries.view.all', 'built' => false],
     ['label' => 'HRMS', 'route' => 'modules.comingSoon', 'params' => ['module' => 'hrms'], 'icon' => 'users', 'permission' => 'users.manage', 'built' => false],
     ['label' => 'Finance', 'route' => 'modules.comingSoon', 'params' => ['module' => 'finance'], 'icon' => 'currency', 'permission' => 'enquiries.view.all', 'built' => false],

@@ -52,5 +52,13 @@ class DatabaseSeeder extends Seeder
             );
             $user->syncRoles([$role]);
         }
+
+        // Gives sales_manager's enquiries.view.team scope real reports to filter on.
+        $salesManager = User::where('email', 'sales.manager@videshia.com')->first();
+        User::whereIn('email', [
+            'visa.consultant@videshia.com',
+            'forex.consultant@videshia.com',
+            'travel.consultant@videshia.com',
+        ])->update(['manager_id' => $salesManager->id]);
     }
 }

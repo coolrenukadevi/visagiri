@@ -79,6 +79,20 @@
         </header>
 
         <main class="flex-1 overflow-y-auto p-6">
+            @if (session('flash'))
+                <div class="mb-5 px-4 py-3 rounded-lg text-sm" style="background:#e4faf9;color:#0b7a7e;border:1px solid #b7ecea">
+                    {{ session('flash') }}
+                </div>
+            @endif
+            @if ($errors->any())
+                <div class="mb-5 px-4 py-3 rounded-lg text-sm bg-rose-50 text-rose-700 border border-rose-200">
+                    <ul class="list-disc pl-4 space-y-0.5">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             {{ $slot }}
         </main>
     </div>

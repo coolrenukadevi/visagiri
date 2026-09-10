@@ -27,6 +27,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'enquiries.create',
             'enquiries.edit.own',
             'enquiries.edit.team',
+            'enquiries.edit.all',
             'enquiries.assign',
             'enquiries.export',
             'enquiries.delete',
@@ -44,7 +45,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $roles = [
             'super_admin' => $permissions, // everything
             'admin' => [
-                'dashboard.view', 'enquiries.view.all', 'enquiries.create', 'enquiries.edit.team',
+                'dashboard.view', 'enquiries.view.all', 'enquiries.create', 'enquiries.edit.all',
                 'enquiries.assign', 'enquiries.export', 'enquiries.delete', 'users.manage', 'audit.view',
             ],
             'sales_manager' => [
