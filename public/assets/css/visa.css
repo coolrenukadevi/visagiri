@@ -7,6 +7,17 @@
   padding-bottom: var(--space-10);
 }
 
+/* Long-form editorial copy (country/visa-type overview, eligibility,
+   local SEO sections) — justified edges read as more polished/
+   professional at this line length, paired with hyphenation so
+   justify doesn't create ugly rivers of whitespace in narrow cards. */
+.visa-detail p,
+.visa-detail .accordion-body,
+.prose {
+  text-align: justify;
+  hyphens: auto;
+}
+
 .visa-detail__header {
   display: flex;
   align-items: center;
