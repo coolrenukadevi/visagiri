@@ -40,7 +40,7 @@ $supportPhoneDial = setting('contact_phone_dial', '+917065819819');
 $supportPhoneDisplay = setting('contact_phone_display', '+91 7065 819 819');
 
 $navLinks = [
-    ['label' => 'Visa Process', 'href' => '/visa-process/', 'icon' => 'visa-process'],
+    ['label' => 'Forex', 'href' => '/contact/?service=forex', 'icon' => 'forex'],
 ];
 
 // Resources mega-menu — every link points to a genuinely real, already
@@ -166,7 +166,10 @@ $visaServiceLinks = array_map(
 // the way the old hardcoded visa-type arrays did.
 $attestationCategories = attestation_categories();
 
-$isActive = static fn(string $href): bool => $href !== '/' && str_starts_with($currentPath, $href);
+// strtok(...,'?') strips any query string off $href before comparing —
+// $currentPath (from parse_url's PHP_URL_PATH) never has one, so a nav
+// link like '/contact/?service=forex' would otherwise never match.
+$isActive = static fn(string $href): bool => $href !== '/' && str_starts_with($currentPath, strtok($href, '?'));
 ?>
 <!doctype html>
 <html lang="en">
