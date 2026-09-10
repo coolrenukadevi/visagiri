@@ -52,4 +52,39 @@ require __DIR__ . '/../includes/header.php';
         </div>
     </div>
 </section>
+
+<section class="section" style="background:var(--bg-alt, #f7f8fa)">
+    <div class="container" style="max-width:760px">
+        <div class="section-heading" style="text-align:left;margin-left:0;max-width:none">
+            <h2>How leadership shapes Visagiri</h2>
+        </div>
+        <p>
+            Under Anisha Bharti and Renuka Devi's direction, Visagiri has been built as a technology-driven visa
+            consultancy under Tripgation Pvt Ltd — one that pairs an online system for checking requirements and
+            tracking application status with hands-on consultant support, rather than choosing one over the other.
+        </p>
+        <p>
+            That leadership focus carries through to how the company handles document attestation and legalization
+            work as well: apostille, MEA, embassy, and consulate attestation, delivered with the same emphasis on
+            transparent, dependable service that the visa consultancy side runs on.
+        </p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container" style="max-width:760px">
+        <div class="section-heading" style="text-align:left;margin-left:0;max-width:none">
+            <h2>Connect with the wider team</h2>
+        </div>
+        <p>
+            Directors set the direction, but day-to-day case work runs through a broader team of visa consultants,
+            document and attestation specialists, and application support staff.
+        </p>
+        <div style="display:flex;gap:var(--space-3);flex-wrap:wrap;margin-top:var(--space-4)">
+            <a href="/our-team/" class="btn btn-outline">Meet Our Team &rarr;</a>
+            <a href="/about/#our-story" class="btn btn-outline">Our Story &rarr;</a>
+            <a href="/contact/" class="btn btn-outline">Contact Us &rarr;</a>
+        </div>
+    </div>
+</section>
 <?php require __DIR__ . '/../includes/footer.php'; ?>

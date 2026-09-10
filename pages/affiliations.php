@@ -27,8 +27,17 @@ require __DIR__ . '/../includes/header.php';
             updated as those confirmations come through.
         </p>
         <p>
-            Looking to verify a specific credential, or want to know how we're regulated? <a href="/contact/">Contact our team</a> directly.
+            This applies equally to industry bodies, regulatory affiliations, and accreditation programs relevant
+            to visa consultancy and document attestation. Rather than list a credential provisionally, we keep
+            this page limited to what's been formally verified.
         </p>
+        <p>
+            Looking to verify a specific credential, or want to know how we're regulated? <a href="/contact/">Contact our team</a> directly, and we'll point you to what applies.
+        </p>
+        <div style="display:flex;gap:var(--space-3);flex-wrap:wrap;margin-top:var(--space-4)">
+            <a href="/about/" class="btn btn-outline">About Us &rarr;</a>
+            <a href="/contact/" class="btn btn-outline">Contact Us &rarr;</a>
+        </div>
     </div>
 </section>
 <?php require __DIR__ . '/../includes/footer.php'; ?>

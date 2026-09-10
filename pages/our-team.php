@@ -53,12 +53,33 @@ require __DIR__ . '/../includes/header.php';
 </section>
 
 <section class="section" style="padding-top:0">
-    <div class="container" style="max-width:640px;text-align:center">
+    <div class="container" style="max-width:760px">
+        <div class="section-heading" style="text-align:left;margin-left:0;max-width:none">
+            <h2>How the team works together</h2>
+        </div>
         <p>
+            A typical case moves through all three roles: a visa consultant assesses your eligibility and
+            requirements up front, a document and attestation specialist reviews the paperwork itself where
+            apostille or attestation is involved, and application support keeps you posted as your case moves
+            through submission and decision — with online status tracking rather than one-off phone updates.
+        </p>
+        <div class="alert alert-info">
             Individual team profiles are being added here soon. In the meantime, meet our
             <a href="/leadership/">leadership team</a>, or get in touch with any questions.
-        </p>
-        <a href="/contact/" class="btn btn-outline" style="margin-top:var(--space-3)">Contact Us</a>
+        </div>
+    </div>
+</section>
+
+<section class="section" style="padding-top:0">
+    <div class="container" style="max-width:640px;text-align:center">
+        <div class="section-heading" style="max-width:none">
+            <h2>Talk to the team</h2>
+        </div>
+        <div style="display:flex;gap:var(--space-3);flex-wrap:wrap;justify-content:center">
+            <a href="/contact/" class="btn btn-outline">Contact Us &rarr;</a>
+            <a href="/leadership/" class="btn btn-outline">Leadership &rarr;</a>
+            <a href="/careers/" class="btn btn-outline">Careers &rarr;</a>
+        </div>
     </div>
 </section>
 <?php require __DIR__ . '/../includes/footer.php'; ?>

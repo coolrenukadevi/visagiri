@@ -206,6 +206,27 @@ require __DIR__ . '/../includes/header.php';
     </div>
 </section>
 
+<section class="section">
+    <div class="container" style="max-width:760px">
+        <div class="section-heading" style="text-align:left;margin-left:0;max-width:none">
+            <span class="section-eyebrow">FAQ</span>
+            <h2>Frequently asked questions</h2>
+        </div>
+        <div class="accordion-item">
+            <details>
+                <summary>Who is this program for?</summary>
+                <div class="accordion-body">Travel agencies, tour operators, visa consultants, corporate travel desks, immigration consultants, freelance/independent consultants, and sub-agents who regularly handle visa cases for their customers.</div>
+            </details>
+        </div>
+        <div class="accordion-item">
+            <details>
+                <summary>Is GST or PAN mandatory to start onboarding?</summary>
+                <div class="accordion-body">No — you can begin registration without them, but a verified GSTIN/PAN is required before your account is approved for live referrals.</div>
+            </details>
+        </div>
+    </div>
+</section>
+
 <section class="section" id="enquiry-form">
     <div class="container" style="max-width:680px">
         <div class="section-heading" style="text-align:left;margin-left:0;max-width:none">
