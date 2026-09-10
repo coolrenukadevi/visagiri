@@ -151,8 +151,11 @@ declare(strict_types=1);
 </footer>
 
 <?php require __DIR__ . '/enquiry-widget.php'; ?>
+<?php require __DIR__ . '/enquiry-modal.php'; ?>
 
 <script src="<?= e(asset_url('/assets/js/site.js')) ?>"></script>
 <script src="<?= e(asset_url('/assets/js/visa-search-widget.js')) ?>"></script>
+<script src="<?= e(asset_url('/assets/js/enquiry-wizard.js')) ?>"></script>
+<script src="<?= e(asset_url('/assets/js/enquiry-modal.js')) ?>"></script>
 </body>
 </html>

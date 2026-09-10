@@ -202,7 +202,7 @@ $isActive = static fn(string $href): bool => $href !== '/' && str_starts_with($c
 // file; the live site no longer goes through it.
 foreach ([
     'tokens', 'base', 'components', 'layout', 'home',
-    'visa', 'countries',
+    'visa', 'countries', 'enquiry-modal',
 ] as $cssFile): ?>
 <link rel="stylesheet" href="<?= e(asset_url("/assets/css/$cssFile.css")) ?>">
 <?php endforeach; ?>
@@ -499,7 +499,7 @@ foreach ([
 
         <div class="site-header__actions">
             <a href="/track-visa/" class="site-header__text-link">Track Application</a>
-            <a href="/enquire/" class="btn btn-gold btn-sm site-header__enquire-btn">Enquire Now</a>
+            <a href="/enquire/" class="btn btn-gold btn-sm site-header__enquire-btn" data-open-enquiry-modal>Enquire Now</a>
         </div>
 
         <button type="button" class="site-header__burger" id="site-header-burger" aria-expanded="false" aria-controls="site-header-mobile" aria-label="Open menu">
@@ -663,7 +663,7 @@ foreach ([
         <div class="site-header__mobile-actions">
             <p class="site-header__mobile-tagline">Technology Meets Travel &amp; Visa</p>
             <a href="<?= e(whatsapp_enquiry_href('Hello Visagiri, I would like assistance with my travel/visa-related enquiry.')) ?>" class="btn btn-gold" target="_blank" rel="noopener noreferrer">24&times;7 Support</a>
-            <a href="/enquire/" class="btn btn-outline">Enquire Now</a>
+            <a href="/enquire/" class="btn btn-outline" data-open-enquiry-modal>Enquire Now</a>
             <div class="site-header__mobile-login">
                 <span class="site-header__mobile-subheading">Login</span>
                 <a href="/login/">Customer Login</a>

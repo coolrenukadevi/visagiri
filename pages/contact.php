@@ -56,6 +56,11 @@ $forexPrefill = $serviceType === 'forex' && ($_SERVER['REQUEST_METHOD'] ?? '') !
     ? 'I saw the indicative USD to INR rate on your website and would like help with a forex/currency exchange requirement.'
     : '';
 
+// Set by enquiry-modal.js when this form is submitted from inside the
+// sitewide "Enquire Now" modal (fetch) instead of the standalone
+// page's normal browser POST.
+$isAjax = ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'fetch';
+
 $submitted = false;
 $success = false;
 $errors = [];
@@ -182,6 +187,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             $success = false;
         }
+    }
+
+    if ($isAjax) {
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => $success,
+            'errors' => $errors,
+            'reference' => $referenceNumber,
+            'tracking_token' => $trackingToken,
+            'pdf_url' => ($success && $referenceNumber !== null && $trackingToken !== null)
+                ? '/contact/pdf/?ref=' . urlencode($referenceNumber) . '&token=' . urlencode($trackingToken)
+                : null,
+        ]);
+        exit;
     }
 }
 

@@ -196,6 +196,9 @@ switch ($segments[0] ?? '') {
         if (($segments[1] ?? null) === 'pdf') {
             $dispatch("$root/pages/enquiry-pdf-download.php");
         }
+        if (($segments[1] ?? null) === 'wizard') {
+            $dispatch("$root/pages/enquire-wizard-fragment.php");
+        }
         $dispatch("$root/pages/enquire.php");
 
     case 'track':

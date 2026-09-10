@@ -1,0 +1,217 @@
+/* Sitewide "Enquire Now" modal — includes/enquiry-modal.php,
+   public/assets/js/enquiry-modal.js. Navy/gold brand, matching the
+   header/footer treatment used everywhere else on the site. */
+
+.enquiry-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+}
+
+.enquiry-modal[hidden] {
+  display: none;
+}
+
+body.enquiry-modal-open {
+  overflow: hidden;
+}
+
+.enquiry-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 25, 56, 0.6);
+}
+
+.enquiry-modal__dialog {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 640px;
+  max-height: min(720px, 90vh);
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.enquiry-modal__close {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  z-index: 2;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--white);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.enquiry-modal__close:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.enquiry-modal__scroll {
+  overflow-y: auto;
+  flex: 1;
+}
+
+.enquiry-modal__header {
+  background: linear-gradient(135deg, var(--visa-blue-dark), var(--visa-blue));
+  color: var(--white);
+  padding: var(--space-6) var(--space-6) var(--space-5);
+}
+
+.enquiry-modal__eyebrow {
+  display: block;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--visa-gold);
+  margin-bottom: var(--space-2);
+}
+
+.enquiry-modal__title {
+  color: var(--white);
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-tight);
+  margin: 0;
+}
+
+.enquiry-modal__subtitle {
+  color: rgba(255, 255, 255, 0.85);
+  margin: var(--space-2) 0 0;
+  font-size: var(--font-size-sm);
+}
+
+.enquiry-modal__back {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-4);
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: var(--white);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.enquiry-modal__back:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.enquiry-modal__step {
+  position: relative;
+}
+
+.enquiry-modal__step[hidden] {
+  display: none;
+}
+
+.enquiry-modal__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  padding: var(--space-6);
+}
+
+.enquiry-modal__tile {
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  cursor: pointer;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+
+.enquiry-modal__tile:hover,
+.enquiry-modal__tile:focus-visible {
+  border-color: var(--visa-gold);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.enquiry-modal__tile-title {
+  display: block;
+  font-weight: var(--font-weight-bold);
+  color: var(--text-dark);
+  margin-bottom: var(--space-1);
+}
+
+.enquiry-modal__tile-desc {
+  display: block;
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  line-height: var(--line-height-normal);
+}
+
+.enquiry-modal__step[data-enquiry-modal-step="simple-form"] form,
+.enquiry-modal__step[data-enquiry-modal-step="wizard"] > [data-enquiry-modal-wizard-container] {
+  padding: var(--space-6);
+}
+
+.enquiry-modal__step[data-enquiry-modal-step="wizard"] #enquiry-wizard {
+  padding: var(--space-6);
+}
+
+.enquiry-modal__step[data-enquiry-modal-step="wizard"] .enrollment-steps {
+  margin-top: 0;
+}
+
+.enquiry-modal__loading {
+  padding: var(--space-8) var(--space-6);
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.enquiry-modal__success {
+  padding: var(--space-8) var(--space-6);
+  text-align: center;
+}
+
+.enquiry-modal__success-ref {
+  font-size: var(--font-size-lg);
+  margin-top: var(--space-5);
+}
+
+@media (max-width: 640px) {
+  .enquiry-modal {
+    padding: var(--space-2);
+  }
+
+  .enquiry-modal__dialog {
+    max-height: 95vh;
+  }
+
+  .enquiry-modal__grid {
+    grid-template-columns: 1fr;
+    padding: var(--space-4);
+  }
+
+  .enquiry-modal__header {
+    padding: var(--space-8) var(--space-4) var(--space-4);
+  }
+
+  .enquiry-modal__step[data-enquiry-modal-step="simple-form"] form,
+  .enquiry-modal__step[data-enquiry-modal-step="wizard"] > [data-enquiry-modal-wizard-container],
+  .enquiry-modal__step[data-enquiry-modal-step="wizard"] #enquiry-wizard {
+    padding: var(--space-4);
+  }
+}
