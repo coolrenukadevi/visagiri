@@ -41,9 +41,23 @@ function admin_header_start(string $pageTitle, string $activeNav): void
     <div class="admin-main">
         <header class="admin-topbar">
             <h1><?= e($pageTitle) ?></h1>
-            <div class="admin-topbar__account">
-                <span><?= e($admin['full_name'] ?? '') ?></span>
-                <form method="post" action="/admin/logout/" style="display:contents"><?= csrf_field() ?><button type="submit" class="btn btn-outline btn-sm">Logout</button></form>
+            <div class="admin-profile">
+                <button type="button" class="admin-profile__trigger" id="admin-profile-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="admin-profile-menu">
+                    <span class="admin-profile__avatar"><?= e(admin_initials($admin['full_name'] ?? '')) ?></span>
+                    <span><?= e($admin['full_name'] ?? '') ?></span>
+                    <?= nav_chevron_icon() ?>
+                </button>
+                <div class="admin-profile__menu" id="admin-profile-menu">
+                    <div class="admin-profile__menu-header">
+                        <div class="admin-profile__menu-name"><?= e($admin['full_name'] ?? '') ?></div>
+                        <div class="admin-profile__menu-role"><?= e($admin['role_name'] ?? '') ?></div>
+                    </div>
+                    <a href="/admin/profile/">My Profile</a>
+                    <?php if (has_permission('settings.manage')): ?>
+                    <a href="/admin/settings/">Settings</a>
+                    <?php endif; ?>
+                    <form method="post" action="/admin/logout/"><?= csrf_field() ?><button type="submit">Logout</button></form>
+                </div>
             </div>
         </header>
         <main class="admin-content">

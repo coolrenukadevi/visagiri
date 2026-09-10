@@ -1,18 +1,31 @@
 /**
- * Admin sidebar collapsible group toggles (Forex/Content/System). The
- * server already renders the group containing the current page open
- * (see includes/admin-layout.php) — this only handles click-to-toggle
- * on top of that, so the sidebar still works with JS disabled, just
- * without collapsing.
+ * Topbar profile dropdown (name/avatar -> Profile/Settings/Logout).
+ * Click-to-toggle, closes on an outside click or Escape — the same
+ * interaction pattern as the public site's mega-menus, just simpler
+ * (one panel, no hover-intent).
  */
 document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.admin-sidebar__group').forEach(function (toggle) {
-        toggle.addEventListener('click', function () {
-            var panel = document.getElementById(toggle.getAttribute('aria-controls'));
-            if (!panel) return;
-            var isOpen = panel.classList.toggle('is-open');
-            toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-        });
+    var trigger = document.getElementById('admin-profile-trigger');
+    var menu = document.getElementById('admin-profile-menu');
+    if (!trigger || !menu) return;
+
+    function closeMenu() {
+        menu.classList.remove('is-open');
+        trigger.setAttribute('aria-expanded', 'false');
+    }
+
+    trigger.addEventListener('click', function (event) {
+        event.stopPropagation();
+        var isOpen = menu.classList.toggle('is-open');
+        trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+
+    document.addEventListener('click', function (event) {
+        if (!menu.contains(event.target) && event.target !== trigger) closeMenu();
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') closeMenu();
     });
 });
 

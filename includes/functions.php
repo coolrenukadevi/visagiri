@@ -489,10 +489,46 @@ function primary_nav_icon(string $key): string
     };
 }
 
+/** Up to 2 initials from a full name, for the topbar avatar circle — "Vikash Kumar" -> "VK". */
+function admin_initials(string $fullName): string
+{
+    $parts = array_filter(explode(' ', trim($fullName)));
+    $initials = array_map(static fn(string $p): string => mb_strtoupper(mb_substr($p, 0, 1)), array_slice($parts, 0, 2));
+    return implode('', $initials) ?: '?';
+}
+
 /** Small chevron used next to mega-menu nav triggers, rotated via CSS on open. */
 function nav_chevron_icon(): string
 {
     return '<svg class="mega-menu__trigger-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4.5 6 8 9.5 4.5"/></svg>';
+}
+
+/**
+ * Line icons for the admin dashboard's module tiles — same visual
+ * language as company_nav_icon()/primary_nav_icon() (stroke
+ * currentColor, 1.6 stroke-width) rather than the emoji the tiles used
+ * before, so the admin panel reads as one deliberate icon system
+ * instead of mixing hand-drawn line icons on the public site with
+ * emoji in the admin panel.
+ */
+function admin_module_icon(string $key): string
+{
+    $attrs = 'width="24" height="24" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
+    return match ($key) {
+        'sales-crm' => "<svg $attrs><rect x=\"3\" y=\"7.5\" width=\"14\" height=\"9\" rx=\"1.3\"/><path d=\"M7 7.5V5.8C7 5 7.6 4.4 8.4 4.4H11.6C12.4 4.4 13 5 13 5.8V7.5\"/><line x1=\"3\" y1=\"11.5\" x2=\"17\" y2=\"11.5\"/></svg>",
+        'customers' => "<svg $attrs><circle cx=\"7.2\" cy=\"7\" r=\"2.4\"/><path d=\"M2.5 16C2.5 12.7 4.6 11 7.2 11 9.8 11 11.9 12.7 11.9 16\"/><circle cx=\"14\" cy=\"7.8\" r=\"2\"/><path d=\"M12.7 11.2C15 11.2 16.9 12.7 17 15.6\"/></svg>",
+        'visa-operations' => "<svg $attrs><rect x=\"4\" y=\"2.5\" width=\"12\" height=\"15\" rx=\"1.3\"/><circle cx=\"10\" cy=\"7.8\" r=\"2.1\"/><path d=\"M6.8 13.5C7.1 11.8 8.4 11 10 11 11.6 11 12.9 11.8 13.2 13.5\"/></svg>",
+        'partners' => "<svg $attrs><path d=\"M8.3 11.7 11.7 8.3\"/><path d=\"M9.2 6 11 4.2C12.4 2.8 14.6 2.8 16 4.2 17.4 5.6 17.4 7.8 16 9.2L14.2 11\"/><path d=\"M10.8 14 9 15.8C7.6 17.2 5.4 17.2 4 15.8 2.6 14.4 2.6 12.2 4 10.8L5.8 9\"/></svg>",
+        'b2b-portal' => "<svg $attrs><rect x=\"4\" y=\"3\" width=\"7\" height=\"14\" rx=\"0.8\"/><rect x=\"12.3\" y=\"7.6\" width=\"4\" height=\"9.4\" rx=\"0.8\"/><circle cx=\"6.1\" cy=\"6.4\" r=\"0.55\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"8.9\" cy=\"6.4\" r=\"0.55\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"6.1\" cy=\"9.7\" r=\"0.55\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"8.9\" cy=\"9.7\" r=\"0.55\" fill=\"currentColor\" stroke=\"none\"/></svg>",
+        'forex' => "<svg $attrs><circle cx=\"7.5\" cy=\"7.5\" r=\"4.5\"/><circle cx=\"12.5\" cy=\"12.5\" r=\"4.5\"/><line x1=\"7.5\" y1=\"6\" x2=\"7.5\" y2=\"9\"/><path d=\"M6.4 6.6H8.6\"/><path d=\"M6.4 8.4H8.6\"/></svg>",
+        'finance' => "<svg $attrs><rect x=\"2.5\" y=\"5.5\" width=\"15\" height=\"10\" rx=\"1.5\"/><line x1=\"2.5\" y1=\"9\" x2=\"17.5\" y2=\"9\"/><line x1=\"5\" y1=\"12.5\" x2=\"8.5\" y2=\"12.5\"/></svg>",
+        'hrms' => "<svg $attrs><circle cx=\"10\" cy=\"6.5\" r=\"3\"/><path d=\"M4.5 17C4.5 13.4 6.9 11.2 10 11.2 13.1 11.2 15.5 13.4 15.5 17\"/></svg>",
+        'grievances' => "<svg $attrs><rect x=\"2.5\" y=\"5\" width=\"15\" height=\"10.5\" rx=\"1.5\"/><path d=\"M3.2 6 10 11 16.8 6\"/></svg>",
+        'content' => "<svg $attrs><circle cx=\"10\" cy=\"10\" r=\"7.3\"/><ellipse cx=\"10\" cy=\"10\" rx=\"3.1\" ry=\"7.3\"/><line x1=\"2.9\" y1=\"10\" x2=\"17.1\" y2=\"10\"/></svg>",
+        'system' => "<svg $attrs><circle cx=\"10\" cy=\"10\" r=\"2.4\"/><path d=\"M10 3.5V5.3M10 14.7V16.5M16.5 10H14.7M5.3 10H3.5M14.6 5.4 13.4 6.6M6.6 13.4 5.4 14.6M14.6 14.6 13.4 13.4M6.6 6.6 5.4 5.4\"/></svg>",
+        'recycle-bin' => "<svg $attrs><path d=\"M3.5 6H16.5\"/><path d=\"M8 6V4.3C8 3.8 8.4 3.4 8.9 3.4H11.1C11.6 3.4 12 3.8 12 4.3V6\"/><path d=\"M5.3 6 6 15.8C6.1 16.4 6.6 16.8 7.2 16.8H12.8C13.4 16.8 13.9 16.4 14 15.8L14.7 6\"/><line x1=\"8.4\" y1=\"9\" x2=\"8.7\" y2=\"14\"/><line x1=\"11.6\" y1=\"9\" x2=\"11.3\" y2=\"14\"/></svg>",
+        default => '',
+    };
 }
 
 /**

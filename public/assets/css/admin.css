@@ -34,38 +34,6 @@
 .admin-sidebar__nav a:hover { color: var(--white); background: rgba(255,255,255,0.06); }
 .admin-sidebar__nav a.is-active { color: var(--white); border-left-color: var(--visa-gold); background: rgba(255,255,255,0.08); }
 
-/* Section headers inside the nav (Forex / Content / System) — these
-   had no rule at all before, so they rendered as bare unstyled text
-   flush against the sidebar edge. Now a clickable <button> that
-   collapses/expands its sibling .admin-sidebar__subgroup (see
-   admin.js) rather than always showing every sub-link at once. */
-.admin-sidebar__group {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    padding: var(--space-5) var(--space-5) var(--space-2);
-    margin-top: var(--space-2);
-    background: none;
-    border: none;
-    border-top: 1px solid rgba(255,255,255,0.1);
-    font-family: inherit;
-    font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-semibold);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.45);
-    cursor: pointer;
-    transition: color var(--transition-fast);
-}
-.admin-sidebar__group:hover { color: rgba(255,255,255,0.75); }
-.admin-sidebar__group .mega-menu__trigger-arrow { transition: transform var(--transition-fast); }
-.admin-sidebar__group[aria-expanded="true"] .mega-menu__trigger-arrow { transform: rotate(180deg); }
-.admin-sidebar__nav > .admin-sidebar__group:first-child { margin-top: 0; border-top: none; }
-
-.admin-sidebar__subgroup { display: none; flex-direction: column; }
-.admin-sidebar__subgroup.is-open { display: flex; }
-
 .admin-sidebar__footer { padding: var(--space-5); }
 .admin-sidebar__footer a { color: rgba(255,255,255,0.6); font-size: var(--font-size-sm); }
 
@@ -80,6 +48,52 @@
 }
 .admin-topbar h1 { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); margin: 0; }
 .admin-topbar__account { display: flex; align-items: center; gap: var(--space-3); font-size: var(--font-size-sm); color: var(--text-muted); font-weight: var(--font-weight-medium); }
+
+/* Profile dropdown — replaces the plain "name + Logout" topbar block.
+   Toggled via admin.js (same delegated-listener pattern as the public
+   site's mega-menus); closed by default, no JS = trigger still shows
+   the name, just can't open the menu (progressive enhancement, not a
+   hard dependency — Logout itself is a plain link/form either way). */
+.admin-profile { position: relative; }
+.admin-profile__trigger {
+    display: flex; align-items: center; gap: var(--space-2);
+    background: none; border: none; cursor: pointer;
+    font-family: inherit; font-size: var(--font-size-sm); font-weight: var(--font-weight-medium);
+    color: var(--text-dark); padding: var(--space-2) var(--space-2);
+    border-radius: var(--radius-sm);
+    transition: background var(--transition-fast);
+}
+.admin-profile__trigger:hover { background: var(--surface); }
+.admin-profile__avatar {
+    width: 32px; height: 32px; border-radius: var(--radius-full);
+    background: var(--visa-blue); color: var(--white);
+    display: flex; align-items: center; justify-content: center;
+    font-size: var(--font-size-sm); font-weight: var(--font-weight-bold);
+    flex-shrink: 0;
+}
+.admin-profile__trigger .mega-menu__trigger-arrow { transition: transform var(--transition-fast); color: var(--text-muted); }
+.admin-profile__trigger[aria-expanded="true"] .mega-menu__trigger-arrow { transform: rotate(180deg); }
+.admin-profile__menu {
+    display: none;
+    position: absolute; top: calc(100% + var(--space-2)); right: 0;
+    min-width: 220px;
+    background: var(--white); border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg); border: 1px solid var(--border);
+    padding: var(--space-2);
+    z-index: 20;
+}
+.admin-profile__menu.is-open { display: block; }
+.admin-profile__menu-header { padding: var(--space-3) var(--space-3) var(--space-2); border-bottom: 1px solid var(--border); margin-bottom: var(--space-2); }
+.admin-profile__menu-name { font-weight: var(--font-weight-bold); color: var(--text-dark); font-size: var(--font-size-sm); }
+.admin-profile__menu-role { color: var(--text-muted); font-size: var(--font-size-xs); text-transform: uppercase; letter-spacing: 0.04em; }
+.admin-profile__menu a, .admin-profile__menu button {
+    display: block; width: 100%; text-align: left;
+    padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm); color: var(--text-dark);
+    background: none; border: none; font-family: inherit; cursor: pointer;
+    transition: background var(--transition-fast);
+}
+.admin-profile__menu a:hover, .admin-profile__menu button:hover { background: var(--surface); }
 
 .admin-content { padding: var(--space-6); max-width: 1200px; }
 
@@ -106,6 +120,58 @@
 .admin-stat-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
 .admin-stat-card__value { font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--visa-blue); line-height: 1.2; }
 .admin-stat-card__label { color: var(--text-muted); font-size: var(--font-size-sm); margin-top: var(--space-1); }
+
+/* Dashboard analytics/operations panels (pipeline, work queue, recent
+   enquiries, activity feed) — one shared card shell, reused across
+   all of them rather than each widget inventing its own container. */
+.admin-panel-row { display: grid; grid-template-columns: 1.3fr 1fr; gap: var(--space-5); margin-bottom: var(--space-6); align-items: start; }
+.admin-panel {
+    background: var(--white); border-radius: var(--radius-md);
+    padding: var(--space-5); box-shadow: var(--shadow-sm);
+    margin-bottom: var(--space-6);
+}
+.admin-panel-row .admin-panel { margin-bottom: 0; }
+.admin-panel__title { font-size: var(--font-size-base); font-weight: var(--font-weight-bold); color: var(--text-dark); margin: 0 0 var(--space-4); }
+.admin-empty-state { color: var(--text-muted); font-size: var(--font-size-sm); padding: var(--space-4) 0; }
+.admin-table-scroll { overflow-x: auto; }
+.admin-table-scroll .admin-table { min-width: 720px; }
+
+/* Status distribution bars — plain CSS, no charting library, matching
+   this project's zero-dependency stance everywhere else. */
+.admin-status-bars { display: flex; flex-direction: column; gap: var(--space-3); }
+.admin-status-bar__label { display: flex; justify-content: space-between; font-size: var(--font-size-sm); color: var(--text-dark); margin-bottom: var(--space-1); }
+.admin-status-bar__label span:last-child { font-weight: var(--font-weight-bold); color: var(--visa-blue); }
+.admin-status-bar__track { background: var(--surface); border-radius: var(--radius-full); height: 8px; overflow: hidden; }
+.admin-status-bar__fill { background: var(--visa-blue); height: 100%; border-radius: var(--radius-full); transition: width var(--transition-base); }
+
+/* Today's Work Queue — a coloured-dot priority list, real counts only. */
+.admin-work-queue { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-3); }
+.admin-work-queue__item { display: flex; align-items: center; gap: var(--space-3); font-size: var(--font-size-sm); }
+.admin-work-queue__dot { width: 10px; height: 10px; border-radius: var(--radius-full); flex-shrink: 0; }
+.admin-work-queue__item.is-urgent .admin-work-queue__dot { background: var(--danger); }
+.admin-work-queue__item.is-pending .admin-work-queue__dot { background: var(--warning); }
+.admin-work-queue__item.is-docs .admin-work-queue__dot { background: var(--visa-gold-dark); }
+.admin-work-queue__item.is-internal .admin-work-queue__dot { background: var(--info); }
+.admin-work-queue__item.is-resolved .admin-work-queue__dot { background: var(--success); }
+.admin-work-queue__label { flex: 1; color: var(--text-dark); }
+.admin-work-queue__count { font-weight: var(--font-weight-bold); color: var(--text-dark); }
+
+/* Recent Activity feed — reads straight off audit_logs. */
+.admin-activity-feed { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.admin-activity-feed__item {
+    display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-4);
+    padding: var(--space-3) 0; border-bottom: 1px solid var(--border);
+    font-size: var(--font-size-sm);
+}
+.admin-activity-feed__item:last-child { border-bottom: none; padding-bottom: 0; }
+.admin-activity-feed__text { color: var(--text-dark); text-transform: capitalize; }
+.admin-activity-feed__text strong { text-transform: none; }
+.admin-activity-feed__time { color: var(--text-muted); font-size: var(--font-size-xs); white-space: nowrap; }
+
+@media (max-width: 900px) {
+    .admin-panel-row { grid-template-columns: 1fr; }
+    .admin-activity-feed__item { flex-direction: column; align-items: flex-start; gap: var(--space-1); }
+}
 
 /* Sidebar count badge (e.g. pending B2B partner enquiries) — small,
    attention-drawing pill next to the nav label it belongs to. */
@@ -143,7 +209,8 @@
     position: relative;
 }
 .admin-module-tile:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
-.admin-module-tile__icon { font-size: 1.75rem; line-height: 1; }
+.admin-module-tile__icon { color: var(--visa-gold-dark); line-height: 1; }
+.admin-module-tile__icon svg { display: block; }
 .admin-module-tile__title { font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--visa-blue); }
 .admin-module-tile__desc { color: var(--text-muted); font-size: var(--font-size-sm); flex: 1; }
 .admin-module-tile__badge {
@@ -159,6 +226,9 @@
 }
 
 .admin-form-card { background: var(--white); border-radius: var(--radius-md); padding: var(--space-6); box-shadow: var(--shadow-sm); max-width: 720px; }
+.admin-profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5); align-items: start; }
+.admin-profile-grid .admin-form-card { max-width: none; }
+@media (max-width: 900px) { .admin-profile-grid { grid-template-columns: 1fr; } }
 .admin-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
 .admin-form-grid--single { grid-template-columns: 1fr; }
 .admin-checkbox-row { display: flex; align-items: center; gap: var(--space-2); margin-top: var(--space-2); }
