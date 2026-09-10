@@ -1,0 +1,339 @@
+/* /about/ — the same bespoke "vintage travel document" visual
+   treatment as /why-visagiri/ (public/assets/css/why-visagiri.css),
+   extended with a statement block, a condensed "why" strip that links
+   out to the full Why Visagiri page, a People & Trust directory, and
+   the legal disclaimer/CIN line. Scoped under .about-page (including
+   its own CSS custom properties) so it can load sitewide via
+   header.php's shared stylesheet list without touching other pages. */
+
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap');
+
+.about-page {
+  --ap-navy: #12213D;
+  --ap-navy-deep: #0B1729;
+  --ap-parchment: #F6F1E4;
+  --ap-parchment-line: #E4DAC0;
+  --ap-brass: #AD7A2E;
+  --ap-brass-light: #C99A4C;
+  --ap-ink: #1B1B18;
+  --ap-ink-soft: #4A4A44;
+
+  background: var(--ap-parchment);
+  color: var(--ap-ink);
+  font-family: 'IBM Plex Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.about-page *,
+.about-page *::before,
+.about-page *::after {
+  box-sizing: border-box;
+}
+
+.about-page .ap-page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+.about-page a { color: inherit; }
+
+/* ---------- HERO ---------- */
+.about-page .ap-hero {
+  background: var(--ap-navy);
+  background-image:
+    radial-gradient(circle at 82% 18%, rgba(201, 154, 76, 0.12), transparent 45%),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255, 255, 255, 0.025) 39px, rgba(255, 255, 255, 0.025) 40px);
+  color: var(--ap-parchment);
+  padding: 76px 0 88px;
+  position: relative;
+  overflow: hidden;
+}
+.about-page .ap-hero::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 10px;
+  background: radial-gradient(circle at 10px 0, transparent 9px, var(--ap-parchment) 9.5px) repeat-x;
+  background-size: 20px 10px;
+}
+.about-page .ap-kicker {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+  letter-spacing: 0.06em;
+  color: var(--ap-brass-light);
+  margin: 0 0 22px;
+}
+.about-page .ap-hero h1 {
+  font-family: 'Newsreader', serif;
+  font-weight: 500;
+  font-size: clamp(40px, 6vw, 62px);
+  line-height: 1.05;
+  margin: 0 0 22px;
+  max-width: 13ch;
+  color: var(--ap-parchment);
+}
+.about-page .ap-hero > .ap-page > p {
+  font-size: 17px;
+  line-height: 1.6;
+  max-width: 50ch;
+  color: #D8D4C6;
+  margin: 0;
+}
+.about-page .ap-hero-seal {
+  position: absolute;
+  top: 56px; right: 40px;
+  width: 118px; height: 118px;
+  border: 1.5px solid rgba(201, 154, 76, 0.55);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-11deg);
+}
+.about-page .ap-hero-seal-inner {
+  width: 96px; height: 96px;
+  border: 1px dashed rgba(201, 154, 76, 0.45);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: var(--ap-brass-light);
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* ---------- STATEMENT ---------- */
+.about-page .ap-statement {
+  padding: 64px 0 52px;
+  border-bottom: 1px solid var(--ap-parchment-line);
+}
+.about-page .ap-statement p {
+  font-family: 'Newsreader', serif;
+  font-size: clamp(24px, 3vw, 30px);
+  line-height: 1.5;
+  color: var(--ap-ink);
+  max-width: 34ch;
+  margin: 0 0 28px;
+  font-weight: 400;
+}
+.about-page .ap-statement .ap-fine {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--ap-ink-soft);
+  max-width: 62ch;
+  margin: 0;
+}
+
+/* ---------- STATS ---------- */
+.about-page .ap-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-bottom: 1px solid var(--ap-parchment-line);
+}
+.about-page .ap-stat {
+  padding: 28px 24px 28px 0;
+  border-left: 1px solid var(--ap-parchment-line);
+  padding-left: 24px;
+}
+.about-page .ap-stat:first-child { border-left: none; padding-left: 0; }
+.about-page .ap-stat-num {
+  font-family: 'Newsreader', serif;
+  font-size: 30px;
+  color: var(--ap-brass);
+  margin: 0 0 4px;
+}
+.about-page .ap-stat-label {
+  font-size: 13px;
+  color: var(--ap-ink-soft);
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* ---------- STORY ---------- */
+.about-page .ap-story {
+  padding: 52px 0;
+  border-bottom: 1px solid var(--ap-parchment-line);
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 40px;
+}
+.about-page .ap-section-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  color: var(--ap-brass);
+  padding-top: 4px;
+}
+.about-page .ap-story p {
+  font-size: 15.5px;
+  line-height: 1.75;
+  color: var(--ap-ink-soft);
+  margin: 0 0 16px;
+  max-width: 60ch;
+}
+.about-page .ap-story p:last-child { margin-bottom: 0; }
+
+/* ---------- WHY STRIP ---------- */
+.about-page .ap-why {
+  padding: 52px 0;
+  border-bottom: 1px solid var(--ap-parchment-line);
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 40px;
+}
+.about-page .ap-why-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 20px;
+  margin-bottom: 26px;
+}
+.about-page .ap-why-head h2 {
+  font-family: 'Newsreader', serif;
+  font-weight: 500;
+  font-size: 24px;
+  margin: 0;
+}
+.about-page .ap-why-head a {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--ap-brass);
+  text-decoration: none;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--ap-brass-light);
+  padding-bottom: 2px;
+}
+.about-page .ap-why-strip {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 18px;
+}
+.about-page .ap-why-item { text-align: left; }
+.about-page .ap-why-stamp {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid var(--ap-brass);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Newsreader', serif;
+  font-style: italic;
+  font-size: 16px;
+  color: var(--ap-brass);
+  margin-bottom: 12px;
+}
+.about-page .ap-why-item:nth-child(1) .ap-why-stamp { transform: rotate(-6deg); }
+.about-page .ap-why-item:nth-child(2) .ap-why-stamp { transform: rotate(4deg); }
+.about-page .ap-why-item:nth-child(3) .ap-why-stamp { transform: rotate(-3deg); }
+.about-page .ap-why-item:nth-child(4) .ap-why-stamp { transform: rotate(7deg); }
+.about-page .ap-why-item:nth-child(5) .ap-why-stamp { transform: rotate(-8deg); }
+.about-page .ap-why-item h4 {
+  font-family: 'Newsreader', serif;
+  font-weight: 500;
+  font-size: 15.5px;
+  margin: 0 0 6px;
+}
+.about-page .ap-why-item p {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ap-ink-soft);
+  margin: 0;
+}
+
+/* ---------- DIRECTORY (people & trust) ---------- */
+.about-page .ap-directory {
+  padding: 52px 0;
+  border-bottom: 1px solid var(--ap-parchment-line);
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 40px;
+}
+.about-page .ap-dir-list { border-top: 1px solid var(--ap-parchment-line); }
+.about-page .ap-dir-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: baseline;
+  gap: 16px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--ap-parchment-line);
+  text-decoration: none;
+  color: var(--ap-ink);
+}
+.about-page .ap-dir-row .ap-dir-name { font-family: 'Newsreader', serif; font-size: 18px; }
+.about-page .ap-dir-row .ap-dir-desc { font-size: 13.5px; color: var(--ap-ink-soft); }
+.about-page .ap-dir-row .ap-dir-arrow { font-family: 'IBM Plex Mono', monospace; color: var(--ap-brass); font-size: 14px; }
+
+/* ---------- CTA ---------- */
+.about-page .ap-cta {
+  margin: 64px 0 48px;
+  background: var(--ap-navy-deep);
+  border-radius: 2px;
+  padding: 52px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  position: relative;
+  overflow: hidden;
+}
+.about-page .ap-cta::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgba(201, 154, 76, 0.25);
+  pointer-events: none;
+}
+.about-page .ap-cta h2 {
+  font-family: 'Newsreader', serif;
+  font-weight: 500;
+  font-size: 27px;
+  color: var(--ap-parchment);
+  margin: 0;
+  max-width: 16ch;
+}
+.about-page .ap-cta a {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  color: var(--ap-navy-deep);
+  background: var(--ap-brass-light);
+  text-decoration: none;
+  padding: 14px 26px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+/* ---------- DISCLAIMER ---------- */
+.about-page .ap-disclaimer { padding: 0 0 56px; }
+.about-page .ap-disclaimer p {
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--ap-ink-soft);
+  max-width: 70ch;
+  margin: 0 0 8px;
+}
+.about-page .ap-disclaimer .ap-cin {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  color: #8A8578;
+}
+
+@media (max-width: 640px) {
+  .about-page .ap-hero-seal { display: none; }
+  .about-page .ap-stats { grid-template-columns: repeat(2, 1fr); row-gap: 24px; }
+  .about-page .ap-stat:nth-child(3) { border-left: none; padding-left: 0; }
+  .about-page .ap-story,
+  .about-page .ap-why,
+  .about-page .ap-directory { grid-template-columns: 1fr; gap: 12px; }
+  .about-page .ap-why-strip { grid-template-columns: repeat(2, 1fr); row-gap: 24px; }
+  .about-page .ap-dir-row { grid-template-columns: 1fr auto; }
+  .about-page .ap-dir-row .ap-dir-desc { display: none; }
+  .about-page .ap-cta { padding: 38px 26px; }
+}

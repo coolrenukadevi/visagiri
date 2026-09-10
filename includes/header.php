@@ -125,7 +125,7 @@ $oceaniaTop = $topCountries($countryMenuData['by_region']['Oceania'] ?? [], 3);
 $companyMenu = [
     'Discover' => [
         ['label' => 'About Us', 'desc' => 'Who we are, our mission, vision and values', 'href' => '/about/', 'icon' => 'about'],
-        ['label' => 'Why Us', 'desc' => 'Our expertise, technology, transparency and service advantage', 'href' => '/about/#why-visagiri', 'icon' => 'shield'],
+        ['label' => 'Why Us', 'desc' => 'Our expertise, technology, transparency and service advantage', 'href' => '/why-visagiri/', 'icon' => 'shield'],
         ['label' => 'Our Story', 'desc' => 'Our journey and evolution', 'href' => '/about/#our-story', 'icon' => 'compass'],
     ],
     'People' => [
@@ -205,7 +205,7 @@ $isActive = static fn(string $href): bool => $href !== '/' && str_starts_with($c
 // file; the live site no longer goes through it.
 foreach ([
     'tokens', 'base', 'components', 'layout', 'home',
-    'visa', 'countries', 'enquiry-modal',
+    'visa', 'countries', 'enquiry-modal', 'why-visagiri', 'about',
 ] as $cssFile): ?>
 <link rel="stylesheet" href="<?= e(asset_url("/assets/css/$cssFile.css")) ?>">
 <?php endforeach; ?>
@@ -492,7 +492,7 @@ foreach ([
                                 <div class="mega-menu__featured-visual"><?= company_featured_illustration() ?></div>
                                 <div class="mega-menu__featured-title">Visa Management, Reimagined.</div>
                                 <p class="mega-menu__featured-copy">Technology-driven visa solutions backed by experienced professionals.</p>
-                                <a href="/about/#why-visagiri" class="mega-menu__featured-link">Explore Our Approach &rarr;</a>
+                                <a href="/why-visagiri/" class="mega-menu__featured-link">Explore Our Approach &rarr;</a>
                             </div>
                         </div>
                     </div>

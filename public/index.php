@@ -91,6 +91,9 @@ switch ($segments[0] ?? '') {
     case 'about':
         $dispatch("$root/pages/about.php");
 
+    case 'why-visagiri':
+        $dispatch("$root/pages/why-visagiri.php");
+
     case 'contact':
         if (($segments[1] ?? null) === 'pdf') {
             $dispatch("$root/pages/general-enquiry-pdf-download.php");

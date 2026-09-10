@@ -1,0 +1,278 @@
+/* /why-visagiri/ — a deliberately distinct, bespoke visual treatment
+   for the brand-story page (pages/why-visagiri.php), separate from the
+   rest of the site's navy/gold design system. Everything here is
+   scoped under .why-visagiri-page (including its own CSS custom
+   properties) so it can load sitewide via header.php's shared
+   stylesheet list, matching every other page-specific CSS file in this
+   project (home.css, visa.css, countries.css, ...), without touching
+   body/global element styles other pages rely on. */
+
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap');
+
+.why-visagiri-page {
+  --wv-navy: #12213D;
+  --wv-navy-deep: #0B1729;
+  --wv-parchment: #F6F1E4;
+  --wv-parchment-line: #E4DAC0;
+  --wv-brass: #AD7A2E;
+  --wv-brass-light: #C99A4C;
+  --wv-ink: #1B1B18;
+  --wv-ink-soft: #4A4A44;
+
+  background: var(--wv-parchment);
+  color: var(--wv-ink);
+  font-family: 'IBM Plex Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.why-visagiri-page *,
+.why-visagiri-page *::before,
+.why-visagiri-page *::after {
+  box-sizing: border-box;
+}
+
+.why-visagiri-page .wv-page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+/* ---------- HERO ---------- */
+.why-visagiri-page .wv-hero {
+  background: var(--wv-navy);
+  background-image:
+    radial-gradient(circle at 82% 18%, rgba(201, 154, 76, 0.12), transparent 45%),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255, 255, 255, 0.025) 39px, rgba(255, 255, 255, 0.025) 40px);
+  color: var(--wv-parchment);
+  padding: 76px 0 88px;
+  position: relative;
+  overflow: hidden;
+}
+.why-visagiri-page .wv-hero::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 10px;
+  background: radial-gradient(circle at 10px 0, transparent 9px, var(--wv-parchment) 9.5px) repeat-x;
+  background-size: 20px 10px;
+}
+.why-visagiri-page .wv-kicker {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+  letter-spacing: 0.06em;
+  color: var(--wv-brass-light);
+  margin: 0 0 22px;
+}
+.why-visagiri-page .wv-hero h1 {
+  font-family: 'Newsreader', serif;
+  font-weight: 500;
+  font-size: clamp(40px, 6vw, 62px);
+  line-height: 1.05;
+  margin: 0 0 22px;
+  max-width: 11.5ch;
+  color: var(--wv-parchment);
+}
+.why-visagiri-page .wv-hero > .wv-page > p {
+  font-size: 17px;
+  line-height: 1.6;
+  max-width: 46ch;
+  color: #D8D4C6;
+  margin: 0;
+}
+.why-visagiri-page .wv-hero-seal {
+  position: absolute;
+  top: 56px; right: 40px;
+  width: 118px; height: 118px;
+  border: 1.5px solid rgba(201, 154, 76, 0.55);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-11deg);
+}
+.why-visagiri-page .wv-hero-seal-inner {
+  width: 96px; height: 96px;
+  border: 1px dashed rgba(201, 154, 76, 0.45);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: var(--wv-brass-light);
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* ---------- STATS STRIP ---------- */
+.why-visagiri-page .wv-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-bottom: 1px solid var(--wv-parchment-line);
+}
+.why-visagiri-page .wv-stat {
+  padding: 28px 24px 28px 0;
+  border-left: 1px solid var(--wv-parchment-line);
+  padding-left: 24px;
+}
+.why-visagiri-page .wv-stat:first-child { border-left: none; padding-left: 0; }
+.why-visagiri-page .wv-stat-num {
+  font-family: 'Newsreader', serif;
+  font-size: 30px;
+  color: var(--wv-brass);
+  margin: 0 0 4px;
+}
+.why-visagiri-page .wv-stat-label {
+  font-size: 13px;
+  color: var(--wv-ink-soft);
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* ---------- STORY ---------- */
+.why-visagiri-page .wv-story {
+  padding: 52px 0;
+  border-bottom: 1px solid var(--wv-parchment-line);
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 40px;
+}
+.why-visagiri-page .wv-story-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  color: var(--wv-brass);
+  padding-top: 4px;
+}
+.why-visagiri-page .wv-story p {
+  font-size: 15.5px;
+  line-height: 1.75;
+  color: var(--wv-ink-soft);
+  margin: 0 0 16px;
+  max-width: 60ch;
+}
+.why-visagiri-page .wv-story p:last-child { margin-bottom: 0; }
+
+/* ---------- INTRO LINE ---------- */
+.why-visagiri-page .wv-intro {
+  padding: 64px 0 8px;
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+  border-bottom: 1px solid var(--wv-parchment-line);
+  padding-bottom: 48px;
+}
+.why-visagiri-page .wv-intro-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  color: var(--wv-brass);
+  white-space: nowrap;
+  padding-top: 6px;
+}
+.why-visagiri-page .wv-intro-text {
+  font-family: 'Newsreader', serif;
+  font-size: 24px;
+  line-height: 1.45;
+  color: var(--wv-ink);
+  max-width: 38ch;
+  font-weight: 400;
+}
+
+/* ---------- REGISTER (feature list) ---------- */
+.why-visagiri-page .wv-register { padding: 8px 0 20px; }
+.why-visagiri-page .wv-entry {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 26px;
+  padding: 34px 0;
+  border-bottom: 1px solid var(--wv-parchment-line);
+  align-items: start;
+}
+.why-visagiri-page .wv-entry:first-child { padding-top: 44px; }
+
+.why-visagiri-page .wv-stamp {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  border: 1.5px solid var(--wv-brass);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Newsreader', serif;
+  font-style: italic;
+  font-size: 22px;
+  color: var(--wv-brass);
+  flex-shrink: 0;
+}
+.why-visagiri-page .wv-entry:nth-child(1) .wv-stamp { transform: rotate(-6deg); }
+.why-visagiri-page .wv-entry:nth-child(2) .wv-stamp { transform: rotate(4deg); }
+.why-visagiri-page .wv-entry:nth-child(3) .wv-stamp { transform: rotate(-3deg); }
+.why-visagiri-page .wv-entry:nth-child(4) .wv-stamp { transform: rotate(7deg); }
+.why-visagiri-page .wv-entry:nth-child(5) .wv-stamp { transform: rotate(-8deg); }
+
+.why-visagiri-page .wv-entry h3 {
+  font-family: 'Newsreader', serif;
+  font-weight: 500;
+  font-size: 22px;
+  margin: 2px 0 8px;
+  color: var(--wv-ink);
+}
+.why-visagiri-page .wv-entry p {
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--wv-ink-soft);
+  margin: 0;
+  max-width: 52ch;
+}
+
+/* ---------- CTA ---------- */
+.why-visagiri-page .wv-cta {
+  margin: 64px 0 90px;
+  background: var(--wv-navy-deep);
+  border-radius: 2px;
+  padding: 52px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  position: relative;
+  overflow: hidden;
+}
+.why-visagiri-page .wv-cta::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgba(201, 154, 76, 0.25);
+  pointer-events: none;
+}
+.why-visagiri-page .wv-cta h2 {
+  font-family: 'Newsreader', serif;
+  font-weight: 500;
+  font-size: 27px;
+  color: var(--wv-parchment);
+  margin: 0;
+  max-width: 16ch;
+}
+.why-visagiri-page .wv-cta a {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: 500;
+  font-size: 15px;
+  color: var(--wv-navy-deep);
+  background: var(--wv-brass-light);
+  text-decoration: none;
+  padding: 14px 26px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .why-visagiri-page .wv-hero-seal { display: none; }
+  .why-visagiri-page .wv-stats { grid-template-columns: repeat(2, 1fr); row-gap: 24px; }
+  .why-visagiri-page .wv-stat:nth-child(3) { border-left: none; padding-left: 0; }
+  .why-visagiri-page .wv-story { grid-template-columns: 1fr; gap: 12px; }
+  .why-visagiri-page .wv-intro { flex-direction: column; gap: 14px; }
+  .why-visagiri-page .wv-entry { grid-template-columns: 48px 1fr; gap: 18px; }
+  .why-visagiri-page .wv-cta { padding: 38px 26px; }
+}

@@ -51,7 +51,12 @@ function send_security_headers(): void
     // each time; this header only controls whether the API is allowed
     // to ask at all.
     header('Permissions-Policy: geolocation=(), microphone=(self), camera=()');
-    header("Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; frame-ancestors 'none'");
+    // style-src/font-src extended for fonts.googleapis.com/fonts.gstatic.com
+    // specifically for the /why-visagiri/ page's Newsreader/IBM Plex
+    // pairing (public/assets/css/why-visagiri.css) — every other page
+    // still only uses the system font stack, so this doesn't widen what
+    // any other page can load.
+    header("Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; frame-ancestors 'none'");
     // Browsers ignore this entirely over plain HTTP (harmless in local
     // dev), and public/.htaccess already forces HTTP -> HTTPS, so this
     // just closes the one-request gap before that redirect lands and
