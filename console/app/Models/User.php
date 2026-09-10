@@ -33,6 +33,11 @@ class User extends Authenticatable
         return $this->belongsTo(User::class, 'manager_id');
     }
 
+    public function employee(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Employee::class);
+    }
+
     /**
      * Get the attributes that should be cast.
      *

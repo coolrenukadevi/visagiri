@@ -18,6 +18,11 @@ use Spatie\Permission\PermissionRegistrar;
  * finance_executive is a net-new role (Finance has no legacy equivalent
  * to migrate 1:1, unlike the other 7): it can raise and pay invoices but
  * deliberately cannot approve them — four-eyes needs a second role.
+ *
+ * hrms.* splits employee-record visibility from leave visibility on
+ * purpose (Milestone 5): sales_manager holds hrms.leave.view.team (sees
+ * and approves reports' leave) but only hrms.employees.view.own — a
+ * manager approving leave should not thereby see a report's salary.
  */
 class RolesAndPermissionsSeeder extends Seeder
 {
@@ -55,6 +60,21 @@ class RolesAndPermissionsSeeder extends Seeder
             'finance.export',
             'b2b.partners.view',
             'b2b.partners.manage',
+            'hrms.employees.view.own',
+            'hrms.employees.view.department',
+            'hrms.employees.view.all',
+            'hrms.employees.manage',
+            'hrms.leave.view.own',
+            'hrms.leave.view.team',
+            'hrms.leave.view.department',
+            'hrms.leave.view.all',
+            'hrms.leave.create',
+            'hrms.leave.approve',
+            'cms.pages.view',
+            'cms.pages.create',
+            'cms.pages.edit',
+            'cms.pages.advance',
+            'cms.pages.delete',
             'users.manage',
             'roles.manage',
             'audit.view',
@@ -75,6 +95,9 @@ class RolesAndPermissionsSeeder extends Seeder
                 'attestation.documents.upload', 'attestation.documents.download', 'attestation.delete',
                 'finance.invoices.view.all', 'finance.invoices.create', 'finance.invoices.approve',
                 'finance.payments.record', 'finance.export', 'b2b.partners.view', 'b2b.partners.manage',
+                'hrms.employees.view.all', 'hrms.employees.manage', 'hrms.leave.view.all',
+                'hrms.leave.approve', 'hrms.leave.create',
+                'cms.pages.view', 'cms.pages.create', 'cms.pages.edit', 'cms.pages.advance', 'cms.pages.delete',
                 'users.manage', 'audit.view',
             ],
             'sales_manager' => [
@@ -82,25 +105,32 @@ class RolesAndPermissionsSeeder extends Seeder
                 'enquiries.assign', 'enquiries.export',
                 'attestation.view.team', 'attestation.create', 'attestation.edit.team', 'attestation.assign',
                 'attestation.documents.upload', 'attestation.documents.download',
+                'hrms.employees.view.own', 'hrms.leave.view.own', 'hrms.leave.create',
+                'hrms.leave.view.team', 'hrms.leave.approve',
             ],
             'operations' => [
                 'dashboard.view', 'enquiries.view.all', 'enquiries.export',
                 'finance.invoices.view.department', 'finance.invoices.approve', 'finance.payments.record',
                 'b2b.partners.view',
+                'hrms.employees.view.department', 'hrms.leave.view.department', 'hrms.leave.approve', 'hrms.leave.create',
             ],
             'visa_consultant' => [
                 'dashboard.view', 'enquiries.view.own', 'enquiries.create', 'enquiries.edit.own',
                 'attestation.view.own', 'attestation.create', 'attestation.edit.own',
                 'attestation.documents.upload', 'attestation.documents.download',
+                'hrms.employees.view.own', 'hrms.leave.view.own', 'hrms.leave.create',
             ],
             'forex_consultant' => [
                 'dashboard.view', 'enquiries.view.own', 'enquiries.create', 'enquiries.edit.own',
+                'hrms.employees.view.own', 'hrms.leave.view.own', 'hrms.leave.create',
             ],
             'travel_consultant' => [
                 'dashboard.view', 'enquiries.view.own', 'enquiries.create', 'enquiries.edit.own',
+                'hrms.employees.view.own', 'hrms.leave.view.own', 'hrms.leave.create',
             ],
             'finance_executive' => [
                 'dashboard.view', 'finance.invoices.view.own', 'finance.invoices.create', 'finance.payments.record',
+                'hrms.employees.view.own', 'hrms.leave.view.own', 'hrms.leave.create',
             ],
         ];
 

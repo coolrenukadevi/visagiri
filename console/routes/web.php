@@ -1,10 +1,14 @@
 <?php
 
 use App\Http\Controllers\AttestationCaseController;
+use App\Http\Controllers\ContentPageController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EnquiryController;
+use App\Http\Controllers\HrmsController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\ProfileController;
@@ -56,6 +60,24 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/b2b-partners', [PartnerController::class, 'store'])->name('b2b.store')->middleware('can:b2b.partners.manage');
     Route::get('/b2b-partners/{partner}', [PartnerController::class, 'show'])->name('b2b.show')->middleware('can:b2b.partners.view');
     Route::post('/b2b-partners/{partner}/agreements', [PartnerController::class, 'storeAgreement'])->name('b2b.agreements.store')->middleware('can:b2b.partners.manage');
+
+    Route::get('/hrms', [HrmsController::class, 'index'])->name('hrms.index')->middleware('can:hrms.access');
+    Route::get('/hrms/employees', [EmployeeController::class, 'index'])->name('hrms.employees.index')->middleware('can:hrms.access');
+    Route::get('/hrms/employees/{employee}', [EmployeeController::class, 'show'])->name('hrms.employees.show');
+    Route::patch('/hrms/employees/{employee}', [EmployeeController::class, 'update'])->name('hrms.employees.update');
+    Route::get('/hrms/leave/create', [LeaveController::class, 'create'])->name('hrms.leave.create')->middleware('can:hrms.leave.create');
+    Route::post('/hrms/leave', [LeaveController::class, 'store'])->name('hrms.leave.store')->middleware('can:hrms.leave.create');
+    Route::post('/hrms/leave/{leave}/decide', [LeaveController::class, 'decide'])->name('hrms.leave.decide');
+    Route::post('/hrms/leave/{leave}/cancel', [LeaveController::class, 'cancel'])->name('hrms.leave.cancel');
+
+    Route::get('/website-cms', [ContentPageController::class, 'index'])->name('cms.index')->middleware('can:cms.pages.view');
+    Route::get('/website-cms/create', [ContentPageController::class, 'create'])->name('cms.create')->middleware('can:cms.pages.create');
+    Route::post('/website-cms', [ContentPageController::class, 'store'])->name('cms.store')->middleware('can:cms.pages.create');
+    Route::get('/website-cms/{page}', [ContentPageController::class, 'show'])->name('cms.show')->middleware('can:cms.pages.view');
+    Route::put('/website-cms/{page}', [ContentPageController::class, 'update'])->name('cms.update');
+    Route::post('/website-cms/{page}/advance', [ContentPageController::class, 'advance'])->name('cms.advance');
+    Route::post('/website-cms/{page}/send-back', [ContentPageController::class, 'sendBack'])->name('cms.sendBack');
+    Route::delete('/website-cms/{page}', [ContentPageController::class, 'destroy'])->name('cms.destroy');
 });
 
 Route::middleware('auth')->group(function () {

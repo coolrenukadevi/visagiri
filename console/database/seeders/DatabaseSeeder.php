@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\Branch;
 use App\Models\Department;
+use App\Models\Employee;
+use App\Models\LeaveBalance;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -29,17 +31,19 @@ class DatabaseSeeder extends Seeder
         // Same demo accounts and password convention as the existing PHP/SQLite CRM
         // (database/seed.php in the main site repo), extended to cover every role.
         $demoUsers = [
-            ['Admin User', 'admin@videshia.com', 'super_admin', null],
-            ['Ops Admin', 'ops.admin@videshia.com', 'admin', 'operations'],
-            ['Sales Manager', 'sales.manager@videshia.com', 'sales_manager', 'sales'],
-            ['Priya Sharma', 'visa.consultant@videshia.com', 'visa_consultant', 'visa-services'],
-            ['Forex Consultant', 'forex.consultant@videshia.com', 'forex_consultant', 'forex'],
-            ['Travel Consultant', 'travel.consultant@videshia.com', 'travel_consultant', 'travel-services'],
-            ['Operations User', 'operations@videshia.com', 'operations', 'operations'],
-            ['Finance Executive', 'finance.executive@videshia.com', 'finance_executive', 'operations'],
+            ['Admin User', 'admin@videshia.com', 'super_admin', null, 'Founder & CEO'],
+            ['Ops Admin', 'ops.admin@videshia.com', 'admin', 'operations', 'Operations Head'],
+            ['Sales Manager', 'sales.manager@videshia.com', 'sales_manager', 'sales', 'Sales Manager'],
+            ['Priya Sharma', 'visa.consultant@videshia.com', 'visa_consultant', 'visa-services', 'Visa Consultant'],
+            ['Forex Consultant', 'forex.consultant@videshia.com', 'forex_consultant', 'forex', 'Forex Consultant'],
+            ['Travel Consultant', 'travel.consultant@videshia.com', 'travel_consultant', 'travel-services', 'Travel Consultant'],
+            ['Operations User', 'operations@videshia.com', 'operations', 'operations', 'Operations Executive'],
+            ['Finance Executive', 'finance.executive@videshia.com', 'finance_executive', 'operations', 'Finance Executive'],
         ];
 
-        foreach ($demoUsers as [$name, $email, $role, $deptSlug]) {
+        $currentYear = (int) now()->format('Y');
+
+        foreach ($demoUsers as [$name, $email, $role, $deptSlug, $designation]) {
             $user = User::firstOrCreate(
                 ['email' => $email],
                 [
@@ -52,6 +56,22 @@ class DatabaseSeeder extends Seeder
                 ]
             );
             $user->syncRoles([$role]);
+
+            // Salary and other personal details are deliberately left null here —
+            // these are synthetic demo accounts, not real people, and the point
+            // of the employees table is that nothing sensitive gets fabricated
+            // into it just to make the UI look populated.
+            Employee::firstOrCreate(
+                ['user_id' => $user->id],
+                ['designation' => $designation, 'employment_type' => 'Full-time', 'status' => 'Active']
+            );
+
+            foreach (['Casual' => 12, 'Sick' => 10, 'Earned' => 15] as $type => $allocated) {
+                LeaveBalance::firstOrCreate(
+                    ['user_id' => $user->id, 'leave_type' => $type, 'year' => $currentYear],
+                    ['allocated' => $allocated]
+                );
+            }
         }
 
         // Gives sales_manager's enquiries.view.team scope real reports to filter on.
