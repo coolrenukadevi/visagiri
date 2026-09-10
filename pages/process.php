@@ -2,28 +2,53 @@
 declare(strict_types=1);
 
 /**
- * "How it works" — describes the real, current process: a
- * consultant-led enquiry-to-application flow (WhatsApp/call/contact
- * form, document guidance, submission by our team), not a self-serve
- * online wizard. See AUDIT.md, "Single-folder no-database rebuild".
+ * Visa Consultancy & Application Management Services — describes the
+ * real, current process: a consultant-led enquiry-to-application flow
+ * (WhatsApp/call/contact form, document guidance, submission by our
+ * team), not a self-serve online wizard. The "What's Included" list
+ * below only names capabilities that are genuinely live elsewhere on
+ * this site (document review happens as part of the enquiry workflow;
+ * application tracking is the real /track-visa/ page) — no biometrics-
+ * appointment or refusal/reapplication specifics are claimed here,
+ * since no verified process detail exists for either yet.
  */
 
-$pageTitle = 'How Visagiri Works - Visa Process';
-$pageDescription = 'See how the Visagiri visa process works, step by step — from your enquiry to document preparation and application submission.';
+$pageTitle = 'Visa Consultancy & Application Management Services - Visagiri';
+$pageDescription = 'Eligibility guidance, document review, application submission, and tracking — see how Visagiri\'s visa consultancy process works, step by step.';
 $canonicalUrl = APP_URL . '/visa-process/';
+$structuredData = [breadcrumb_schema([
+    ['name' => 'Home', 'url' => APP_URL . '/'],
+    ['name' => 'Visa Process', 'url' => $canonicalUrl],
+])];
 require __DIR__ . '/../includes/header.php';
 ?>
 <section class="section" style="padding-top:var(--space-8)">
     <div class="container" style="max-width:840px">
         <div class="section-heading" style="text-align:left;margin-left:0;max-width:none">
             <span class="section-eyebrow">Visa Process</span>
-            <h1>How Visagiri Works</h1>
+            <h1>Visa Consultancy &amp; Application Management Services</h1>
         </div>
         <p style="font-size:var(--font-size-lg);color:var(--text-dark)">
             Reach out with your destination and purpose of travel, and our team guides you through eligibility, documents, and submission.
         </p>
 
-        <h2 class="country-directory__subheading" style="margin-top:var(--space-8)">Getting Started</h2>
+        <h2 class="country-directory__subheading" style="margin-top:var(--space-8)">What's Included</h2>
+        <div class="card-grid">
+            <div class="card feature-card">
+                <div class="card-title">Eligibility &amp; Document Guidance</div>
+                <p>We confirm which visa category fits your travel purpose and exactly which documents your application needs.</p>
+            </div>
+            <div class="card feature-card">
+                <div class="card-title">Document Review</div>
+                <p>Every document you submit is reviewed by our team before your application goes forward — see <a href="/documentation/">Documentation Assistance</a>.</p>
+            </div>
+            <div class="card feature-card">
+                <div class="card-title">Application Tracking</div>
+                <p>Check the status of your application any time at <a href="/track-visa/">Track Application</a>.</p>
+            </div>
+        </div>
+
+        <h2 class="country-directory__subheading" style="margin-top:var(--space-10)">Getting Started</h2>
         <div class="card-grid">
             <div class="card feature-card">
                 <div class="feature-card__icon">1</div>
@@ -46,6 +71,12 @@ require __DIR__ . '/../includes/header.php';
         <p>
             Service fees, government fees, and any appointment or biometrics scheduling are confirmed by your
             assigned consultant based on your specific requirements — nothing is charged automatically.
+        </p>
+
+        <h2 class="country-directory__subheading" style="margin-top:var(--space-10)">Corporate &amp; Group Applications</h2>
+        <p>
+            Coordinating visas for a team or a group travelling together? See <a href="/corporate-services/">Corporate Visa Services</a>
+            for how we manage multiple applications under one point of contact.
         </p>
 
         <div class="final-cta" style="margin-top:var(--space-10)">

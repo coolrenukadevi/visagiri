@@ -17,7 +17,7 @@ declare(strict_types=1);
         <div class="site-footer__brand">
             <img class="site-footer__logo" src="<?= e(asset_url('/assets/images/logo-horizontal-white.png')) ?>" alt="Visagiri - Visa Management" width="700" height="175">
             <p class="site-footer__tagline">Seamless Visas. Limitless Journeys.</p>
-            <p class="site-footer__muted">Visagiri drives innovation with smart, future-ready digital solutions that empower growth and transformation. A Unit of Tripgation Pvt Ltd.</p>
+            <p class="site-footer__muted">Premium visa consultancy, application management, and document attestation services for travellers, professionals, families, and businesses from India.</p>
             <div class="site-footer__social">
                 <a href="https://www.facebook.com/Visagiri" target="_blank" rel="noopener noreferrer" aria-label="Visagiri on Facebook"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-7.5h2.5l.4-3H13.5V8.4c0-.87.24-1.46 1.49-1.46H16.5V4.34C16.2 4.3 15.2 4.2 14 4.2c-2.4 0-4 1.46-4 4.15V10.5H7.5v3H10V21h3.5z"/></svg></a>
                 <a href="https://www.instagram.com/hi_visagiri/" target="_blank" rel="noopener noreferrer" aria-label="Visagiri on Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="12" cy="12" r="3.8"/><circle cx="17.2" cy="6.8" r="1"/></svg></a>
@@ -145,7 +145,7 @@ declare(strict_types=1);
 
     <div class="site-footer__bottom">
         <div class="container">
-            <p>&copy; <?= date('Y') ?> <?= e(setting('company_name', 'Visagiri')) ?> &mdash; A Unit of <?= e(setting('company_parent', 'Tripgation Pvt Ltd')) ?>. Serving visa and travel-related requirements since <?= e(format_founding_date(setting('company_founding_date', '2015-04'))) ?>. CIN: <?= e(setting('company_cin', 'U63030UP2020PTC128661')) ?>. All rights reserved.</p>
+            <p>&copy; <?= date('Y') ?> <?= e(setting('company_name', 'Visagiri')) ?>. Serving visa and travel-related requirements since <?= e(format_founding_date(setting('company_founding_date', '2015-04'))) ?>. CIN: <?= e(setting('company_cin', 'U63030UP2020PTC128661')) ?>. All rights reserved.</p>
         </div>
     </div>
 </footer>

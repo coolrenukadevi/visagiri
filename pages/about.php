@@ -11,6 +11,10 @@ declare(strict_types=1);
 $pageTitle = 'About Visagiri - Visa Consultancy Since April 2015';
 $pageDescription = 'Visagiri is a visa consultancy brand under Tripgation Pvt Ltd, serving visa and travel-related requirements since April 2015.';
 $canonicalUrl = APP_URL . '/about/';
+$structuredData = [breadcrumb_schema([
+    ['name' => 'Home', 'url' => APP_URL . '/'],
+    ['name' => 'About Us', 'url' => $canonicalUrl],
+])];
 require __DIR__ . '/../includes/header.php';
 ?>
 <section class="section" style="padding-top:var(--space-8)">

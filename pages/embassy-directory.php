@@ -25,6 +25,10 @@ $countriesWithContacts = db()->query(
 $pageTitle = 'Embassy Directory - Visagiri';
 $pageDescription = 'Embassy, consulate, and visa application centre contact information by country.';
 $canonicalUrl = APP_URL . '/embassy-directory/';
+$structuredData = [breadcrumb_schema([
+    ['name' => 'Home', 'url' => APP_URL . '/'],
+    ['name' => 'Embassy Directory', 'url' => $canonicalUrl],
+])];
 require __DIR__ . '/../includes/header.php';
 ?>
 <section class="visa-detail">

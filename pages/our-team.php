@@ -19,6 +19,10 @@ $teamRoles = [
 $pageTitle = 'Meet the Visagiri Team - Visa & Attestation Experts';
 $pageDescription = 'Meet the team behind Visagiri — visa consultants, document and attestation specialists, and application support dedicated to your visa journey.';
 $canonicalUrl = APP_URL . '/our-team/';
+$structuredData = [breadcrumb_schema([
+    ['name' => 'Home', 'url' => APP_URL . '/'],
+    ['name' => 'Our Team', 'url' => $canonicalUrl],
+])];
 require __DIR__ . '/../includes/header.php';
 ?>
 <section class="section" style="padding-top:var(--space-8);padding-bottom:var(--space-6)">

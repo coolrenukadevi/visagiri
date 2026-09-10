@@ -20,6 +20,10 @@ $popular = array_values(array_filter($countries, static fn($c) => (int) $c['is_p
 $pageTitle = 'Explore Visa Requirements for 200+ Countries | Visagiri';
 $pageDescription = 'Browse visa requirements for ' . count($countries) . ' countries and territories worldwide, grouped by region. Search by destination to find the right visa type for your trip.';
 $canonicalUrl = APP_URL . '/countries/';
+$structuredData = [breadcrumb_schema([
+    ['name' => 'Home', 'url' => APP_URL . '/'],
+    ['name' => 'Countries', 'url' => $canonicalUrl],
+])];
 require __DIR__ . '/../includes/header.php';
 $flashNotice = flash_get('notice');
 ?>

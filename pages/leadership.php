@@ -16,6 +16,10 @@ $leaders = [
 $pageTitle = 'Leadership Team - Visagiri Directors';
 $pageDescription = "Meet Visagiri's leadership team: Anisha Bharti and Renuka Devi, Directors at Visagiri, a visa consultancy under Tripgation Pvt Ltd.";
 $canonicalUrl = APP_URL . '/leadership/';
+$structuredData = [breadcrumb_schema([
+    ['name' => 'Home', 'url' => APP_URL . '/'],
+    ['name' => 'Leadership', 'url' => $canonicalUrl],
+])];
 require __DIR__ . '/../includes/header.php';
 ?>
 <section class="section" style="padding-top:var(--space-8);padding-bottom:var(--space-6)">

@@ -49,6 +49,10 @@ if ($templateSlug === null) {
     $pageTitle = 'Document Templates - Visagiri';
     $pageDescription = 'Free downloadable formats for cover letters, NOC, consent letters, sponsor letters, self-declarations, and travel itineraries for your visa application.';
     $canonicalUrl = APP_URL . '/document-templates/';
+    $structuredData = [breadcrumb_schema([
+        ['name' => 'Home', 'url' => APP_URL . '/'],
+        ['name' => 'Document Templates', 'url' => $canonicalUrl],
+    ])];
     require __DIR__ . '/../includes/header.php';
     ?>
     <section class="visa-detail">
@@ -88,6 +92,11 @@ $tpl = $templates[$templateSlug];
 $pageTitle = "{$tpl['label']} Format - Visagiri";
 $pageDescription = $tpl['summary'];
 $canonicalUrl = APP_URL . "/document-templates/{$templateSlug}/";
+$structuredData = [breadcrumb_schema([
+    ['name' => 'Home', 'url' => APP_URL . '/'],
+    ['name' => 'Document Templates', 'url' => APP_URL . '/document-templates/'],
+    ['name' => $tpl['label'], 'url' => $canonicalUrl],
+])];
 require __DIR__ . '/../includes/header.php';
 ?>
 <section class="visa-detail">

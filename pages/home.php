@@ -2,19 +2,17 @@
 declare(strict_types=1);
 
 /**
- * Homepage — Phase 5, re-platformed to static data (see AUDIT.md,
- * "Single-folder no-database rebuild"). Catalog data (countries, visa
- * types, FAQs) is a real, one-time export of what was seeded into the
- * database across earlier phases — nothing here is fabricated. There
- * is no blog content management anymore; "Latest Visa Updates" always
- * renders its honest empty state.
+ * Homepage. Catalog data (countries, visa types, FAQs) is queried live
+ * from the database — nothing here is fabricated. There is no blog
+ * content management yet (see blog/index.php), so the homepage doesn't
+ * carry a "Latest Visa Updates" section — the real, populated
+ * "Explore Visa Resources" section below covers that role honestly.
  */
 
 $popularCountries = array_values(array_filter(countries_all(), static fn(array $c): bool => $c['is_popular_destination']));
 usort($popularCountries, static fn(array $a, array $b): int => $a['name'] <=> $b['name']);
 $visaTypes = visa_types_all();
 $faqs = faqs_general();
-$updates = [];
 
 $processSteps = [
     ['title' => 'Get in Touch', 'desc' => 'Tell us your destination and purpose of travel via WhatsApp, call, or the enquiry form.'],
@@ -196,32 +194,7 @@ require __DIR__ . '/../includes/header.php';
     </div>
 </section>
 
-<!-- Section 9: Latest visa updates -->
-<section class="section">
-    <div class="container">
-        <div class="section-heading">
-            <span class="section-eyebrow">Visa Updates</span>
-            <h2>Latest Visa Updates</h2>
-        </div>
-        <?php if ($updates): ?>
-        <div class="updates-grid">
-            <?php foreach ($updates as $u): ?>
-            <a href="/blog/<?= e($u['slug']) ?>/" class="card">
-                <div class="update-card__meta">
-                    Published <?= e(date('d M Y', strtotime((string) $u['published_at']))) ?>
-                    <?php if ($u['updated_at']): ?> &middot; Updated <?= e(date('d M Y', strtotime((string) $u['updated_at']))) ?><?php endif; ?>
-                </div>
-                <div class="card-title"><?= e($u['title']) ?></div>
-            </a>
-            <?php endforeach; ?>
-        </div>
-        <?php else: ?>
-        <p class="empty-state">No visa updates have been published yet. Check back soon.</p>
-        <?php endif; ?>
-    </div>
-</section>
-
-<!-- Section 9b: Explore Visa Resources -->
+<!-- Section 9: Explore Visa Resources -->
 <section class="section">
     <div class="container">
         <div class="section-heading">

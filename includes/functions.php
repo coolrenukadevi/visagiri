@@ -603,6 +603,31 @@ function render_scaffold_page(
     require __DIR__ . '/footer.php';
 }
 
+/**
+ * Builds one BreadcrumbList JSON-LD block, matching the shape every
+ * page that already hand-rolled this (visa/index.php, attestation/index.php,
+ * etc.) already uses. Pass items in order, e.g.
+ * breadcrumb_schema([['name' => 'Home', 'url' => APP_URL . '/'], ['name' => 'FAQs', 'url' => $canonicalUrl]]).
+ * Append the result onto $structuredData before requiring header.php.
+ */
+function breadcrumb_schema(array $items): array
+{
+    return [
+        '@context' => 'https://schema.org',
+        '@type' => 'BreadcrumbList',
+        'itemListElement' => array_map(
+            static fn(array $item, int $i): array => [
+                '@type' => 'ListItem',
+                'position' => $i + 1,
+                'name' => $item['name'],
+                'item' => $item['url'],
+            ],
+            $items,
+            array_keys($items)
+        ),
+    ];
+}
+
 /** Shared "Why Visagiri" feature list — used on the homepage and the About page. */
 function why_visagiri_features(): array
 {

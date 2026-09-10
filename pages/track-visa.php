@@ -108,6 +108,10 @@ if ($application) {
 $pageTitle = 'Track Your Visa Application - Visagiri';
 $pageDescription = 'Check the status of your visa application with your Application Reference Number.';
 $canonicalUrl = APP_URL . '/track-visa/';
+$structuredData = [breadcrumb_schema([
+    ['name' => 'Home', 'url' => APP_URL . '/'],
+    ['name' => 'Track Application', 'url' => $canonicalUrl],
+])];
 require __DIR__ . '/../includes/header.php';
 ?>
 <section class="section" style="padding-top:var(--space-8)">

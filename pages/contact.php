@@ -152,6 +152,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $pageTitle = ($serviceType === 'general' ? 'Contact Us' : CONTACT_SERVICES[$serviceType]['eyebrow']) . ' | Visagiri';
 $pageDescription = 'How can we help? Reach Visagiri for visa assistance, apostille & attestation, forex, or travel-related enquiries — enquiry form, WhatsApp, call, or email.';
 $canonicalUrl = APP_URL . '/contact/';
+$structuredData = [breadcrumb_schema([
+    ['name' => 'Home', 'url' => APP_URL . '/'],
+    ['name' => 'Contact Us', 'url' => $canonicalUrl],
+])];
 require __DIR__ . '/../includes/header.php';
 ?>
 <section class="section" style="padding-top:var(--space-8)">

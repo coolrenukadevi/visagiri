@@ -449,6 +449,11 @@ if ($slug !== null) {
             'value' => ['@type' => 'QuantitativeValue', 'minValue' => (float) $vacancy['salary_min'], 'maxValue' => (float) $vacancy['salary_max'], 'unitText' => 'MONTH'],
         ] : null,
     ], static fn($v) => $v !== null)];
+    $structuredData[] = breadcrumb_schema([
+        ['name' => 'Home', 'url' => APP_URL . '/'],
+        ['name' => 'Careers', 'url' => APP_URL . '/careers/'],
+        ['name' => $vacancy['job_title'], 'url' => $canonicalUrl],
+    ]);
     require __DIR__ . '/../includes/header.php';
     ?>
     <section class="visa-detail">
@@ -520,6 +525,10 @@ $vacancies = hrms_published_vacancies();
 $pageTitle = 'Careers at Visagiri';
 $pageDescription = 'Explore current job openings at Visagiri and apply online.';
 $canonicalUrl = APP_URL . '/careers/';
+$structuredData = [breadcrumb_schema([
+    ['name' => 'Home', 'url' => APP_URL . '/'],
+    ['name' => 'Careers', 'url' => $canonicalUrl],
+])];
 require __DIR__ . '/../includes/header.php';
 ?>
 <section class="section">

@@ -39,6 +39,14 @@ $staticUrls = [
     ['loc' => '/attestation/', 'priority' => '0.7', 'changefreq' => 'monthly'],
     ['loc' => '/visa-consultant/', 'priority' => '0.8', 'changefreq' => 'monthly'],
     ['loc' => '/partners/', 'priority' => '0.6', 'changefreq' => 'monthly'],
+    ['loc' => '/privacy/', 'priority' => '0.3', 'changefreq' => 'yearly'],
+    ['loc' => '/terms/', 'priority' => '0.3', 'changefreq' => 'yearly'],
+    ['loc' => '/travel-terms/', 'priority' => '0.3', 'changefreq' => 'yearly'],
+    ['loc' => '/payment-policy/', 'priority' => '0.3', 'changefreq' => 'yearly'],
+    ['loc' => '/refund-policy/', 'priority' => '0.3', 'changefreq' => 'yearly'],
+    ['loc' => '/cookie-policy/', 'priority' => '0.3', 'changefreq' => 'yearly'],
+    ['loc' => '/grievance/', 'priority' => '0.4', 'changefreq' => 'yearly'],
+    ['loc' => '/disclaimer/', 'priority' => '0.3', 'changefreq' => 'yearly'],
 ];
 foreach (array_keys(attestation_services()) as $attestationSlug) {
     $staticUrls[] = ['loc' => "/attestation/{$attestationSlug}/", 'priority' => '0.6', 'changefreq' => 'monthly'];
