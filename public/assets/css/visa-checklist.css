@@ -87,7 +87,6 @@
   color: #fff;
   white-space: nowrap;
 }
-.visa-checklist-page .vc-pill svg { color: #a9c6f5; flex-shrink: 0; }
 .visa-checklist-page .vc-hero-reviewed {
   display: inline-flex;
   align-items: center;
@@ -96,8 +95,30 @@
   font-size: var(--font-size-xs);
   white-space: nowrap;
 }
-.visa-checklist-page .vc-hero-reviewed svg { color: #a9c6f5; flex-shrink: 0; }
 .visa-checklist-page .vc-hero-reviewed b { display: block; font-size: var(--font-size-sm); color: var(--vc-gold); }
+
+/* Icon badges — a small translucent square tinted with the logo's gold,
+   giving each pill/reviewed-date icon a soft "glass" chip instead of a
+   bare glyph. Slightly brightens on hover for a subtle interactive feel
+   even though the pills themselves aren't links. */
+.visa-checklist-page .vc-pill-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  background: rgba(244, 180, 0, 0.16);
+  border: 1px solid rgba(244, 180, 0, 0.4);
+  color: var(--vc-gold);
+  flex-shrink: 0;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+.visa-checklist-page .vc-pill:hover .vc-pill-icon,
+.visa-checklist-page .vc-hero-reviewed:hover .vc-pill-icon {
+  background: rgba(244, 180, 0, 0.3);
+  border-color: rgba(244, 180, 0, 0.65);
+}
 
 /* ---------- VISA OVERVIEW ---------- */
 .visa-checklist-page .vc-overview { margin-top: var(--space-8); }

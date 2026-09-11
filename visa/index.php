@@ -155,13 +155,13 @@ if ($typeSlug !== null) {
                             </div>
                             <div class="vc-meta-row">
                                 <div class="vc-pills">
-                                    <span class="vc-pill"><?= $vcIcons['passport'] ?> <?= e($visaType['name']) ?></span>
-                                    <span class="vc-pill"><?= $vcIcons['user'] ?> India Applicants</span>
-                                    <span class="vc-pill"><?= $vcIcons['flag'] ?> <?= e($country['name']) ?></span>
-                                    <span class="vc-pill"><?= $vcIcons['checklist'] ?> Document Checklist</span>
+                                    <span class="vc-pill"><span class="vc-pill-icon"><?= $vcIcons['passport'] ?></span> <?= e($visaType['name']) ?></span>
+                                    <span class="vc-pill"><span class="vc-pill-icon"><?= $vcIcons['user'] ?></span> India Applicants</span>
+                                    <span class="vc-pill"><span class="vc-pill-icon"><?= $vcIcons['flag'] ?></span> <?= e($country['name']) ?></span>
+                                    <span class="vc-pill"><span class="vc-pill-icon"><?= $vcIcons['checklist'] ?></span> Document Checklist</span>
                                 </div>
                                 <?php if ($lastReviewedDisplay): ?>
-                                <div class="vc-hero-reviewed"><?= $vcIcons['calendar'] ?> <span>Last Reviewed<b><?= e($lastReviewedDisplay) ?></b></span></div>
+                                <div class="vc-hero-reviewed"><span class="vc-pill-icon"><?= $vcIcons['calendar'] ?></span> <span>Last Reviewed<b><?= e($lastReviewedDisplay) ?></b></span></div>
                                 <?php endif; ?>
                             </div>
                         </div>
