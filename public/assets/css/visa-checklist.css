@@ -128,6 +128,12 @@
 }
 .visa-checklist-page .vc-pill-icon svg,
 .visa-checklist-page .vc-hero-reviewed .vc-pill-icon svg { width: 12px; height: 12px; }
+.visa-checklist-page .vc-pill-icon--flag {
+  background: rgba(255, 255, 255, 0.18);
+  font-size: 13px;
+  line-height: 1;
+}
+.visa-checklist-page .vc-pill:hover .vc-pill-icon--flag { background: rgba(255, 255, 255, 0.3); }
 
 /* ---------- VISA OVERVIEW ---------- */
 .visa-checklist-page .vc-overview { margin-top: var(--space-6); }

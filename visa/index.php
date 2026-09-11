@@ -185,7 +185,7 @@ if ($typeSlug !== null) {
                                 <div class="vc-pills">
                                     <span class="vc-pill"><span class="vc-pill-icon"><?= $vcIcons['passport'] ?></span> <?= e($visaType['name']) ?></span>
                                     <span class="vc-pill"><span class="vc-pill-icon"><?= $vcIcons['user'] ?></span> India Applicants</span>
-                                    <span class="vc-pill"><span class="vc-pill-icon"><?= $vcIcons['flag'] ?></span> <?= e($country['name']) ?></span>
+                                    <span class="vc-pill"><span class="vc-pill-icon vc-pill-icon--flag"><?= flag_emoji($country['iso2']) ?></span> <?= e($country['name']) ?></span>
                                     <span class="vc-pill"><span class="vc-pill-icon"><?= $vcIcons['checklist'] ?></span> Document Checklist</span>
                                 </div>
                                 <?php if ($lastReviewedDisplay): ?>
