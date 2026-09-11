@@ -105,7 +105,9 @@ declare(strict_types=1);
                         <strong>Reference No.:</strong> <span data-enquiry-modal-success-ref></span><br>
                         <span data-enquiry-modal-success-track-row hidden><strong>Tracking No.:</strong> <span data-enquiry-modal-success-track></span></span>
                     </p>
+                    <p data-enquiry-modal-success-checklist-note hidden style="margin-top:var(--space-4)"></p>
                     <div class="button-group" style="justify-content:center;flex-wrap:wrap;margin-top:var(--space-5)">
+                        <a href="#" class="btn btn-gold" data-enquiry-modal-success-checklist hidden>View Complete Checklist</a>
                         <a href="#" class="btn btn-gold" data-enquiry-modal-success-pdf target="_blank" rel="noopener noreferrer" hidden>Download PDF Receipt</a>
                         <a href="#" class="btn btn-outline" data-enquiry-modal-success-track-link target="_blank" rel="noopener noreferrer" hidden>Track Enquiry</a>
                         <button type="button" class="btn btn-outline" data-enquiry-modal-close>Close</button>

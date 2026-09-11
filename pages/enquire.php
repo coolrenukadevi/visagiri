@@ -22,6 +22,7 @@ require_once __DIR__ . '/../includes/google-sheets.php';
 
 $prefillCountry = trim((string) ($_GET['country'] ?? ''));
 $prefillVisaType = trim((string) ($_GET['visa_type'] ?? ''));
+$checklistReference = trim((string) ($_GET['checklist_ref'] ?? ''));
 
 $visaTypes = visa_types_all();
 $countries = countries_all();
@@ -57,6 +58,16 @@ if (!isset($confirmed) && $_SERVER['REQUEST_METHOD'] === 'POST') {
     if (trim((string) ($_POST['website'] ?? '')) !== '') {
         redirect('/enquire/');
     }
+
+    // Present only when this enquiry was opened from a
+    // /visa/{country}/{type}/ page's "Enquire Now & Unlock Full
+    // Checklist" button (see includes/enquiry-wizard-fields.php) —
+    // never trusted blindly: the checklist actually unlocked below is
+    // looked up fresh by this reference, joined against the country
+    // and visa type the enquiry itself resolves to, not just taken
+    // from POST data as-is.
+    $unlockChecklistRequested = ($_POST['unlock_checklist'] ?? '') === '1';
+    $checklistReference = trim((string) ($_POST['checklist_reference'] ?? ''));
 
     if (!rate_limit_check('enquire:' . ($_SERVER['REMOTE_ADDR'] ?? ''), 5, 900)) {
         $errors[] = 'Too many submissions. Please try again later, or reach us directly on WhatsApp.';
@@ -236,7 +247,14 @@ if (!isset($confirmed) && $_SERVER['REQUEST_METHOD'] === 'POST') {
                         'apo_purpose' => $values['apostille_purpose'] !== '' ? $values['apostille_purpose'] : null,
                         'remarks' => $values['remarks'] !== '' ? $values['remarks'] : null,
                         'ip' => $_SERVER['REMOTE_ADDR'] ?? null,
-                        'source' => '/enquire/',
+                        // Lets admin/CRM reporting see which visa checklist page an
+                        // enquiry originated from — the exact traceability the
+                        // Checklist Engine spec asks for, without adding new
+                        // enquiries columns for a value that's really just "where
+                        // did this come from".
+                        'source' => ($unlockChecklistRequested && $checklistReference !== '')
+                            ? "/visa-checklist/{$checklistReference}/"
+                            : '/enquire/',
                         'sla_hours' => enquiry_sla_hours_for_priority('normal'),
                     ]);
                     break;
@@ -294,6 +312,31 @@ if (!isset($confirmed) && $_SERVER['REQUEST_METHOD'] === 'POST') {
                 'submitted_at' => date('c'),
             ]);
 
+            // Checklist unlock — only when the enquiry actually resolved
+            // to a real country+visa-type (visa enquiries only) AND a
+            // published checklist genuinely exists for that exact pair.
+            // A stale/tampered checklist_reference that doesn't match
+            // the enquiry's own country+type simply doesn't unlock
+            // anything; it's never trusted to pick the checklist itself.
+            $checklistUnlocked = false;
+            $checklistUrl = null;
+            if ($unlockChecklistRequested && $checklistReference !== '' && $country !== null && $visaType !== null) {
+                $checklist = fetch_visa_checklist((int) $country['id'], (int) $visaType['id']);
+                if ($checklist !== null && $checklist['reference'] === $checklistReference) {
+                    $accessToken = generate_checklist_access_token((int) $checklist['id'], (int) $country['id'], (int) $visaType['id'], $enquiryId);
+                    $cookieName = checklist_access_cookie_name((int) $country['id'], (int) $visaType['id']);
+                    $checklistUrl = "/visa/{$country['slug']}/{$visaType['slug']}/";
+                    setcookie($cookieName, $accessToken, [
+                        'expires' => time() + (CHECKLIST_ACCESS_TTL_DAYS * 86400),
+                        'path' => $checklistUrl,
+                        'secure' => SESSION_SECURE_COOKIE,
+                        'httponly' => true,
+                        'samesite' => 'Lax',
+                    ]);
+                    $checklistUnlocked = true;
+                }
+            }
+
             if ($isAjax) {
                 header('Content-Type: application/json');
                 echo json_encode([
@@ -302,6 +345,8 @@ if (!isset($confirmed) && $_SERVER['REQUEST_METHOD'] === 'POST') {
                     'tracking_token' => $trackingToken,
                     'pdf_url' => '/enquire/pdf/?ref=' . urlencode($enquiryNumber) . '&token=' . urlencode($trackingToken),
                     'track_url' => '/track/?ref=' . urlencode($enquiryNumber),
+                    'checklist_unlocked' => $checklistUnlocked,
+                    'checklist_url' => $checklistUrl,
                 ]);
                 exit;
             }

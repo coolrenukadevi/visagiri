@@ -51,6 +51,7 @@ require_once "$root/includes/hrms.php";
 require_once "$root/includes/forex.php";
 require_once "$root/includes/mail.php";
 require_once "$root/includes/enquiry.php";
+require_once "$root/includes/visa-checklist.php";
 require_once "$root/includes/pdf.php";
 require_once "$root/includes/partner-enrollment.php";
 require_once "$root/includes/b2b-partner.php";

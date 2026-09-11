@@ -14,7 +14,7 @@
 
   var wizardContainer = modal.querySelector('[data-enquiry-modal-wizard-container]');
   var wizardInstance = null;
-  var wizardLoadedFor = null; // 'visa' | 'apostille' | null
+  var wizardLoadedFor = null; // cache key: 'service|country|visaType|checklistRef', or null
 
   var simpleForm = document.getElementById('enquiry-modal-simple-form');
   var simpleEyebrow = modal.querySelector('[data-enquiry-modal-simple-eyebrow]');
@@ -94,6 +94,22 @@
     });
   });
 
+  // Used by /visa/{country}/{type}/ pages' "Enquire Now & Unlock Full
+  // Checklist" button — opens straight into the visa wizard, prefilled
+  // for the country/visa type/checklist already established by the
+  // page, skipping the 4-tile picker the generic trigger above shows.
+  document.querySelectorAll('[data-open-enquiry-modal-checklist]').forEach(function (trigger) {
+    trigger.addEventListener('click', function (e) {
+      e.preventDefault();
+      openModal();
+      loadWizard('visa', {
+        country: trigger.getAttribute('data-country') || '',
+        visaType: trigger.getAttribute('data-visa-type') || '',
+        checklistRef: trigger.getAttribute('data-checklist-ref') || '',
+      });
+    });
+  });
+
   modal.querySelectorAll('[data-enquiry-modal-close]').forEach(function (btn) {
     btn.addEventListener('click', closeModal);
   });
@@ -104,26 +120,36 @@
     });
   });
 
-  function loadWizard(service) {
+  function loadWizard(service, context) {
+    context = context || {};
     var copy = WIZARD_COPY[service] || WIZARD_COPY.visa;
     wizardEyebrow.textContent = copy.eyebrow;
     wizardTitle.textContent = copy.title;
     showStep('wizard');
-    if (wizardLoadedFor === service) {
+
+    // Cache key includes the context so a checklist-context open (with
+    // country/visa_type/checklist_ref prefilled) never reuses a plain
+    // wizard instance loaded earlier without that context, or vice versa.
+    var cacheKey = service + '|' + (context.country || '') + '|' + (context.visaType || '') + '|' + (context.checklistRef || '');
+    if (wizardLoadedFor === cacheKey) {
       if (wizardInstance) {
         wizardInstance.setServiceCategory(service);
       }
       return;
     }
     wizardContainer.innerHTML = '<p class="enquiry-modal__loading">Loading form&hellip;</p>';
-    fetch('/enquire/wizard/?service=' + encodeURIComponent(service), {
+    var url = '/enquire/wizard/?service=' + encodeURIComponent(service);
+    if (context.country) { url += '&country=' + encodeURIComponent(context.country); }
+    if (context.visaType) { url += '&visa_type=' + encodeURIComponent(context.visaType); }
+    if (context.checklistRef) { url += '&checklist_ref=' + encodeURIComponent(context.checklistRef); }
+    fetch(url, {
       headers: { 'X-Requested-With': 'fetch' },
       credentials: 'same-origin',
     })
       .then(function (resp) { return resp.text(); })
       .then(function (html) {
         wizardContainer.innerHTML = html;
-        wizardLoadedFor = service;
+        wizardLoadedFor = cacheKey;
         wizardInstance = window.VisagiriEnquiryWizard.init(wizardContainer, {
           onSuccess: function (data) { showSuccess(data); },
           // No onError here on purpose: leaving it unset makes
@@ -234,6 +260,18 @@
       trackLink.hidden = false;
     } else {
       trackLink.hidden = true;
+    }
+
+    var checklistLink = modal.querySelector('[data-enquiry-modal-success-checklist]');
+    var checklistNote = modal.querySelector('[data-enquiry-modal-success-checklist-note]');
+    if (data.checklist_unlocked && data.checklist_url) {
+      checklistLink.href = data.checklist_url;
+      checklistLink.hidden = false;
+      checklistNote.textContent = 'Your complete visa checklist is now available.';
+      checklistNote.hidden = false;
+    } else {
+      checklistLink.hidden = true;
+      checklistNote.hidden = true;
     }
 
     showStep('success');

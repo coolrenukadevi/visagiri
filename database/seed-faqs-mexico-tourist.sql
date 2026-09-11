@@ -1,0 +1,13 @@
+-- Mexico Tourist Visa FAQs (country_id 172 = Mexico, visa_type_id 1 =
+-- Tourist) — genuinely distinct from Singapore's FAQs (see
+-- seed-faqs-singapore.sql), never shared between countries/types.
+
+INSERT INTO visa_faqs (question, answer, country_id, visa_type_id, sort_order, is_active) VALUES
+('Do Indian citizens need a visa for Mexico?', 'Yes, in most cases — unless you hold a valid, unexpired multiple-entry visa or residence permit from the US, UK, Canada, Japan, or a Schengen country, in which case Mexico''s own visa-waiver policy may let you enter without a separate Mexican visa. Check with our team before assuming either way.', 172, 1, 300, 1),
+('How do I apply for a Mexico tourist visa from India?', 'You apply through the Mexican Consulate/Embassy handling Indian applications, submitting the required documents and typically attending in person for biometrics/appearance. Visagiri helps you prepare and review your documents before submission.', 172, 1, 301, 1),
+('How long does Mexico tourist visa processing take?', 'Processing commonly takes around 10-15 working days once a complete application is submitted, though the consulate does not guarantee a fixed timeline — apply well ahead of your travel date.', 172, 1, 302, 1),
+('What is the Mexico tourist visa fee?', 'The current consular fee is shown on this page and is set by the Mexican Consulate, payable in Indian Rupees at the applicable exchange rate — it can change without notice, so always confirm the current amount with our team before paying.', 172, 1, 303, 1),
+('Is personal appearance required for a Mexico tourist visa?', 'Yes, typically — most applicants are required to appear in person at the consulate or visa application centre as part of the process.', 172, 1, 304, 1),
+('Can I skip the Mexican visa if I already have a US visa?', 'Possibly — Mexico''s visa-waiver policy can allow entry without a separate Mexican visa if you hold a valid, multiple-entry US (or UK/Canada/Japan/Schengen) visa or residence permit. This depends on your specific visa and travel plans, so confirm with our team before relying on it.', 172, 1, 305, 1),
+('What documents are required for a Mexico tourist visa?', 'Core documents include your passport, photograph, and application form; further requirements cover employment, financial, and travel-supporting documents. The checklist on this page shows the full breakdown, with the complete version available after a quick enquiry.', 172, 1, 306, 1),
+('Can Visagiri review my Mexico visa documents before I submit them?', 'Yes — document review before submission is part of what we do once you submit an enquiry through this page.', 172, 1, 307, 1);

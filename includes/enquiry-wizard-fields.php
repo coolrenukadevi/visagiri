@@ -33,6 +33,10 @@ $ajaxMode = $ajaxMode ?? false;
             <label for="website">Leave this field blank</label>
             <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
         </div>
+        <?php if (!empty($checklistReference)): ?>
+        <input type="hidden" name="checklist_reference" value="<?= e($checklistReference) ?>">
+        <input type="hidden" name="unlock_checklist" value="1">
+        <?php endif; ?>
 
         <!-- Step 1: Customer Information -->
         <div class="card enquiry-step" data-step="1">

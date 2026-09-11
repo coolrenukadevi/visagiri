@@ -61,12 +61,24 @@ if ($typeSlug !== null) {
     $faqs = fetch_relevant_faqs((int) $country['id'], (int) $visaType['id']);
     $hasRichRequirement = $requirement !== null && !empty($requirement['overview']);
 
-    $pageTitle = $hasRichRequirement
-        ? "{$country['name']} {$visaType['name']} Consultant in India | Visagiri"
-        : "{$visaType['name']} for {$country['name']} - Visagiri";
-    $pageDescription = $hasRichRequirement
-        ? "{$country['name']} {$visaType['name']} eligibility, documents, application process, and consultant support for Indian applicants, including Patna and Bihar — enquire with Visagiri."
-        : "{$visaType['name']} eligibility, required documents, fees, and processing time for {$country['name']} — enquire with Visagiri.";
+    // Visa Checklist Engine — independent of $requirement above (a
+    // country+type can have rich requirement content, a checklist,
+    // both, or neither; see includes/visa-checklist.php).
+    $checklist = fetch_visa_checklist((int) $country['id'], (int) $visaType['id']);
+    $fee = fetch_visa_fee((int) $country['id'], (int) $visaType['id']);
+    $hasChecklistAccess = $checklist !== null && has_checklist_access((int) $country['id'], (int) $visaType['id']);
+    $checklistVisibility = $checklist !== null ? split_checklist_for_visibility($checklist, $hasChecklistAccess) : null;
+
+    $pageTitle = $checklist !== null
+        ? "{$country['name']} {$visaType['name']} Checklist for Indians | Documents Required | Visagiri"
+        : ($hasRichRequirement
+            ? "{$country['name']} {$visaType['name']} Consultant in India | Visagiri"
+            : "{$visaType['name']} for {$country['name']} - Visagiri");
+    $pageDescription = $checklist !== null
+        ? "Complete, independently maintained {$country['name']} {$visaType['name']} document checklist for Indian applicants — core requirements shown here, with the full checklist available after a quick enquiry."
+        : ($hasRichRequirement
+            ? "{$country['name']} {$visaType['name']} eligibility, documents, application process, and consultant support for Indian applicants, including Patna and Bihar — enquire with Visagiri."
+            : "{$visaType['name']} eligibility, required documents, fees, and processing time for {$country['name']} — enquire with Visagiri.");
     $canonicalUrl = APP_URL . "/visa/{$country['slug']}/{$visaType['slug']}/";
     $structuredData = [[
         '@context' => 'https://schema.org',
@@ -103,11 +115,38 @@ if ($typeSlug !== null) {
             <div class="visa-detail__header">
                 <span class="destination-card__flag"><?= flag_emoji($country['iso2']) ?></span>
                 <div>
+                    <?php if ($checklist !== null): ?>
+                    <p class="section-eyebrow"><?= e(strtoupper($country['name'])) ?> <?= e(strtoupper($visaType['name'])) ?></p>
+                    <h1>Complete Visa Document Checklist for Indian Applicants</h1>
+                    <p>Prepare your documents with confidence. Review the essential requirements below and request the complete, latest checklist applicable to your visa profile.</p>
+                    <div class="checklist-meta-row" style="display:flex;gap:var(--space-5);flex-wrap:wrap;margin:var(--space-4) 0;font-size:var(--font-size-sm)">
+                        <span><strong>Visa Type:</strong> <?= e($visaType['name']) ?></span>
+                        <span><strong>Applicant Country:</strong> India</span>
+                        <span><strong>Country:</strong> <?= e($country['name']) ?></span>
+                        <span><strong>Checklist Reference:</strong> <?= e($checklist['reference']) ?></span>
+                        <?php if (!empty($checklist['last_reviewed_at'])): ?>
+                        <span><strong>Last Reviewed:</strong> <?= e(date('d M Y', strtotime((string) $checklist['last_reviewed_at']))) ?></span>
+                        <?php endif; ?>
+                    </div>
+                    <div class="button-group">
+                        <?php if (!$hasChecklistAccess): ?>
+                        <a href="/enquire/?country=<?= e($country['slug']) ?>&amp;visa_type=<?= e($visaType['slug']) ?>&amp;checklist_ref=<?= e($checklist['reference']) ?>"
+                           class="btn btn-gold"
+                           data-open-enquiry-modal-checklist
+                           data-country="<?= e($country['slug']) ?>"
+                           data-visa-type="<?= e($visaType['slug']) ?>"
+                           data-checklist-ref="<?= e($checklist['reference']) ?>">Enquire Now &amp; Unlock Full Checklist</a>
+                        <?php else: ?>
+                        <a href="#complete-checklist" class="btn btn-gold">View Complete Checklist</a>
+                        <?php endif; ?>
+                        <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to talk to a visa expert about the {$visaType['name']} for {$country['name']}.")) ?>" class="btn btn-outline" target="_blank" rel="noopener noreferrer">Talk to a Visa Expert</a>
+                    <?php else: ?>
                     <h1><?= $hasRichRequirement ? e("{$country['name']} {$visaType['name']} Consultant in India") : (e($visaType['name']) . ' &mdash; ' . e($country['name'])) ?></h1>
                     <p><?= e($visaType['description'] ?? '') ?></p>
                     <div class="button-group">
                         <a href="/enquire/?country=<?= e($country['slug']) ?>&amp;visa_type=<?= e($visaType['slug']) ?>" class="btn btn-gold">Submit Enquiry</a>
                         <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to know more about {$visaType['name']} for {$country['name']}.")) ?>" class="btn btn-outline" target="_blank" rel="noopener noreferrer">WhatsApp Us</a>
+                    <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -117,6 +156,78 @@ if ($typeSlug !== null) {
                 Showing results for
                 <?php if (!empty($searchContext['nationality'])): ?><strong><?= e($searchContext['nationality']) ?></strong> nationality<?php endif; ?>
                 <?php if (!empty($searchContext['travel_date'])): ?>, travelling <strong><?= e($searchContext['travel_date']) ?></strong><?php endif; ?>.
+            </div>
+            <?php endif; ?>
+
+            <?php if ($checklist !== null): ?>
+
+            <?php if ($fee !== null): ?>
+            <div class="card" style="margin-bottom:var(--space-6);max-width:420px">
+                <div class="card-title">Visa Fee</div>
+                <p style="font-size:var(--font-size-lg);font-weight:600">
+                    <?= $fee['amount'] !== null ? e($fee['currency'] . ' ' . number_format((float) $fee['amount'], 2)) : e($fee['label'] ?: 'As per current consular fee schedule') ?>
+                </p>
+                <?php if (!empty($fee['label']) && $fee['amount'] !== null): ?><p style="font-size:var(--font-size-sm);color:var(--text-muted)"><?= e($fee['label']) ?></p><?php endif; ?>
+                <?php if (!empty($fee['note'])): ?><p style="font-size:var(--font-size-sm);color:var(--text-muted)"><?= e($fee['note']) ?></p><?php endif; ?>
+                <p style="font-size:var(--font-size-xs);color:var(--text-muted)">Last updated: <?= e(date('d M Y', strtotime((string) $fee['last_updated']))) ?></p>
+            </div>
+            <?php endif; ?>
+
+            <div id="complete-checklist">
+                <h2 class="country-directory__subheading"><?= e($country['name']) ?> <?= e($visaType['name']) ?> Document Checklist</h2>
+                <p style="font-size:var(--font-size-sm);color:var(--text-muted)">Checklist Reference: <?= e($checklist['reference']) ?> &middot; Version <?= e($checklist['version']) ?></p>
+
+                <?php foreach ($checklistVisibility['public'] as $i => $section): ?>
+                <div class="card" style="margin-bottom:var(--space-5)">
+                    <div class="card-title"><?= sprintf('%02d', $i + 1) ?> &mdash; <?= e($section['title']) ?></div>
+                    <?php if (!empty($section['description'])): ?><p style="font-size:var(--font-size-sm);color:var(--text-muted)"><?= e($section['description']) ?></p><?php endif; ?>
+                    <ul class="document-checklist">
+                        <?php foreach ($section['documents'] as $doc): ?>
+                        <li class="document-checklist__item">
+                            <label>
+                                <input type="checkbox">
+                                <span>
+                                    <?= e($doc['name']) ?>
+                                    <?php if ($doc['mandatory']): ?><span class="badge badge-warning" style="margin-left:6px">Mandatory</span>
+                                    <?php elseif ($doc['conditional']): ?><span class="badge badge-neutral" style="margin-left:6px">Conditional</span>
+                                    <?php endif; ?>
+                                    &mdash; <?= e(ucfirst(str_replace('_', ' ', $doc['document_type']))) ?>
+                                </span>
+                            </label>
+                            <?php if (!empty($doc['description'])): ?><p style="font-size:var(--font-size-sm);color:var(--text-muted);margin-left:26px"><?= e($doc['description']) ?></p><?php endif; ?>
+                        </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+                <?php endforeach; ?>
+
+                <?php if ($checklistVisibility['lockedTitles']): ?>
+                <div class="card" style="background:var(--bg-alt, #f7f8fa);text-align:center;padding:var(--space-8) var(--space-6)">
+                    <div class="card-title">&#128274; Complete Visa Checklist</div>
+                    <h3 style="margin-top:var(--space-2)">Get the Complete &amp; Updated Checklist</h3>
+                    <p>The complete checklist includes detailed financial, employment, travel, supporting-document, appointment and submission requirements applicable to this visa category.</p>
+                    <ul style="list-style:none;padding:0;margin:var(--space-4) 0;color:var(--text-muted)">
+                        <?php foreach ($checklistVisibility['lockedTitles'] as $title): ?>
+                        <li>&#128274; <?= e($title) ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                    <a href="/enquire/?country=<?= e($country['slug']) ?>&amp;visa_type=<?= e($visaType['slug']) ?>&amp;checklist_ref=<?= e($checklist['reference']) ?>"
+                       class="btn btn-gold btn-lg"
+                       data-open-enquiry-modal-checklist
+                       data-country="<?= e($country['slug']) ?>"
+                       data-visa-type="<?= e($visaType['slug']) ?>"
+                       data-checklist-ref="<?= e($checklist['reference']) ?>">Enquire Now &amp; Unlock Full Checklist &rarr;</a>
+                </div>
+                <?php else: ?>
+                <div class="button-group">
+                    <button type="button" class="btn btn-outline" onclick="window.print()">Print Checklist</button>
+                </div>
+                <?php endif; ?>
+
+                <p style="font-size:var(--font-size-xs);color:var(--text-muted);margin-top:var(--space-4)">
+                    <?= e($checklist['disclaimer'] ?: CHECKLIST_DEFAULT_DISCLAIMER) ?>
+                    <?php if (!empty($checklist['source_url'])): ?> <a href="<?= e($checklist['source_url']) ?>" rel="nofollow noopener" target="_blank">Source</a><?php endif; ?>
+                </p>
             </div>
             <?php endif; ?>
 
@@ -194,7 +305,7 @@ if ($typeSlug !== null) {
                 <?php if (!empty($requirement['last_verified_at'])): ?>Last verified: <?= e(date('d M Y', strtotime((string) $requirement['last_verified_at']))) ?><?php endif; ?>
                 <?php if (!empty($requirement['source_url'])): ?> &middot; <a href="<?= e($requirement['source_url']) ?>" rel="nofollow noopener" target="_blank">Official source</a><?php endif; ?>
             </p>
-            <?php else: ?>
+            <?php elseif ($checklist === null): ?>
             <div class="alert alert-warning">
                 <div>
                     <strong>Requirements not yet verified.</strong>
