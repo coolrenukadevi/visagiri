@@ -131,7 +131,18 @@ if ($typeSlug !== null) {
                 'flag' => '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v18"/><path d="M5 4h13l-3 4 3 4H5"/></svg>',
                 'checklist' => '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 3v2h6V3M8 11l2 2 4-4M8 17h8"/></svg>',
                 'calendar' => '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>',
+                'lock' => '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
+                'lock-sm' => '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
+                'check' => '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>',
+                'shield' => '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/></svg>',
+                'shield-check' => '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>',
             ];
+            // Locked-section titles are collected while looping the real
+            // checklist below, then rendered once as a single consolidated
+            // panel (never per-section) — a section's title is not
+            // sensitive, but this keeps the locked experience compact
+            // instead of repeating the same CTA once per hidden section.
+            $lockedSectionTitles = [];
             ?>
             <div class="visa-checklist-page">
                 <div class="vc-hero-full"<?= $heroStyle ?>>
@@ -202,17 +213,18 @@ if ($typeSlug !== null) {
 
                 <?php foreach ($checklist['sections'] as $sectionIndex => $section): ?>
                 <?php
-                $sectionCuratedPublic = checklist_section_is_public($section);
-                $sectionIsPublic = $hasChecklistAccess || $sectionCuratedPublic;
-                $docCount = count($section['documents']);
+                $sectionIsPublic = $hasChecklistAccess || checklist_section_is_public($section);
+                if (!$sectionIsPublic) {
+                    $lockedSectionTitles[] = $section['title'];
+                    continue;
+                }
                 ?>
-                <div class="vc-section-card<?= $sectionIsPublic ? '' : ' vc-section-card--locked' ?>">
-                    <div class="vc-section-head<?= $sectionIsPublic ? '' : ' vc-section-head--locked' ?>">
+                <div class="vc-section-card">
+                    <div class="vc-section-head">
                         <span class="vc-section-num"><?= sprintf('%02d', $sectionIndex + 1) ?></span>
                         <h3><?= e($section['title']) ?></h3>
-                        <span class="vc-section-tag"><?= $sectionCuratedPublic ? 'Mandatory for all applicants' : ($hasChecklistAccess ? 'Unlocked' : ($docCount . ' document' . ($docCount === 1 ? '' : 's'))) ?></span>
+                        <span class="vc-section-tag"><?= $hasChecklistAccess ? 'Unlocked' : 'Mandatory for all applicants' ?></span>
                     </div>
-                    <?php if ($sectionIsPublic): ?>
                     <table class="vc-doc-table">
                         <tr><th>#</th><th>Document</th><th>Details / Guidelines</th><th>Original / Copy</th></tr>
                         <?php foreach ($section['documents'] as $docIndex => $doc): ?>
@@ -224,14 +236,50 @@ if ($typeSlug !== null) {
                         </tr>
                         <?php endforeach; ?>
                     </table>
-                    <?php else: ?>
-                    <div class="vc-locked-body">
-                        <p><span class="vc-lock-icon">&#128274;</span><b><?= $docCount ?> document<?= $docCount === 1 ? '' : 's' ?></b> in this section — full details unlock after a quick enquiry.</p>
-                        <a href="<?= $enquireHref ?>" class="btn btn-outline" <?= $unlockAttrs ?>>Unlock Full Checklist</a>
-                    </div>
-                    <?php endif; ?>
                 </div>
                 <?php endforeach; ?>
+
+                <?php if ($lockedSectionTitles): ?>
+                <?php
+                $lockedCount = count($lockedSectionTitles);
+                $lockedListSentence = $lockedCount === 1
+                    ? $lockedSectionTitles[0]
+                    : implode(', ', array_slice($lockedSectionTitles, 0, -1)) . ' and ' . end($lockedSectionTitles);
+                ?>
+                <div class="vc-locked-panel">
+                    <div class="vc-locked-panel-main">
+                        <div class="vc-locked-panel-head">
+                            <span class="vc-locked-panel-icon"><?= $vcIcons['lock'] ?></span>
+                            <div>
+                                <h3>Remaining Checklist Locked</h3>
+                                <p>The complete checklist includes <?= e($lockedListSentence) ?>.</p>
+                            </div>
+                        </div>
+                        <ul class="vc-locked-list">
+                            <?php foreach ($lockedSectionTitles as $lockedTitle): ?>
+                            <li><span class="vc-locked-list-icon"><?= $vcIcons['lock-sm'] ?></span> <?= e($lockedTitle) ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                    <div class="vc-locked-panel-cta">
+                        <h4>Get the Complete Checklist</h4>
+                        <ul class="vc-locked-benefits">
+                            <li><?= $vcIcons['check'] ?> Latest &amp; updated document list</li>
+                            <li><?= $vcIcons['check'] ?> Personalized as per your profile</li>
+                            <li><?= $vcIcons['check'] ?> Prepared by visa experts</li>
+                            <li><?= $vcIcons['check'] ?> Instant access after enquiry</li>
+                        </ul>
+                        <a href="<?= $enquireHref ?>" class="btn btn-gold vc-locked-btn" <?= $unlockAttrs ?>>Enquire Now &amp; Unlock Checklist &rarr;</a>
+                    </div>
+                </div>
+                <?php endif; ?>
+
+                <div class="vc-trust-row">
+                    <div class="vc-trust-item"><span class="vc-trust-icon"><?= $vcIcons['shield'] ?></span><div><b>Trusted Visa Experts</b><span>For Indian Travellers</span></div></div>
+                    <div class="vc-trust-item"><span class="vc-trust-icon"><?= $vcIcons['shield-check'] ?></span><div><b>Accurate &amp; Updated Information</b></div></div>
+                    <div class="vc-trust-item"><span class="vc-trust-icon"><?= $vcIcons['user'] ?></span><div><b>End-to-End Support</b><span>Till Visa Decision</span></div></div>
+                    <div class="vc-trust-item"><span class="vc-trust-icon"><?= $vcIcons['lock'] ?></span><div><b>Secure &amp; Confidential</b><span>Your Data is Safe</span></div></div>
+                </div>
 
                 <div class="vc-download-panel">
                     <div>
@@ -529,6 +577,7 @@ if ($typeSlug !== null) {
 
             <?php endif; // end $checklist !== null / else ?>
 
+            <?php if ($checklist === null): ?>
             <div style="margin-top:var(--space-10)">
                 <?php require __DIR__ . '/../includes/contact-points.php'; ?>
             </div>
@@ -544,6 +593,7 @@ if ($typeSlug !== null) {
                     <?php endforeach; ?>
                 </div>
             </div>
+            <?php endif; // checklist pages replace both blocks above with the consolidated locked panel + trust-badges row rendered inside the checklist branch itself ?>
 
             <?php
             $otherTypes = array_values(array_filter(visa_types_for_country((int) $country['id']), static fn(array $t): bool => $t['id'] !== $visaType['id']));
