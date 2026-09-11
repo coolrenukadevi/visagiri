@@ -18,6 +18,13 @@
   --vc-gold-soft: var(--visa-gold-light);
 }
 
+/* The generic .visa-detail wrapper (visa.css) adds top padding so its
+   plain, non-edge-to-edge pages don't butt straight into the header —
+   but that same padding shows as a bare gray gap above this page's
+   edge-to-edge hero photo, which needs to sit flush against the header
+   instead. */
+.visa-detail--checklist { padding-top: 0; }
+
 /* ---------- HERO (edge-to-edge) ----------
    Breaks out of the page's .container using the 100vw/negative-margin
    trick rather than restructuring the surrounding markup, so it can sit

@@ -102,7 +102,7 @@ if ($typeSlug !== null) {
     }
     require __DIR__ . '/../includes/header.php';
     ?>
-    <section class="visa-detail">
+    <section class="visa-detail<?= $checklist !== null ? ' visa-detail--checklist' : '' ?>">
         <div class="container">
             <?php if ($checklist === null): ?>
             <ul class="breadcrumb">
