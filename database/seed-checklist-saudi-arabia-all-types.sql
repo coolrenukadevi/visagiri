@@ -318,7 +318,7 @@ INSERT INTO visa_checklist_documents (section_id, name, description, document_ty
 INSERT INTO visa_checklist_sections (checklist_id, title, description, display_order) VALUES (@st6, 'Insurance Documents', 'Mandatory as part of the Stopover eVisa.', 2);
 SET @st6s2 = LAST_INSERT_ID();
 INSERT INTO visa_checklist_documents (section_id, name, description, document_type, mandatory, conditional, is_public, display_order) VALUES
-(@st6s2, 'Mandatory Health Insurance', NULL, 'original', 1, 0, 1, 1);
+(@st6s2, 'Mandatory Health Insurance', NULL, 'original', 1, 0, 0, 1);
 
 INSERT INTO visa_fees (country_id, visa_type_id, amount, currency, label, note, effective_date, last_updated, source_url, updated_by) VALUES
 (91, 6, 130.00, 'SAR', 'Stopover eVisa Fee (Indicative)', 'The Stopover eVisa itself is largely nominal/free, but mandatory insurance and digital-service fees bring the practical total to roughly SAR 90-170 — confirmed once current figures are verified.', '2026-09-01', NOW(), 'https://saudiumrahvisa.com/saudi-arabia-transit-visa-guide-2026-online-application-fees-rules/', 'Visagiri Content Team');
