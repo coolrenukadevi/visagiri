@@ -56,46 +56,47 @@
 .visa-checklist-page .vc-hero-full .breadcrumb li { color: rgba(255, 255, 255, 0.55); }
 .visa-checklist-page .vc-hero-full .breadcrumb li:last-child { color: #fff; }
 
-.visa-checklist-page .vc-hero-grid {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: var(--space-6);
-  align-items: flex-start;
-  max-width: 62ch;
-}
 .visa-checklist-page .vc-hero-full h1 {
   color: #fff;
   font-size: clamp(1.75rem, 3.2vw, 2.5rem);
   line-height: 1.12;
   margin: 0 0 var(--space-2);
+  max-width: 62ch;
 }
 .visa-checklist-page .vc-hero-full h1 span { display: block; font-weight: var(--font-weight-medium); font-size: 0.55em; color: var(--vc-gold); margin-top: var(--space-1); }
 .visa-checklist-page .vc-hero-lede { color: rgba(255, 255, 255, 0.85); font-size: var(--font-size-md); line-height: 1.7; max-width: 60ch; margin: 0 0 var(--space-5); }
-.visa-checklist-page .vc-pills { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-6); }
+.visa-checklist-page .vc-hero-cta { display: flex; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-6); }
+.visa-checklist-page .vc-hero-cta .btn-outline { color: #fff; border-color: rgba(255, 255, 255, 0.6); }
+.visa-checklist-page .vc-hero-cta .btn-outline:hover { background: rgba(255, 255, 255, 0.12); }
+
+.visa-checklist-page .vc-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  max-width: 900px;
+}
+.visa-checklist-page .vc-pills { display: flex; flex-wrap: wrap; gap: var(--space-6); }
 .visa-checklist-page .vc-pill {
-  padding: 6px 12px;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
   color: #fff;
-  backdrop-filter: blur(2px);
+  white-space: nowrap;
 }
-.visa-checklist-page .vc-hero-cta { display: flex; gap: var(--space-3); flex-wrap: wrap; }
-.visa-checklist-page .vc-hero-cta .btn-outline { color: #fff; border-color: rgba(255, 255, 255, 0.6); }
-.visa-checklist-page .vc-hero-cta .btn-outline:hover { background: rgba(255, 255, 255, 0.12); }
+.visa-checklist-page .vc-pill svg { color: #a9c6f5; flex-shrink: 0; }
 .visa-checklist-page .vc-hero-reviewed {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: var(--radius-md);
-  padding: var(--space-2) var(--space-4);
+  color: #fff;
   font-size: var(--font-size-xs);
   white-space: nowrap;
 }
+.visa-checklist-page .vc-hero-reviewed svg { color: #a9c6f5; flex-shrink: 0; }
 .visa-checklist-page .vc-hero-reviewed b { display: block; font-size: var(--font-size-sm); color: var(--vc-gold); }
 
 /* ---------- VISA OVERVIEW ---------- */
@@ -248,8 +249,7 @@
 }
 
 @media (max-width: 850px) {
-  .visa-checklist-page .vc-hero-grid { grid-template-columns: 1fr; }
-  .visa-checklist-page .vc-hero-reviewed { align-self: flex-start; }
+  .visa-checklist-page .vc-meta-row { flex-direction: column; align-items: flex-start; }
   .visa-checklist-page .vc-overview-grid { grid-template-columns: repeat(2, 1fr); }
   .visa-checklist-page .vc-download-panel { flex-direction: column; align-items: flex-start; }
   .visa-checklist-page .vc-download-buttons { width: 100%; }

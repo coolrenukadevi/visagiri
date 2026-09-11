@@ -122,6 +122,16 @@ if ($typeSlug !== null) {
             $enquireHref = '/enquire/?country=' . e($country['slug']) . '&amp;visa_type=' . e($visaType['slug']) . '&amp;checklist_ref=' . e($checklist['reference']);
             $heroStyle = !empty($checklist['hero_image_url']) ? " style=\"background-image: url('" . e($checklist['hero_image_url']) . "')\"" : '';
             $lastReviewedDisplay = !empty($checklist['last_reviewed_at']) ? date('d M Y', strtotime((string) $checklist['last_reviewed_at'])) : null;
+            // Small flat outline icons for the hero's meta row — inline SVG
+            // rather than an icon font/library, matching this project's
+            // zero-external-dependency convention (see AUDIT.md).
+            $vcIcons = [
+                'passport' => '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="9" r="2.5"/><path d="M8 16h8M9 19h6"/></svg>',
+                'user' => '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c1.5-4 5-5.5 7.5-5.5s6 1.5 7.5 5.5"/></svg>',
+                'flag' => '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v18"/><path d="M5 4h13l-3 4 3 4H5"/></svg>',
+                'checklist' => '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 3v2h6V3M8 11l2 2 4-4M8 17h8"/></svg>',
+                'calendar' => '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>',
+            ];
             ?>
             <div class="visa-checklist-page">
                 <div class="vc-hero-full"<?= $heroStyle ?>>
@@ -133,27 +143,27 @@ if ($typeSlug !== null) {
                             <li><?= e($visaType['name']) ?></li>
                         </ul>
                         <div class="vc-hero-grid">
-                            <div>
-                                <h1><?= e($country['name']) ?> <?= e($visaType['name']) ?><span>Complete Visa Document Checklist for Indian Applicants</span></h1>
-                                <p class="vc-hero-lede">Prepare your documents with confidence. Get the latest requirements and let our experts guide you through a smooth visa application process.</p>
-                                <div class="vc-pills">
-                                    <span class="vc-pill"><?= flag_emoji($country['iso2']) ?> <?= e($visaType['name']) ?></span>
-                                    <span class="vc-pill">India Applicants</span>
-                                    <span class="vc-pill"><?= e($country['name']) ?></span>
-                                    <span class="vc-pill">Document Checklist</span>
-                                </div>
-                                <div class="vc-hero-cta">
-                                    <?php if (!$hasChecklistAccess): ?>
-                                    <a href="<?= $enquireHref ?>" class="btn btn-gold" <?= $unlockAttrs ?>>Get Complete Checklist</a>
-                                    <?php else: ?>
-                                    <a href="#vc-print-trigger" class="btn btn-gold" data-vc-print>View Complete Checklist</a>
-                                    <?php endif; ?>
-                                    <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to talk to a visa expert about the {$visaType['name']} for {$country['name']}.")) ?>" class="btn btn-outline" target="_blank" rel="noopener noreferrer">Speak to an Expert</a>
-                                </div>
+                            <h1><?= e($country['name']) ?> <?= e($visaType['name']) ?><span>Complete Visa Document Checklist for Indian Applicants</span></h1>
+                            <p class="vc-hero-lede">Prepare your documents with confidence. Get the latest requirements and let our experts guide you through a smooth visa application process.</p>
+                            <div class="vc-hero-cta">
+                                <?php if (!$hasChecklistAccess): ?>
+                                <a href="<?= $enquireHref ?>" class="btn btn-gold" <?= $unlockAttrs ?>>Get Complete Checklist</a>
+                                <?php else: ?>
+                                <a href="#vc-print-trigger" class="btn btn-gold" data-vc-print>View Complete Checklist</a>
+                                <?php endif; ?>
+                                <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to talk to a visa expert about the {$visaType['name']} for {$country['name']}.")) ?>" class="btn btn-outline" target="_blank" rel="noopener noreferrer">Speak to an Expert</a>
                             </div>
-                            <?php if ($lastReviewedDisplay): ?>
-                            <div class="vc-hero-reviewed">Last Reviewed<b><?= e($lastReviewedDisplay) ?></b></div>
-                            <?php endif; ?>
+                            <div class="vc-meta-row">
+                                <div class="vc-pills">
+                                    <span class="vc-pill"><?= $vcIcons['passport'] ?> <?= e($visaType['name']) ?></span>
+                                    <span class="vc-pill"><?= $vcIcons['user'] ?> India Applicants</span>
+                                    <span class="vc-pill"><?= $vcIcons['flag'] ?> <?= e($country['name']) ?></span>
+                                    <span class="vc-pill"><?= $vcIcons['checklist'] ?> Document Checklist</span>
+                                </div>
+                                <?php if ($lastReviewedDisplay): ?>
+                                <div class="vc-hero-reviewed"><?= $vcIcons['calendar'] ?> <span>Last Reviewed<b><?= e($lastReviewedDisplay) ?></b></span></div>
+                                <?php endif; ?>
+                            </div>
                         </div>
                     </div>
                 </div>
