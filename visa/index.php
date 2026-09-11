@@ -154,27 +154,6 @@ if ($typeSlug !== null) {
                 </div>
                 <?php endif; ?>
 
-                <div class="vc-section-heading">
-                    <h2><?= e($country['name']) ?> <?= e($visaType['name']) ?> Document Checklist</h2>
-                    <p>Use the summary below to start preparing. The complete, detailed, branded checklist document is generated once you submit a quick enquiry.</p>
-                </div>
-
-                <div class="vc-summary-grid">
-                    <?php foreach ($checklist['sections'] as $i => $section): ?>
-                    <article class="vc-summary-card">
-                        <div class="vc-summary-icon"><?= sprintf('%02d', $i + 1) ?></div>
-                        <h3><?= e($section['title']) ?></h3>
-                        <?php if (!empty($section['description'])): ?><p><?= e($section['description']) ?></p><?php endif; ?>
-                        <ul>
-                            <?php foreach (array_slice($section['documents'], 0, 4) as $doc): ?>
-                            <li><?= e($doc['name']) ?></li>
-                            <?php endforeach; ?>
-                            <?php if (count($section['documents']) > 4): ?><li>+ <?= count($section['documents']) - 4 ?> more</li><?php endif; ?>
-                        </ul>
-                    </article>
-                    <?php endforeach; ?>
-                </div>
-
                 <div class="vc-download-panel">
                     <div>
                         <h3>Need the complete A4 Visa Checklist?</h3>

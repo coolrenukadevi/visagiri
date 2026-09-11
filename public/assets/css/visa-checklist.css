@@ -80,24 +80,6 @@
 .visa-checklist-page .vc-hero-card small { display: block; margin-top: var(--space-3); color: var(--text-muted); font-size: var(--font-size-xs); }
 .visa-checklist-page .vc-hero-cta { display: flex; gap: var(--space-3); flex-wrap: wrap; margin-top: var(--space-5); }
 
-/* ---------- CHECKLIST SUMMARY GRID (screen) ---------- */
-.visa-checklist-page .vc-section-heading { text-align: center; max-width: 760px; margin: 0 auto var(--space-6); }
-.visa-checklist-page .vc-section-heading h2 { color: var(--vc-navy); margin: 0 0 var(--space-2); }
-.visa-checklist-page .vc-section-heading p { color: var(--text-muted); margin: 0; }
-.visa-checklist-page .vc-summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); }
-.visa-checklist-page .vc-summary-card { border: 1px solid var(--border); border-radius: var(--radius-lg); background: #fff; padding: var(--space-5); }
-.visa-checklist-page .vc-summary-icon {
-  width: 38px; height: 38px;
-  border-radius: 10px;
-  background: var(--visa-blue-light);
-  color: var(--vc-navy);
-  display: flex; align-items: center; justify-content: center;
-  font-weight: var(--font-weight-bold);
-  margin-bottom: var(--space-3);
-}
-.visa-checklist-page .vc-summary-card h3 { margin: 0 0 var(--space-1); font-size: var(--font-size-lg); color: var(--vc-navy); }
-.visa-checklist-page .vc-summary-card p { font-size: var(--font-size-sm); color: var(--text-muted); margin: 0 0 var(--space-3); }
-.visa-checklist-page .vc-summary-card ul { margin: 0; padding-left: 18px; color: var(--text-dark); font-size: var(--font-size-sm); line-height: 1.7; }
 
 .visa-checklist-page .vc-download-panel {
   margin-top: var(--space-6);
@@ -126,7 +108,6 @@
 
 @media (max-width: 850px) {
   .visa-checklist-page .vc-hero-grid { grid-template-columns: 1fr; }
-  .visa-checklist-page .vc-summary-grid { grid-template-columns: 1fr; }
   .visa-checklist-page .vc-download-panel { flex-direction: column; align-items: flex-start; }
   .visa-checklist-page .vc-download-buttons { width: 100%; }
   .visa-checklist-page .vc-download-buttons .btn { flex: 1; }
