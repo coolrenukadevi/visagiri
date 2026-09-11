@@ -147,6 +147,7 @@ echo "       database/schema-visa-checklist-overview.sql (no seed file — schem
 echo "       database/schema-visa-checklist-hero-image.sql (no seed file — schema only)"
 echo "                                                    database/seed-checklist-mexico-tourist.sql"
 echo "                                                    database/seed-faqs-mexico-tourist.sql"
+echo "                                                    database/seed-checklist-mexico-other-types.sql"
 echo "       database/schema-testimonials.sql            (no seed file yet — see AUDIT.md)"
 echo "       database/schema-testimonials-customer-submission.sql (no seed file — schema only)"
 echo "     (re-checked against every database/*.sql file actually in this repo before this package was"
