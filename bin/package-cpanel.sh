@@ -149,6 +149,8 @@ echo "                                                    database/seed-checklis
 echo "                                                    database/seed-faqs-mexico-tourist.sql"
 echo "                                                    database/seed-checklist-mexico-other-types.sql"
 echo "                                                    database/seed-checklist-singapore-all-types.sql"
+echo "                                                    database/seed-checklist-france-all-types.sql"
+echo "                                                    database/seed-checklist-japan-all-types.sql"
 echo "       database/schema-testimonials.sql            (no seed file yet — see AUDIT.md)"
 echo "       database/schema-testimonials-customer-submission.sql (no seed file — schema only)"
 echo "     (re-checked against every database/*.sql file actually in this repo before this package was"
