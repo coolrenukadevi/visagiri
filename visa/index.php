@@ -102,26 +102,41 @@ if ($typeSlug !== null) {
     }
     require __DIR__ . '/../includes/header.php';
     ?>
-    <section class="visa-detail<?= $checklist !== null ? ' visa-detail--checklist' : '' ?>">
+    <section class="visa-detail visa-detail--checklist">
         <div class="container">
-            <?php if ($checklist === null): ?>
-            <ul class="breadcrumb">
-                <li><a href="/">Home</a></li>
-                <li><a href="/countries/">Countries</a></li>
-                <li><a href="/visa/<?= e($country['slug']) ?>/"><?= e($country['name']) ?></a></li>
-                <li><?= e($visaType['name']) ?></li>
-            </ul>
-            <?php endif; ?>
-
-            <?php if ($checklist !== null): ?>
             <?php
+            // Shared hero + chrome across all three content states a
+            // /visa/{country}/{type}/ page can be in: a real published
+            // checklist (Mexico Tourist so far), legacy rich requirement
+            // content (Singapore so far), or neither yet (the vast
+            // majority of the 208 countries x 10 visa types this catalog
+            // already covers — see AUDIT.md's "200+ countries" entry).
+            // One consistent design for every page, honest empty states
+            // where there's genuinely nothing published yet — never
+            // fabricated content to fill the gap.
             $feeDisplay = $fee !== null
                 ? ($fee['amount'] !== null ? $fee['currency'] . ' ' . number_format((float) $fee['amount'], 2) : ($fee['label'] ?: 'Check latest fee'))
                 : 'Check latest fee';
-            $unlockAttrs = 'data-open-enquiry-modal-checklist data-country="' . e($country['slug']) . '" data-visa-type="' . e($visaType['slug']) . '" data-checklist-ref="' . e($checklist['reference']) . '"';
-            $enquireHref = '/enquire/?country=' . e($country['slug']) . '&amp;visa_type=' . e($visaType['slug']) . '&amp;checklist_ref=' . e($checklist['reference']);
+            $unlockAttrs = $checklist !== null
+                ? 'data-open-enquiry-modal-checklist data-country="' . e($country['slug']) . '" data-visa-type="' . e($visaType['slug']) . '" data-checklist-ref="' . e($checklist['reference']) . '"'
+                : '';
+            $enquireHref = $checklist !== null
+                ? '/enquire/?country=' . e($country['slug']) . '&amp;visa_type=' . e($visaType['slug']) . '&amp;checklist_ref=' . e($checklist['reference'])
+                : '/enquire/?country=' . e($country['slug']) . '&amp;visa_type=' . e($visaType['slug']);
             $heroStyle = !empty($checklist['hero_image_url']) ? " style=\"background-image: url('" . e($checklist['hero_image_url']) . "')\"" : '';
-            $lastReviewedDisplay = !empty($checklist['last_reviewed_at']) ? date('d M Y', strtotime((string) $checklist['last_reviewed_at'])) : null;
+            $lastReviewedDisplay = !empty($checklist['last_reviewed_at'])
+                ? date('d M Y', strtotime((string) $checklist['last_reviewed_at']))
+                : (!empty($requirement['last_verified_at'] ?? null) ? date('d M Y', strtotime((string) $requirement['last_verified_at'])) : null);
+            $heroSubtitle = $checklist !== null
+                ? 'Complete Visa Document Checklist for Indian Applicants'
+                : ($requirement !== null
+                    ? 'Eligibility, Documents & Application Support for Indian Applicants'
+                    : (string) ($visaType['description'] ?? ''));
+            $heroLede = $checklist !== null
+                ? 'Prepare your documents with confidence. Get the latest requirements and let our experts guide you through a smooth visa application process.'
+                : ($requirement !== null
+                    ? 'Review eligibility, required documents, fees and the application process below, or enquire for personalised guidance.'
+                    : "We're working on a verified {$visaType['name']} checklist for {$country['name']}. Enquire and our team will guide you directly with current requirements.");
             // Small flat outline icons for the hero's meta row — inline SVG
             // rather than an icon font/library, matching this project's
             // zero-external-dependency convention (see AUDIT.md).
@@ -154,13 +169,15 @@ if ($typeSlug !== null) {
                             <li><?= e($visaType['name']) ?></li>
                         </ul>
                         <div class="vc-hero-grid">
-                            <h1><?= e($country['name']) ?> <?= e($visaType['name']) ?><span>Complete Visa Document Checklist for Indian Applicants</span></h1>
-                            <p class="vc-hero-lede">Prepare your documents with confidence. Get the latest requirements and let our experts guide you through a smooth visa application process.</p>
+                            <h1><?= e($country['name']) ?> <?= e($visaType['name']) ?><?php if ($heroSubtitle !== ''): ?><span><?= e($heroSubtitle) ?></span><?php endif; ?></h1>
+                            <?php if ($heroLede !== ''): ?><p class="vc-hero-lede"><?= e($heroLede) ?></p><?php endif; ?>
                             <div class="vc-hero-cta">
-                                <?php if (!$hasChecklistAccess): ?>
+                                <?php if ($checklist !== null && !$hasChecklistAccess): ?>
                                 <a href="<?= $enquireHref ?>" class="btn btn-gold" <?= $unlockAttrs ?>>Get Complete Checklist</a>
-                                <?php else: ?>
+                                <?php elseif ($checklist !== null): ?>
                                 <a href="#vc-print-trigger" class="btn btn-gold" data-vc-print>View Complete Checklist</a>
+                                <?php else: ?>
+                                <a href="<?= $enquireHref ?>" class="btn btn-gold" data-open-enquiry-modal>Submit Enquiry</a>
                                 <?php endif; ?>
                                 <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to talk to a visa expert about the {$visaType['name']} for {$country['name']}.")) ?>" class="btn btn-outline" target="_blank" rel="noopener noreferrer">Speak to an Expert</a>
                             </div>
@@ -187,6 +204,7 @@ if ($typeSlug !== null) {
                 </div>
                 <?php endif; ?>
 
+                <?php if ($checklist !== null): ?>
                 <div class="vc-overview">
                     <h2>Visa Overview</h2>
                     <div class="vc-overview-grid">
@@ -466,28 +484,9 @@ if ($typeSlug !== null) {
 
             <script src="<?= e(asset_url('/assets/js/visa-checklist.js')) ?>" defer></script>
             <?php else: ?>
+            </div><!-- closes .visa-checklist-page: the checklist state's own vc-overview/table markup above needs that wrapper for its scoped CSS, but neither of the other two states below use any .visa-checklist-page-scoped classes -->
 
-            <div class="visa-detail__header">
-                <span class="destination-card__flag"><?= flag_emoji($country['iso2']) ?></span>
-                <div>
-                    <h1><?= $hasRichRequirement ? e("{$country['name']} {$visaType['name']} Consultant in India") : (e($visaType['name']) . ' &mdash; ' . e($country['name'])) ?></h1>
-                    <p><?= e($visaType['description'] ?? '') ?></p>
-                    <div class="button-group">
-                        <a href="/enquire/?country=<?= e($country['slug']) ?>&amp;visa_type=<?= e($visaType['slug']) ?>" class="btn btn-gold">Submit Enquiry</a>
-                        <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to know more about {$visaType['name']} for {$country['name']}.")) ?>" class="btn btn-outline" target="_blank" rel="noopener noreferrer">WhatsApp Us</a>
-                    </div>
-                </div>
-            </div>
-
-            <?php if ($searchContext): ?>
-            <div class="alert alert-info">
-                Showing results for
-                <?php if (!empty($searchContext['nationality'])): ?><strong><?= e($searchContext['nationality']) ?></strong> nationality<?php endif; ?>
-                <?php if (!empty($searchContext['travel_date'])): ?>, travelling <strong><?= e($searchContext['travel_date']) ?></strong><?php endif; ?>.
-            </div>
-            <?php endif; ?>
-
-            <?php if ($requirement): ?>
+            <?php if ($requirement !== null): ?>
 
             <?php if (!empty($requirement['overview'])): ?>
             <div class="prose" style="margin-bottom:var(--space-6)">
@@ -562,16 +561,16 @@ if ($typeSlug !== null) {
                 <?php if (!empty($requirement['source_url'])): ?> &middot; <a href="<?= e($requirement['source_url']) ?>" rel="nofollow noopener" target="_blank">Official source</a><?php endif; ?>
             </p>
             <?php else: ?>
-            <div class="alert alert-warning">
+            <div class="vc-coming-soon">
+                <span class="vc-coming-soon-icon"><?= $vcIcons['calendar'] ?></span>
                 <div>
-                    <strong>Requirements not yet verified.</strong>
-                    We haven't published verified <?= e($visaType['name']) ?> requirements for <?= e($country['name']) ?> yet.
-                    Contact our team for current requirements, or check back soon.
+                    <h3>Document Checklist Coming Soon</h3>
+                    <p>We haven't published a verified <?= e($visaType['name']) ?> checklist for <?= e($country['name']) ?> yet. Our team can guide you directly with current, accurate requirements in the meantime.</p>
+                    <div class="button-group" style="margin-top:var(--space-4)">
+                        <a href="/contact/" class="btn btn-primary">Contact Us</a>
+                        <a href="/visa/<?= e($country['slug']) ?>/" class="btn btn-outline">See other visa types for <?= e($country['name']) ?></a>
+                    </div>
                 </div>
-            </div>
-            <div class="button-group" style="margin-top:var(--space-5)">
-                <a href="/contact/" class="btn btn-primary">Contact Us</a>
-                <a href="/visa/<?= e($country['slug']) ?>/" class="btn btn-outline">See other visa types for <?= e($country['name']) ?></a>
             </div>
             <?php endif; ?>
 
@@ -623,14 +622,14 @@ if ($typeSlug !== null) {
             </div>
             <?php endif; ?>
 
-            <?php if ($checklist !== null): ?>
             <div style="margin-top:var(--space-10)">
                 <?php
                 $testimonials = fetch_testimonials((int) $country['id'], (int) $visaType['id']);
                 require __DIR__ . '/../includes/testimonials.php';
                 ?>
             </div>
-            <?php else: ?>
+
+            <?php if ($checklist === null): ?>
             <div class="final-cta" style="margin-top:var(--space-10)">
                 <h2>Ready to start your <?= e($country['name']) ?> <?= e(strtolower($visaType['name'])) ?> application?</h2>
                 <div class="button-group" style="justify-content:center">

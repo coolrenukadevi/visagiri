@@ -350,6 +350,36 @@
   color: var(--text-muted);
 }
 
+/* ---------- DOCUMENT CHECKLIST COMING SOON ----------
+   The honest empty state for the vast majority of /visa/{country}/{type}/
+   pages that have neither a published checklist nor legacy rich
+   requirement content yet — not nested under .visa-checklist-page since
+   it renders after that wrapper is already closed (see visa/index.php). */
+.vc-coming-soon {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  margin-top: var(--space-2);
+}
+.vc-coming-soon-icon {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--visa-blue-light);
+  color: var(--visa-blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.vc-coming-soon-icon svg { width: 22px; height: 22px; }
+.vc-coming-soon h3 { margin: 0 0 var(--space-2); color: var(--visa-blue); }
+.vc-coming-soon p { margin: 0; color: var(--text-muted); font-size: var(--font-size-sm); line-height: 1.6; max-width: 60ch; }
+
 /* ---------- CUSTOMER TESTIMONIALS ----------
    Renders wherever includes/testimonials.php is required — not nested
    under .visa-checklist-page since this partial is meant to be reused
