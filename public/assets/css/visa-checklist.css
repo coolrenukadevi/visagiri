@@ -55,7 +55,7 @@
   position: relative;
   max-width: var(--container-max, 1200px);
   margin: 0 auto;
-  padding: var(--space-5) var(--space-4) var(--space-10);
+  padding: var(--space-5) var(--space-4) var(--space-6);
 }
 .visa-checklist-page .vc-hero-full .breadcrumb { margin-bottom: var(--space-6); }
 .visa-checklist-page .vc-hero-full .breadcrumb a { color: rgba(255, 255, 255, 0.75); }
@@ -84,11 +84,11 @@
   gap: var(--space-4);
   max-width: 900px;
 }
-.visa-checklist-page .vc-pills { display: flex; flex-wrap: wrap; gap: var(--space-6); }
+.visa-checklist-page .vc-pills { display: flex; flex-wrap: wrap; gap: var(--space-4); }
 .visa-checklist-page .vc-pill {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: 6px;
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
   color: #fff;
@@ -97,64 +97,65 @@
 .visa-checklist-page .vc-hero-reviewed {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: 6px;
   color: #fff;
   font-size: var(--font-size-xs);
   white-space: nowrap;
 }
 .visa-checklist-page .vc-hero-reviewed b { display: block; font-size: var(--font-size-sm); color: var(--vc-gold); }
 
-/* Icon badges — a small translucent square tinted with the logo's gold,
-   giving each pill/reviewed-date icon a soft "glass" chip instead of a
-   bare glyph. Slightly brightens on hover for a subtle interactive feel
-   even though the pills themselves aren't links. */
+/* Icon badges — a small translucent chip tinted with the logo's gold,
+   giving each pill/reviewed-date icon a soft, compact accent instead of
+   a bare glyph. Kept deliberately small/borderless so the meta row
+   reads as one tight line, not a row of boxes. Slightly brightens on
+   hover for a subtle interactive feel even though the pills aren't
+   links. */
 .visa-checklist-page .vc-pill-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
-  border-radius: 7px;
-  background: rgba(244, 180, 0, 0.16);
-  border: 1px solid rgba(244, 180, 0, 0.4);
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  background: rgba(244, 180, 0, 0.18);
   color: var(--vc-gold);
   flex-shrink: 0;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  transition: background-color 0.2s ease;
 }
 .visa-checklist-page .vc-pill:hover .vc-pill-icon,
 .visa-checklist-page .vc-hero-reviewed:hover .vc-pill-icon {
-  background: rgba(244, 180, 0, 0.3);
-  border-color: rgba(244, 180, 0, 0.65);
+  background: rgba(244, 180, 0, 0.32);
 }
+.visa-checklist-page .vc-pill-icon svg,
+.visa-checklist-page .vc-hero-reviewed .vc-pill-icon svg { width: 12px; height: 12px; }
 
 /* ---------- VISA OVERVIEW ---------- */
-.visa-checklist-page .vc-overview { margin-top: var(--space-8); }
-.visa-checklist-page .vc-overview h2 { color: var(--vc-navy); margin: 0 0 var(--space-4); }
+.visa-checklist-page .vc-overview { margin-top: var(--space-6); }
+.visa-checklist-page .vc-overview h2 { color: var(--vc-navy); margin: 0 0 var(--space-3); }
 .visa-checklist-page .vc-overview-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-4);
+  gap: var(--space-3);
 }
 .visa-checklist-page .vc-overview-item {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: var(--space-3);
   background: #fff;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  padding: var(--space-4);
+  padding: var(--space-3);
 }
 .visa-checklist-page .vc-overview-icon {
   flex-shrink: 0;
-  width: 38px;
-  height: 38px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
-  background: var(--vc-navy-dark, #EAF2FF);
   background: var(--visa-blue-light);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.05rem;
+  font-size: 0.95rem;
 }
 .visa-checklist-page .vc-overview-item b { display: block; font-size: var(--font-size-xs); color: var(--text-muted); font-weight: var(--font-weight-semibold); text-transform: uppercase; letter-spacing: 0.02em; }
 .visa-checklist-page .vc-overview-item span { display: block; font-size: var(--font-size-sm); color: var(--text-dark); font-weight: var(--font-weight-medium); margin-top: 2px; }
