@@ -205,7 +205,7 @@ $isActive = static fn(string $href): bool => $href !== '/' && str_starts_with($c
 // file; the live site no longer goes through it.
 foreach ([
     'tokens', 'base', 'components', 'layout', 'home',
-    'visa', 'countries', 'enquiry-modal', 'why-visagiri',
+    'visa', 'countries', 'enquiry-modal', 'why-visagiri', 'visa-checklist',
 ] as $cssFile): ?>
 <link rel="stylesheet" href="<?= e(asset_url("/assets/css/$cssFile.css")) ?>">
 <?php endforeach; ?>

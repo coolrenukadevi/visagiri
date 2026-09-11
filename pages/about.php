@@ -102,19 +102,19 @@ require __DIR__ . '/../includes/header.php';
         </div>
         <div class="card-grid" style="grid-template-columns:repeat(4,1fr)">
             <div class="card" style="text-align:center">
-                <div class="card-title" style="color:var(--primary)"><?= e($foundingYear) ?></div>
+                <div class="card-title" style="color:var(--visa-blue)"><?= e($foundingYear) ?></div>
                 <p style="font-size:var(--font-size-sm)">Serving visa &amp; travel requirements since April</p>
             </div>
             <div class="card" style="text-align:center">
-                <div class="card-title" style="color:var(--primary)"><?= e((string) $countryCount) ?>+</div>
+                <div class="card-title" style="color:var(--visa-blue)"><?= e((string) $countryCount) ?>+</div>
                 <p style="font-size:var(--font-size-sm)">Countries covered in our visa directory</p>
             </div>
             <div class="card" style="text-align:center">
-                <div class="card-title" style="color:var(--primary)"><?= e((string) $visaTypeCount) ?></div>
+                <div class="card-title" style="color:var(--visa-blue)"><?= e((string) $visaTypeCount) ?></div>
                 <p style="font-size:var(--font-size-sm)">Visa categories, from tourist to work &amp; dependent</p>
             </div>
             <div class="card" style="text-align:center">
-                <div class="card-title" style="color:var(--primary)">24&times;7</div>
+                <div class="card-title" style="color:var(--visa-blue)">24&times;7</div>
                 <p style="font-size:var(--font-size-sm)">Support over WhatsApp, call, or enquiry form</p>
             </div>
         </div>

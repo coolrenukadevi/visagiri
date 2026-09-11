@@ -12,8 +12,22 @@
 -- the existing shared countries/visa_types catalog — see
 -- database/seed.sql).
 
-INSERT INTO visa_checklists (country_id, visa_type_id, reference, version, status, source, source_url, last_reviewed_at)
-VALUES (172, 1, 'MEX-TOUR-IN-01', '2026.09', 'published', 'Consular guidance and independent visa-agency sources for Mexico tourist visas issued to Indian passport holders', 'https://btwvisas.com/visa-guide/mexico-visa', '2026-09-11');
+INSERT INTO visa_checklists (
+    country_id, visa_type_id, reference, version, status,
+    purpose, eligibility_summary, typical_stay, application_method, personal_appearance, processing_note, consular_office, application_steps,
+    source, source_url, last_reviewed_at
+) VALUES (
+    172, 1, 'MEX-TOUR-IN-01', '2026.09', 'published',
+    'Tourism, sightseeing, and leisure travel to Mexico.',
+    'Indian passport holders without a valid US/UK/Canada/Japan/Schengen visa or residence permit (which may qualify for visa-waived entry instead) generally need to apply for this visa directly.',
+    'Up to 180 days per entry',
+    'In person, through the Embassy of Mexico or its visa application partner in India',
+    1,
+    '10-15 working days (indicative)',
+    'Embassy of Mexico, New Delhi',
+    'Confirm you actually need this visa (check the US/UK/Canada/Japan/Schengen visa-waiver option first)\nGather and organise your documents against this checklist\nComplete and sign the visa application form\nBook your consulate appointment\nAttend in person with your original documents and pay the consular fee\nSubmit your passport for visa stamping\nCollect your passport once the visa is issued',
+    'Consular guidance and independent visa-agency sources for Mexico tourist visas issued to Indian passport holders', 'https://btwvisas.com/visa-guide/mexico-visa', '2026-09-11'
+);
 
 SET @checklist_id = LAST_INSERT_ID();
 
