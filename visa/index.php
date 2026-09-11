@@ -212,7 +212,7 @@ if ($typeSlug !== null) {
                         <div class="vc-overview-item"><span class="vc-overview-icon">&#129517;</span><div><b>Purpose of Travel</b><span><?= e($checklist['purpose'] ?: 'As per application') ?></span></div></div>
                         <div class="vc-overview-item"><span class="vc-overview-icon">&#128337;</span><div><b>Typical Stay</b><span><?= e($checklist['typical_stay'] ?: 'As permitted by visa decision') ?></span></div></div>
                         <div class="vc-overview-item"><span class="vc-overview-icon">&#127974;</span><div><b>Application Method</b><span><?= e($checklist['application_method'] ?: 'Check current guidance') ?></span></div></div>
-                        <div class="vc-overview-item"><span class="vc-overview-icon">&#128100;</span><div><b>Personal Appearance</b><span><?= $checklist['personal_appearance'] ? 'Required' : 'May be required' ?></span></div></div>
+                        <div class="vc-overview-item"><span class="vc-overview-icon">&#128100;</span><div><b>Personal Appearance</b><span><?= $checklist['personal_appearance'] ? 'Required' : 'Not required' ?></span></div></div>
                         <div class="vc-overview-item"><span class="vc-overview-icon">&#9201;</span><div><b>Processing Time</b><span><?= e($checklist['processing_note'] ?: 'Variable; check current guidance') ?></span></div></div>
                         <div class="vc-overview-item"><span class="vc-overview-icon">&#128179;</span><div><b>Visa Fee</b><span><?= e($feeDisplay) ?></span></div></div>
                         <div class="vc-overview-item"><span class="vc-overview-icon">&#127963;</span><div><b>Consular Office</b><span><?= e($checklist['consular_office'] ?: 'Check current guidance') ?></span></div></div>
@@ -379,7 +379,7 @@ if ($typeSlug !== null) {
                                 <div class="p-glance-row"><b>Processing</b><span><?= e($checklist['processing_note'] ?: 'Variable; check current guidance') ?></span></div>
                                 <div class="p-glance-row"><b>Visa Fee</b><span><?= e($feeDisplay) ?></span></div>
                                 <div class="p-glance-row"><b>Submission</b><span><?= e($checklist['application_method'] ?: 'Check current guidance') ?></span></div>
-                                <div class="p-glance-row"><b>Appearance</b><span><?= $checklist['personal_appearance'] ? 'Required' : 'Follow current instructions' ?></span></div>
+                                <div class="p-glance-row"><b>Appearance</b><span><?= $checklist['personal_appearance'] ? 'Required' : 'Not required' ?></span></div>
                             </div>
                             <div class="p-note-box">
                                 <h3>IMPORTANT NOTES</h3>
