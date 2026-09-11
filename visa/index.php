@@ -104,12 +104,14 @@ if ($typeSlug !== null) {
     ?>
     <section class="visa-detail">
         <div class="container">
+            <?php if ($checklist === null): ?>
             <ul class="breadcrumb">
                 <li><a href="/">Home</a></li>
                 <li><a href="/countries/">Countries</a></li>
                 <li><a href="/visa/<?= e($country['slug']) ?>/"><?= e($country['name']) ?></a></li>
                 <li><?= e($visaType['name']) ?></li>
             </ul>
+            <?php endif; ?>
 
             <?php if ($checklist !== null): ?>
             <?php
@@ -118,30 +120,40 @@ if ($typeSlug !== null) {
                 : 'Check latest fee';
             $unlockAttrs = 'data-open-enquiry-modal-checklist data-country="' . e($country['slug']) . '" data-visa-type="' . e($visaType['slug']) . '" data-checklist-ref="' . e($checklist['reference']) . '"';
             $enquireHref = '/enquire/?country=' . e($country['slug']) . '&amp;visa_type=' . e($visaType['slug']) . '&amp;checklist_ref=' . e($checklist['reference']);
+            $heroStyle = !empty($checklist['hero_image_url']) ? " style=\"background-image: url('" . e($checklist['hero_image_url']) . "')\"" : '';
+            $lastReviewedDisplay = !empty($checklist['last_reviewed_at']) ? date('d M Y', strtotime((string) $checklist['last_reviewed_at'])) : null;
             ?>
             <div class="visa-checklist-page">
-                <div class="vc-hero">
-                    <div class="vc-hero-grid">
-                        <div>
-                            <h1><?= e($country['name']) ?> <span><?= e($visaType['name']) ?></span></h1>
-                            <p class="vc-hero-lede">Prepare your visa documents with confidence. Review the practical document checklist for Indian applicants below and understand what to prepare before your appointment.</p>
-                            <div class="vc-pills">
-                                <span class="vc-pill"><?= flag_emoji($country['iso2']) ?> <?= e($visaType['name']) ?></span>
-                                <span class="vc-pill">India Applicants</span>
-                                <span class="vc-pill">Document Checklist</span>
+                <div class="vc-hero-full"<?= $heroStyle ?>>
+                    <div class="vc-hero-inner">
+                        <ul class="breadcrumb">
+                            <li><a href="/">Home</a></li>
+                            <li><a href="/countries/">Visa</a></li>
+                            <li><a href="/visa/<?= e($country['slug']) ?>/"><?= e($country['name']) ?></a></li>
+                            <li><?= e($visaType['name']) ?></li>
+                        </ul>
+                        <div class="vc-hero-grid">
+                            <div>
+                                <h1><?= e($country['name']) ?> <?= e($visaType['name']) ?><span>Complete Visa Document Checklist for Indian Applicants</span></h1>
+                                <p class="vc-hero-lede">Prepare your documents with confidence. Get the latest requirements and let our experts guide you through a smooth visa application process.</p>
+                                <div class="vc-pills">
+                                    <span class="vc-pill"><?= flag_emoji($country['iso2']) ?> <?= e($visaType['name']) ?></span>
+                                    <span class="vc-pill">India Applicants</span>
+                                    <span class="vc-pill"><?= e($country['name']) ?></span>
+                                    <span class="vc-pill">Document Checklist</span>
+                                </div>
+                                <div class="vc-hero-cta">
+                                    <?php if (!$hasChecklistAccess): ?>
+                                    <a href="<?= $enquireHref ?>" class="btn btn-gold" <?= $unlockAttrs ?>>Get Complete Checklist</a>
+                                    <?php else: ?>
+                                    <a href="#vc-print-trigger" class="btn btn-gold" data-vc-print>View Complete Checklist</a>
+                                    <?php endif; ?>
+                                    <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to talk to a visa expert about the {$visaType['name']} for {$country['name']}.")) ?>" class="btn btn-outline" target="_blank" rel="noopener noreferrer">Speak to an Expert</a>
+                                </div>
                             </div>
-                            <div class="vc-hero-cta">
-                                <?php if (!$hasChecklistAccess): ?>
-                                <a href="<?= $enquireHref ?>" class="btn btn-gold" <?= $unlockAttrs ?>>Enquire Now &amp; Unlock Full Checklist</a>
-                                <?php else: ?>
-                                <a href="#vc-print-trigger" class="btn btn-gold" data-vc-print>View Complete Checklist</a>
-                                <?php endif; ?>
-                                <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to talk to a visa expert about the {$visaType['name']} for {$country['name']}.")) ?>" class="btn btn-outline" target="_blank" rel="noopener noreferrer">Talk to a Visa Expert</a>
-                            </div>
-                        </div>
-                        <div class="vc-hero-card">
-                            <div class="vc-hero-visual" data-country="<?= e(strtoupper($country['name'])) ?>"></div>
-                            <small><b>Checklist reference:</b> <?= e($checklist['reference']) ?><?php if (!empty($checklist['last_reviewed_at'])): ?> &middot; Last reviewed: <?= e(date('d F Y', strtotime((string) $checklist['last_reviewed_at']))) ?><?php endif; ?></small>
+                            <?php if ($lastReviewedDisplay): ?>
+                            <div class="vc-hero-reviewed">Last Reviewed<b><?= e($lastReviewedDisplay) ?></b></div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -154,10 +166,67 @@ if ($typeSlug !== null) {
                 </div>
                 <?php endif; ?>
 
+                <div class="vc-overview">
+                    <h2>Visa Overview</h2>
+                    <div class="vc-overview-grid">
+                        <div class="vc-overview-item"><span class="vc-overview-icon">&#128179;</span><div><b>Visa Type</b><span><?= e($visaType['name']) ?></span></div></div>
+                        <div class="vc-overview-item"><span class="vc-overview-icon">&#129517;</span><div><b>Purpose of Travel</b><span><?= e($checklist['purpose'] ?: 'As per application') ?></span></div></div>
+                        <div class="vc-overview-item"><span class="vc-overview-icon">&#128337;</span><div><b>Typical Stay</b><span><?= e($checklist['typical_stay'] ?: 'As permitted by visa decision') ?></span></div></div>
+                        <div class="vc-overview-item"><span class="vc-overview-icon">&#127974;</span><div><b>Application Method</b><span><?= e($checklist['application_method'] ?: 'Check current guidance') ?></span></div></div>
+                        <div class="vc-overview-item"><span class="vc-overview-icon">&#128100;</span><div><b>Personal Appearance</b><span><?= $checklist['personal_appearance'] ? 'Required' : 'May be required' ?></span></div></div>
+                        <div class="vc-overview-item"><span class="vc-overview-icon">&#9201;</span><div><b>Processing Time</b><span><?= e($checklist['processing_note'] ?: 'Variable; check current guidance') ?></span></div></div>
+                        <div class="vc-overview-item"><span class="vc-overview-icon">&#128179;</span><div><b>Visa Fee</b><span><?= e($feeDisplay) ?></span></div></div>
+                        <div class="vc-overview-item"><span class="vc-overview-icon">&#127963;</span><div><b>Consular Office</b><span><?= e($checklist['consular_office'] ?: 'Check current guidance') ?></span></div></div>
+                    </div>
+                </div>
+
+                <div class="vc-info-note">
+                    <span class="vc-info-icon">&#8505;</span>
+                    <span><b>Note:</b> This information is a general guide. Visa requirements may change. Always verify the latest requirements from the official website of the Embassy/Consulate of <?= e($country['name']) ?> in India.</span>
+                </div>
+
+                <div class="vc-checklist-heading">
+                    <h2><?= e($country['name']) ?> <?= e($visaType['name']) ?> Document Checklist</h2>
+                    <p><?= $hasChecklistAccess ? 'Your complete, unlocked document checklist is below — print or download the full A4 guide any time.' : 'Essential documents you should start preparing. The complete and updated checklist will be available after you submit the enquiry form.' ?></p>
+                </div>
+
+                <?php foreach ($checklist['sections'] as $sectionIndex => $section): ?>
+                <?php
+                $sectionCuratedPublic = checklist_section_is_public($section);
+                $sectionIsPublic = $hasChecklistAccess || $sectionCuratedPublic;
+                $docCount = count($section['documents']);
+                ?>
+                <div class="vc-section-card<?= $sectionIsPublic ? '' : ' vc-section-card--locked' ?>">
+                    <div class="vc-section-head<?= $sectionIsPublic ? '' : ' vc-section-head--locked' ?>">
+                        <span class="vc-section-num"><?= sprintf('%02d', $sectionIndex + 1) ?></span>
+                        <h3><?= e($section['title']) ?></h3>
+                        <span class="vc-section-tag"><?= $sectionCuratedPublic ? 'Mandatory for all applicants' : ($hasChecklistAccess ? 'Unlocked' : ($docCount . ' document' . ($docCount === 1 ? '' : 's'))) ?></span>
+                    </div>
+                    <?php if ($sectionIsPublic): ?>
+                    <table class="vc-doc-table">
+                        <tr><th>#</th><th>Document</th><th>Details / Guidelines</th><th>Original / Copy</th></tr>
+                        <?php foreach ($section['documents'] as $docIndex => $doc): ?>
+                        <tr>
+                            <td><input type="checkbox" disabled></td>
+                            <td class="vc-doc-name"><?= e($doc['name']) ?></td>
+                            <td class="vc-doc-desc"><?= e($doc['description'] ?: '—') ?></td>
+                            <td><span class="vc-doc-type"><?= e(ucfirst(str_replace('_', ' ', $doc['document_type']))) ?></span></td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </table>
+                    <?php else: ?>
+                    <div class="vc-locked-body">
+                        <p><span class="vc-lock-icon">&#128274;</span><b><?= $docCount ?> document<?= $docCount === 1 ? '' : 's' ?></b> in this section — full details unlock after a quick enquiry.</p>
+                        <a href="<?= $enquireHref ?>" class="btn btn-outline" <?= $unlockAttrs ?>>Unlock Full Checklist</a>
+                    </div>
+                    <?php endif; ?>
+                </div>
+                <?php endforeach; ?>
+
                 <div class="vc-download-panel">
                     <div>
                         <h3>Need the complete A4 Visa Checklist?</h3>
-                        <p>The website stays clean and quick to read. The complete, branded, printable checklist — with full guidance for every document — is generated once you submit your details.</p>
+                        <p>Print or save a branded, ready-to-follow PDF with full guidance for every document.</p>
                     </div>
                     <div class="vc-download-buttons">
                         <?php if ($hasChecklistAccess): ?>

@@ -61,6 +61,29 @@ function fetch_visa_checklist(int $countryId, int $visaTypeId): ?array
     return $checklist;
 }
 
+/**
+ * Whether a section's documents are shown in full on the webpage
+ * before enquiry. Gated per-section (all documents public, or none)
+ * rather than per-document on the page itself, so a visitor never sees
+ * a table with some rows mysteriously missing — the admin-curated
+ * is_public column still lives on the document row (see
+ * database/schema-visa-checklist.sql), but a section only "counts" as
+ * public once every one of its documents is. A section with no
+ * documents is never public.
+ */
+function checklist_section_is_public(array $section): bool
+{
+    if (empty($section['documents'])) {
+        return false;
+    }
+    foreach ($section['documents'] as $doc) {
+        if (empty($doc['is_public'])) {
+            return false;
+        }
+    }
+    return true;
+}
+
 /** Manually admin-controlled visa fee for a country+visa-type, or null if not set. */
 function fetch_visa_fee(int $countryId, int $visaTypeId): ?array
 {

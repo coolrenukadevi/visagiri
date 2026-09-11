@@ -15,6 +15,7 @@
 INSERT INTO visa_checklists (
     country_id, visa_type_id, reference, version, status,
     purpose, eligibility_summary, typical_stay, application_method, personal_appearance, processing_note, consular_office, application_steps,
+    hero_image_url,
     source, source_url, last_reviewed_at
 ) VALUES (
     172, 1, 'MEX-TOUR-IN-01', '2026.09', 'published',
@@ -26,6 +27,7 @@ INSERT INTO visa_checklists (
     '10-15 working days (indicative)',
     'Embassy of Mexico, New Delhi',
     'Confirm you actually need this visa (check the US/UK/Canada/Japan/Schengen visa-waiver option first)\nGather and organise your documents against this checklist\nComplete and sign the visa application form\nBook your consulate appointment\nAttend in person with your original documents and pay the consular fee\nSubmit your passport for visa stamping\nCollect your passport once the visa is issued',
+    '/assets/images/visa-heroes/mexico-city.jpg',
     'Consular guidance and independent visa-agency sources for Mexico tourist visas issued to Indian passport holders', 'https://btwvisas.com/visa-guide/mexico-visa', '2026-09-11'
 );
 
@@ -44,24 +46,26 @@ INSERT INTO visa_checklist_documents (section_id, name, description, document_ty
 (@s1, 'Previous Passport', 'If you hold an expired passport with earlier travel history, include it — it can support your application.', 'copy', 0, 1, 1, 3),
 (@s1, 'Passport-Size Photograph', 'Recent, white background, matching Mexican visa photo specifications.', 'original', 1, 0, 1, 4);
 
--- Section 02 — Application & Photograph (shown roughly half-public, per the public-checklist policy)
+-- Section 02 — Application & Photograph (public — a whole section is
+-- shown in full, or not at all; see checklist_section_is_public() in
+-- includes/visa-checklist.php)
 INSERT INTO visa_checklist_sections (checklist_id, title, description, display_order) VALUES
 (@checklist_id, 'Application & Photograph', 'The formal application paperwork for your tourist visa.', 2);
 SET @s2 = LAST_INSERT_ID();
 INSERT INTO visa_checklist_documents (section_id, name, description, document_type, mandatory, conditional, is_public, display_order) VALUES
 (@s2, 'Completed Visa Application Form', 'The Mexican consulate''s tourist visa application form, fully completed and signed.', 'original', 1, 0, 1, 1),
 (@s2, 'Cover Letter', 'A short letter explaining your purpose of travel, planned dates, and itinerary.', 'original', 1, 0, 1, 2),
-(@s2, 'Confirmed Return/Onward Flight Itinerary', NULL, 'copy', 1, 0, 0, 3),
-(@s2, 'Hotel Booking or Accommodation Proof', 'A confirmed hotel booking, or an invitation letter if staying with a host in Mexico.', 'copy', 1, 0, 0, 4);
+(@s2, 'Confirmed Return/Onward Flight Itinerary', NULL, 'copy', 1, 0, 1, 3),
+(@s2, 'Hotel Booking or Accommodation Proof', 'A confirmed hotel booking, or an invitation letter if staying with a host in Mexico.', 'copy', 1, 0, 1, 4);
 
--- Section 03 — Employment / Professional Documents (locked)
+-- Section 03 — Employment / Professional Documents (public)
 INSERT INTO visa_checklist_sections (checklist_id, title, description, display_order) VALUES
 (@checklist_id, 'Employment / Professional Documents', 'Evidence of your employment or business, and that you intend to return to it.', 3);
 SET @s3 = LAST_INSERT_ID();
 INSERT INTO visa_checklist_documents (section_id, name, description, document_type, mandatory, conditional, is_public, display_order) VALUES
-(@s3, 'Employment Letter / No-Objection Certificate', 'From your employer, confirming your role, leave approval, and intent to return.', 'original', 1, 0, 0, 1),
-(@s3, 'Business Registration Certificate', 'For self-employed or business-owner applicants, in place of an employment letter.', 'copy', 0, 1, 0, 2),
-(@s3, 'Recent Salary Slips', 'Typically the last 3 months.', 'copy', 1, 0, 0, 3);
+(@s3, 'Employment Letter / No-Objection Certificate', 'From your employer, confirming your role, leave approval, and intent to return.', 'original', 1, 0, 1, 1),
+(@s3, 'Business Registration Certificate', 'For self-employed or business-owner applicants, in place of an employment letter.', 'copy', 0, 1, 1, 2),
+(@s3, 'Recent Salary Slips', 'Typically the last 3 months.', 'copy', 1, 0, 1, 3);
 
 -- Section 04 — Financial Documents (locked)
 INSERT INTO visa_checklist_sections (checklist_id, title, description, display_order) VALUES
