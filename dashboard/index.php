@@ -46,6 +46,10 @@ switch ($segments[1] ?? null) {
         require __DIR__ . '/pages/messages.php';
         exit;
 
+    case 'review':
+        require __DIR__ . '/pages/review.php';
+        exit;
+
     case 'notifications':
         require __DIR__ . '/pages/notifications.php';
         exit;

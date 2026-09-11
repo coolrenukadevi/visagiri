@@ -148,6 +148,7 @@ echo "       database/schema-visa-checklist-hero-image.sql (no seed file — sch
 echo "                                                    database/seed-checklist-mexico-tourist.sql"
 echo "                                                    database/seed-faqs-mexico-tourist.sql"
 echo "       database/schema-testimonials.sql            (no seed file yet — see AUDIT.md)"
+echo "       database/schema-testimonials-customer-submission.sql (no seed file — schema only)"
 echo "     (re-checked against every database/*.sql file actually in this repo before this package was"
 echo "     built, incl. the enquiry SLA/PDF-download/reminders/admin-notifications/login-audit files, the"
 echo "     FAQ/location-SEO seed phases, the Singapore country-content files, and the Visa Checklist"

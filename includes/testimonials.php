@@ -24,8 +24,15 @@ $testimonialsHeading = $testimonialsHeading ?? 'What Our Customers Say';
             </div>
             <p class="testimonial-quote">&ldquo;<?= e($t['quote']) ?>&rdquo;</p>
             <div class="testimonial-author">
-                <span class="testimonial-author-name"><?= e($t['customer_name']) ?></span>
-                <?php if (!empty($t['customer_location'])): ?><span class="testimonial-author-location"><?= e($t['customer_location']) ?></span><?php endif; ?>
+                <?php if (!empty($t['photo_path'])): ?>
+                <img class="testimonial-avatar" src="<?= e($t['photo_path']) ?>" alt="" width="40" height="40">
+                <?php else: ?>
+                <span class="testimonial-avatar testimonial-avatar--placeholder"><?= e(mb_substr($t['customer_name'], 0, 1)) ?></span>
+                <?php endif; ?>
+                <div>
+                    <span class="testimonial-author-name"><?= e($t['customer_name']) ?></span>
+                    <?php if (!empty($t['customer_location'])): ?><span class="testimonial-author-location"><?= e($t['customer_location']) ?></span><?php endif; ?>
+                </div>
             </div>
         </div>
         <?php endforeach; ?>

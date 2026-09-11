@@ -3,6 +3,8 @@ config/encryption.php
 config/smtp.php
 storage/*
 !storage/.gitkeep
+public/assets/uploads/reviews/*
+!public/assets/uploads/reviews/.gitkeep
 *.log
 .DS_Store
 *.zip

@@ -16,6 +16,7 @@ const DASHBOARD_NAV = [
     'appointments' => ['label' => 'Appointments', 'href' => '/dashboard/appointments/'],
     'payments' => ['label' => 'Payments', 'href' => '/dashboard/payments/'],
     'messages' => ['label' => 'Messages', 'href' => '/dashboard/messages/'],
+    'review' => ['label' => 'My Review', 'href' => '/dashboard/review/'],
     'notifications' => ['label' => 'Notifications', 'href' => '/dashboard/notifications/'],
     'profile' => ['label' => 'Profile', 'href' => '/dashboard/profile/'],
 ];
