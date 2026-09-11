@@ -180,6 +180,35 @@ function fetch_country_contact_points(int $countryId): array
     ];
 }
 
+/**
+ * Published customer testimonials, most relevant first. Testimonials
+ * tied to this exact country+visa-type sort first, then ones tied to
+ * just the country, then general testimonials — but every published
+ * row is real, admin-entered content (see database/schema-testimonials.sql);
+ * this never fabricates a quote to fill a gap. Returns an empty array,
+ * never placeholder data, when nothing is published yet.
+ */
+function fetch_testimonials(?int $countryId = null, ?int $visaTypeId = null, int $limit = 6): array
+{
+    $stmt = db()->prepare("SELECT * FROM testimonials WHERE status = 'published' ORDER BY display_order, id");
+    $stmt->execute();
+    $all = $stmt->fetchAll();
+
+    if ($countryId !== null) {
+        usort($all, static function (array $a, array $b) use ($countryId, $visaTypeId): int {
+            $score = static function (array $t) use ($countryId, $visaTypeId): int {
+                if ((int) ($t['country_id'] ?? 0) !== $countryId) {
+                    return 0;
+                }
+                return ($visaTypeId !== null && (int) ($t['visa_type_id'] ?? 0) === $visaTypeId) ? 2 : 1;
+            };
+            return $score($b) <=> $score($a);
+        });
+    }
+
+    return array_slice($all, 0, $limit);
+}
+
 /** Verified requirement row for a country+visa-type pair, or null if not yet published. */
 function fetch_visa_requirement(int $countryId, int $visaTypeId): ?array
 {

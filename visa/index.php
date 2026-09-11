@@ -623,6 +623,14 @@ if ($typeSlug !== null) {
             </div>
             <?php endif; ?>
 
+            <?php if ($checklist !== null): ?>
+            <div style="margin-top:var(--space-10)">
+                <?php
+                $testimonials = fetch_testimonials((int) $country['id'], (int) $visaType['id']);
+                require __DIR__ . '/../includes/testimonials.php';
+                ?>
+            </div>
+            <?php else: ?>
             <div class="final-cta" style="margin-top:var(--space-10)">
                 <h2>Ready to start your <?= e($country['name']) ?> <?= e(strtolower($visaType['name'])) ?> application?</h2>
                 <div class="button-group" style="justify-content:center">
@@ -630,6 +638,7 @@ if ($typeSlug !== null) {
                     <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to know more about {$visaType['name']} for {$country['name']}.")) ?>" class="btn btn-outline btn-lg" target="_blank" rel="noopener noreferrer">Talk to a Visa Expert</a>
                 </div>
             </div>
+            <?php endif; ?>
         </div>
     </section>
     <?php
