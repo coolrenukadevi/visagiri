@@ -67,7 +67,6 @@ if ($typeSlug !== null) {
     $checklist = fetch_visa_checklist((int) $country['id'], (int) $visaType['id']);
     $fee = fetch_visa_fee((int) $country['id'], (int) $visaType['id']);
     $hasChecklistAccess = $checklist !== null && has_checklist_access((int) $country['id'], (int) $visaType['id']);
-    $checklistVisibility = $checklist !== null ? split_checklist_for_visibility($checklist, $hasChecklistAccess) : null;
 
     $pageTitle = $checklist !== null
         ? "{$country['name']} {$visaType['name']} Checklist for Indians | Documents Required | Visagiri"
@@ -113,62 +112,36 @@ if ($typeSlug !== null) {
             </ul>
 
             <?php if ($checklist !== null): ?>
+            <?php
+            $feeDisplay = $fee !== null
+                ? ($fee['amount'] !== null ? $fee['currency'] . ' ' . number_format((float) $fee['amount'], 2) : ($fee['label'] ?: 'Check latest fee'))
+                : 'Check latest fee';
+            $unlockAttrs = 'data-open-enquiry-modal-checklist data-country="' . e($country['slug']) . '" data-visa-type="' . e($visaType['slug']) . '" data-checklist-ref="' . e($checklist['reference']) . '"';
+            $enquireHref = '/enquire/?country=' . e($country['slug']) . '&amp;visa_type=' . e($visaType['slug']) . '&amp;checklist_ref=' . e($checklist['reference']);
+            ?>
             <div class="visa-checklist-page">
                 <div class="vc-hero">
-                    <span class="vc-hero-flag"><?= flag_emoji($country['iso2']) ?></span>
-                    <p class="vc-hero-kicker"><?= e($country['name']) ?> <?= e($visaType['name']) ?></p>
-                    <h1>Complete Visa Document Checklist for Indian Applicants</h1>
-                    <p class="vc-hero-lede">Prepare your documents with confidence. Review the essential requirements below and request the complete, latest checklist applicable to your visa profile.</p>
-                    <div class="vc-hero-badges">
-                        <span class="vc-badge">&#128196; <strong><?= e($visaType['name']) ?></strong></span>
-                        <span class="vc-badge">&#127470;&#127475; <strong>Indian Applicants</strong></span>
-                        <span class="vc-badge"><?= flag_emoji($country['iso2']) ?> <strong><?= e($country['name']) ?></strong></span>
-                        <?php if (!empty($checklist['last_reviewed_at'])): ?>
-                        <span class="vc-badge">&#128197; Last Updated <strong><?= e(date('d M Y', strtotime((string) $checklist['last_reviewed_at']))) ?></strong></span>
-                        <?php endif; ?>
-                    </div>
-                    <div class="vc-hero-cta">
-                        <?php if (!$hasChecklistAccess): ?>
-                        <a href="/enquire/?country=<?= e($country['slug']) ?>&amp;visa_type=<?= e($visaType['slug']) ?>&amp;checklist_ref=<?= e($checklist['reference']) ?>"
-                           class="btn btn-gold"
-                           data-open-enquiry-modal-checklist
-                           data-country="<?= e($country['slug']) ?>"
-                           data-visa-type="<?= e($visaType['slug']) ?>"
-                           data-checklist-ref="<?= e($checklist['reference']) ?>">Enquire Now &amp; Unlock Full Checklist</a>
-                        <?php else: ?>
-                        <a href="#vc-panel-checklist" class="btn btn-gold" data-vc-tab-link="checklist">View Complete Checklist</a>
-                        <?php endif; ?>
-                        <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to talk to a visa expert about the {$visaType['name']} for {$country['name']}.")) ?>" class="btn btn-outline" target="_blank" rel="noopener noreferrer">Talk to a Visa Expert</a>
-                    </div>
-                </div>
-
-                <div class="vc-quickfacts">
-                    <div class="vc-quickfact">
-                        <div class="vc-quickfact-icon">&#128176;</div>
+                    <div class="vc-hero-grid">
                         <div>
-                            <p class="vc-quickfact-label">Visa Fee</p>
-                            <p class="vc-quickfact-value"><?= $fee !== null ? ($fee['amount'] !== null ? e($fee['currency'] . ' ' . number_format((float) $fee['amount'], 2)) : e($fee['label'] ?: 'Check latest fee')) : 'Check latest fee' ?></p>
+                            <h1><?= e($country['name']) ?> <span><?= e($visaType['name']) ?></span></h1>
+                            <p class="vc-hero-lede">Prepare your visa documents with confidence. Review the practical document checklist for Indian applicants below and understand what to prepare before your appointment.</p>
+                            <div class="vc-pills">
+                                <span class="vc-pill"><?= flag_emoji($country['iso2']) ?> <?= e($visaType['name']) ?></span>
+                                <span class="vc-pill">India Applicants</span>
+                                <span class="vc-pill">Document Checklist</span>
+                            </div>
+                            <div class="vc-hero-cta">
+                                <?php if (!$hasChecklistAccess): ?>
+                                <a href="<?= $enquireHref ?>" class="btn btn-gold" <?= $unlockAttrs ?>>Enquire Now &amp; Unlock Full Checklist</a>
+                                <?php else: ?>
+                                <a href="#vc-print-trigger" class="btn btn-gold" data-vc-print>View Complete Checklist</a>
+                                <?php endif; ?>
+                                <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to talk to a visa expert about the {$visaType['name']} for {$country['name']}.")) ?>" class="btn btn-outline" target="_blank" rel="noopener noreferrer">Talk to a Visa Expert</a>
+                            </div>
                         </div>
-                    </div>
-                    <div class="vc-quickfact">
-                        <div class="vc-quickfact-icon">&#9201;</div>
-                        <div>
-                            <p class="vc-quickfact-label">Processing Time</p>
-                            <p class="vc-quickfact-value"><?= e($checklist['processing_note'] ?: 'Varies (check current guidance)') ?></p>
-                        </div>
-                    </div>
-                    <div class="vc-quickfact">
-                        <div class="vc-quickfact-icon">&#127963;</div>
-                        <div>
-                            <p class="vc-quickfact-label">Consular Office</p>
-                            <p class="vc-quickfact-value"><?= e($checklist['consular_office'] ?: 'Contact us for details') ?></p>
-                        </div>
-                    </div>
-                    <div class="vc-quickfact">
-                        <div class="vc-quickfact-icon">&#128221;</div>
-                        <div>
-                            <p class="vc-quickfact-label">Application Method</p>
-                            <p class="vc-quickfact-value"><?= e($checklist['application_method'] ?: 'Contact us for details') ?></p>
+                        <div class="vc-hero-card">
+                            <div class="vc-hero-visual" data-country="<?= e(strtoupper($country['name'])) ?>"></div>
+                            <small><b>Checklist reference:</b> <?= e($checklist['reference']) ?><?php if (!empty($checklist['last_reviewed_at'])): ?> &middot; Last reviewed: <?= e(date('d F Y', strtotime((string) $checklist['last_reviewed_at']))) ?><?php endif; ?></small>
                         </div>
                     </div>
                 </div>
@@ -181,114 +154,210 @@ if ($typeSlug !== null) {
                 </div>
                 <?php endif; ?>
 
-                <div class="vc-tabs" role="tablist">
-                    <button type="button" class="vc-tab" data-vc-tab="overview" role="tab" aria-selected="true">Overview</button>
-                    <button type="button" class="vc-tab" data-vc-tab="checklist" role="tab" aria-selected="false">Document Checklist</button>
-                    <button type="button" class="vc-tab" data-vc-tab="process" role="tab" aria-selected="false">Application Process</button>
-                    <button type="button" class="vc-tab" data-vc-tab="fees" role="tab" aria-selected="false">Fees</button>
+                <div class="vc-section-heading">
+                    <h2><?= e($country['name']) ?> <?= e($visaType['name']) ?> Document Checklist</h2>
+                    <p>Use the summary below to start preparing. The complete, detailed, branded checklist document is generated once you submit a quick enquiry.</p>
                 </div>
 
-                <div class="vc-tab-panel" id="vc-panel-overview" data-vc-panel="overview">
-                    <dl class="vc-overview-grid">
-                        <div class="vc-overview-item"><dt>Purpose</dt><dd><?= e($checklist['purpose'] ?: 'Not specified') ?></dd></div>
-                        <div class="vc-overview-item"><dt>Eligibility</dt><dd><?= e($checklist['eligibility_summary'] ?: 'Not specified') ?></dd></div>
-                        <div class="vc-overview-item"><dt>Typical Stay</dt><dd><?= e($checklist['typical_stay'] ?: 'Not specified') ?></dd></div>
-                        <div class="vc-overview-item"><dt>Application Method</dt><dd><?= e($checklist['application_method'] ?: 'Not specified') ?></dd></div>
-                        <div class="vc-overview-item"><dt>Personal Appearance</dt><dd><?= $checklist['personal_appearance'] ? 'Required' : 'Not typically required' ?></dd></div>
-                        <div class="vc-overview-item"><dt>Processing Time</dt><dd><?= e($checklist['processing_note'] ?: 'Not specified') ?></dd></div>
-                    </dl>
+                <div class="vc-summary-grid">
+                    <?php foreach ($checklist['sections'] as $i => $section): ?>
+                    <article class="vc-summary-card">
+                        <div class="vc-summary-icon"><?= sprintf('%02d', $i + 1) ?></div>
+                        <h3><?= e($section['title']) ?></h3>
+                        <?php if (!empty($section['description'])): ?><p><?= e($section['description']) ?></p><?php endif; ?>
+                        <ul>
+                            <?php foreach (array_slice($section['documents'], 0, 4) as $doc): ?>
+                            <li><?= e($doc['name']) ?></li>
+                            <?php endforeach; ?>
+                            <?php if (count($section['documents']) > 4): ?><li>+ <?= count($section['documents']) - 4 ?> more</li><?php endif; ?>
+                        </ul>
+                    </article>
+                    <?php endforeach; ?>
                 </div>
 
-                <div class="vc-tab-panel" id="vc-panel-checklist" data-vc-panel="checklist" hidden>
-                    <p style="font-size:var(--font-size-sm);color:var(--text-muted);margin-top:0">Checklist Reference: <?= e($checklist['reference']) ?> &middot; Version <?= e($checklist['version']) ?></p>
+                <div class="vc-download-panel">
+                    <div>
+                        <h3>Need the complete A4 Visa Checklist?</h3>
+                        <p>The website stays clean and quick to read. The complete, branded, printable checklist — with full guidance for every document — is generated once you submit your details.</p>
+                    </div>
+                    <div class="vc-download-buttons">
+                        <?php if ($hasChecklistAccess): ?>
+                        <button type="button" class="btn btn-outline" data-vc-print>&#128424; Print Checklist</button>
+                        <button type="button" class="btn btn-gold" data-vc-print>&#8595; Download A4 PDF</button>
+                        <?php else: ?>
+                        <a href="<?= $enquireHref ?>" class="btn btn-outline" <?= $unlockAttrs ?>>&#128424; Print Checklist</a>
+                        <a href="<?= $enquireHref ?>" class="btn btn-gold" <?= $unlockAttrs ?>>&#8595; Download A4 PDF</a>
+                        <?php endif; ?>
+                    </div>
+                </div>
 
-                    <?php foreach ($checklistVisibility['public'] as $i => $section): ?>
-                    <div class="vc-section-card">
-                        <div class="vc-section-head">
-                            <span class="vc-section-num"><?= sprintf('%02d', $i + 1) ?></span>
-                            <h3><?= e($section['title']) ?></h3>
+                <div class="vc-note">
+                    <b>Important:</b> <?= e($checklist['disclaimer'] ?: CHECKLIST_DEFAULT_DISCLAIMER) ?>
+                    <?php if (!empty($checklist['source_url'])): ?> <a href="<?= e($checklist['source_url']) ?>" rel="nofollow noopener" target="_blank">Source</a><?php endif; ?>
+                </div>
+            </div>
+
+            <?php if ($hasChecklistAccess): ?>
+            <?php
+            // The complete, branded A4 document — only ever present in the
+            // response when $hasChecklistAccess is true (server-verified
+            // above), so there is nothing for a locked-out visitor to find
+            // in the page source, view-source, or a saved-as-PDF copy.
+            $pageGroups = array_chunk($checklist['sections'], 3);
+            $totalPages = count($pageGroups);
+            $sectionCounter = 0;
+            ?>
+            <div class="print-document">
+                <?php foreach ($pageGroups as $pageIndex => $pageSections): ?>
+                <?php $pageNum = $pageIndex + 1; $isFirst = $pageIndex === 0; $isLast = $pageNum === $totalPages; ?>
+                <section class="p-page">
+                    <div class="p-head">
+                        <div class="p-brand">VISA<span>GIRI</span><small>VISA MANAGEMENT</small></div>
+                        <div class="p-tag">Your Journey<br>Our Expertise</div>
+                    </div>
+                    <div class="p-title">
+                        <h1><?= e(strtoupper($country['name'])) ?> <span><?= e(strtoupper($visaType['name'])) ?></span></h1>
+                        <p><b><?= $isFirst ? 'Document Checklist for Applicants Applying from India' : ($isLast ? 'Appointment, Submission &amp; Final Verification' : 'Document Checklist — Continued') ?></b></p>
+                    </div>
+                    <div class="p-meta">
+                        <div><b>Visa Type</b><span><?= e($visaType['name']) ?></span></div>
+                        <div><b>Applicant</b><span>Indian Passport Holder</span></div>
+                        <div><b>Checklist Ref.</b><span><?= e($checklist['reference']) ?></span></div>
+                        <div><b>Page</b><span><?= $pageNum ?> of <?= $totalPages ?></span></div>
+                        <div><b>Last Reviewed</b><span><?= !empty($checklist['last_reviewed_at']) ? e(date('d M Y', strtotime((string) $checklist['last_reviewed_at']))) : 'N/A' ?></span></div>
+                    </div>
+
+                    <?php if ($isFirst): ?>
+                    <div class="p-cols">
+                        <div>
+                            <?php foreach ($pageSections as $section): $sectionCounter++; ?>
+                            <section class="p-section">
+                                <div class="p-section-head"><div class="p-num"><?= sprintf('%02d', $sectionCounter) ?></div><h2><?= e(strtoupper($section['title'])) ?></h2></div>
+                                <table class="p-table">
+                                    <tr><th>&#10003;</th><th>Document</th><th>Details / Guidelines</th><th>Type</th></tr>
+                                    <?php foreach ($section['documents'] as $doc): ?>
+                                    <tr>
+                                        <td><span class="p-box"></span></td>
+                                        <td><b><?= e($doc['name']) ?></b></td>
+                                        <td><?= e($doc['description'] ?: '—') ?></td>
+                                        <td><?= e(ucfirst(str_replace('_', ' ', $doc['document_type']))) ?></td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                </table>
+                            </section>
+                            <?php endforeach; ?>
                         </div>
-                        <?php if (!empty($section['description'])): ?><p class="vc-section-desc"><?= e($section['description']) ?></p><?php endif; ?>
-                        <table class="vc-doc-table">
-                            <thead><tr><th></th><th>Document</th><th>Details / Guidelines</th><th>Type</th></tr></thead>
-                            <tbody>
-                                <?php foreach ($section['documents'] as $di => $doc): ?>
+                        <div>
+                            <div class="p-side-box">
+                                <h3>AT A GLANCE</h3>
+                                <div class="p-glance-row"><b>Purpose</b><span><?= e($checklist['purpose'] ?: 'Not specified') ?></span></div>
+                                <div class="p-glance-row"><b>Stay</b><span><?= e($checklist['typical_stay'] ?: 'As permitted by visa decision') ?></span></div>
+                                <div class="p-glance-row"><b>Processing</b><span><?= e($checklist['processing_note'] ?: 'Variable; check current guidance') ?></span></div>
+                                <div class="p-glance-row"><b>Visa Fee</b><span><?= e($feeDisplay) ?></span></div>
+                                <div class="p-glance-row"><b>Submission</b><span><?= e($checklist['application_method'] ?: 'Check current guidance') ?></span></div>
+                                <div class="p-glance-row"><b>Appearance</b><span><?= $checklist['personal_appearance'] ? 'Required' : 'Follow current instructions' ?></span></div>
+                            </div>
+                            <div class="p-note-box">
+                                <h3>IMPORTANT NOTES</h3>
+                                <ul>
+                                    <li>This is a preparation guide, not a guarantee of visa approval.</li>
+                                    <li>Additional documents may be requested based on the applicant profile.</li>
+                                    <li>Verify the latest official requirements before submission.</li>
+                                </ul>
+                            </div>
+                            <div class="p-order-box">
+                                <h3>DOCUMENT ORDERING GUIDE</h3>
+                                <ol>
+                                    <?php foreach ($checklist['sections'] as $orderSection): ?>
+                                    <li><?= e($orderSection['title']) ?></li>
+                                    <?php endforeach; ?>
+                                </ol>
+                            </div>
+                            <div class="p-cta-box">
+                                <h3>VISAGIRI ASSISTANCE</h3>
+                                <p>Professional assistance with document preparation, visa guidance and appointment support.</p>
+                                <p><b>www.visagiri.com</b><br>info@visagiri.com<br>+91 7065819819 / +91 7844819819</p>
+                            </div>
+                        </div>
+                    </div>
+                    <?php else: ?>
+                    <div style="margin-top:4mm">
+                        <?php foreach ($pageSections as $section): $sectionCounter++; ?>
+                        <section class="p-section">
+                            <div class="p-section-head"><div class="p-num"><?= sprintf('%02d', $sectionCounter) ?></div><h2><?= e(strtoupper($section['title'])) ?></h2></div>
+                            <table class="p-table">
+                                <tr><th>&#10003;</th><th>Document</th><th>Details / Guidelines</th><th>Type</th></tr>
+                                <?php foreach ($section['documents'] as $doc): ?>
                                 <tr>
-                                    <td class="vc-doc-num"><label><input type="checkbox"> <?= $di + 1 ?></label></td>
-                                    <td class="vc-doc-name">
-                                        <?= e($doc['name']) ?>
-                                        <?php if ($doc['mandatory']): ?><span class="vc-type-pill vc-mandatory-pill">Mandatory</span>
-                                        <?php elseif ($doc['conditional']): ?><span class="vc-type-pill">If appl.</span>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td class="vc-doc-desc"><?= e($doc['description'] ?: '—') ?></td>
-                                    <td><span class="vc-type-pill"><?= e(ucfirst(str_replace('_', ' ', $doc['document_type']))) ?></span></td>
+                                    <td><span class="p-box"></span></td>
+                                    <td><b><?= e($doc['name']) ?></b></td>
+                                    <td><?= e($doc['description'] ?: '—') ?></td>
+                                    <td><?= e(ucfirst(str_replace('_', ' ', $doc['document_type']))) ?></td>
                                 </tr>
                                 <?php endforeach; ?>
-                            </tbody>
-                        </table>
+                            </table>
+                        </section>
+                        <?php endforeach; ?>
                     </div>
-                    <?php endforeach; ?>
 
-                    <?php if ($checklistVisibility['lockedTitles']): ?>
-                    <div class="vc-locked-panel">
-                        <div class="vc-lock-icon">&#128274;</div>
-                        <h3>Complete <?= e($country['name']) ?> <?= e($visaType['name']) ?> Checklist</h3>
-                        <p>The remaining checklist includes detailed employment, financial, travel, supporting-document, and submission requirements applicable to this visa category.</p>
-                        <ul class="vc-locked-list">
-                            <?php foreach ($checklistVisibility['lockedTitles'] as $title): ?>
-                            <li><span class="vc-lock-dot">&#128274;</span> <?= e($title) ?></li>
-                            <?php endforeach; ?>
-                        </ul>
-                        <a href="/enquire/?country=<?= e($country['slug']) ?>&amp;visa_type=<?= e($visaType['slug']) ?>&amp;checklist_ref=<?= e($checklist['reference']) ?>"
-                           class="btn btn-gold btn-lg"
-                           data-open-enquiry-modal-checklist
-                           data-country="<?= e($country['slug']) ?>"
-                           data-visa-type="<?= e($visaType['slug']) ?>"
-                           data-checklist-ref="<?= e($checklist['reference']) ?>">Enquire Now &amp; Unlock Full Checklist &rarr;</a>
-                        <div class="vc-trust-row">
-                            <div class="vc-trust-item"><span class="vc-trust-icon">&#128100;</span><div><strong>Expert Guidance</strong><span>From visa specialists</span></div></div>
-                            <div class="vc-trust-item"><span class="vc-trust-icon">&#9989;</span><div><strong>Researched Information</strong><span>Grounded in real consular guidance</span></div></div>
-                            <div class="vc-trust-item"><span class="vc-trust-icon">&#128274;</span><div><strong>Secure &amp; Confidential</strong><span>Your data is handled securely</span></div></div>
+                    <?php if ($isLast): ?>
+                    <div class="p-cols">
+                        <div>
+                            <div class="p-note-box">
+                                <h3>IMPORTANT NOTES</h3>
+                                <ul>
+                                    <li>Requirements can change without notice.</li>
+                                    <li>Additional documents may be requested.</li>
+                                    <li>This checklist does not guarantee visa issuance.</li>
+                                </ul>
+                            </div>
+                            <div class="p-order-box">
+                                <h3>DOCUMENT ORDERING GUIDE</h3>
+                                <ol>
+                                    <?php foreach ($checklist['sections'] as $orderSection): ?>
+                                    <li><?= e($orderSection['title']) ?></li>
+                                    <?php endforeach; ?>
+                                </ol>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="p-cta-box">
+                                <h3>VISAGIRI APPLICATION SUPPORT</h3>
+                                <p>Professional assistance with document preparation, visa guidance and appointment support.</p>
+                                <p><b>www.visagiri.com</b><br>info@visagiri.com<br>+91 7065819819 / +91 7844819819</p>
+                            </div>
+                            <div class="p-note-box">
+                                <h3>SOURCE &amp; DISCLAIMER</h3>
+                                <ul>
+                                    <li><?= e($checklist['disclaimer'] ?: CHECKLIST_DEFAULT_DISCLAIMER) ?></li>
+                                    <?php if (!empty($checklist['source'])): ?><li>Source: <?= e($checklist['source']) ?></li><?php endif; ?>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                     <?php else: ?>
-                    <div class="button-group">
-                        <button type="button" class="btn btn-outline" onclick="window.print()">Print Checklist</button>
+                    <div class="p-note-box">
+                        <h3>DOCUMENT QUALITY CHECK</h3>
+                        <ul>
+                            <li>Check names, dates and passport details for consistency across every document.</li>
+                            <li>Follow current instructions for originals, signatures, stamps and copies.</li>
+                            <li>Never submit altered, fabricated or misleading documents.</li>
+                        </ul>
                     </div>
                     <?php endif; ?>
-                </div>
-
-                <div class="vc-tab-panel" id="vc-panel-process" data-vc-panel="process" hidden>
-                    <?php $checklistSteps = array_values(array_filter(array_map('trim', explode("\n", (string) ($checklist['application_steps'] ?? ''))))); ?>
-                    <?php if ($checklistSteps): ?>
-                    <ol class="hrms-timeline" style="max-width:680px">
-                        <?php foreach ($checklistSteps as $step): ?><li><?= e($step) ?></li><?php endforeach; ?>
-                    </ol>
-                    <?php else: ?>
-                    <p>Application process details for this visa will be published here soon — <a href="/contact/">contact our team</a> for current guidance.</p>
                     <?php endif; ?>
-                </div>
 
-                <div class="vc-tab-panel" id="vc-panel-fees" data-vc-panel="fees" hidden>
-                    <?php if ($fee !== null): ?>
-                    <div class="vc-overview-item" style="max-width:480px">
-                        <dt>Visa Fee</dt>
-                        <dd style="font-size:var(--font-size-xl);margin-bottom:var(--space-2)"><?= $fee['amount'] !== null ? e($fee['currency'] . ' ' . number_format((float) $fee['amount'], 2)) : e($fee['label'] ?: 'As per current consular fee schedule') ?></dd>
-                        <?php if (!empty($fee['label']) && $fee['amount'] !== null): ?><p style="font-size:var(--font-size-sm);color:var(--text-muted)"><?= e($fee['label']) ?></p><?php endif; ?>
-                        <?php if (!empty($fee['note'])): ?><p style="font-size:var(--font-size-sm);color:var(--text-muted)"><?= e($fee['note']) ?></p><?php endif; ?>
-                        <p style="font-size:var(--font-size-xs);color:var(--text-muted)">Last updated: <?= e(date('d M Y', strtotime((string) $fee['last_updated']))) ?></p>
+                    <div class="p-contact">
+                        <span>+91 7065819819 &middot; +91 7844819819</span>
+                        <span>info@visagiri.com</span>
+                        <span>www.visagiri.com</span>
                     </div>
-                    <?php else: ?>
-                    <p>As per current consular fee schedule — <a href="/contact/">contact our team</a> for the latest figure.</p>
-                    <?php endif; ?>
-                </div>
-
-                <p style="font-size:var(--font-size-xs);color:var(--text-muted);margin-top:var(--space-6)">
-                    <?= e($checklist['disclaimer'] ?: CHECKLIST_DEFAULT_DISCLAIMER) ?>
-                    <?php if (!empty($checklist['source_url'])): ?> <a href="<?= e($checklist['source_url']) ?>" rel="nofollow noopener" target="_blank">Source</a><?php endif; ?>
-                </p>
+                    <div class="p-footer"><b>YOUR GLOBAL VISA PARTNER</b><span>Page <?= $pageNum ?> of <?= $totalPages ?></span></div>
+                </section>
+                <?php endforeach; ?>
             </div>
+            <?php endif; ?>
+
             <script src="<?= e(asset_url('/assets/js/visa-checklist.js')) ?>" defer></script>
             <?php else: ?>
 

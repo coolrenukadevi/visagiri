@@ -1,38 +1,20 @@
 (function () {
   'use strict';
 
-  var page = document.querySelector('.visa-checklist-page');
-  if (!page) {
-    return;
-  }
-
-  var tabs = page.querySelectorAll('[data-vc-tab]');
-  var panels = page.querySelectorAll('[data-vc-panel]');
-
-  function activate(name) {
-    tabs.forEach(function (t) {
-      t.setAttribute('aria-selected', String(t.getAttribute('data-vc-tab') === name));
-    });
-    panels.forEach(function (p) {
-      p.hidden = p.getAttribute('data-vc-panel') !== name;
-    });
-  }
-
-  tabs.forEach(function (t) {
-    t.addEventListener('click', function () {
-      activate(t.getAttribute('data-vc-tab'));
-    });
-  });
-
-  page.querySelectorAll('[data-vc-tab-link]').forEach(function (link) {
-    link.addEventListener('click', function (e) {
+  // Any element with data-vc-print on an unlocked checklist page
+  // triggers the browser's print dialog against the branded
+  // .print-document (see visa-checklist.css's @media print rules and
+  // visa/index.php, which only renders .print-document into the page
+  // at all once the visitor's checklist access is verified
+  // server-side). "Download A4 PDF" uses the same dialog — the
+  // visitor picks "Save as PDF" as the destination, matching the
+  // client-supplied reference template rather than standing up a
+  // separate server-side PDF pipeline this project's hosting can't
+  // run (see AUDIT.md).
+  document.querySelectorAll('[data-vc-print]').forEach(function (trigger) {
+    trigger.addEventListener('click', function (e) {
       e.preventDefault();
-      var target = link.getAttribute('data-vc-tab-link');
-      activate(target);
-      var panel = document.getElementById('vc-panel-' + target);
-      if (panel) {
-        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
+      window.print();
     });
   });
 })();
