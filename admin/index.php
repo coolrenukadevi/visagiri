@@ -162,6 +162,11 @@ switch ($adminSegment) {
         require __DIR__ . '/pages/visa-requirements.php';
         exit;
 
+    case 'visa-checklists':
+        require_admin_login();
+        require __DIR__ . '/pages/visa-checklists.php';
+        exit;
+
     case 'faqs':
         require_admin_login();
         require __DIR__ . '/pages/faqs.php';

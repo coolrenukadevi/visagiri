@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-require_permission('content.manage');
+require_permission('content.view');
 
 $pdo = db();
 $countries = $pdo->query('SELECT id, name FROM countries ORDER BY name')->fetchAll();
@@ -11,11 +11,13 @@ $countryId = (int) ($_GET['country_id'] ?? $_POST['country_id'] ?? 0);
 $visaTypeId = (int) ($_GET['visa_type_id'] ?? $_POST['visa_type_id'] ?? 0);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_permission('content.manage');
     csrf_require();
 
     if (($_POST['action'] ?? '') === 'delete' && $countryId && $visaTypeId) {
         $pdo->prepare('DELETE FROM visa_requirements WHERE country_id = :c AND visa_type_id = :v')
             ->execute(['c' => $countryId, 'v' => $visaTypeId]);
+        log_action('delete', 'visa_requirements', null, "country=$countryId,visa_type=$visaTypeId", null);
         flash_set('admin_notice', 'Requirement removed — the page will show "not yet verified" again.');
         redirect('/admin/visa-requirements/');
     }
@@ -41,10 +43,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'last_verified_at' => date('Y-m-d H:i:s'),
         ];
 
+        $existed = fetch_visa_requirement($countryId, $visaTypeId) !== null;
+
         $cols = implode(', ', array_keys($data));
         $placeholders = implode(', ', array_map(static fn($k) => ":$k", array_keys($data)));
         $updates = implode(', ', array_map(static fn($k) => "$k = VALUES($k)", array_keys($data)));
         $pdo->prepare("INSERT INTO visa_requirements ($cols) VALUES ($placeholders) ON DUPLICATE KEY UPDATE $updates")->execute($data);
+        log_action($existed ? 'update' : 'create', 'visa_requirements', null, "country=$countryId,visa_type=$visaTypeId", "country=$countryId,visa_type=$visaTypeId");
 
         flash_set('admin_notice', 'Requirement saved and marked verified today.');
         redirect("/admin/visa-requirements/?country_id=$countryId&visa_type_id=$visaTypeId");
@@ -142,6 +147,7 @@ admin_subnav('content', 'visa-requirements');
 
 <h2 class="country-directory__subheading">Recently Updated</h2>
 <?php if ($published): ?>
+<div class="admin-table-scroll">
 <table class="admin-table">
     <thead><tr><th>Country</th><th>Visa Type</th><th>Last Verified</th><th></th></tr></thead>
     <tbody>
@@ -155,8 +161,18 @@ admin_subnav('content', 'visa-requirements');
     <?php endforeach; ?>
     </tbody>
 </table>
+</div>
+<div class="admin-card-list">
+    <?php foreach ($published as $p): ?>
+    <div class="admin-record-card">
+        <p class="admin-record-card__title"><?= e($p['country_name']) ?> — <?= e($p['visa_type_name']) ?></p>
+        <div class="admin-record-card__row"><span>Last Verified</span><strong><?= e(date('d M Y', strtotime((string) $p['last_verified_at']))) ?></strong></div>
+        <div class="admin-record-card__action"><a href="/admin/visa-requirements/?country_id=<?= (int) $p['country_id'] ?>&visa_type_id=<?= (int) $p['visa_type_id'] ?>" class="btn btn-sm btn-outline">Edit</a></div>
+    </div>
+    <?php endforeach; ?>
+</div>
 <?php else: ?>
-<p class="empty-state">No visa requirements published yet.</p>
+<p class="admin-empty-state--icon"><svg width="28" height="28" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 8 14.5 16 5.5"/></svg>No visa requirements published yet.</p>
 <?php endif; ?>
 <?php
 admin_header_end();

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-require_permission('content.manage');
+require_permission('content.view');
 
 $pdo = db();
 $regions = $pdo->query('SELECT id, name FROM regions ORDER BY name')->fetchAll();
@@ -10,11 +10,16 @@ $id = isset($_GET['id']) ? (int) $_GET['id'] : (isset($_POST['id']) ? (int) $_PO
 
 // --- Handle POST (create, update, delete, toggle) ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_permission('content.manage');
     csrf_require();
     $postAction = $_POST['action'] ?? '';
 
     if ($postAction === 'delete' && $id) {
+        $stmt = $pdo->prepare('SELECT name FROM countries WHERE id = :id');
+        $stmt->execute(['id' => $id]);
+        $oldName = $stmt->fetchColumn() ?: null;
         $pdo->prepare('DELETE FROM countries WHERE id = :id')->execute(['id' => $id]);
+        log_action('delete', 'countries', $id, $oldName, null);
         flash_set('admin_notice', 'Country deleted.');
         redirect('/admin/countries/');
     }
@@ -22,7 +27,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($postAction === 'toggle' && $id) {
         $field = in_array($_POST['field'] ?? '', ['is_active', 'is_popular_destination', 'is_schengen'], true) ? $_POST['field'] : null;
         if ($field) {
+            $stmt = $pdo->prepare("SELECT $field FROM countries WHERE id = :id");
+            $stmt->execute(['id' => $id]);
+            $old = (int) $stmt->fetchColumn();
             $pdo->prepare("UPDATE countries SET $field = NOT $field WHERE id = :id")->execute(['id' => $id]);
+            log_action('update', 'countries', $id, "$field=$old", "$field=" . (1 - $old));
         }
         redirect('/admin/countries/');
     }
@@ -56,6 +65,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($id) {
             $data['id'] = $id;
+            $oldStmt = $pdo->prepare('SELECT name FROM countries WHERE id = :id');
+            $oldStmt->execute(['id' => $id]);
+            $oldName = $oldStmt->fetchColumn() ?: null;
             $pdo->prepare(
                 'UPDATE countries SET name=:name, slug=:slug, iso2=:iso2, iso3=:iso3, region_id=:region_id,
                  is_popular_destination=:is_popular_destination, is_schengen=:is_schengen,
@@ -63,6 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                  visa_policy_for_indians=:visa_policy_for_indians, is_active=:is_active,
                  meta_title=:meta_title, meta_description=:meta_description WHERE id=:id'
             )->execute($data);
+            log_action('update', 'countries', $id, $oldName, $name);
             flash_set('admin_notice', 'Country updated.');
         } else {
             $pdo->prepare(
@@ -71,6 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                  VALUES (:name, :slug, :iso2, :iso3, :region_id, :is_popular_destination, :is_schengen,
                  :is_gcc, :is_asean, :is_saarc, :is_middle_east, :is_caribbean, :visa_policy_for_indians, :is_active, :meta_title, :meta_description)'
             )->execute($data);
+            log_action('create', 'countries', (int) $pdo->lastInsertId(), null, $name);
             flash_set('admin_notice', 'Country added.');
         }
         redirect('/admin/countries/');
@@ -79,6 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // --- Create/Edit form ---
 if ($action === 'create' || $action === 'edit') {
+    require_permission('content.manage');
     $country = [
         'name' => '', 'slug' => '', 'iso2' => '', 'iso3' => '', 'region_id' => '',
         'is_popular_destination' => 0, 'is_schengen' => 0,
@@ -205,42 +220,87 @@ admin_subnav('content', 'countries');
         <input class="form-input" type="search" name="q" value="<?= e($search) ?>" placeholder="Search countries…">
         <button type="submit" class="btn btn-outline">Search</button>
     </form>
+    <?php if (has_permission('content.manage')): ?>
     <a href="/admin/countries/?action=create" class="btn btn-primary">+ Add Country</a>
+    <?php endif; ?>
 </div>
+<?php if ($countries): ?>
+<div class="admin-table-scroll" style="margin-top:var(--space-4)">
 <table class="admin-table">
     <thead><tr><th>Name</th><th>Region</th><th>Popular</th><th>Schengen</th><th>Visa Policy (India)</th><th>Active</th><th></th></tr></thead>
     <tbody>
+    <?php $canManageContent = has_permission('content.manage'); ?>
     <?php foreach ($countries as $c): ?>
         <tr>
             <td><?= e($c['name']) ?> <span style="color:var(--text-muted)">(<?= e($c['slug']) ?>)</span></td>
             <td><?= e($c['region_name'] ?? '—') ?></td>
             <td>
+                <?php if ($canManageContent): ?>
                 <form method="post" action="/admin/countries/" style="display:inline"><?= csrf_field() ?><input type="hidden" name="action" value="toggle"><input type="hidden" name="field" value="is_popular_destination"><input type="hidden" name="id" value="<?= (int) $c['id'] ?>">
                 <button type="submit" class="badge <?= $c['is_popular_destination'] ? 'badge-success' : 'badge-neutral' ?>" style="border:none;cursor:pointer"><?= $c['is_popular_destination'] ? 'Yes' : 'No' ?></button></form>
+                <?php else: ?>
+                <span class="badge <?= $c['is_popular_destination'] ? 'badge-success' : 'badge-neutral' ?>"><?= $c['is_popular_destination'] ? 'Yes' : 'No' ?></span>
+                <?php endif; ?>
             </td>
             <td>
+                <?php if ($canManageContent): ?>
                 <form method="post" action="/admin/countries/" style="display:inline"><?= csrf_field() ?><input type="hidden" name="action" value="toggle"><input type="hidden" name="field" value="is_schengen"><input type="hidden" name="id" value="<?= (int) $c['id'] ?>">
                 <button type="submit" class="badge <?= $c['is_schengen'] ? 'badge-success' : 'badge-neutral' ?>" style="border:none;cursor:pointer"><?= $c['is_schengen'] ? 'Yes' : 'No' ?></button></form>
+                <?php else: ?>
+                <span class="badge <?= $c['is_schengen'] ? 'badge-success' : 'badge-neutral' ?>"><?= $c['is_schengen'] ? 'Yes' : 'No' ?></span>
+                <?php endif; ?>
             </td>
             <td>
                 <?php $policyLabels = ['visa_required' => 'Visa Required', 'visa_free' => 'Visa Free', 'visa_on_arrival' => 'On Arrival', 'evisa' => 'eVisa']; ?>
                 <span class="badge <?= $c['visa_policy_for_indians'] ? 'badge-info' : 'badge-neutral' ?>"><?= e($policyLabels[$c['visa_policy_for_indians']] ?? 'Not verified') ?></span>
             </td>
             <td>
+                <?php if ($canManageContent): ?>
                 <form method="post" action="/admin/countries/" style="display:inline"><?= csrf_field() ?><input type="hidden" name="action" value="toggle"><input type="hidden" name="field" value="is_active"><input type="hidden" name="id" value="<?= (int) $c['id'] ?>">
                 <button type="submit" class="badge <?= $c['is_active'] ? 'badge-success' : 'badge-warning' ?>" style="border:none;cursor:pointer"><?= $c['is_active'] ? 'Active' : 'Hidden' ?></button></form>
+                <?php else: ?>
+                <span class="badge <?= $c['is_active'] ? 'badge-success' : 'badge-warning' ?>"><?= $c['is_active'] ? 'Active' : 'Hidden' ?></span>
+                <?php endif; ?>
             </td>
             <td class="actions">
+                <?php if ($canManageContent): ?>
                 <a href="/admin/countries/?action=edit&id=<?= (int) $c['id'] ?>" class="btn btn-outline btn-sm">Edit</a>
                 <form method="post" action="/admin/countries/" style="display:inline" onsubmit="return confirm('Delete this country? This also removes its visa requirements and contact points.');">
                     <?= csrf_field() ?><input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="<?= (int) $c['id'] ?>">
                     <button type="submit" class="btn btn-outline btn-sm">Delete</button>
                 </form>
+                <?php endif; ?>
             </td>
         </tr>
     <?php endforeach; ?>
     </tbody>
 </table>
+</div>
+<div class="admin-card-list" style="margin-top:var(--space-4)">
+    <?php $policyLabels = ['visa_required' => 'Visa Required', 'visa_free' => 'Visa Free', 'visa_on_arrival' => 'On Arrival', 'evisa' => 'eVisa']; ?>
+    <?php foreach ($countries as $c): ?>
+    <div class="admin-record-card">
+        <p class="admin-record-card__title"><?= e($c['name']) ?> <span style="font-weight:400;color:var(--text-muted)">&middot; <?= e($c['slug']) ?></span></p>
+        <div class="admin-record-card__row"><span>Region</span><strong><?= e($c['region_name'] ?? '—') ?></strong></div>
+        <div class="admin-record-card__row"><span>Popular</span><strong><span class="badge <?= $c['is_popular_destination'] ? 'badge-success' : 'badge-neutral' ?>"><?= $c['is_popular_destination'] ? 'Yes' : 'No' ?></span></strong></div>
+        <div class="admin-record-card__row"><span>Schengen</span><strong><span class="badge <?= $c['is_schengen'] ? 'badge-success' : 'badge-neutral' ?>"><?= $c['is_schengen'] ? 'Yes' : 'No' ?></span></strong></div>
+        <div class="admin-record-card__row"><span>Visa Policy (India)</span><strong><span class="badge <?= $c['visa_policy_for_indians'] ? 'badge-info' : 'badge-neutral' ?>"><?= e($policyLabels[$c['visa_policy_for_indians']] ?? 'Not verified') ?></span></strong></div>
+        <div class="admin-record-card__row"><span>Active</span><strong><span class="badge <?= $c['is_active'] ? 'badge-success' : 'badge-warning' ?>"><?= $c['is_active'] ? 'Active' : 'Hidden' ?></span></strong></div>
+        <?php if ($canManageContent): ?>
+        <div class="admin-record-card__action">
+            <a href="/admin/countries/?action=edit&id=<?= (int) $c['id'] ?>" class="btn btn-sm btn-outline">Edit</a>
+            <form method="post" action="/admin/countries/" style="display:inline" onsubmit="return confirm('Delete this country? This also removes its visa requirements and contact points.');">
+                <?= csrf_field() ?><input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="<?= (int) $c['id'] ?>">
+                <button type="submit" class="btn btn-sm btn-outline">Delete</button>
+            </form>
+        </div>
+        <?php endif; ?>
+    </div>
+    <?php endforeach; ?>
+</div>
+<?php else: ?>
+<p class="admin-empty-state--icon" style="margin-top:var(--space-4)"><svg width="28" height="28" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 8 14.5 16 5.5"/></svg><?= $search !== '' ? 'No countries match this search.' : 'No countries yet.' ?></p>
+<?php endif; ?>
 <?php if ($totalPages > 1): ?>
 <div class="button-group" style="margin-top:var(--space-5)">
     <?php for ($p = 1; $p <= $totalPages; $p++): ?>

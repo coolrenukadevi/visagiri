@@ -7,13 +7,17 @@ declare(strict_types=1);
  * a "type" selector rather than three near-duplicate pages.
  */
 
-require_permission('content.manage');
+require_permission('content.view');
 
 $tables = [
     'embassy' => ['table' => 'embassies', 'label' => 'Embassy'],
     'consulate' => ['table' => 'consulates', 'label' => 'Consulate'],
     'vac' => ['table' => 'visa_application_centres', 'label' => 'Visa Application Centre'],
 ];
+// SEO fields exist on embassies/consulates (individually meaningful
+// destinations) but not visa_application_centres — VACs ship without
+// a public detail page of their own to carry meta tags for.
+$typesWithSeo = ['embassy', 'consulate'];
 
 $pdo = db();
 $countries = $pdo->query('SELECT id, name FROM countries ORDER BY name')->fetchAll();
@@ -22,13 +26,18 @@ $id = isset($_GET['id']) ? (int) $_GET['id'] : (isset($_POST['id']) ? (int) $_PO
 $type = in_array($_GET['type'] ?? '', array_keys($tables), true) ? $_GET['type'] : 'embassy';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_permission('content.manage');
     csrf_require();
     $postType = in_array($_POST['type'] ?? '', array_keys($tables), true) ? $_POST['type'] : 'embassy';
     $table = $tables[$postType]['table'];
     $postAction = $_POST['action'] ?? '';
 
     if ($postAction === 'delete' && $id) {
+        $stmt = $pdo->prepare("SELECT name FROM $table WHERE id = :id");
+        $stmt->execute(['id' => $id]);
+        $oldName = $stmt->fetchColumn() ?: null;
         $pdo->prepare("DELETE FROM $table WHERE id = :id")->execute(['id' => $id]);
+        log_action('delete', $table, $id, $oldName, null);
         flash_set('admin_notice', $tables[$postType]['label'] . ' deleted.');
         redirect('/admin/embassies/?type=' . $postType);
     }
@@ -52,17 +61,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data['operating_hours'] = trim((string) ($_POST['operating_hours'] ?? '')) ?: null;
         }
 
+        if (in_array($postType, $typesWithSeo, true)) {
+            $data['meta_title'] = trim((string) ($_POST['meta_title'] ?? '')) ?: null;
+            $data['meta_description'] = trim((string) ($_POST['meta_description'] ?? '')) ?: null;
+        }
+
         if ($id) {
             $data['id'] = $id;
+            $oldStmt = $pdo->prepare("SELECT name FROM $table WHERE id = :id");
+            $oldStmt->execute(['id' => $id]);
+            $oldName = $oldStmt->fetchColumn() ?: null;
             $pdo->prepare("UPDATE $table SET " . implode(', ', array_map(
                 static fn($k) => "$k = :$k",
                 array_diff(array_keys($data), ['id'])
             )) . " WHERE id = :id")->execute($data);
+            log_action('update', $table, $id, $oldName, $data['name']);
             flash_set('admin_notice', $tables[$postType]['label'] . ' updated.');
         } else {
             $cols = implode(', ', array_keys($data));
             $placeholders = implode(', ', array_map(static fn($k) => ":$k", array_keys($data)));
             $pdo->prepare("INSERT INTO $table ($cols) VALUES ($placeholders)")->execute($data);
+            log_action('create', $table, (int) $pdo->lastInsertId(), null, $data['name']);
             flash_set('admin_notice', $tables[$postType]['label'] . ' added.');
         }
         redirect('/admin/embassies/?type=' . $postType);
@@ -70,8 +89,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 if ($action === 'create' || $action === 'edit') {
+    require_permission('content.manage');
     $table = $tables[$type]['table'];
-    $entry = ['country_id' => '', 'name' => '', 'city' => '', 'address' => '', 'phone' => '', 'website' => '', 'operating_hours' => ''];
+    $entry = ['country_id' => '', 'name' => '', 'city' => '', 'address' => '', 'phone' => '', 'website' => '', 'operating_hours' => '', 'meta_title' => '', 'meta_description' => ''];
     if ($action === 'edit' && $id) {
         $stmt = $pdo->prepare("SELECT * FROM $table WHERE id = :id");
         $stmt->execute(['id' => $id]);
@@ -129,6 +149,16 @@ if ($action === 'create' || $action === 'edit') {
                 <label class="form-label" for="address">Address</label>
                 <textarea class="form-input" id="address" name="address" rows="2"><?= e($entry['address'] ?? '') ?></textarea>
             </div>
+            <?php if (in_array($type, $typesWithSeo, true)): ?>
+            <div class="form-group" style="margin-top:var(--space-4)">
+                <label class="form-label" for="meta_title">SEO meta title</label>
+                <input class="form-input" type="text" id="meta_title" name="meta_title" value="<?= e($entry['meta_title'] ?? '') ?>">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="meta_description">SEO meta description</label>
+                <textarea class="form-input" id="meta_description" name="meta_description" rows="2"><?= e($entry['meta_description'] ?? '') ?></textarea>
+            </div>
+            <?php endif; ?>
             <button type="submit" class="btn btn-primary">Save</button>
             <a href="/admin/embassies/?type=<?= e($type) ?>" class="btn btn-outline">Cancel</a>
         </form>
@@ -150,12 +180,15 @@ admin_subnav('content', 'embassies');
         <a href="/admin/embassies/?type=<?= $key ?>" class="btn btn-sm <?= $type === $key ? 'btn-primary' : 'btn-outline' ?>"><?= e($meta['label']) ?>s</a>
         <?php endforeach; ?>
     </div>
+    <?php if (has_permission('content.manage')): ?>
     <a href="/admin/embassies/?action=create&type=<?= e($type) ?>" class="btn btn-primary">+ Add <?= e($tables[$type]['label']) ?></a>
+    <?php endif; ?>
 </div>
 <?php if ($entries): ?>
 <table class="admin-table">
     <thead><tr><th>Country</th><th>Name</th><th>City</th><th>Phone</th><th></th></tr></thead>
     <tbody>
+    <?php $canManageContent = has_permission('content.manage'); ?>
     <?php foreach ($entries as $entry): ?>
         <tr>
             <td><?= e($entry['country_name']) ?></td>
@@ -163,11 +196,13 @@ admin_subnav('content', 'embassies');
             <td><?= e($entry['city'] ?? '—') ?></td>
             <td><?= e($entry['phone'] ?? '—') ?></td>
             <td class="actions">
+                <?php if ($canManageContent): ?>
                 <a href="/admin/embassies/?action=edit&id=<?= (int) $entry['id'] ?>&type=<?= e($type) ?>" class="btn btn-outline btn-sm">Edit</a>
                 <form method="post" action="/admin/embassies/" style="display:inline" onsubmit="return confirm('Delete this entry?');">
                     <?= csrf_field() ?><input type="hidden" name="action" value="delete"><input type="hidden" name="type" value="<?= e($type) ?>"><input type="hidden" name="id" value="<?= (int) $entry['id'] ?>">
                     <button type="submit" class="btn btn-outline btn-sm">Delete</button>
                 </form>
+                <?php endif; ?>
             </td>
         </tr>
     <?php endforeach; ?>

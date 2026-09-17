@@ -12,7 +12,7 @@ declare(strict_types=1);
  * database/schema-location-seo.sql's docblock).
  */
 
-require_permission('content.manage');
+require_permission('content.view');
 
 $pdo = db();
 $requestedType = $_GET['type'] ?? 'state';
@@ -24,6 +24,7 @@ $id = isset($_GET['id']) ? (int) $_GET['id'] : (isset($_POST['id']) ? (int) $_PO
 
 // --- Handle POST (create, update, delete, toggle) ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_permission('content.manage');
     csrf_require();
     $postAction = $_POST['action'] ?? '';
     $requestedPostType = $_POST['type'] ?? 'state';
@@ -31,7 +32,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $postTable = $postType === 'state' ? 'states' : 'cities';
 
     if ($postAction === 'delete' && $id) {
+        $stmt = $pdo->prepare("SELECT name FROM $postTable WHERE id = :id");
+        $stmt->execute(['id' => $id]);
+        $oldName = $stmt->fetchColumn() ?: null;
         $pdo->prepare("DELETE FROM $postTable WHERE id = :id")->execute(['id' => $id]);
+        log_action('delete', $postTable, $id, $oldName, null);
         flash_set('admin_notice', ucfirst($postType) . ' deleted.');
         redirect("/admin/locations/?type=$postType");
     }
@@ -39,7 +44,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($postAction === 'toggle' && $id) {
         $field = in_array($_POST['field'] ?? '', ['is_active', 'is_indexable', 'is_major'], true) ? $_POST['field'] : null;
         if ($field && ($field !== 'is_major' || $postType === 'city')) {
+            $stmt = $pdo->prepare("SELECT $field FROM $postTable WHERE id = :id");
+            $stmt->execute(['id' => $id]);
+            $old = (int) $stmt->fetchColumn();
             $pdo->prepare("UPDATE $postTable SET $field = NOT $field WHERE id = :id")->execute(['id' => $id]);
+            log_action('update', $postTable, $id, "$field=$old", "$field=" . (1 - $old));
         }
         redirect("/admin/locations/?type=$postType");
     }
@@ -70,17 +79,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($id) {
                 $data['id'] = $id;
+                $oldStmt = $pdo->prepare('SELECT name FROM states WHERE id = :id');
+                $oldStmt->execute(['id' => $id]);
+                $oldName = $oldStmt->fetchColumn() ?: null;
                 $pdo->prepare(
                     'UPDATE states SET name=:name, slug=:slug, type=:type, zone=:zone, intro_content=:intro_content,
                      meta_title=:meta_title, meta_description=:meta_description, is_indexable=:is_indexable,
                      is_active=:is_active, sort_order=:sort_order WHERE id=:id'
                 )->execute($data);
+                log_action('update', 'states', $id, $oldName, $name);
                 flash_set('admin_notice', 'State updated.');
             } else {
                 $pdo->prepare(
                     'INSERT INTO states (name, slug, type, zone, intro_content, meta_title, meta_description, is_indexable, is_active, sort_order)
                      VALUES (:name, :slug, :type, :zone, :intro_content, :meta_title, :meta_description, :is_indexable, :is_active, :sort_order)'
                 )->execute($data);
+                log_action('create', 'states', (int) $pdo->lastInsertId(), null, $name);
                 flash_set('admin_notice', 'State added.');
             }
         } else {
@@ -95,18 +109,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($id) {
                 $data['id'] = $id;
+                $oldStmt = $pdo->prepare('SELECT name FROM cities WHERE id = :id');
+                $oldStmt->execute(['id' => $id]);
+                $oldName = $oldStmt->fetchColumn() ?: null;
                 $pdo->prepare(
                     'UPDATE cities SET state_id=:state_id, name=:name, slug=:slug, is_major=:is_major,
                      intro_content=:intro_content, office_address=:office_address, meta_title=:meta_title,
                      meta_description=:meta_description, is_indexable=:is_indexable, is_active=:is_active,
                      sort_order=:sort_order WHERE id=:id'
                 )->execute($data);
+                log_action('update', 'cities', $id, $oldName, $name);
                 flash_set('admin_notice', 'City updated.');
             } else {
                 $pdo->prepare(
                     'INSERT INTO cities (state_id, name, slug, is_major, intro_content, office_address, meta_title, meta_description, is_indexable, is_active, sort_order)
                      VALUES (:state_id, :name, :slug, :is_major, :intro_content, :office_address, :meta_title, :meta_description, :is_indexable, :is_active, :sort_order)'
                 )->execute($data);
+                log_action('create', 'cities', (int) $pdo->lastInsertId(), null, $name);
                 flash_set('admin_notice', 'City added.');
             }
         }
@@ -116,6 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // --- Create/Edit form ---
 if ($action === 'create' || $action === 'edit') {
+    require_permission('content.manage');
     $row = $type === 'state'
         ? ['name' => '', 'slug' => '', 'type' => 'state', 'zone' => null, 'intro_content' => '', 'meta_title' => '', 'meta_description' => '', 'is_indexable' => 0, 'is_active' => 1, 'sort_order' => 0]
         : ['name' => '', 'slug' => '', 'state_id' => '', 'is_major' => 0, 'intro_content' => '', 'office_address' => '', 'meta_title' => '', 'meta_description' => '', 'is_indexable' => 0, 'is_active' => 1, 'sort_order' => 0];
@@ -251,7 +271,9 @@ admin_subnav('content', 'locations');
         <a href="/admin/locations/?type=state" class="btn btn-sm <?= $type === 'state' ? 'btn-primary' : 'btn-outline' ?>">States &amp; UTs</a>
         <a href="/admin/locations/?type=city" class="btn btn-sm <?= $type === 'city' ? 'btn-primary' : 'btn-outline' ?>">Cities</a>
     </div>
+    <?php if (has_permission('content.manage')): ?>
     <a href="/admin/locations/?type=<?= e($type) ?>&action=create" class="btn btn-primary">+ Add <?= $type === 'state' ? 'State/UT' : 'City' ?></a>
+    <?php endif; ?>
 </div>
 <form method="get" action="/admin/locations/" style="display:flex;gap:var(--space-2);margin-bottom:var(--space-4)">
     <input type="hidden" name="type" value="<?= e($type) ?>">
@@ -261,24 +283,35 @@ admin_subnav('content', 'locations');
 <table class="admin-table">
     <thead><tr><th>Name</th><th><?= $type === 'state' ? 'Zone' : 'State' ?></th><th>Indexable</th><th>Active</th><th></th></tr></thead>
     <tbody>
+    <?php $canManageContent = has_permission('content.manage'); ?>
     <?php foreach ($rows as $r): ?>
         <tr>
             <td><?= e($r['name']) ?> <span style="color:var(--text-muted)">(<?= e($r['slug']) ?>)</span></td>
             <td><?= e($type === 'state' ? ($r['zone'] ?? '—') : $r['state_name']) ?></td>
             <td>
+                <?php if ($canManageContent): ?>
                 <form method="post" action="/admin/locations/" style="display:inline"><?= csrf_field() ?><input type="hidden" name="type" value="<?= e($type) ?>"><input type="hidden" name="action" value="toggle"><input type="hidden" name="field" value="is_indexable"><input type="hidden" name="id" value="<?= (int) $r['id'] ?>">
                 <button type="submit" class="badge <?= $r['is_indexable'] ? 'badge-success' : 'badge-neutral' ?>" style="border:none;cursor:pointer"><?= $r['is_indexable'] ? 'Live' : 'Draft' ?></button></form>
+                <?php else: ?>
+                <span class="badge <?= $r['is_indexable'] ? 'badge-success' : 'badge-neutral' ?>"><?= $r['is_indexable'] ? 'Live' : 'Draft' ?></span>
+                <?php endif; ?>
             </td>
             <td>
+                <?php if ($canManageContent): ?>
                 <form method="post" action="/admin/locations/" style="display:inline"><?= csrf_field() ?><input type="hidden" name="type" value="<?= e($type) ?>"><input type="hidden" name="action" value="toggle"><input type="hidden" name="field" value="is_active"><input type="hidden" name="id" value="<?= (int) $r['id'] ?>">
                 <button type="submit" class="badge <?= $r['is_active'] ? 'badge-success' : 'badge-warning' ?>" style="border:none;cursor:pointer"><?= $r['is_active'] ? 'Active' : 'Hidden' ?></button></form>
+                <?php else: ?>
+                <span class="badge <?= $r['is_active'] ? 'badge-success' : 'badge-warning' ?>"><?= $r['is_active'] ? 'Active' : 'Hidden' ?></span>
+                <?php endif; ?>
             </td>
             <td class="actions">
+                <?php if ($canManageContent): ?>
                 <a href="/admin/locations/?type=<?= e($type) ?>&action=edit&id=<?= (int) $r['id'] ?>" class="btn btn-outline btn-sm">Edit</a>
                 <form method="post" action="/admin/locations/" style="display:inline" onsubmit="return confirm('Delete this <?= e($type) ?>?<?= $type === 'state' ? ' This also removes its cities and FAQs.' : '' ?>');">
                     <?= csrf_field() ?><input type="hidden" name="type" value="<?= e($type) ?>"><input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="<?= (int) $r['id'] ?>">
                     <button type="submit" class="btn btn-outline btn-sm">Delete</button>
                 </form>
+                <?php endif; ?>
             </td>
         </tr>
     <?php endforeach; ?>

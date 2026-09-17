@@ -47,7 +47,7 @@ const ADMIN_NAV_GROUPS = [
         ['nav' => 'mail-log', 'label' => 'Communications', 'href' => '/admin/mail-log/', 'permission' => 'settings.manage'],
     ],
     'Content' => [
-        ['nav' => 'countries', 'label' => 'Content / CMS', 'href' => '/admin/countries/', 'permission' => 'content.manage'],
+        ['nav' => 'countries', 'label' => 'Content / CMS', 'href' => '/admin/countries/', 'permission' => 'content.view'],
     ],
     'Insights' => [
         ['nav' => 'reports', 'label' => 'Reports &amp; Analytics', 'href' => null, 'permission' => null, 'builtHref' => false],
@@ -272,12 +272,13 @@ const ADMIN_SUBNAV_GROUPS = [
         ['nav' => 'forex-fema-audit', 'label' => 'FEMA / Audit Records', 'href' => '/admin/forex-fema-audit/', 'permission' => 'forex.compliance.view'],
     ],
     'content' => [
-        ['nav' => 'countries', 'label' => 'Countries', 'href' => '/admin/countries/', 'permission' => 'content.manage'],
-        ['nav' => 'visa-types', 'label' => 'Visa Types', 'href' => '/admin/visa-types/', 'permission' => 'content.manage'],
-        ['nav' => 'visa-requirements', 'label' => 'Visa Requirements', 'href' => '/admin/visa-requirements/', 'permission' => 'content.manage'],
-        ['nav' => 'faqs', 'label' => 'FAQs', 'href' => '/admin/faqs/', 'permission' => 'content.manage'],
-        ['nav' => 'embassies', 'label' => 'Embassies / Consulates / VACs', 'href' => '/admin/embassies/', 'permission' => 'content.manage'],
-        ['nav' => 'locations', 'label' => 'Locations (States/Cities)', 'href' => '/admin/locations/', 'permission' => 'content.manage'],
+        ['nav' => 'countries', 'label' => 'Countries', 'href' => '/admin/countries/', 'permission' => 'content.view'],
+        ['nav' => 'visa-types', 'label' => 'Visa Types', 'href' => '/admin/visa-types/', 'permission' => 'content.view'],
+        ['nav' => 'visa-requirements', 'label' => 'Visa Requirements', 'href' => '/admin/visa-requirements/', 'permission' => 'content.view'],
+        ['nav' => 'visa-checklists', 'label' => 'Visa Checklists', 'href' => '/admin/visa-checklists/', 'permission' => 'content.view'],
+        ['nav' => 'faqs', 'label' => 'FAQs', 'href' => '/admin/faqs/', 'permission' => 'content.view'],
+        ['nav' => 'embassies', 'label' => 'Embassies / Consulates / VACs', 'href' => '/admin/embassies/', 'permission' => 'content.view'],
+        ['nav' => 'locations', 'label' => 'Locations (States/Cities)', 'href' => '/admin/locations/', 'permission' => 'content.view'],
     ],
     'system' => [
         ['nav' => 'users', 'label' => 'Users', 'href' => '/admin/users/', 'permission' => 'users.manage'],

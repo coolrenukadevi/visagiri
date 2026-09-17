@@ -25,6 +25,7 @@ INSERT INTO permissions (permission_key, description) VALUES
 ('documents.upload', 'Upload documents to a customer/application/enquiry'),
 ('documents.verify', 'Mark uploaded documents verified or rejected'),
 ('content.manage', 'Manage countries, visa types, visa requirements, embassies, FAQs'),
+('content.view', 'View countries, visa types, visa requirements, embassies, FAQs, locations, and visa checklists (read-only)'),
 ('users.manage', 'Create/edit admin users and assign roles'),
 ('settings.manage', 'Edit site settings'),
 ('audit.view', 'View the audit log');
