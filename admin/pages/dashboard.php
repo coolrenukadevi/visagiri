@@ -2,66 +2,112 @@
 declare(strict_types=1);
 
 /**
- * Single-window front door: one tile per business module. Each tile
- * links into that module's own existing pages (unchanged nav,
- * permissions, and detail views) rather than embedding anything —
- * clicking through still shares the one sidebar+topbar shell every
- * admin page already uses, so nothing here is a new "window".
+ * Visagiri CMS Operations Control Centre — the CMS blueprint's
+ * Dashboard row ("Overview / Control Centre... View KPIs; drill-down;
+ * Focus Mode; customize widgets", P0, role-based). Three-layer
+ * progressive disclosure per Architecture Rules:
+ *   Glance — SLA alert, Top Priorities, essential KPI groups (always visible)
+ *   Scan   — Enquiry Analytics, Visa Funnel, SLA Overview, Team Performance (collapsible)
+ *   Dig    — Recent Enquiries, Tasks, Unassigned Cases (collapsible)
  *
- * Tiles are gated by has_permission() exactly like the sidebar nav —
- * a role with no visibility into a module doesn't see its tile.
- *
- * The pipeline/work-queue/recent-enquiries widgets below all read the
- * unified `enquiries` table (schema-enquiry-v2.sql) specifically — it's
- * the only CRM entity with a real status/priority/assigned_user shape
- * to build honest analytics from. general_enquiries/forex_requests
- * still only contribute to the "New Leads Today" count, same as
- * before; reconciling every module's own status vocabulary into one
- * chart isn't attempted here rather than fake a unified taxonomy none
- * of them actually share.
+ * Every number on this page is a real query against the same tables
+ * each module's own list page already reads (enquiries, visa_applications,
+ * documents, reminders, forex_requests, partner_invoices, customers,
+ * audit_logs) — nothing here is mocked. Where the CMS blueprint names a
+ * widget this schema can't yet honestly back (e.g. a true "at risk"
+ * SLA tier beyond breached/not-breached would need a stored SLA-stage
+ * timestamp this schema doesn't have), the widget derives its buckets
+ * from what IS real (time-to-due-date math) rather than inventing data.
  */
 
 $pdo = db();
+$admin = current_admin();
 $scopedToAssigned = current_admin_scoped_to_assigned();
 $myId = current_admin_id();
 
-$leadsToday = 0;
-if (has_permission('enquiries.view')) {
-    $leadsToday += (int) $pdo->query("SELECT COUNT(*) FROM enquiries WHERE deleted_at IS NULL AND DATE(created_at) = CURDATE()")->fetchColumn();
-}
-if (has_permission('general_enquiries.view')) {
-    $leadsToday += (int) $pdo->query("SELECT COUNT(*) FROM general_enquiries WHERE deleted_at IS NULL AND DATE(created_at) = CURDATE()")->fetchColumn();
-}
-if (has_permission('forex.requests.view')) {
-    $leadsToday += (int) $pdo->query("SELECT COUNT(*) FROM forex_requests WHERE deleted_at IS NULL AND DATE(created_at) = CURDATE()")->fetchColumn();
-}
-$pendingPartnerEnquiries = has_permission('partners.view')
-    ? (int) $pdo->query("SELECT COUNT(*) FROM partner_enquiries WHERE deleted_at IS NULL AND status = 'new'")->fetchColumn()
-    : 0;
-$pendingDocuments = has_permission('documents.verify')
-    ? (int) $pdo->query("SELECT COUNT(*) FROM documents WHERE deleted_at IS NULL AND verification_status = 'pending'")->fetchColumn()
-    : 0;
-$pendingB2bPartners = has_permission('b2b_travel_partners.view')
-    ? (int) $pdo->query("SELECT COUNT(*) FROM b2b_partners WHERE deleted_at IS NULL AND status IN ('submitted', 'under_review')")->fetchColumn()
-    : 0;
+// ---------------------------------------------------------------
+// Greeting
+// ---------------------------------------------------------------
+$hour = (int) date('G');
+$greetingWord = $hour < 12 ? 'Good Morning' : ($hour < 17 ? 'Good Afternoon' : 'Good Evening');
+$firstName = trim((string) explode(' ', (string) ($admin['full_name'] ?? 'Admin'))[0]);
 
-// The enquiries-table widgets below (pipeline, work queue, recent
-// list) share one scope clause: an admin scoped to only their own
-// assignments (visa-consultant) sees only their own rows everywhere
-// on this page, same rule enquiries.php's own list view already
-// enforces — the dashboard must not leak a wider view than the list
-// page it links to.
+// ---------------------------------------------------------------
+// SLA + priorities (enquiries.sla_due_at is the only table-wide SLA
+// clock that exists — visa_applications/forex_requests/grievances
+// don't carry their own SLA timestamp in this schema, so SLA-driven
+// widgets below are built on the enquiries table specifically,
+// same honest scope the pre-existing dashboard already used).
+// ---------------------------------------------------------------
 $enqScopeSql = $scopedToAssigned ? ' AND assigned_user = :me' : '';
 $enqScopeSqlAliased = $scopedToAssigned ? ' AND e.assigned_user = :me' : '';
 $enqScopeParams = $scopedToAssigned ? ['me' => $myId] : [];
 
+$slaBreachedCount = 0;
+$slaBuckets = ['green' => 0, 'yellow' => 0, 'orange' => 0, 'red' => 0];
+$worstOverdue = null;
+if (has_permission('enquiries.view')) {
+    notify_breached_enquiry_slas();
+
+    $stmt = $pdo->prepare(
+        "SELECT sla_due_at FROM enquiries
+         WHERE deleted_at IS NULL AND sla_due_at IS NOT NULL AND status NOT IN ('completed', 'closed')$enqScopeSql"
+    );
+    $stmt->execute($enqScopeParams);
+    $now = new DateTimeImmutable();
+    foreach ($stmt->fetchAll(PDO::FETCH_COLUMN) as $dueAt) {
+        $due = new DateTimeImmutable((string) $dueAt);
+        $hoursLeft = ($due->getTimestamp() - $now->getTimestamp()) / 3600;
+        if ($hoursLeft < 0) { $slaBuckets['red']++; }
+        elseif ($hoursLeft <= 6) { $slaBuckets['orange']++; }
+        elseif ($hoursLeft <= 24) { $slaBuckets['yellow']++; }
+        else { $slaBuckets['green']++; }
+    }
+    $slaBreachedCount = $slaBuckets['red'];
+
+    $stmt = $pdo->prepare(
+        "SELECT e.id, e.enquiry_number, e.name, e.service_category, e.sla_due_at, dc.name AS country_name, emp.full_name AS assigned_name
+         FROM enquiries e
+         LEFT JOIN countries dc ON dc.id = e.destination_country_id
+         LEFT JOIN admin_users emp ON emp.id = e.assigned_user
+         WHERE e.deleted_at IS NULL AND e.sla_due_at IS NOT NULL AND e.status NOT IN ('completed', 'closed')$enqScopeSqlAliased
+         ORDER BY e.sla_due_at ASC LIMIT 1"
+    );
+    $stmt->execute($enqScopeParams);
+    $worstOverdue = $stmt->fetch() ?: null;
+}
+$slaTotal = array_sum($slaBuckets);
+$slaOnTrackPct = $slaTotal > 0 ? round($slaBuckets['green'] / $slaTotal * 100) : 100;
+
+$pendingDocuments = has_permission('documents.verify')
+    ? (int) $pdo->query("SELECT COUNT(*) FROM documents WHERE deleted_at IS NULL AND verification_status = 'pending'")->fetchColumn()
+    : 0;
+
+$reminderCounts = ['overdue' => 0, 'today' => 0, 'upcoming' => 0];
+if (has_permission('reminders.manage')) {
+    notify_due_reminders();
+    $reminderCounts = reminder_due_counts($scopedToAssigned ? $myId : null);
+}
+
+$unassignedCount = 0;
+if (has_permission('enquiries.view') && !$scopedToAssigned) {
+    $unassignedCount = (int) $pdo->query(
+        "SELECT COUNT(*) FROM enquiries WHERE deleted_at IS NULL AND assigned_user IS NULL AND status NOT IN ('completed', 'closed')"
+    )->fetchColumn();
+}
+
+// ---------------------------------------------------------------
+// KPI groups
+// ---------------------------------------------------------------
+$newEnquiriesToday = 0;
 $activeEnquiries = 0;
 $resolvedToday = 0;
 $statusCounts = [];
-$workQueue = ['urgent' => 0, 'pending_customer' => 0, 'documents_pending' => 0, 'internal' => 0, 'resolved_today' => 0];
-$recentEnquiries = [];
-
 if (has_permission('enquiries.view')) {
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM enquiries WHERE deleted_at IS NULL AND DATE(created_at) = CURDATE()$enqScopeSql");
+    $stmt->execute($enqScopeParams);
+    $newEnquiriesToday = (int) $stmt->fetchColumn();
+
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM enquiries WHERE deleted_at IS NULL AND status NOT IN ('completed', 'closed')$enqScopeSql");
     $stmt->execute($enqScopeParams);
     $activeEnquiries = (int) $stmt->fetchColumn();
@@ -75,16 +121,123 @@ if (has_permission('enquiries.view')) {
     foreach ($stmt->fetchAll() as $row) {
         $statusCounts[$row['status']] = (int) $row['c'];
     }
+}
 
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM enquiries WHERE deleted_at IS NULL AND priority = 'urgent' AND status NOT IN ('completed', 'closed')$enqScopeSql");
+$activeVisaApplications = has_permission('visa.view')
+    ? (int) $pdo->query("SELECT COUNT(*) FROM visa_applications WHERE deleted_at IS NULL AND status NOT IN ('completed', 'cancelled', 'rejected')")->fetchColumn()
+    : 0;
+
+$paymentsPending = 0;
+$paymentsPendingLabel = null;
+if (has_permission('forex.requests.view')) {
+    $paymentsPending += (int) $pdo->query("SELECT COUNT(*) FROM forex_requests WHERE deleted_at IS NULL AND status = 'payment_pending'")->fetchColumn();
+}
+if (has_permission('partners.manage')) {
+    $paymentsPending += (int) $pdo->query("SELECT COUNT(*) FROM partner_invoices WHERE status = 'issued'")->fetchColumn();
+}
+
+$activeCustomers = has_permission('customers.view')
+    ? (int) $pdo->query('SELECT COUNT(*) FROM customers WHERE deleted_at IS NULL')->fetchColumn()
+    : 0;
+
+$kpiGroups = [];
+if (has_permission('enquiries.view')) {
+    $kpiGroups['Sales'] = [
+        ['label' => 'New Enquiries', 'value' => $newEnquiriesToday, 'href' => '/admin/enquiries/'],
+        ['label' => 'Open Enquiries', 'value' => $activeEnquiries, 'href' => '/admin/enquiries/'],
+    ];
+}
+if (has_permission('visa.view') || has_permission('documents.verify')) {
+    $ops = [];
+    if (has_permission('visa.view')) { $ops[] = ['label' => 'Visa Applications', 'value' => $activeVisaApplications, 'href' => '/admin/visa-applications/']; }
+    if (has_permission('documents.verify')) { $ops[] = ['label' => 'Documents Pending', 'value' => $pendingDocuments, 'href' => '/admin/enquiries/?status=documents_pending']; }
+    $kpiGroups['Operations'] = $ops;
+}
+if (has_permission('enquiries.view')) {
+    $kpiGroups['Risk'] = [
+        ['label' => 'SLA Breached', 'value' => $slaBreachedCount, 'href' => '/admin/enquiries/?sla=breached', 'risk' => true],
+    ];
+}
+if (has_permission('forex.requests.view') || has_permission('partners.manage')) {
+    $kpiGroups['Finance'] = [
+        ['label' => 'Payments Pending', 'value' => $paymentsPending, 'href' => '/admin/finance/'],
+    ];
+}
+if (has_permission('customers.view') || has_permission('enquiries.view')) {
+    $ct = [];
+    if (has_permission('customers.view')) { $ct[] = ['label' => 'Active Customers', 'value' => $activeCustomers, 'href' => '/admin/customers/']; }
+    if (has_permission('enquiries.view')) { $ct[] = ['label' => 'Cases Completed', 'value' => $resolvedToday, 'href' => '/admin/enquiries/?status=completed']; }
+    $kpiGroups['Customer / Team'] = $ct;
+}
+
+// ---------------------------------------------------------------
+// Enquiry analytics (Layer 2 — Scan)
+// ---------------------------------------------------------------
+$serviceBreakdown = [];
+if (has_permission('enquiries.view')) {
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM enquiries WHERE deleted_at IS NULL AND service_category = 'visa' AND status NOT IN ('completed','closed')$enqScopeSql");
     $stmt->execute($enqScopeParams);
-    $workQueue['urgent'] = (int) $stmt->fetchColumn();
-    $workQueue['pending_customer'] = $statusCounts['additional_info_required'] ?? 0;
-    $workQueue['documents_pending'] = $statusCounts['documents_pending'] ?? 0;
-    $workQueue['internal'] = ($statusCounts['under_review'] ?? 0) + ($statusCounts['processing'] ?? 0) + ($statusCounts['documents_verified'] ?? 0);
-    $workQueue['resolved_today'] = $resolvedToday;
+    $serviceBreakdown['Visa'] = (int) $stmt->fetchColumn();
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM enquiries WHERE deleted_at IS NULL AND service_category = 'apostille' AND status NOT IN ('completed','closed')$enqScopeSql");
+    $stmt->execute($enqScopeParams);
+    $serviceBreakdown['Apostille & Attestation'] = (int) $stmt->fetchColumn();
+}
+if (has_permission('forex.requests.view')) {
+    $serviceBreakdown['Forex'] = (int) $pdo->query("SELECT COUNT(*) FROM forex_requests WHERE deleted_at IS NULL AND status NOT IN ('delivered', 'cancelled', 'rejected')")->fetchColumn();
+}
+if (has_permission('general_enquiries.view')) {
+    $serviceBreakdown['General Enquiry'] = (int) $pdo->query("SELECT COUNT(*) FROM general_enquiries WHERE deleted_at IS NULL AND status NOT IN ('closed')")->fetchColumn();
+}
+if (has_permission('partners.view')) {
+    $serviceBreakdown['B2B Partner'] = (int) $pdo->query("SELECT COUNT(*) FROM partner_enquiries WHERE deleted_at IS NULL AND status = 'new'")->fetchColumn();
+}
+$serviceBreakdown = array_filter($serviceBreakdown);
+$serviceTotal = array_sum($serviceBreakdown);
+$donutColors = ['var(--visa-blue)', 'var(--visa-gold-dark)', 'var(--status-green)', 'var(--status-orange)', 'var(--info)'];
 
-    $sql = "SELECT e.id, e.enquiry_number, e.name, e.service_category, e.status, e.priority, e.created_at,
+// Visa Application Funnel — real visa_applications.status pipeline.
+$funnelStages = [
+    'draft' => 'Draft',
+    'documents_pending' => 'Documents',
+    'submitted' => 'Submitted',
+    'under_review' => 'Verification',
+    'approved' => 'Approved',
+    'completed' => 'Completed',
+];
+$funnelCounts = [];
+if (has_permission('visa.view')) {
+    $stmt = $pdo->query('SELECT status, COUNT(*) AS c FROM visa_applications WHERE deleted_at IS NULL GROUP BY status');
+    foreach ($stmt->fetchAll() as $row) {
+        $funnelCounts[$row['status']] = (int) $row['c'];
+    }
+}
+$funnelBase = $funnelCounts['draft'] ?? array_sum($funnelCounts);
+$funnelBase = max($funnelBase, array_sum($funnelCounts), 1);
+
+// Team performance — top 5 by open assignment count this month.
+$teamPerformance = [];
+if (has_permission('enquiries.view') && !$scopedToAssigned) {
+    $stmt = $pdo->query(
+        "SELECT emp.id, emp.full_name,
+                SUM(e.assigned_user IS NOT NULL AND e.status NOT IN ('completed','closed')) AS assigned_open,
+                SUM(e.status IN ('completed','closed') AND MONTH(e.updated_at) = MONTH(CURDATE()) AND YEAR(e.updated_at) = YEAR(CURDATE())) AS completed_month,
+                SUM(e.sla_due_at IS NOT NULL AND e.sla_due_at < NOW() AND e.status NOT IN ('completed','closed')) AS breaches
+         FROM admin_users emp
+         JOIN enquiries e ON e.assigned_user = emp.id AND e.deleted_at IS NULL
+         WHERE emp.status = 'active'
+         GROUP BY emp.id, emp.full_name
+         HAVING assigned_open > 0 OR completed_month > 0
+         ORDER BY assigned_open DESC LIMIT 5"
+    );
+    $teamPerformance = $stmt->fetchAll();
+}
+
+// ---------------------------------------------------------------
+// Recent enquiries (Layer 3 — Dig)
+// ---------------------------------------------------------------
+$recentEnquiries = [];
+if (has_permission('enquiries.view')) {
+    $sql = "SELECT e.id, e.enquiry_number, e.name, e.service_category, e.status, e.priority, e.sla_due_at, e.created_at,
                     co.name AS country_name, emp.full_name AS assigned_name
              FROM enquiries e
              LEFT JOIN countries co ON co.id = e.destination_country_id
@@ -96,18 +249,11 @@ if (has_permission('enquiries.view')) {
     $recentEnquiries = $stmt->fetchAll();
 }
 
-$reminderCounts = ['overdue' => 0, 'today' => 0, 'upcoming' => 0];
+$requestedTasksTab = (string) ($_GET['tasks'] ?? 'overdue');
+$tasksTab = in_array($requestedTasksTab, ['overdue', 'today', 'upcoming'], true) ? $requestedTasksTab : 'overdue';
+$tasks = [];
 if (has_permission('reminders.manage')) {
-    notify_due_reminders();
-    $reminderCounts = reminder_due_counts($scopedToAssigned ? $myId : null);
-}
-
-$slaBreachedCount = 0;
-if (has_permission('enquiries.view')) {
-    notify_breached_enquiry_slas();
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM enquiries WHERE deleted_at IS NULL AND sla_due_at IS NOT NULL AND sla_due_at < NOW() AND status NOT IN ('completed', 'closed')$enqScopeSql");
-    $stmt->execute($enqScopeParams);
-    $slaBreachedCount = (int) $stmt->fetchColumn();
+    $tasks = list_reminders($tasksTab, $scopedToAssigned ? $myId : null, $myId);
 }
 
 $recentActivity = [];
@@ -121,114 +267,327 @@ if (has_permission('audit.view')) {
     $recentActivity = $stmt->fetchAll();
 }
 
-$stats = [
-    'New Leads Today' => $leadsToday,
-    'Active Enquiries' => has_permission('enquiries.view') ? $activeEnquiries : null,
-    'Resolved Today' => has_permission('enquiries.view') ? $resolvedToday : null,
-    'Documents Pending Verification' => has_permission('documents.verify') ? $pendingDocuments : null,
-    'Customers' => has_permission('customers.view') ? (int) $pdo->query('SELECT COUNT(*) FROM customers WHERE deleted_at IS NULL')->fetchColumn() : null,
-    'Active B2B Partners' => has_permission('partners.view') ? (int) $pdo->query("SELECT COUNT(*) FROM partners WHERE deleted_at IS NULL AND status = 'active'")->fetchColumn() : null,
-];
-$stats = array_filter($stats, static fn($v) => $v !== null);
-
-$totalEnquiriesForPipeline = array_sum($statusCounts);
+$slaSignature = 'breach-' . $slaBreachedCount . '-' . date('Y-m-d');
 
 admin_header_start('Dashboard', 'dashboard');
 ?>
-<div class="admin-stat-grid">
-    <?php foreach ($stats as $label => $value): ?>
-    <div class="admin-stat-card">
-        <div class="admin-stat-card__value"><?= $value ?></div>
-        <div class="admin-stat-card__label"><?= e($label) ?></div>
+<div class="admin-greeting">
+    <div class="admin-greeting__text">
+        <h1><?= e($greetingWord) ?>, <?= e($firstName ?: 'Admin') ?>!</h1>
+        <p>
+            <?php if ($slaBreachedCount > 0): ?>
+                <?= $slaBreachedCount ?> case<?= $slaBreachedCount === 1 ? '' : 's' ?> need<?= $slaBreachedCount === 1 ? 's' : '' ?> attention before their SLA slips further.
+            <?php elseif ($reminderCounts['today'] > 0): ?>
+                You have <?= $reminderCounts['today'] ?> follow-up<?= $reminderCounts['today'] === 1 ? '' : 's' ?> due today.
+            <?php else: ?>
+                Everything is currently on track.
+            <?php endif; ?>
+        </p>
     </div>
-    <?php endforeach; ?>
+    <div class="admin-greeting__actions">
+        <span class="admin-freshness admin-freshness--live"><span class="admin-freshness__dot"></span> Live &middot; <?= e(date('D, d M Y, H:i')) ?></span>
+        <button type="button" class="btn btn-sm btn-outline admin-focus-toggle" id="admin-focus-toggle">Focus Mode</button>
+        <button type="button" class="btn btn-sm btn-outline" id="admin-customize-toggle">Customize</button>
+    </div>
+    <?php if ($slaBreachedCount === 0): ?>
+    <p class="admin-greeting__quote">&ldquo;People to Places. Possibilities Together.&rdquo;</p>
+    <?php endif; ?>
 </div>
 
 <?php if (has_permission('enquiries.view')): ?>
-<div class="admin-panel-row">
-    <div class="admin-panel">
-        <h2 class="admin-panel__title">Enquiry Status Distribution<?= $scopedToAssigned ? ' — Your Enquiries' : '' ?></h2>
-        <?php if ($totalEnquiriesForPipeline === 0): ?>
-        <p class="admin-empty-state">No enquiry data available yet.</p>
+<div class="admin-sla-banner<?= $slaBreachedCount === 0 ? ' is-ok' : '' ?>" id="admin-sla-banner" data-signature="<?= e($slaSignature) ?>">
+    <div class="admin-sla-banner__icon">
+        <?php if ($slaBreachedCount > 0): ?>
+        <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2 18 16H2Z"/><line x1="10" y1="8" x2="10" y2="11.5"/><circle cx="10" cy="14" r="0.6" fill="currentColor" stroke="none"/></svg>
         <?php else: ?>
-        <div class="admin-status-bars">
-            <?php foreach (enquiry_internal_statuses() as $key => $label):
-                $count = $statusCounts[$key] ?? 0;
-                $pct = $totalEnquiriesForPipeline > 0 ? round($count / $totalEnquiriesForPipeline * 100) : 0;
-            ?>
-            <div class="admin-status-bar">
-                <div class="admin-status-bar__label"><span><?= e($label) ?></span><span><?= $count ?></span></div>
-                <div class="admin-status-bar__track"><div class="admin-status-bar__fill" style="width:<?= $pct ?>%"></div></div>
-            </div>
+        <svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 8 14.5 16 5.5"/></svg>
+        <?php endif; ?>
+    </div>
+    <div class="admin-sla-banner__body">
+        <?php if ($slaBreachedCount > 0): ?>
+        <p class="admin-sla-banner__title"><?= $slaBreachedCount ?> SLA breach<?= $slaBreachedCount === 1 ? '' : 'es' ?> require<?= $slaBreachedCount === 1 ? 's' : '' ?> attention</p>
+        <p class="admin-sla-banner__desc">These cases are overdue and may impact customer service.</p>
+        <?php else: ?>
+        <p class="admin-sla-banner__title">All SLA commitments are currently on track.</p>
+        <?php endif; ?>
+    </div>
+    <?php if ($slaBreachedCount > 0): ?>
+    <a href="/admin/enquiries/?sla=breached" class="btn btn-sm btn-primary">Review Breaches</a>
+    <?php endif; ?>
+    <button type="button" class="admin-sla-banner__dismiss" id="admin-sla-banner-dismiss" aria-label="Dismiss for this session">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 5l10 10M15 5 5 15"/></svg>
+    </button>
+</div>
+<?php endif; ?>
+
+<?php if ($unassignedCount > 0): ?>
+<div class="admin-unassigned-bar">
+    <span class="admin-unassigned-bar__icon"><svg width="24" height="24" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10" cy="6.5" r="3"/><path d="M4.5 17c0-3.6 2.4-5.8 5.5-5.8" stroke-dasharray="2 2"/></svg></span>
+    <span class="admin-unassigned-bar__body"><span class="admin-unassigned-bar__count"><?= $unassignedCount ?></span> <span class="admin-unassigned-bar__label">case<?= $unassignedCount === 1 ? '' : 's' ?> waiting for assignment</span></span>
+    <a href="/admin/enquiries/?status=new_enquiry" class="btn btn-sm btn-primary">Assign Now</a>
+</div>
+<?php endif; ?>
+
+<?php
+// ---- Top Priorities (max 3, real cases, not repeated KPI numbers) ----
+$priorities = [];
+if ($worstOverdue) {
+    $due = new DateTimeImmutable((string) $worstOverdue['sla_due_at']);
+    $hoursOverdue = (int) round((time() - $due->getTimestamp()) / 3600);
+    $priorities[] = [
+        'title' => e($worstOverdue['name']) . ' &mdash; ' . e(ucfirst($worstOverdue['service_category'])) . ($worstOverdue['country_name'] ? ' (' . e($worstOverdue['country_name']) . ')' : ''),
+        'meta' => 'Assigned: ' . e($worstOverdue['assigned_name'] ?? 'Unassigned'),
+        'flag' => $hoursOverdue > 0 ? $hoursOverdue . 'h overdue' : 'Due now',
+        'href' => '/admin/enquiries/?id=' . (int) $worstOverdue['id'],
+        'action' => 'Open Case',
+    ];
+}
+if ($pendingDocuments > 0) {
+    $priorities[] = [
+        'title' => $pendingDocuments . ' document' . ($pendingDocuments === 1 ? '' : 's') . ' pending verification',
+        'meta' => 'Awaiting document review',
+        'flag' => null,
+        'href' => '/admin/enquiries/?status=documents_pending',
+        'action' => 'Open Queue',
+    ];
+}
+if ($reminderCounts['today'] > 0) {
+    $priorities[] = [
+        'title' => $reminderCounts['today'] . ' follow-up' . ($reminderCounts['today'] === 1 ? '' : 's') . ' due today',
+        'meta' => 'Customer responses pending',
+        'flag' => null,
+        'href' => '/admin/reminders/',
+        'action' => 'View Tasks',
+    ];
+}
+$priorities = array_slice($priorities, 0, 3);
+?>
+<?php if ($priorities): ?>
+<div class="admin-priorities">
+    <?php foreach ($priorities as $i => $p): ?>
+    <div class="admin-priority-card">
+        <span class="admin-priority-card__rank"><?= $i + 1 ?></span>
+        <div class="admin-priority-card__body">
+            <p class="admin-priority-card__title"><?= $p['title'] ?></p>
+            <p class="admin-priority-card__meta"><?= $p['meta'] ?></p>
+            <?php if ($p['flag']): ?><span class="admin-priority-card__flag"><?= e($p['flag']) ?></span><?php endif; ?>
+            <div class="admin-priority-card__action"><a href="<?= e($p['href']) ?>" class="btn btn-sm btn-outline"><?= e($p['action']) ?></a></div>
+        </div>
+    </div>
+    <?php endforeach; ?>
+</div>
+<?php endif; ?>
+
+<div id="admin-dashboard-widgets">
+
+<div class="admin-widget" data-widget-id="kpi-groups">
+    <div class="admin-widget__handle"><button type="button" data-widget-drag-handle title="Drag to reorder"><svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="7" cy="5" r="1.3"/><circle cx="13" cy="5" r="1.3"/><circle cx="7" cy="10" r="1.3"/><circle cx="13" cy="10" r="1.3"/><circle cx="7" cy="15" r="1.3"/><circle cx="13" cy="15" r="1.3"/></svg></button><button type="button" data-widget-hide title="Hide widget"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 10s3-5.5 7-5.5S17 10 17 10s-3 5.5-7 5.5S3 10 3 10Z"/><circle cx="10" cy="10" r="2"/><line x1="3" y1="17" x2="17" y2="3"/></svg></button></div>
+<div class="admin-kpi-groups">
+    <?php foreach ($kpiGroups as $groupLabel => $cards): if (!$cards) continue; ?>
+    <div>
+        <p class="admin-kpi-group__label"><?= e($groupLabel) ?></p>
+        <div class="admin-kpi-group__cards">
+            <?php foreach ($cards as $card): ?>
+            <a href="<?= e($card['href']) ?>" class="admin-kpi-card<?= !empty($card['risk']) && $card['value'] > 0 ? ' admin-kpi-card--risk' : '' ?>">
+                <div class="admin-kpi-card__top"><span class="admin-kpi-card__value"><?= (int) $card['value'] ?></span></div>
+                <div class="admin-kpi-card__label"><?= e($card['label']) ?></div>
+            </a>
             <?php endforeach; ?>
         </div>
+    </div>
+    <?php endforeach; ?>
+</div>
+</div>
+
+<?php if (has_permission('enquiries.view') || has_permission('visa.view')): ?>
+<div class="admin-layer admin-widget" data-layer="scan" data-widget-id="layer-scan">
+    <div class="admin-widget__handle"><button type="button" data-widget-drag-handle title="Drag to reorder"><svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="7" cy="5" r="1.3"/><circle cx="13" cy="5" r="1.3"/><circle cx="7" cy="10" r="1.3"/><circle cx="13" cy="10" r="1.3"/><circle cx="7" cy="15" r="1.3"/><circle cx="13" cy="15" r="1.3"/></svg></button><button type="button" data-widget-hide title="Hide widget"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 10s3-5.5 7-5.5S17 10 17 10s-3 5.5-7 5.5S3 10 3 10Z"/><circle cx="10" cy="10" r="2"/><line x1="3" y1="17" x2="17" y2="3"/></svg></button></div>
+    <div class="admin-layer__header">
+        <h2 class="admin-layer__title">What's Happening</h2>
+        <button type="button" class="admin-layer__toggle" data-layer-toggle>
+            <svg class="admin-layer__toggle-chevron" width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7l5 5 5-5"/></svg>
+            Collapse
+        </button>
+    </div>
+    <div class="admin-layer__body">
+    <div class="admin-panel-grid">
+
+        <?php if ($serviceTotal > 0): ?>
+        <div class="admin-panel">
+            <div class="admin-panel__head"><h3 class="admin-panel__title">Enquiry Analytics</h3><span class="admin-freshness"><span class="admin-freshness__dot"></span>Updated just now</span></div>
+            <div class="admin-donut-wrap">
+                <?php
+                $gradParts = []; $cursor = 0;
+                foreach (array_values($serviceBreakdown) as $i => $v) {
+                    $pct = $v / $serviceTotal * 100;
+                    $gradParts[] = ($donutColors[$i % count($donutColors)]) . ' ' . $cursor . '% ' . ($cursor + $pct) . '%';
+                    $cursor += $pct;
+                }
+                ?>
+                <div class="admin-donut" style="background: conic-gradient(<?= implode(', ', $gradParts) ?>);">
+                    <div class="admin-donut__inner"><span class="admin-donut__total"><?= $serviceTotal ?></span><span class="admin-donut__label">TOTAL</span></div>
+                </div>
+                <div class="admin-donut-legend">
+                    <?php $i = 0; foreach ($serviceBreakdown as $name => $v): ?>
+                    <div class="admin-donut-legend__item"><span class="admin-donut-legend__dot" style="background:<?= $donutColors[$i % count($donutColors)] ?>"></span><span class="admin-donut-legend__name"><?= e($name) ?></span><span class="admin-donut-legend__value"><?= $v ?> (<?= round($v / $serviceTotal * 100) ?>%)</span></div>
+                    <?php $i++; endforeach; ?>
+                </div>
+            </div>
+        </div>
         <?php endif; ?>
-    </div>
 
-    <div class="admin-panel">
-        <h2 class="admin-panel__title">Today's Work Queue</h2>
-        <?php if ($totalEnquiriesForPipeline === 0): ?>
-        <p class="admin-empty-state">No enquiry data available yet.</p>
-        <?php else: ?>
-        <ul class="admin-work-queue">
-            <li class="admin-work-queue__item is-urgent"><span class="admin-work-queue__dot"></span><span class="admin-work-queue__label">Urgent Priority</span><span class="admin-work-queue__count"><?= $workQueue['urgent'] ?></span></li>
-            <li class="admin-work-queue__item is-pending"><span class="admin-work-queue__dot"></span><span class="admin-work-queue__label">Pending Customer Action</span><span class="admin-work-queue__count"><?= $workQueue['pending_customer'] ?></span></li>
-            <li class="admin-work-queue__item is-docs"><span class="admin-work-queue__dot"></span><span class="admin-work-queue__label">Documents Pending</span><span class="admin-work-queue__count"><?= $workQueue['documents_pending'] ?></span></li>
-            <li class="admin-work-queue__item is-internal"><span class="admin-work-queue__dot"></span><span class="admin-work-queue__label">Internal Processing</span><span class="admin-work-queue__count"><?= $workQueue['internal'] ?></span></li>
-            <li class="admin-work-queue__item is-resolved"><span class="admin-work-queue__dot"></span><span class="admin-work-queue__label">Resolved Today</span><span class="admin-work-queue__count"><?= $workQueue['resolved_today'] ?></span></li>
-        </ul>
+        <?php if (has_permission('enquiries.view')): ?>
+        <div class="admin-panel">
+            <div class="admin-panel__head"><h3 class="admin-panel__title">SLA Overview</h3><span class="admin-panel__meta"><?= $slaTotal ?> active with SLA</span></div>
+            <?php if ($slaTotal === 0): ?>
+            <p class="admin-empty-state--icon"><svg width="28" height="28" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 8 14.5 16 5.5"/></svg>No active cases currently carry an SLA clock.</p>
+            <?php else: ?>
+            <div class="admin-sla-ring-wrap">
+                <div class="admin-sla-ring" style="--ring-green:<?= round($slaBuckets['green']/$slaTotal*100) ?>%; --ring-yellow:<?= round(($slaBuckets['green']+$slaBuckets['yellow'])/$slaTotal*100) ?>%; --ring-orange:<?= round(($slaBuckets['green']+$slaBuckets['yellow']+$slaBuckets['orange'])/$slaTotal*100) ?>%;">
+                    <div class="admin-sla-ring__inner"><span class="admin-sla-ring__pct"><?= $slaOnTrackPct ?>%</span><span class="admin-sla-ring__label">On Track</span></div>
+                </div>
+                <div class="admin-sla-legend">
+                    <div class="admin-sla-legend__item"><span class="admin-sla-legend__dot is-green"></span>On Track<span class="admin-sla-legend__count"><?= $slaBuckets['green'] ?></span></div>
+                    <div class="admin-sla-legend__item"><span class="admin-sla-legend__dot is-yellow"></span>Due Soon (24h)<span class="admin-sla-legend__count"><?= $slaBuckets['yellow'] ?></span></div>
+                    <div class="admin-sla-legend__item"><span class="admin-sla-legend__dot is-orange"></span>At Risk (6h)<span class="admin-sla-legend__count"><?= $slaBuckets['orange'] ?></span></div>
+                    <div class="admin-sla-legend__item"><span class="admin-sla-legend__dot is-red"></span>Breached<span class="admin-sla-legend__count"><?= $slaBuckets['red'] ?></span></div>
+                </div>
+            </div>
+            <?php endif; ?>
+        </div>
         <?php endif; ?>
+
+        <?php if (has_permission('visa.view') && array_sum($funnelCounts) > 0): ?>
+        <div class="admin-panel" style="grid-column: 1 / -1;">
+            <div class="admin-panel__head"><h3 class="admin-panel__title">Visa Application Funnel</h3><span class="admin-panel__meta"><?= array_sum($funnelCounts) ?> total applications</span></div>
+            <div class="admin-funnel">
+                <?php foreach ($funnelStages as $key => $label): $count = $funnelCounts[$key] ?? 0; $pct = round($count / $funnelBase * 100); ?>
+                <a href="/admin/visa-applications/?status=<?= e($key) ?>" class="admin-funnel__stage">
+                    <span class="admin-funnel__stage-label"><?= e($label) ?></span>
+                    <span class="admin-funnel__stage-track"><span class="admin-funnel__stage-bar" style="width:<?= max($pct, $count > 0 ? 4 : 0) ?>%"></span></span>
+                    <span class="admin-funnel__stage-count"><strong><?= $count ?></strong> <span class="admin-funnel__stage-pct"><?= $pct ?>%</span></span>
+                </a>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php endif; ?>
+
+        <?php if ($teamPerformance): ?>
+        <div class="admin-panel" style="grid-column: 1 / -1;">
+            <div class="admin-panel__head"><h3 class="admin-panel__title">Team Performance <span style="font-weight:400;color:var(--text-muted);">(This Month)</span></h3></div>
+            <div class="admin-table-scroll">
+            <table class="admin-table admin-team-table">
+                <thead><tr><th>Employee</th><th>Assigned (Open)</th><th>Completed</th><th>Breaches</th></tr></thead>
+                <tbody>
+                <?php foreach ($teamPerformance as $t): $breaches = (int) $t['breaches']; ?>
+                <tr>
+                    <td><?= e($t['full_name']) ?></td>
+                    <td><?= (int) $t['assigned_open'] ?></td>
+                    <td><?= (int) $t['completed_month'] ?></td>
+                    <td><span class="badge <?= $breaches > 0 ? 'badge-danger' : 'badge-success' ?>"><?= $breaches ?></span></td>
+                </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+            </div>
+        </div>
+        <?php endif; ?>
+
+    </div>
+    </div>
+</div>
+<?php endif; ?>
+
+<div class="admin-layer admin-widget" data-layer="dig-tasks" data-widget-id="layer-dig">
+    <div class="admin-widget__handle"><button type="button" data-widget-drag-handle title="Drag to reorder"><svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="7" cy="5" r="1.3"/><circle cx="13" cy="5" r="1.3"/><circle cx="7" cy="10" r="1.3"/><circle cx="13" cy="10" r="1.3"/><circle cx="7" cy="15" r="1.3"/><circle cx="13" cy="15" r="1.3"/></svg></button><button type="button" data-widget-hide title="Hide widget"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 10s3-5.5 7-5.5S17 10 17 10s-3 5.5-7 5.5S3 10 3 10Z"/><circle cx="10" cy="10" r="2"/><line x1="3" y1="17" x2="17" y2="3"/></svg></button></div>
+    <div class="admin-layer__header">
+        <h2 class="admin-layer__title">What Needs Doing</h2>
+        <button type="button" class="admin-layer__toggle" data-layer-toggle>
+            <svg class="admin-layer__toggle-chevron" width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7l5 5 5-5"/></svg>
+            Collapse
+        </button>
+    </div>
+    <div class="admin-layer__body">
+    <div class="admin-panel-grid admin-panel-grid--dig">
+
+        <?php if (has_permission('enquiries.view')): ?>
+        <div class="admin-panel admin-panel--recent-enquiries">
+            <div class="admin-panel__head"><h3 class="admin-panel__title">Recent Enquiries</h3><a href="/admin/enquiries/" class="btn btn-sm btn-outline">View All</a></div>
+            <div class="admin-quick-filters">
+                <a href="/admin/enquiries/" class="is-active">All</a>
+                <a href="/admin/enquiries/?status=new_enquiry">New</a>
+                <a href="/admin/enquiries/?status=processing">In Progress</a>
+                <a href="/admin/enquiries/?status=additional_info_required">Waiting Customer</a>
+                <a href="/admin/enquiries/?sla=breached" data-tone="red">SLA Breached</a>
+            </div>
+            <?php if (!$recentEnquiries): ?>
+            <p class="admin-empty-state--icon"><svg width="28" height="28" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 8 14.5 16 5.5"/></svg>No new enquiries today.</p>
+            <?php else: ?>
+            <div class="admin-table-scroll">
+            <table class="admin-table">
+                <thead><tr><th>Reference</th><th>Customer</th><th>Service</th><th>Status</th><th>Priority</th><th>Assigned</th><th>Created</th></tr></thead>
+                <tbody>
+                <?php foreach ($recentEnquiries as $enq): ?>
+                <tr>
+                    <td><a href="/admin/enquiries/?id=<?= (int) $enq['id'] ?>"><?= e($enq['enquiry_number']) ?></a></td>
+                    <td><?= e($enq['name']) ?></td>
+                    <td><?= e(ucfirst($enq['service_category'])) ?><?= $enq['country_name'] ? ' — ' . e($enq['country_name']) : '' ?></td>
+                    <td><span class="badge badge-info"><?= e(enquiry_customer_status_label($enq['status'])) ?></span></td>
+                    <td><span class="badge <?= $enq['priority'] === 'urgent' ? 'badge-danger' : ($enq['priority'] === 'high' ? 'badge-warning' : 'badge-neutral') ?>"><?= e(ucfirst($enq['priority'])) ?></span></td>
+                    <td><?= $enq['assigned_name'] ? e($enq['assigned_name']) : '—' ?></td>
+                    <td><?= e(date('d M, H:i', strtotime($enq['created_at']))) ?></td>
+                </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+            </div>
+            <div class="admin-card-list">
+                <?php foreach ($recentEnquiries as $enq): ?>
+                <div class="admin-record-card">
+                    <p class="admin-record-card__title"><?= e($enq['name']) ?></p>
+                    <div class="admin-record-card__row"><span>Service</span><strong><?= e(ucfirst($enq['service_category'])) ?><?= $enq['country_name'] ? ' — ' . e($enq['country_name']) : '' ?></strong></div>
+                    <div class="admin-record-card__row"><span>Status</span><strong><?= e(enquiry_customer_status_label($enq['status'])) ?></strong></div>
+                    <div class="admin-record-card__row"><span>Assigned</span><strong><?= $enq['assigned_name'] ? e($enq['assigned_name']) : '—' ?></strong></div>
+                    <div class="admin-record-card__action"><a href="/admin/enquiries/?id=<?= (int) $enq['id'] ?>" class="btn btn-sm btn-outline">Open Case</a></div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <?php endif; ?>
+        </div>
+        <?php endif; ?>
+
+        <?php if (has_permission('reminders.manage')): ?>
+        <div class="admin-panel admin-panel--tasks">
+            <div class="admin-panel__head"><h3 class="admin-panel__title">Tasks</h3><a href="/admin/reminders/" class="btn btn-sm btn-outline">View All</a></div>
+            <div class="admin-tabstrip">
+                <a href="/admin/dashboard/?tasks=overdue" class="<?= $tasksTab === 'overdue' ? 'is-active' : '' ?>">Overdue <?php if ($reminderCounts['overdue']): ?><span class="badge badge-danger"><?= $reminderCounts['overdue'] ?></span><?php endif; ?></a>
+                <a href="/admin/dashboard/?tasks=today" class="<?= $tasksTab === 'today' ? 'is-active' : '' ?>">Due Today <?php if ($reminderCounts['today']): ?><span class="badge badge-warning"><?= $reminderCounts['today'] ?></span><?php endif; ?></a>
+                <a href="/admin/dashboard/?tasks=upcoming" class="<?= $tasksTab === 'upcoming' ? 'is-active' : '' ?>">Upcoming <?php if ($reminderCounts['upcoming']): ?><span class="badge badge-neutral"><?= $reminderCounts['upcoming'] ?></span><?php endif; ?></a>
+            </div>
+            <?php if (!$tasks): ?>
+            <p class="admin-empty-state--icon"><svg width="28" height="28" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 8 14.5 16 5.5"/></svg>You're all caught up.</p>
+            <?php else: ?>
+            <ul class="admin-task-list">
+                <?php foreach (array_slice($tasks, 0, 8) as $t): ?>
+                <li class="admin-task-row">
+                    <div class="admin-task-row__body">
+                        <p class="admin-task-row__title"><?= e($t['title']) ?></p>
+                        <p class="admin-task-row__meta"><?= $t['enquiry_customer_name'] ? e($t['enquiry_customer_name']) . ' &middot; ' : '' ?><?= e($t['assigned_name'] ?? 'Unassigned') ?></p>
+                    </div>
+                    <span class="admin-task-row__due<?= $tasksTab === 'overdue' ? ' is-overdue' : ($tasksTab === 'today' ? ' is-today' : '') ?>"><?= e(date('d M', strtotime($t['due_date']))) ?></span>
+                    <a href="<?= $t['enquiry_id'] ? '/admin/enquiries/?id=' . (int) $t['enquiry_id'] : '/admin/reminders/' ?>" class="btn btn-sm btn-outline">Open Task</a>
+                </li>
+                <?php endforeach; ?>
+            </ul>
+            <?php endif; ?>
+        </div>
+        <?php endif; ?>
+
+    </div>
     </div>
 </div>
 
-<?php if (has_permission('reminders.manage') && ($reminderCounts['overdue'] || $reminderCounts['today'] || $reminderCounts['upcoming'])): ?>
-<div class="admin-panel">
-    <h2 class="admin-panel__title">Reminders Due</h2>
-    <ul class="admin-work-queue">
-        <li class="admin-work-queue__item is-urgent"><span class="admin-work-queue__dot"></span><span class="admin-work-queue__label">Overdue</span><span class="admin-work-queue__count"><?= $reminderCounts['overdue'] ?></span></li>
-        <li class="admin-work-queue__item is-pending"><span class="admin-work-queue__dot"></span><span class="admin-work-queue__label">Due Today</span><span class="admin-work-queue__count"><?= $reminderCounts['today'] ?></span></li>
-        <li class="admin-work-queue__item is-internal"><span class="admin-work-queue__dot"></span><span class="admin-work-queue__label">Upcoming</span><span class="admin-work-queue__count"><?= $reminderCounts['upcoming'] ?></span></li>
-    </ul>
-    <p style="margin-top:var(--space-3)"><a href="/admin/reminders/">View all reminders &rarr;</a></p>
 </div>
-<?php endif; ?>
-
-<?php if (has_permission('enquiries.view') && $slaBreachedCount > 0): ?>
-<div class="admin-panel">
-    <h2 class="admin-panel__title">Enquiry SLA</h2>
-    <ul class="admin-work-queue">
-        <li class="admin-work-queue__item is-urgent"><span class="admin-work-queue__dot"></span><span class="admin-work-queue__label">SLA Breached</span><span class="admin-work-queue__count"><?= $slaBreachedCount ?></span></li>
-    </ul>
-    <p style="margin-top:var(--space-3)"><a href="/admin/enquiries/?sla=breached">View breached enquiries &rarr;</a></p>
-</div>
-<?php endif; ?>
-
-<div class="admin-panel">
-    <h2 class="admin-panel__title">Recent Enquiries</h2>
-    <?php if (!$recentEnquiries): ?>
-    <p class="admin-empty-state">No new enquiries today. You're all caught up.</p>
-    <?php else: ?>
-    <div class="admin-table-scroll">
-    <table class="admin-table">
-        <thead><tr><th>Reference</th><th>Customer</th><th>Service</th><th>Status</th><th>Priority</th><th>Assigned To</th><th>Created</th></tr></thead>
-        <tbody>
-        <?php foreach ($recentEnquiries as $enq): ?>
-        <tr>
-            <td><a href="/admin/enquiries/?id=<?= (int) $enq['id'] ?>"><?= e($enq['enquiry_number']) ?></a></td>
-            <td><?= e($enq['name']) ?></td>
-            <td><?= e(ucfirst($enq['service_category'])) ?><?= $enq['country_name'] ? ' — ' . e($enq['country_name']) : '' ?></td>
-            <td><span class="badge badge-info"><?= e(enquiry_customer_status_label($enq['status'])) ?></span></td>
-            <td><span class="badge <?= $enq['priority'] === 'urgent' ? 'badge-danger' : ($enq['priority'] === 'high' ? 'badge-warning' : 'badge-neutral') ?>"><?= e(ucfirst($enq['priority'])) ?></span></td>
-            <td><?= $enq['assigned_name'] ? e($enq['assigned_name']) : '—' ?></td>
-            <td><?= e(date('d M, H:i', strtotime($enq['created_at']))) ?></td>
-        </tr>
-        <?php endforeach; ?>
-        </tbody>
-    </table>
-    </div>
-    <?php endif; ?>
-</div>
-<?php endif; ?>
 
 <?php if (has_permission('audit.view')): ?>
 <div class="admin-panel">
@@ -252,106 +611,5 @@ admin_header_start('Dashboard', 'dashboard');
 </div>
 <?php endif; ?>
 
-<h2 class="country-directory__subheading">Modules</h2>
-<div class="admin-module-grid">
-    <?php if (has_permission('enquiries.view') || has_permission('general_enquiries.view') || has_permission('forex.requests.view') || has_permission('partners.view')): ?>
-    <a href="/admin/sales-crm/" class="admin-module-tile">
-        <?php if ($leadsToday > 0): ?><span class="admin-module-tile__badge"><?= $leadsToday ?></span><?php endif; ?>
-        <span class="admin-module-tile__icon"><?= admin_module_icon('sales-crm') ?></span>
-        <span class="admin-module-tile__title">Sales CRM</span>
-        <span class="admin-module-tile__desc">Every lead in one place — Visa, Apostille, General/Attestation, Forex, and B2B Partner enquiries.</span>
-    </a>
-    <?php endif; ?>
-
-    <?php if (has_permission('customers.view')): ?>
-    <a href="/admin/customers/" class="admin-module-tile">
-        <span class="admin-module-tile__icon"><?= admin_module_icon('customers') ?></span>
-        <span class="admin-module-tile__title">Customers</span>
-        <span class="admin-module-tile__desc">Converted customer records, registrations, and their full case history.</span>
-    </a>
-    <?php endif; ?>
-
-    <?php if (has_permission('visa.view')): ?>
-    <a href="/admin/visa-applications/" class="admin-module-tile">
-        <span class="admin-module-tile__icon"><?= admin_module_icon('visa-operations') ?></span>
-        <span class="admin-module-tile__title">Visa Operations</span>
-        <span class="admin-module-tile__desc">Applications in progress — documents, appointments, submission, and decisions.</span>
-    </a>
-    <?php endif; ?>
-
-    <?php if (has_permission('partners.view')): ?>
-    <a href="/admin/partners/" class="admin-module-tile">
-        <?php if ($pendingPartnerEnquiries > 0): ?><span class="admin-module-tile__badge"><?= $pendingPartnerEnquiries ?></span><?php endif; ?>
-        <span class="admin-module-tile__icon"><?= admin_module_icon('partners') ?></span>
-        <span class="admin-module-tile__title">Referral Partners</span>
-        <span class="admin-module-tile__desc">Commission-tier referral program: onboarding, tiers, commissions, invoices, and document expiry.</span>
-    </a>
-    <?php endif; ?>
-
-    <?php if (has_permission('b2b_travel_partners.view')): ?>
-    <a href="/admin/b2b-partners/" class="admin-module-tile">
-        <?php if ($pendingB2bPartners > 0): ?><span class="admin-module-tile__badge"><?= $pendingB2bPartners ?></span><?php endif; ?>
-        <span class="admin-module-tile__icon"><?= admin_module_icon('b2b-portal') ?></span>
-        <span class="admin-module-tile__title">B2B Travel Partner Portal</span>
-        <span class="admin-module-tile__desc">The standalone travel partner portal: applications, KYC verification, and account status.</span>
-    </a>
-    <?php endif; ?>
-
-    <?php if (has_permission('forex.requests.view')): ?>
-    <a href="/admin/forex-dashboard/" class="admin-module-tile">
-        <span class="admin-module-tile__icon"><?= admin_module_icon('forex') ?></span>
-        <span class="admin-module-tile__title">Forex</span>
-        <span class="admin-module-tile__desc">Requests, document verification, quotations, compliance, and delivery.</span>
-    </a>
-    <?php endif; ?>
-
-    <?php if (has_permission('partners.manage') || has_permission('forex.requests.view')): ?>
-    <a href="/admin/finance/" class="admin-module-tile">
-        <span class="admin-module-tile__icon"><?= admin_module_icon('finance') ?></span>
-        <span class="admin-module-tile__title">Finance</span>
-        <span class="admin-module-tile__desc">Partner invoices, collections, and forex payment stages.</span>
-    </a>
-    <?php endif; ?>
-
-    <?php if (is_admin_logged_in()): ?>
-    <a href="/hrms/dashboard/" class="admin-module-tile">
-        <span class="admin-module-tile__icon"><?= admin_module_icon('hrms') ?></span>
-        <span class="admin-module-tile__title">HRMS</span>
-        <span class="admin-module-tile__desc">Recruitment, candidates, vacancies, and the hiring pipeline.</span>
-    </a>
-    <?php endif; ?>
-
-    <?php if (has_permission('grievances.view')): ?>
-    <a href="/admin/grievances/" class="admin-module-tile">
-        <span class="admin-module-tile__icon"><?= admin_module_icon('grievances') ?></span>
-        <span class="admin-module-tile__title">Grievances</span>
-        <span class="admin-module-tile__desc">Customer complaints, SLA tracking, and escalations.</span>
-    </a>
-    <?php endif; ?>
-
-    <?php if (has_permission('content.manage')): ?>
-    <a href="/admin/countries/" class="admin-module-tile">
-        <span class="admin-module-tile__icon"><?= admin_module_icon('content') ?></span>
-        <span class="admin-module-tile__title">Content / CMS</span>
-        <span class="admin-module-tile__desc">Countries, visa types, requirements, embassies, FAQs, and locations.</span>
-    </a>
-    <?php endif; ?>
-
-    <?php if (has_permission('users.manage') || has_permission('settings.manage') || has_permission('audit.view')): ?>
-    <a href="/admin/users/" class="admin-module-tile">
-        <span class="admin-module-tile__icon"><?= admin_module_icon('system') ?></span>
-        <span class="admin-module-tile__title">System</span>
-        <span class="admin-module-tile__desc">Users, roles &amp; permissions, audit log, site settings, and mail log.</span>
-    </a>
-    <?php endif; ?>
-
-    <?php if (has_permission('recycle_bin.manage')): ?>
-    <a href="/admin/recycle-bin/" class="admin-module-tile">
-        <span class="admin-module-tile__icon"><?= admin_module_icon('recycle-bin') ?></span>
-        <span class="admin-module-tile__title">Recycle Bin</span>
-        <span class="admin-module-tile__desc">Restore soft-deleted records — Super Admin only, OTP-gated.</span>
-    </a>
-    <?php endif; ?>
-</div>
 <?php
 admin_header_end();

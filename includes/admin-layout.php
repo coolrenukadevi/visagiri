@@ -4,12 +4,75 @@ declare(strict_types=1);
 /**
  * Shared admin panel chrome (sidebar + header). Every admin page
  * (except login) calls require_admin_login() then admin_header_start(),
- * renders its own content, then admin_header_end(). The sidebar only
- * ever shows "Dashboard" — that page is the single command center
- * (a tile per business module); everything a module needs beyond its
- * own tile is reached via admin_subnav() calls inside that module's
- * own pages, not a global sidebar tree.
+ * renders its own content, then admin_header_end().
+ *
+ * Sidebar architecture is the Visagiri CMS Blueprint's fixed Module →
+ * Submenu grouping (see ADMIN_NAV_GROUPS below) — every group and item
+ * name here must match that blueprint exactly; do not invent or rename
+ * groups here. "Child Menu / Function" items from the blueprint (e.g.
+ * Sales CRM's "Visa Enquiries" / "Apostille Enquiries" / "Unassigned
+ * Queue") live as in-page tab-strips via admin_subnav(), not as a
+ * third sidebar level — keeps the sidebar scannable at a glance.
  */
+
+/**
+ * Module → Submenu, matching the CMS blueprint's sidebar architecture
+ * 1:1. Each item's `nav` key matches admin_header_start()'s $activeNav
+ * so the correct row highlights; `permission` gates visibility exactly
+ * like every other permission check in this app (server-side, not
+ * just a hidden link) — null means "always visible once logged in".
+ * `builtHref` false renders the item as a disabled "Coming soon" row
+ * instead of a link — used only for blueprint items with no page
+ * built yet (Reports & Analytics, Automation), never to fake a
+ * finished feature.
+ */
+const ADMIN_NAV_GROUPS = [
+    'Sales & Customers' => [
+        ['nav' => 'sales-crm', 'label' => 'Sales CRM', 'href' => '/admin/sales-crm/', 'permission' => null],
+        ['nav' => 'customers', 'label' => 'Customers', 'href' => '/admin/customers/', 'permission' => 'customers.view'],
+    ],
+    'Operations' => [
+        ['nav' => 'visa-applications', 'label' => 'Visa Operations', 'href' => '/admin/visa-applications/', 'permission' => 'visa.view'],
+        ['nav' => 'apostille', 'label' => 'Apostille &amp; Attestation', 'href' => '/admin/enquiries/?category=apostille', 'permission' => 'enquiries.view'],
+        ['nav' => 'forex-dashboard', 'label' => 'Forex', 'href' => '/admin/forex-dashboard/', 'permission' => 'forex.requests.view'],
+    ],
+    'Finance' => [
+        ['nav' => 'finance', 'label' => 'Finance', 'href' => '/admin/finance/', 'permission' => null, 'permissionAny' => ['partners.manage', 'forex.requests.view']],
+    ],
+    'People' => [
+        ['nav' => 'hrms', 'label' => 'HRMS', 'href' => '/hrms/dashboard/', 'permission' => null],
+    ],
+    'Customer Support' => [
+        ['nav' => 'grievances', 'label' => 'Grievances', 'href' => '/admin/grievances/', 'permission' => 'grievances.view'],
+        ['nav' => 'mail-log', 'label' => 'Communications', 'href' => '/admin/mail-log/', 'permission' => 'settings.manage'],
+    ],
+    'Content' => [
+        ['nav' => 'countries', 'label' => 'Content / CMS', 'href' => '/admin/countries/', 'permission' => 'content.manage'],
+    ],
+    'Insights' => [
+        ['nav' => 'reports', 'label' => 'Reports &amp; Analytics', 'href' => null, 'permission' => null, 'builtHref' => false],
+        ['nav' => 'automation', 'label' => 'Automation', 'href' => null, 'permission' => null, 'builtHref' => false],
+    ],
+    'System' => [
+        ['nav' => 'users', 'label' => 'System Settings', 'href' => '/admin/users/', 'permission' => null, 'permissionAny' => ['users.manage', 'settings.manage']],
+        ['nav' => 'audit-log', 'label' => 'Audit Log', 'href' => '/admin/audit-log/', 'permission' => 'audit.view'],
+        ['nav' => 'recycle-bin', 'label' => 'Recycle Bin', 'href' => '/admin/recycle-bin/', 'permission' => 'recycle_bin.manage'],
+    ],
+];
+
+/** True if this nav item should render for the current admin — mirrors has_permission()/is_admin_logged_in() exactly, never a client-side-only hide. */
+function admin_nav_item_visible(array $item): bool
+{
+    if (isset($item['permissionAny'])) {
+        foreach ($item['permissionAny'] as $perm) {
+            if (has_permission($perm)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    return $item['permission'] === null || has_permission($item['permission']);
+}
 
 function admin_header_start(string $pageTitle, string $activeNav): void
 {
@@ -26,14 +89,49 @@ function admin_header_start(string $pageTitle, string $activeNav): void
 <link rel="stylesheet" href="<?= e(asset_url('/assets/css/base.css')) ?>">
 <link rel="stylesheet" href="<?= e(asset_url('/assets/css/components.css')) ?>">
 <link rel="stylesheet" href="<?= e(asset_url('/assets/css/admin.css')) ?>">
+<link rel="stylesheet" href="<?= e(asset_url('/assets/css/admin-dashboard.css')) ?>">
 </head>
 <body class="admin-body">
 <div class="admin-shell">
-    <aside class="admin-sidebar">
+    <button type="button" class="btn btn-sm btn-outline admin-mobile-nav-toggle" id="admin-mobile-nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="admin-sidebar" style="position:fixed;top:var(--space-3);left:var(--space-3);z-index:60;">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h14"/></svg>
+    </button>
+    <aside class="admin-sidebar" id="admin-sidebar">
         <div class="admin-sidebar__brand">VISA<span>GIRI</span> <small>Admin</small></div>
         <nav class="admin-sidebar__nav">
-            <a href="/admin/dashboard/" class="<?= $activeNav === 'dashboard' ? 'is-active' : '' ?>">Dashboard</a>
+            <a href="/admin/dashboard/" class="<?= $activeNav === 'dashboard' ? 'is-active' : '' ?>">
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="6" height="6" rx="1"/><rect x="11" y="3" width="6" height="6" rx="1"/><rect x="3" y="11" width="6" height="6" rx="1"/><rect x="11" y="11" width="6" height="6" rx="1"/></svg>
+                Dashboard
+            </a>
+            <?php foreach (ADMIN_NAV_GROUPS as $groupLabel => $items):
+                $visibleItems = array_filter($items, 'admin_nav_item_visible');
+                if (!$visibleItems) {
+                    continue;
+                }
+                $groupKey = 'navgroup-' . strtolower(str_replace([' ', '&', '/'], ['-', 'and', ''], $groupLabel));
+                $groupHasActive = (bool) array_filter($visibleItems, static fn(array $i): bool => $i['nav'] === $activeNav);
+            ?>
+            <div class="admin-nav-group" data-group-key="<?= e($groupKey) ?>">
+                <button type="button" class="admin-nav-group__toggle" data-nav-group-toggle="<?= e($groupKey) ?>" aria-expanded="true">
+                    <span><?= e($groupLabel) ?></span>
+                    <svg class="admin-nav-group__chevron" width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7l5 5 5-5"/></svg>
+                </button>
+                <div class="admin-nav-group__items">
+                    <?php foreach ($visibleItems as $item): ?>
+                        <?php if (($item['builtHref'] ?? true) === false): ?>
+                        <span class="is-disabled" title="Coming soon" style="opacity:.45;cursor:default;padding:var(--space-2) var(--space-5) var(--space-2) calc(var(--space-5) + var(--space-3));color:rgba(255,255,255,0.6);font-size:var(--font-size-sm);display:flex;align-items:center;justify-content:space-between;">
+                            <?= $item['label'] ?>
+                            <span class="admin-nav-group__badge" style="background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.7);">Soon</span>
+                        </span>
+                        <?php else: ?>
+                        <a href="<?= e($item['href']) ?>" class="<?= $item['nav'] === $activeNav ? 'is-active' : '' ?>"><?= $item['label'] ?></a>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php endforeach; ?>
         </nav>
+        <button type="button" class="admin-sidebar__collapse-all" id="admin-sidebar-collapse-all">Collapse all groups</button>
         <div class="admin-sidebar__footer">
             <a href="/" target="_blank" rel="noopener">View site &rarr;</a>
         </div>
@@ -41,12 +139,11 @@ function admin_header_start(string $pageTitle, string $activeNav): void
     <div class="admin-main">
         <header class="admin-topbar">
             <h1><?= e($pageTitle) ?></h1>
-            <form method="get" action="/admin/search/" class="admin-topbar__search" role="search">
-                <button type="submit" aria-label="Search">
-                    <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="M17 17L13.5 13.5"/></svg>
-                </button>
-                <input type="search" name="q" placeholder="Search enquiries, customers, partners…" aria-label="Global search">
-            </form>
+            <button type="button" class="admin-topbar__search" id="admin-cmdk-trigger" style="cursor:pointer;">
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="M17 17L13.5 13.5"/></svg>
+                <span style="color:var(--text-muted);">Search enquiries, customers, passports, documents&hellip;</span>
+                <span class="admin-cmdk__hint" style="margin-left:auto;">Ctrl K</span>
+            </button>
             <div class="admin-topbar__right">
                 <?php $unreadNotifCount = admin_unread_notification_count((int) $admin['id']); ?>
                 <div class="admin-bell">
@@ -119,6 +216,20 @@ function admin_header_end(): void
         </main>
     </div>
 </div>
+
+<div class="admin-cmdk-backdrop" id="admin-cmdk-backdrop">
+    <div class="admin-cmdk" role="dialog" aria-modal="true" aria-label="Global search">
+        <form method="get" action="/admin/search/" class="admin-cmdk__input-row">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="M17 17L13.5 13.5"/></svg>
+            <input type="search" name="q" id="admin-cmdk-input" placeholder="Search customer, mobile, email, passport, enquiry ID, application ID, employee&hellip;" aria-label="Global search" autocomplete="off">
+            <span class="admin-cmdk__hint">Esc</span>
+        </form>
+        <div class="admin-cmdk__results">
+            <p class="admin-cmdk__empty">Type to search, then press Enter — results respect your permissions, same as every list page.</p>
+        </div>
+    </div>
+</div>
+
 <script src="<?= e(asset_url('/assets/js/admin.js')) ?>"></script>
 </body>
 </html>

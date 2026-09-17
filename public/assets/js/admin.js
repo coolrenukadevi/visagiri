@@ -83,3 +83,304 @@ document.addEventListener('submit', function (event) {
         event.preventDefault();
     }
 });
+
+/**
+ * Sidebar nav-group collapse/expand, persisted per-browser in
+ * localStorage so a manager's preferred layout survives page loads —
+ * matches the CMS blueprint's "remembered expansion state" rule.
+ * Falls back to "all expanded" (the server-rendered default) if
+ * localStorage is unavailable (private browsing, blocked storage).
+ */
+(function () {
+    var STORAGE_KEY = 'visagiri_admin_nav_collapsed';
+
+    function readCollapsedSet() {
+        try {
+            var raw = window.localStorage.getItem(STORAGE_KEY);
+            return raw ? JSON.parse(raw) : {};
+        } catch (e) {
+            return {};
+        }
+    }
+
+    function writeCollapsedSet(set) {
+        try {
+            window.localStorage.setItem(STORAGE_KEY, JSON.stringify(set));
+        } catch (e) { /* storage unavailable — collapse state just won't persist */ }
+    }
+
+    function applyCollapsed(groupEl, collapsed) {
+        groupEl.classList.toggle('is-collapsed', collapsed);
+        var toggle = groupEl.querySelector('[data-nav-group-toggle]');
+        if (toggle) toggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var collapsedSet = readCollapsedSet();
+        document.querySelectorAll('.admin-nav-group').forEach(function (groupEl) {
+            var key = groupEl.dataset.groupKey;
+            if (key && collapsedSet[key]) applyCollapsed(groupEl, true);
+        });
+    });
+
+    document.addEventListener('click', function (event) {
+        var toggle = event.target.closest('[data-nav-group-toggle]');
+        if (!toggle) return;
+        var groupEl = toggle.closest('.admin-nav-group');
+        if (!groupEl) return;
+        var key = groupEl.dataset.groupKey;
+        var nowCollapsed = !groupEl.classList.contains('is-collapsed');
+        applyCollapsed(groupEl, nowCollapsed);
+        var set = readCollapsedSet();
+        if (nowCollapsed) { set[key] = true; } else { delete set[key]; }
+        writeCollapsedSet(set);
+    });
+
+    document.addEventListener('click', function (event) {
+        if (event.target.id !== 'admin-sidebar-collapse-all') return;
+        var allCollapsed = true;
+        var set = {};
+        document.querySelectorAll('.admin-nav-group').forEach(function (groupEl) {
+            applyCollapsed(groupEl, allCollapsed);
+            if (groupEl.dataset.groupKey) set[groupEl.dataset.groupKey] = true;
+        });
+        writeCollapsedSet(set);
+        event.target.textContent = 'Expand all groups';
+        event.target.id = 'admin-sidebar-expand-all';
+    });
+    document.addEventListener('click', function (event) {
+        if (event.target.id !== 'admin-sidebar-expand-all') return;
+        document.querySelectorAll('.admin-nav-group').forEach(function (groupEl) { applyCollapsed(groupEl, false); });
+        writeCollapsedSet({});
+        event.target.textContent = 'Collapse all groups';
+        event.target.id = 'admin-sidebar-collapse-all';
+    });
+})();
+
+/** Dashboard Scan/Dig layer collapse — in-page only, not persisted (Focus Mode is the persisted "hide everything" control; this is just a manual per-visit fold). */
+document.addEventListener('click', function (event) {
+    var toggle = event.target.closest('[data-layer-toggle]');
+    if (!toggle) return;
+    var layer = toggle.closest('.admin-layer');
+    if (!layer) return;
+    var collapsed = layer.classList.toggle('is-collapsed');
+    toggle.lastChild.textContent = collapsed ? ' Expand' : ' Collapse';
+});
+
+/** Mobile hamburger — toggles the sidebar drawer via a body class (see admin-dashboard.css). */
+document.addEventListener('DOMContentLoaded', function () {
+    var toggle = document.getElementById('admin-mobile-nav-toggle');
+    if (!toggle) return;
+    toggle.addEventListener('click', function () {
+        var isOpen = document.body.classList.toggle('admin-mobile-nav-open');
+        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+    document.addEventListener('click', function (event) {
+        if (!document.body.classList.contains('admin-mobile-nav-open')) return;
+        var sidebar = document.getElementById('admin-sidebar');
+        if (sidebar && !sidebar.contains(event.target) && event.target !== toggle && !toggle.contains(event.target)) {
+            document.body.classList.remove('admin-mobile-nav-open');
+            toggle.setAttribute('aria-expanded', 'false');
+        }
+    });
+});
+
+/**
+ * Global search command palette (Ctrl/Cmd+K) — opens a modal that
+ * submits to the same real /admin/search/ page every visible "Search"
+ * box already posts to (permission-scoped server-side there), so this
+ * is a faster way to reach that one real search, not a second search
+ * implementation.
+ */
+document.addEventListener('DOMContentLoaded', function () {
+    var backdrop = document.getElementById('admin-cmdk-backdrop');
+    var input = document.getElementById('admin-cmdk-input');
+    var trigger = document.getElementById('admin-cmdk-trigger');
+    if (!backdrop || !input) return;
+
+    function openCmdk() {
+        backdrop.classList.add('is-open');
+        input.value = '';
+        input.focus();
+    }
+    function closeCmdk() {
+        backdrop.classList.remove('is-open');
+    }
+
+    if (trigger) trigger.addEventListener('click', openCmdk);
+
+    document.addEventListener('keydown', function (event) {
+        var isCmdK = (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k';
+        if (isCmdK) {
+            event.preventDefault();
+            backdrop.classList.contains('is-open') ? closeCmdk() : openCmdk();
+        } else if (event.key === 'Escape' && backdrop.classList.contains('is-open')) {
+            closeCmdk();
+        }
+    });
+
+    backdrop.addEventListener('click', function (event) {
+        if (event.target === backdrop) closeCmdk();
+    });
+});
+
+/**
+ * Focus Mode — hides KPIs/charts/analytics/team-performance, keeping
+ * only the SLA banner, Top Priorities, Tasks and Unassigned Cases (see
+ * body.focus-mode rules in admin-dashboard.css). Session-only
+ * (sessionStorage), matches "dismiss for the session" language used
+ * for the SLA banner rather than a permanent per-user setting.
+ */
+document.addEventListener('DOMContentLoaded', function () {
+    var btn = document.getElementById('admin-focus-toggle');
+    if (!btn) return;
+    var active = false;
+    try { active = window.sessionStorage.getItem('visagiri_focus_mode') === '1'; } catch (e) {}
+    if (active) {
+        document.body.classList.add('focus-mode');
+        btn.classList.add('is-active');
+        btn.textContent = 'Exit Focus Mode';
+    }
+    btn.addEventListener('click', function () {
+        var isActive = document.body.classList.toggle('focus-mode');
+        btn.classList.toggle('is-active', isActive);
+        btn.textContent = isActive ? 'Exit Focus Mode' : 'Focus Mode';
+        try { window.sessionStorage.setItem('visagiri_focus_mode', isActive ? '1' : '0'); } catch (e) {}
+    });
+});
+
+/**
+ * SLA banner session dismissal — hides the banner for this tab/session
+ * only; never marks the underlying breaches resolved (that still
+ * requires actually clearing the SLA on each case).
+ */
+document.addEventListener('DOMContentLoaded', function () {
+    var banner = document.getElementById('admin-sla-banner');
+    var dismissBtn = document.getElementById('admin-sla-banner-dismiss');
+    if (!banner || !dismissBtn) return;
+    try {
+        if (window.sessionStorage.getItem('visagiri_sla_banner_dismissed') === banner.dataset.signature) {
+            banner.hidden = true;
+        }
+    } catch (e) {}
+    dismissBtn.addEventListener('click', function () {
+        banner.hidden = true;
+        try { window.sessionStorage.setItem('visagiri_sla_banner_dismissed', banner.dataset.signature || '1'); } catch (e) {}
+    });
+});
+
+/**
+ * Customize Dashboard — real show/hide + reorder, persisted per
+ * browser via localStorage (data-widget-id marks each movable panel).
+ * Reorder uses native HTML5 drag-and-drop (no library, matches this
+ * project's zero-dependency stance). "Restore defaults" clears the
+ * saved layout so the server-rendered order/visibility shows again.
+ */
+(function () {
+    var STORAGE_KEY = 'visagiri_dashboard_layout';
+
+    function readLayout() {
+        try {
+            var raw = window.localStorage.getItem(STORAGE_KEY);
+            return raw ? JSON.parse(raw) : null;
+        } catch (e) { return null; }
+    }
+    function writeLayout(layout) {
+        try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(layout)); } catch (e) {}
+    }
+
+    function applyLayout() {
+        var layout = readLayout();
+        if (!layout) return;
+        var container = document.getElementById('admin-dashboard-widgets');
+        if (!container) return;
+        var widgets = {};
+        container.querySelectorAll('[data-widget-id]').forEach(function (w) { widgets[w.dataset.widgetId] = w; });
+        (layout.order || []).forEach(function (id) {
+            if (widgets[id]) container.appendChild(widgets[id]);
+        });
+        (layout.hidden || []).forEach(function (id) {
+            if (widgets[id]) widgets[id].setAttribute('data-hidden', 'true');
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', applyLayout);
+
+    document.addEventListener('click', function (event) {
+        if (event.target.id !== 'admin-customize-toggle') return;
+        document.body.classList.toggle('customize-mode');
+        var isOn = document.body.classList.contains('customize-mode');
+        event.target.textContent = isOn ? 'Done Customizing' : 'Customize';
+        event.target.classList.toggle('btn-primary', isOn);
+    });
+
+    document.addEventListener('click', function (event) {
+        var hideBtn = event.target.closest('[data-widget-hide]');
+        if (hideBtn) {
+            var widget = hideBtn.closest('[data-widget-id]');
+            if (!widget) return;
+            widget.setAttribute('data-hidden', 'true');
+            var layout = readLayout() || { order: [], hidden: [] };
+            layout.hidden = layout.hidden || [];
+            if (layout.hidden.indexOf(widget.dataset.widgetId) === -1) layout.hidden.push(widget.dataset.widgetId);
+            writeLayout(layout);
+            return;
+        }
+        var showBtn = event.target.closest('[data-widget-show]');
+        if (showBtn) {
+            var widget2 = showBtn.closest('[data-widget-id]');
+            if (!widget2) return;
+            widget2.removeAttribute('data-hidden');
+            var layout2 = readLayout() || { order: [], hidden: [] };
+            layout2.hidden = (layout2.hidden || []).filter(function (id) { return id !== widget2.dataset.widgetId; });
+            writeLayout(layout2);
+            return;
+        }
+        if (event.target.id === 'admin-customize-restore') {
+            try { window.localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+            window.location.reload();
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var container = document.getElementById('admin-dashboard-widgets');
+        if (!container) return;
+        var dragged = null;
+        container.querySelectorAll('[data-widget-id]').forEach(function (widget) {
+            widget.setAttribute('draggable', 'false');
+        });
+        container.addEventListener('dragstart', function (event) {
+            var widget = event.target.closest('[data-widget-id]');
+            if (!widget || !document.body.classList.contains('customize-mode')) return;
+            dragged = widget;
+            event.dataTransfer.effectAllowed = 'move';
+        });
+        container.addEventListener('dragover', function (event) {
+            if (!dragged || !document.body.classList.contains('customize-mode')) return;
+            event.preventDefault();
+            var target = event.target.closest('[data-widget-id]');
+            if (!target || target === dragged) return;
+            var rect = target.getBoundingClientRect();
+            var after = (event.clientY - rect.top) / rect.height > 0.5;
+            container.insertBefore(dragged, after ? target.nextSibling : target);
+        });
+        container.addEventListener('dragend', function () {
+            if (!dragged) return;
+            dragged = null;
+            var order = Array.prototype.map.call(container.querySelectorAll('[data-widget-id]'), function (w) { return w.dataset.widgetId; });
+            var layout = readLayout() || {};
+            layout.order = order;
+            writeLayout(layout);
+        });
+        // Enable drag only on the handle to avoid hijacking clicks/links inside widgets.
+        container.addEventListener('mousedown', function (event) {
+            var handle = event.target.closest('[data-widget-drag-handle]');
+            if (!handle) return;
+            var widget = handle.closest('[data-widget-id]');
+            if (widget) widget.setAttribute('draggable', 'true');
+        });
+        container.addEventListener('mouseup', function () {
+            container.querySelectorAll('[data-widget-id]').forEach(function (w) { w.setAttribute('draggable', 'false'); });
+        });
+    });
+})();
