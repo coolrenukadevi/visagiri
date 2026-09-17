@@ -289,21 +289,25 @@ $stmt->execute($params);
 $customers = $stmt->fetchAll();
 
 admin_header_start('Customers', 'customers');
+$activeFilterCount = ($statusFilter ? 1 : 0) + ($search !== '' ? 1 : 0);
 ?>
 <div class="admin-toolbar">
     <form method="get" action="/admin/customers/" style="display:flex;gap:var(--space-2);flex-wrap:wrap">
         <input class="form-input" type="search" name="q" value="<?= e($search) ?>" placeholder="Search name, email, mobile, reference, passport…">
-        <select class="form-select" name="status">
-            <option value="">All statuses</option>
-            <option value="active"<?= $statusFilter === 'active' ? ' selected' : '' ?>>Active</option>
-            <option value="inactive"<?= $statusFilter === 'inactive' ? ' selected' : '' ?>>Inactive</option>
-        </select>
+        <?php if ($statusFilter): ?><input type="hidden" name="status" value="<?= e($statusFilter) ?>"><?php endif; ?>
         <button type="submit" class="btn btn-outline">Search</button>
     </form>
     <?php if (has_permission('customers.manage')): ?>
     <a href="/admin/customers/?action=create" class="btn btn-primary">+ Add Customer</a>
     <?php endif; ?>
 </div>
+<div class="admin-quick-filters">
+    <a href="/admin/customers/<?= $search !== '' ? '?q=' . urlencode($search) : '' ?>" class="<?= !$statusFilter ? 'is-active' : '' ?>">All Statuses</a>
+    <a href="/admin/customers/?status=active<?= $search !== '' ? '&q=' . urlencode($search) : '' ?>" class="<?= $statusFilter === 'active' ? 'is-active' : '' ?>">Active</a>
+    <a href="/admin/customers/?status=inactive<?= $search !== '' ? '&q=' . urlencode($search) : '' ?>" class="<?= $statusFilter === 'inactive' ? 'is-active' : '' ?>">Inactive</a>
+</div>
+<?php if ($customers): ?>
+<div class="admin-table-scroll" style="margin-top:var(--space-4)">
 <table class="admin-table">
     <thead><tr><th>Reference</th><th>Name</th><th>Contact</th><th>Assigned</th><th>Status</th><th></th></tr></thead>
     <tbody>
@@ -322,15 +326,32 @@ admin_header_start('Customers', 'customers');
             </td>
         </tr>
     <?php endforeach; ?>
-    <?php if (!$customers): ?>
-        <tr><td colspan="6"><p class="empty-state">No customers yet.</p></td></tr>
-    <?php endif; ?>
     </tbody>
 </table>
+</div>
+<div class="admin-card-list" style="margin-top:var(--space-4)">
+    <?php foreach ($customers as $c): ?>
+    <div class="admin-record-card">
+        <p class="admin-record-card__title"><?= e(trim($c['first_name'] . ' ' . ($c['last_name'] ?? ''))) ?> <span style="font-weight:400;color:var(--text-muted)">&middot; <?= e($c['customer_reference_no']) ?></span></p>
+        <div class="admin-record-card__row"><span>Contact</span><strong><?= e($c['email'] ?? $c['mobile'] ?? '—') ?></strong></div>
+        <div class="admin-record-card__row"><span>Assigned</span><strong><?= e($c['assigned_name'] ?? '—') ?></strong></div>
+        <div class="admin-record-card__row"><span>Status</span><strong><span class="badge <?= $c['status'] === 'active' ? 'badge-success' : 'badge-neutral' ?>"><?= e(ucfirst($c['status'])) ?></span></strong></div>
+        <div class="admin-record-card__action">
+            <a href="/admin/customers/?action=view&id=<?= (int) $c['id'] ?>" class="btn btn-sm btn-outline">View</a>
+            <?php if (has_permission('customers.manage')): ?>
+            <a href="/admin/customers/?action=edit&id=<?= (int) $c['id'] ?>" class="btn btn-sm btn-outline">Edit</a>
+            <?php endif; ?>
+        </div>
+    </div>
+    <?php endforeach; ?>
+</div>
+<?php else: ?>
+<p class="admin-empty-state--icon" style="margin-top:var(--space-4)"><svg width="28" height="28" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 8 14.5 16 5.5"/></svg><?= $activeFilterCount > 0 ? 'No customers match this search.' : 'No customers yet.' ?></p>
+<?php endif; ?>
 <?php if ($totalPages > 1): ?>
 <div class="button-group" style="margin-top:var(--space-5)">
     <?php for ($p = 1; $p <= $totalPages; $p++): ?>
-    <a href="/admin/customers/?page=<?= $p ?><?= $search !== '' ? '&q=' . urlencode($search) : '' ?>" class="btn btn-sm <?= $p === $page ? 'btn-primary' : 'btn-outline' ?>"><?= $p ?></a>
+    <a href="/admin/customers/?page=<?= $p ?><?= $search !== '' ? '&q=' . urlencode($search) : '' ?><?= $statusFilter ? '&status=' . urlencode($statusFilter) : '' ?>" class="btn btn-sm <?= $p === $page ? 'btn-primary' : 'btn-outline' ?>"><?= $p ?></a>
     <?php endfor; ?>
 </div>
 <?php endif; ?>

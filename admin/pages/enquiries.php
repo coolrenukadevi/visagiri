@@ -378,6 +378,7 @@ if ($id) {
 $statusFilter = array_key_exists($_GET['status'] ?? '', $statuses) ? $_GET['status'] : null;
 $categoryFilter = in_array($_GET['category'] ?? '', ['visa', 'apostille'], true) ? $_GET['category'] : null;
 $slaFilter = ($_GET['sla'] ?? '') === 'breached';
+$unassignedFilter = ($_GET['assigned'] ?? '') === 'none';
 $search = trim((string) ($_GET['q'] ?? ''));
 
 $where = ['e.deleted_at IS NULL'];
@@ -392,6 +393,9 @@ if ($categoryFilter) {
 }
 if ($slaFilter) {
     $where[] = "e.sla_due_at IS NOT NULL AND e.sla_due_at < NOW() AND e.status NOT IN ('completed', 'closed')";
+}
+if ($unassignedFilter) {
+    $where[] = "e.assigned_user IS NULL AND e.status NOT IN ('completed', 'closed')";
 }
 if ($scopedToAssigned) {
     $where[] = 'e.assigned_user = :me';
@@ -416,26 +420,34 @@ $enquiries = $stmt->fetchAll();
 
 admin_header_start('Enquiries', 'enquiries');
 admin_subnav('leads', 'enquiries');
+$activeFilterCount = ($statusFilter ? 1 : 0) + ($categoryFilter ? 1 : 0) + ($slaFilter ? 1 : 0) + ($unassignedFilter ? 1 : 0);
 ?>
 <div class="admin-toolbar">
     <form method="get" action="/admin/enquiries/" style="margin-bottom:var(--space-4)">
         <input class="form-input" type="text" name="q" value="<?= e($search) ?>" placeholder="Search name, email, mobile, enquiry/tracking no., passport no.">
         <button type="submit" class="btn btn-outline btn-sm">Search</button>
     </form>
-    <div class="button-group">
-        <a href="/admin/enquiries/" class="btn btn-sm <?= !$categoryFilter ? 'btn-primary' : 'btn-outline' ?>">All Services</a>
-        <a href="/admin/enquiries/?category=visa" class="btn btn-sm <?= $categoryFilter === 'visa' ? 'btn-primary' : 'btn-outline' ?>">Visa</a>
-        <a href="/admin/enquiries/?category=apostille" class="btn btn-sm <?= $categoryFilter === 'apostille' ? 'btn-primary' : 'btn-outline' ?>">Apostille</a>
-    </div>
-    <div class="button-group" style="margin-top:var(--space-2)">
-        <a href="/admin/enquiries/" class="btn btn-sm <?= !$statusFilter ? 'btn-primary' : 'btn-outline' ?>">All Statuses</a>
-        <?php foreach ($statuses as $sk => $sl): ?>
-        <a href="/admin/enquiries/?status=<?= e($sk) ?>" class="btn btn-sm <?= $statusFilter === $sk ? 'btn-primary' : 'btn-outline' ?>"><?= e($sl) ?></a>
-        <?php endforeach; ?>
-        <a href="/admin/enquiries/?sla=breached" class="btn btn-sm <?= $slaFilter ? 'btn-danger' : 'btn-outline' ?>">SLA Breached</a>
-    </div>
 </div>
+<p class="admin-panel__meta" style="margin-bottom:var(--space-2)">Service</p>
+<div class="admin-quick-filters">
+    <a href="/admin/enquiries/<?= $search ? '?q=' . urlencode($search) : '' ?>" class="<?= !$categoryFilter ? 'is-active' : '' ?>">All Services</a>
+    <a href="/admin/enquiries/?category=visa" class="<?= $categoryFilter === 'visa' ? 'is-active' : '' ?>">Visa</a>
+    <a href="/admin/enquiries/?category=apostille" class="<?= $categoryFilter === 'apostille' ? 'is-active' : '' ?>">Apostille</a>
+</div>
+<p class="admin-panel__meta" style="margin:var(--space-3) 0 var(--space-2)">Status</p>
+<div class="admin-quick-filters">
+    <a href="/admin/enquiries/" class="<?= !$statusFilter && !$slaFilter && !$unassignedFilter ? 'is-active' : '' ?>">All</a>
+    <?php foreach ($statuses as $sk => $sl): ?>
+    <a href="/admin/enquiries/?status=<?= e($sk) ?>" class="<?= $statusFilter === $sk ? 'is-active' : '' ?>"><?= e($sl) ?></a>
+    <?php endforeach; ?>
+    <a href="/admin/enquiries/?sla=breached" data-tone="red" class="<?= $slaFilter ? 'is-active' : '' ?>">SLA Breached</a>
+    <?php if (!$scopedToAssigned): ?>
+    <a href="/admin/enquiries/?assigned=none" data-tone="orange" class="<?= $unassignedFilter ? 'is-active' : '' ?>">Unassigned Queue</a>
+    <?php endif; ?>
+</div>
+
 <?php if ($enquiries): ?>
+<div class="admin-table-scroll" style="margin-top:var(--space-4)">
 <table class="admin-table">
     <thead><tr><th>Enquiry No.</th><th>Name</th><th>Service</th><th>Destination</th><th>Priority</th><th>Status</th><th>SLA</th><th>Received</th><th></th></tr></thead>
     <tbody>
@@ -445,13 +457,13 @@ admin_subnav('leads', 'enquiries');
             <td><?= e($enq['name']) ?></td>
             <td><?= $enq['service_category'] === 'visa' ? 'Visa' : 'Apostille' ?></td>
             <td><?= e($enq['destination_country_name'] ?? '—') ?></td>
-            <td><span class="badge badge-neutral"><?= e(ucfirst($enq['priority'])) ?></span></td>
+            <td><span class="badge <?= $enq['priority'] === 'urgent' ? 'badge-danger' : ($enq['priority'] === 'high' ? 'badge-warning' : 'badge-neutral') ?>"><?= e(ucfirst($enq['priority'])) ?></span></td>
             <td><?= status_badge($enq['status'], $statusBadgeMap) ?></td>
             <td>
                 <?php if (enquiry_is_breached($enq)): ?>
                 <span class="badge badge-danger">Breached</span>
                 <?php elseif ($enq['sla_due_at'] !== null): ?>
-                <span class="badge badge-neutral">On track</span>
+                <span class="badge badge-success">On track</span>
                 <?php endif; ?>
             </td>
             <td><?= e(date('d M Y H:i', strtotime((string) $enq['created_at']))) ?></td>
@@ -460,8 +472,24 @@ admin_subnav('leads', 'enquiries');
     <?php endforeach; ?>
     </tbody>
 </table>
+</div>
+<div class="admin-card-list" style="margin-top:var(--space-4)">
+    <?php foreach ($enquiries as $enq): ?>
+    <div class="admin-record-card">
+        <p class="admin-record-card__title"><?= e($enq['name']) ?> <span style="font-weight:400;color:var(--text-muted)">&middot; <?= e($enq['enquiry_number']) ?></span></p>
+        <div class="admin-record-card__row"><span>Service</span><strong><?= $enq['service_category'] === 'visa' ? 'Visa' : 'Apostille' ?><?= $enq['destination_country_name'] ? ' — ' . e($enq['destination_country_name']) : '' ?></strong></div>
+        <div class="admin-record-card__row"><span>Status</span><strong><?= status_badge($enq['status'], $statusBadgeMap) ?></strong></div>
+        <div class="admin-record-card__row"><span>Priority</span><strong><span class="badge <?= $enq['priority'] === 'urgent' ? 'badge-danger' : ($enq['priority'] === 'high' ? 'badge-warning' : 'badge-neutral') ?>"><?= e(ucfirst($enq['priority'])) ?></span></strong></div>
+        <?php if (enquiry_is_breached($enq)): ?>
+        <div class="admin-record-card__row"><span>SLA</span><strong><span class="badge badge-danger">Breached</span></strong></div>
+        <?php endif; ?>
+        <div class="admin-record-card__row"><span>Received</span><strong><?= e(date('d M Y H:i', strtotime((string) $enq['created_at']))) ?></strong></div>
+        <div class="admin-record-card__action"><a href="/admin/enquiries/?id=<?= (int) $enq['id'] ?>" class="btn btn-sm btn-outline">Open Case</a></div>
+    </div>
+    <?php endforeach; ?>
+</div>
 <?php else: ?>
-<p class="empty-state">No enquiries found.</p>
+<p class="admin-empty-state--icon"><svg width="28" height="28" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 8 14.5 16 5.5"/></svg><?= $activeFilterCount > 0 ? 'No enquiries match these filters.' : 'No enquiries yet.' ?></p>
 <?php endif; ?>
 <?php
 admin_header_end();

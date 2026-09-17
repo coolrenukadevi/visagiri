@@ -78,10 +78,10 @@
 .admin-sla-banner[hidden] { display: none; }
 
 /* ---------- Top priorities ---------- */
-.admin-priorities { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-6); }
+.admin-priorities { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-3); margin-bottom: var(--space-5); }
 .admin-priority-card {
     display: flex; gap: var(--space-3); align-items: flex-start;
-    background: var(--white); border-radius: var(--radius-md); padding: var(--space-4);
+    background: var(--white); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4);
     box-shadow: var(--shadow-sm); border-left: 4px solid var(--status-red);
 }
 .admin-priority-card__rank {
@@ -95,10 +95,10 @@
 .admin-priority-card__action { margin-top: var(--space-2); }
 
 /* ---------- Collapsible layer sections (Scan / Dig) ---------- */
-.admin-layer { margin-bottom: var(--space-6); }
+.admin-layer { margin-bottom: var(--space-5); }
 .admin-layer__header {
     display: flex; align-items: center; justify-content: space-between; gap: var(--space-3);
-    margin-bottom: var(--space-4);
+    margin-bottom: var(--space-3);
 }
 .admin-layer__title { font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--text-dark); margin: 0; }
 .admin-layer__toggle {
@@ -112,12 +112,18 @@
 body.focus-mode .admin-layer[data-layer="scan"],
 body.focus-mode .admin-layer[data-layer="dig-analytics"] { display: none; }
 
-/* ---------- KPI groups ---------- */
-.admin-kpi-groups { display: flex; flex-direction: column; gap: var(--space-5); margin-bottom: var(--space-6); }
+/* ---------- KPI groups ----------
+ * A compact strip, not stacked full-width sections: groups flow left
+ * to right and wrap, so "Sales / Operations / Risk / Finance /
+ * Customer" sit beside each other on desktop instead of each claiming
+ * its own full-width row (that vertical-stacking pattern is exactly
+ * what pushed everything below the fold and was rejected). */
+.admin-kpi-groups { display: flex; flex-wrap: wrap; gap: var(--space-4); margin-bottom: var(--space-5); }
+.admin-kpi-groups > div { flex: 1 1 220px; min-width: 200px; }
 .admin-kpi-group__label { font-size: var(--font-size-xs); font-weight: var(--font-weight-bold); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 var(--space-2); }
-.admin-kpi-group__cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: var(--space-4); }
+.admin-kpi-group__cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: var(--space-2); }
 .admin-kpi-card {
-    background: var(--white); border-radius: var(--radius-md); padding: var(--space-4);
+    background: var(--white); border-radius: var(--radius-md); padding: var(--space-3);
     box-shadow: var(--shadow-sm); text-decoration: none; color: inherit; display: block;
     transition: box-shadow var(--transition-fast), transform var(--transition-fast);
     border-top: 3px solid var(--visa-blue);
@@ -125,12 +131,12 @@ body.focus-mode .admin-layer[data-layer="dig-analytics"] { display: none; }
 .admin-kpi-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
 .admin-kpi-card--risk { border-top-color: var(--status-red); }
 .admin-kpi-card__top { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-2); }
-.admin-kpi-card__value { font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--text-dark); line-height: 1.1; }
+.admin-kpi-card__value { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); color: var(--text-dark); line-height: 1.1; }
 .admin-kpi-card--risk .admin-kpi-card__value { color: var(--status-red); }
 .admin-kpi-card__trend { font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); padding: 1px 6px; border-radius: var(--radius-full); white-space: nowrap; }
 .admin-kpi-card__trend.is-up { color: var(--status-green); background: var(--status-green-bg); }
 .admin-kpi-card__trend.is-down { color: var(--status-red); background: var(--status-red-bg); }
-.admin-kpi-card__label { color: var(--text-muted); font-size: var(--font-size-sm); margin-top: var(--space-1); }
+.admin-kpi-card__label { color: var(--text-muted); font-size: var(--font-size-xs); margin-top: 2px; line-height: 1.25; }
 .admin-kpi-card__sparkline { margin-top: var(--space-2); display: block; }
 
 /* ---------- Panel grid (Scan layer: funnel / SLA ring / analytics) ---------- */

@@ -157,15 +157,85 @@ document.addEventListener('submit', function (event) {
     });
 })();
 
-/** Dashboard Scan/Dig layer collapse — in-page only, not persisted (Focus Mode is the persisted "hide everything" control; this is just a manual per-visit fold). */
-document.addEventListener('click', function (event) {
-    var toggle = event.target.closest('[data-layer-toggle]');
-    if (!toggle) return;
-    var layer = toggle.closest('.admin-layer');
-    if (!layer) return;
-    var collapsed = layer.classList.toggle('is-collapsed');
-    toggle.lastChild.textContent = collapsed ? ' Expand' : ' Collapse';
-});
+/**
+ * Dashboard Scan/Dig layer collapse — responsive default + persisted
+ * manual override. The Super Admin needs Scan (analytics) and Dig
+ * (recent enquiries/tasks) expanded by default on desktop for an
+ * immediate operational overview; on tablet Dig folds first, on
+ * mobile both start folded, since neither fits usefully at that
+ * width without scrolling past it first. Once a person manually
+ * expands/collapses a layer, that choice is remembered (localStorage)
+ * and wins over the viewport default on every later visit — this is
+ * a size-appropriate default, not a fixed rule.
+ */
+(function () {
+    var STORAGE_KEY = 'visagiri_dashboard_layers';
+
+    function readOverrides() {
+        try {
+            var raw = window.localStorage.getItem(STORAGE_KEY);
+            return raw ? JSON.parse(raw) : {};
+        } catch (e) {
+            return {};
+        }
+    }
+
+    function writeOverrides(overrides) {
+        try {
+            window.localStorage.setItem(STORAGE_KEY, JSON.stringify(overrides));
+        } catch (e) { /* storage unavailable — choice just won't persist */ }
+    }
+
+    function defaultCollapsed(layerKey) {
+        var width = window.innerWidth;
+        if (width < 768) return true; // mobile — both start folded
+        if (width < 1024) return layerKey === 'dig-tasks'; // tablet — Scan open, Dig folded
+        return false; // desktop — both open
+    }
+
+    function applyLayer(layer, collapsed) {
+        layer.classList.toggle('is-collapsed', collapsed);
+        var toggle = layer.querySelector('[data-layer-toggle]');
+        if (toggle && toggle.lastChild) toggle.lastChild.textContent = collapsed ? ' Expand' : ' Collapse';
+    }
+
+    function applyDefaults() {
+        var overrides = readOverrides();
+        document.querySelectorAll('.admin-layer[data-layer]').forEach(function (layer) {
+            var key = layer.dataset.layer;
+            var collapsed = Object.prototype.hasOwnProperty.call(overrides, key) ? overrides[key] : defaultCollapsed(key);
+            applyLayer(layer, collapsed);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', applyDefaults);
+
+    var resizeTimer = null;
+    window.addEventListener('resize', function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function () {
+            var overrides = readOverrides();
+            document.querySelectorAll('.admin-layer[data-layer]').forEach(function (layer) {
+                var key = layer.dataset.layer;
+                if (Object.prototype.hasOwnProperty.call(overrides, key)) return; // manual choice wins, never overridden by resize
+                applyLayer(layer, defaultCollapsed(key));
+            });
+        }, 150);
+    });
+
+    document.addEventListener('click', function (event) {
+        var toggle = event.target.closest('[data-layer-toggle]');
+        if (!toggle) return;
+        var layer = toggle.closest('.admin-layer[data-layer]');
+        if (!layer) return;
+        var key = layer.dataset.layer;
+        var collapsed = !layer.classList.contains('is-collapsed');
+        applyLayer(layer, collapsed);
+        var overrides = readOverrides();
+        overrides[key] = collapsed;
+        writeOverrides(overrides);
+    });
+})();
 
 /** Mobile hamburger — toggles the sidebar drawer via a body class (see admin-dashboard.css). */
 document.addEventListener('DOMContentLoaded', function () {
