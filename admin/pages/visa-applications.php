@@ -733,19 +733,33 @@ $stmt = $pdo->prepare(
 $stmt->execute($params);
 $applications = $stmt->fetchAll();
 
+$visaStatusBadgeMap = [
+    'draft' => 'neutral',
+    'documents_pending' => 'warning',
+    'submitted' => 'info',
+    'under_review' => 'warning',
+    'approved' => 'success',
+    'completed' => 'success',
+    'rejected' => 'danger',
+    'cancelled' => 'neutral',
+];
+$activeFilterCount = ($statusFilter ? 1 : 0) + ($countryFilter ? 1 : 0) + ($assignedFilter ? 1 : 0);
+
 admin_header_start('Visa Applications', 'visa-applications');
 ?>
 <div class="admin-toolbar">
-    <div class="button-group">
-        <a href="/admin/visa-applications/" class="btn btn-sm <?= !$statusFilter ? 'btn-primary' : 'btn-outline' ?>">All</a>
-        <?php foreach ($statuses as $s): ?>
-        <a href="/admin/visa-applications/?status=<?= $s ?>" class="btn btn-sm <?= $statusFilter === $s ? 'btn-primary' : 'btn-outline' ?>"><?= ucwords(str_replace('_', ' ', $s)) ?></a>
-        <?php endforeach; ?>
-    </div>
     <?php if (has_permission('visa.manage')): ?>
     <a href="/admin/visa-applications/?action=create" class="btn btn-primary">+ New Application</a>
     <?php endif; ?>
 </div>
+<div class="admin-quick-filters">
+    <a href="/admin/visa-applications/" class="<?= !$statusFilter ? 'is-active' : '' ?>">All</a>
+    <?php foreach ($statuses as $s): ?>
+    <a href="/admin/visa-applications/?status=<?= $s ?>" class="<?= $statusFilter === $s ? 'is-active' : '' ?>"><?= ucwords(str_replace('_', ' ', $s)) ?></a>
+    <?php endforeach; ?>
+</div>
+<?php if ($applications): ?>
+<div class="admin-table-scroll" style="margin-top:var(--space-4)">
 <table class="admin-table">
     <thead><tr><th>Reference</th><th>Customer</th><th>Country</th><th>Visa Type</th><th>Assigned</th><th>Status</th><th></th></tr></thead>
     <tbody>
@@ -756,14 +770,26 @@ admin_header_start('Visa Applications', 'visa-applications');
             <td><?= e($app['country_name']) ?></td>
             <td><?= e($app['visa_type_name']) ?></td>
             <td><?= e($app['assigned_name'] ?? '—') ?></td>
-            <td><span class="badge badge-info"><?= e(ucwords(str_replace('_', ' ', $app['status']))) ?></span></td>
+            <td><?= status_badge($app['status'], $visaStatusBadgeMap) ?></td>
             <td class="actions"><a href="/admin/visa-applications/?action=view&id=<?= (int) $app['id'] ?>" class="btn btn-outline btn-sm">View</a></td>
         </tr>
     <?php endforeach; ?>
-    <?php if (!$applications): ?>
-        <tr><td colspan="7"><p class="empty-state">No applications yet.</p></td></tr>
-    <?php endif; ?>
     </tbody>
 </table>
+</div>
+<div class="admin-card-list" style="margin-top:var(--space-4)">
+    <?php foreach ($applications as $app): ?>
+    <div class="admin-record-card">
+        <p class="admin-record-card__title"><?= e($app['first_name'] . ' ' . ($app['last_name'] ?? '')) ?> <span style="font-weight:400;color:var(--text-muted)">&middot; <?= e($app['application_reference_no']) ?></span></p>
+        <div class="admin-record-card__row"><span>Country / Type</span><strong><?= e($app['country_name']) ?> — <?= e($app['visa_type_name']) ?></strong></div>
+        <div class="admin-record-card__row"><span>Assigned</span><strong><?= e($app['assigned_name'] ?? '—') ?></strong></div>
+        <div class="admin-record-card__row"><span>Status</span><strong><?= status_badge($app['status'], $visaStatusBadgeMap) ?></strong></div>
+        <div class="admin-record-card__action"><a href="/admin/visa-applications/?action=view&id=<?= (int) $app['id'] ?>" class="btn btn-sm btn-outline">View</a></div>
+    </div>
+    <?php endforeach; ?>
+</div>
+<?php else: ?>
+<p class="admin-empty-state--icon" style="margin-top:var(--space-4)"><svg width="28" height="28" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 8 14.5 16 5.5"/></svg><?= $activeFilterCount > 0 ? 'No applications match these filters.' : 'No applications yet.' ?></p>
+<?php endif; ?>
 <?php
 admin_header_end();
