@@ -123,17 +123,16 @@ admin_subnav('leads', 'sales-crm');
     <?php if ($canViewPartnerEnquiries): ?><div class="admin-stat-card"><div class="admin-stat-card__value"><?= $todayCounts['partner'] ?></div><div class="admin-stat-card__label">B2B Partner Today</div></div><?php endif; ?>
 </div>
 
-<div class="admin-toolbar">
-    <div class="button-group">
-        <a href="/admin/sales-crm/" class="btn btn-sm <?= !$typeFilter ? 'btn-primary' : 'btn-outline' ?>">All Leads</a>
-        <?php if ($canViewEnquiries): ?><a href="/admin/sales-crm/?type=visa_apostille" class="btn btn-sm <?= $typeFilter === 'visa_apostille' ? 'btn-primary' : 'btn-outline' ?>">Visa/Apostille</a><?php endif; ?>
-        <?php if ($canViewGeneral): ?><a href="/admin/sales-crm/?type=general" class="btn btn-sm <?= $typeFilter === 'general' ? 'btn-primary' : 'btn-outline' ?>">General/Attestation</a><?php endif; ?>
-        <?php if ($canViewForex): ?><a href="/admin/sales-crm/?type=forex" class="btn btn-sm <?= $typeFilter === 'forex' ? 'btn-primary' : 'btn-outline' ?>">Forex</a><?php endif; ?>
-        <?php if ($canViewPartnerEnquiries): ?><a href="/admin/sales-crm/?type=partner" class="btn btn-sm <?= $typeFilter === 'partner' ? 'btn-primary' : 'btn-outline' ?>">B2B Partner</a><?php endif; ?>
-    </div>
+<div class="admin-quick-filters">
+    <a href="/admin/sales-crm/" class="<?= !$typeFilter ? 'is-active' : '' ?>">All Leads</a>
+    <?php if ($canViewEnquiries): ?><a href="/admin/sales-crm/?type=visa_apostille" class="<?= $typeFilter === 'visa_apostille' ? 'is-active' : '' ?>">Visa/Apostille</a><?php endif; ?>
+    <?php if ($canViewGeneral): ?><a href="/admin/sales-crm/?type=general" class="<?= $typeFilter === 'general' ? 'is-active' : '' ?>">General/Attestation</a><?php endif; ?>
+    <?php if ($canViewForex): ?><a href="/admin/sales-crm/?type=forex" class="<?= $typeFilter === 'forex' ? 'is-active' : '' ?>">Forex</a><?php endif; ?>
+    <?php if ($canViewPartnerEnquiries): ?><a href="/admin/sales-crm/?type=partner" class="<?= $typeFilter === 'partner' ? 'is-active' : '' ?>">B2B Partner</a><?php endif; ?>
 </div>
 
 <?php if ($leads): ?>
+<div class="admin-table-scroll" style="margin-top:var(--space-4)">
 <table class="admin-table">
     <thead><tr><th>Type</th><th>Reference</th><th>Name</th><th>Contact</th><th>Subject</th><th>Status</th><th>Received</th><th></th></tr></thead>
     <tbody>
@@ -151,8 +150,22 @@ admin_subnav('leads', 'sales-crm');
     <?php endforeach; ?>
     </tbody>
 </table>
+</div>
+<div class="admin-card-list" style="margin-top:var(--space-4)">
+    <?php foreach ($leads as $lead): ?>
+    <div class="admin-record-card">
+        <p class="admin-record-card__title"><?= e($lead['name']) ?> <span style="font-weight:400;color:var(--text-muted)">&middot; <?= e($lead['reference']) ?></span></p>
+        <div class="admin-record-card__row"><span>Type</span><strong><span class="badge badge-<?= e($lead['badge']) ?>"><?= e($lead['type_label']) ?></span></strong></div>
+        <div class="admin-record-card__row"><span>Contact</span><strong><?= e($lead['contact']) ?></strong></div>
+        <div class="admin-record-card__row"><span>Subject</span><strong><?= e($lead['subject']) ?></strong></div>
+        <div class="admin-record-card__row"><span>Status</span><strong><?= e($lead['status']) ?></strong></div>
+        <div class="admin-record-card__row"><span>Received</span><strong><?= e(date('d M Y H:i', strtotime((string) $lead['created_at']))) ?></strong></div>
+        <div class="admin-record-card__action"><a href="<?= e($lead['url']) ?>" class="btn btn-sm btn-outline">View</a></div>
+    </div>
+    <?php endforeach; ?>
+</div>
 <?php else: ?>
-<p class="empty-state">No leads yet.</p>
+<p class="admin-empty-state--icon" style="margin-top:var(--space-4)"><svg width="28" height="28" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 8 14.5 16 5.5"/></svg><?= $typeFilter ? 'No leads of this type yet.' : 'No leads yet.' ?></p>
 <?php endif; ?>
 <?php
 admin_header_end();
