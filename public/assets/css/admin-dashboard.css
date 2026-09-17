@@ -112,37 +112,37 @@
 body.focus-mode .admin-layer[data-layer="scan"],
 body.focus-mode .admin-layer[data-layer="dig-analytics"] { display: none; }
 
-/* ---------- KPI groups ----------
- * A compact strip, not stacked full-width sections: groups flow left
- * to right and wrap, so "Sales / Operations / Risk / Finance /
- * Customer" sit beside each other on desktop instead of each claiming
- * its own full-width row (that vertical-stacking pattern is exactly
- * what pushed everything below the fold and was rejected). */
-.admin-kpi-groups { display: flex; flex-wrap: wrap; gap: var(--space-4); margin-bottom: var(--space-5); }
-.admin-kpi-groups > div { flex: 1 1 220px; min-width: 200px; }
-.admin-kpi-group__label { font-size: var(--font-size-xs); font-weight: var(--font-weight-bold); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 var(--space-2); }
-.admin-kpi-group__cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: var(--space-2); }
-.admin-kpi-card {
-    background: var(--white); border-radius: var(--radius-md); padding: var(--space-3);
-    box-shadow: var(--shadow-sm); text-decoration: none; color: inherit; display: block;
-    transition: box-shadow var(--transition-fast), transform var(--transition-fast);
-    border-top: 3px solid var(--visa-blue);
+/* ---------- KPI category cards ----------
+ * One equal-width card per category (Sales/Operations/Risk/Finance/
+ * Customer-Team), matching the approved reference design: every
+ * category occupies the same grid cell regardless of whether it
+ * holds one metric or two, so Risk/Finance (single metric) never
+ * balloon to look like they "own" more of the row than Sales/
+ * Operations (two metrics) — the earlier per-group flex-box approach
+ * let a lone metric stretch to fill its whole group's width, which
+ * is exactly the imbalance this fixes. Fixed compact height, no
+ * group-level width dependency. */
+.admin-kpi-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-3); margin-bottom: var(--space-5); }
+.admin-kpi-category {
+    background: var(--white); border-radius: var(--radius-md); box-shadow: var(--shadow-sm);
+    padding: var(--space-3) var(--space-4); border-top: 3px solid var(--visa-blue);
+    display: flex; flex-direction: column; justify-content: center; min-height: 84px;
 }
-.admin-kpi-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
-.admin-kpi-card--risk { border-top-color: var(--status-red); }
-.admin-kpi-card__top { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-2); }
-.admin-kpi-card__value { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); color: var(--text-dark); line-height: 1.1; }
-.admin-kpi-card--risk .admin-kpi-card__value { color: var(--status-red); }
-.admin-kpi-card__trend { font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); padding: 1px 6px; border-radius: var(--radius-full); white-space: nowrap; }
-.admin-kpi-card__trend.is-up { color: var(--status-green); background: var(--status-green-bg); }
-.admin-kpi-card__trend.is-down { color: var(--status-red); background: var(--status-red-bg); }
-.admin-kpi-card__label { color: var(--text-muted); font-size: var(--font-size-xs); margin-top: 2px; line-height: 1.25; }
-.admin-kpi-card__sparkline { margin-top: var(--space-2); display: block; }
+.admin-kpi-category--risk { border-top-color: var(--status-red); }
+.admin-kpi-category__label { font-size: var(--font-size-xs); font-weight: var(--font-weight-bold); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 var(--space-2); }
+.admin-kpi-category__metrics { display: flex; gap: var(--space-4); }
+.admin-kpi-metric { flex: 1; min-width: 0; text-decoration: none; color: inherit; }
+.admin-kpi-metric__value { display: block; font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--text-dark); line-height: 1.1; }
+.admin-kpi-metric--risk .admin-kpi-metric__value { color: var(--status-red); }
+.admin-kpi-metric__label { display: block; color: var(--text-muted); font-size: var(--font-size-xs); margin-top: 2px; line-height: 1.25; }
+.admin-kpi-metric:hover .admin-kpi-metric__value { text-decoration: underline; }
 
 /* ---------- Panel grid (Scan layer: funnel / SLA ring / analytics) ---------- */
 .admin-panel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-5); align-items: start; }
 .admin-panel-grid--dig { grid-template-columns: 1.4fr 1fr; }
-@media (max-width: 1100px) { .admin-panel-grid--dig { grid-template-columns: 1fr; } }
+.admin-panel-grid--dig3 { grid-template-columns: 1.3fr 1fr 1fr; }
+@media (max-width: 1300px) { .admin-panel-grid--dig3 { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 1100px) { .admin-panel-grid--dig, .admin-panel-grid--dig3 { grid-template-columns: 1fr; } }
 .admin-panel__meta { color: var(--text-muted); font-size: var(--font-size-xs); font-weight: var(--font-weight-medium); }
 .admin-panel__head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-2); margin-bottom: var(--space-4); }
 .admin-panel__head .admin-panel__title { margin: 0; }
@@ -281,6 +281,7 @@ body.focus-mode .admin-layer[data-layer="dig-analytics"] { display: none; }
 body.focus-mode [data-widget-id="kpi-groups"],
 body.focus-mode [data-layer="scan"],
 body.focus-mode .admin-panel--recent-enquiries,
+body.focus-mode .admin-panel--team,
 body.focus-mode #admin-dashboard-widgets ~ .admin-panel { display: none; }
 body.focus-mode [data-layer="dig-tasks"] .admin-layer__body { display: block; }
 

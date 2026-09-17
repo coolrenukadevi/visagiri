@@ -194,6 +194,7 @@ if (has_permission('partners.view')) {
 $serviceBreakdown = array_filter($serviceBreakdown);
 $serviceTotal = array_sum($serviceBreakdown);
 $donutColors = ['var(--visa-blue)', 'var(--visa-gold-dark)', 'var(--status-green)', 'var(--status-orange)', 'var(--info)'];
+$canSeeServiceBreakdown = has_permission('enquiries.view') || has_permission('forex.requests.view') || has_permission('general_enquiries.view') || has_permission('partners.view');
 
 // Visa Application Funnel — real visa_applications.status pipeline.
 $funnelStages = [
@@ -384,13 +385,13 @@ $priorities = array_slice($priorities, 0, 3);
     <div class="admin-widget__handle"><button type="button" data-widget-drag-handle title="Drag to reorder"><svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="7" cy="5" r="1.3"/><circle cx="13" cy="5" r="1.3"/><circle cx="7" cy="10" r="1.3"/><circle cx="13" cy="10" r="1.3"/><circle cx="7" cy="15" r="1.3"/><circle cx="13" cy="15" r="1.3"/></svg></button><button type="button" data-widget-hide title="Hide widget"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 10s3-5.5 7-5.5S17 10 17 10s-3 5.5-7 5.5S3 10 3 10Z"/><circle cx="10" cy="10" r="2"/><line x1="3" y1="17" x2="17" y2="3"/></svg></button></div>
 <div class="admin-kpi-groups">
     <?php foreach ($kpiGroups as $groupLabel => $cards): if (!$cards) continue; ?>
-    <div>
-        <p class="admin-kpi-group__label"><?= e($groupLabel) ?></p>
-        <div class="admin-kpi-group__cards">
+    <div class="admin-kpi-category<?= $groupLabel === 'Risk' ? ' admin-kpi-category--risk' : '' ?>">
+        <p class="admin-kpi-category__label"><?= e($groupLabel) ?></p>
+        <div class="admin-kpi-category__metrics">
             <?php foreach ($cards as $card): ?>
-            <a href="<?= e($card['href']) ?>" class="admin-kpi-card<?= !empty($card['risk']) && $card['value'] > 0 ? ' admin-kpi-card--risk' : '' ?>">
-                <div class="admin-kpi-card__top"><span class="admin-kpi-card__value"><?= (int) $card['value'] ?></span></div>
-                <div class="admin-kpi-card__label"><?= e($card['label']) ?></div>
+            <a href="<?= e($card['href']) ?>" class="admin-kpi-metric<?= !empty($card['risk']) && $card['value'] > 0 ? ' admin-kpi-metric--risk' : '' ?>">
+                <span class="admin-kpi-metric__value"><?= (int) $card['value'] ?></span>
+                <span class="admin-kpi-metric__label"><?= e($card['label']) ?></span>
             </a>
             <?php endforeach; ?>
         </div>
@@ -399,7 +400,7 @@ $priorities = array_slice($priorities, 0, 3);
 </div>
 </div>
 
-<?php if (has_permission('enquiries.view') || has_permission('visa.view')): ?>
+<?php if ($canSeeServiceBreakdown || has_permission('visa.view') || has_permission('enquiries.view')): ?>
 <div class="admin-layer admin-widget" data-layer="scan" data-widget-id="layer-scan">
     <div class="admin-widget__handle"><button type="button" data-widget-drag-handle title="Drag to reorder"><svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="7" cy="5" r="1.3"/><circle cx="13" cy="5" r="1.3"/><circle cx="7" cy="10" r="1.3"/><circle cx="13" cy="10" r="1.3"/><circle cx="7" cy="15" r="1.3"/><circle cx="13" cy="15" r="1.3"/></svg></button><button type="button" data-widget-hide title="Hide widget"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 10s3-5.5 7-5.5S17 10 17 10s-3 5.5-7 5.5S3 10 3 10Z"/><circle cx="10" cy="10" r="2"/><line x1="3" y1="17" x2="17" y2="3"/></svg></button></div>
     <div class="admin-layer__header">
@@ -412,9 +413,12 @@ $priorities = array_slice($priorities, 0, 3);
     <div class="admin-layer__body">
     <div class="admin-panel-grid">
 
-        <?php if ($serviceTotal > 0): ?>
+        <?php if ($canSeeServiceBreakdown): ?>
         <div class="admin-panel">
-            <div class="admin-panel__head"><h3 class="admin-panel__title">Enquiry Analytics</h3><span class="admin-freshness"><span class="admin-freshness__dot"></span>Updated just now</span></div>
+            <div class="admin-panel__head"><h3 class="admin-panel__title">Enquiries by Service</h3><span class="admin-freshness"><span class="admin-freshness__dot"></span>Updated just now</span></div>
+            <?php if ($serviceTotal === 0): ?>
+            <p class="admin-empty-state--icon"><svg width="28" height="28" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 8 14.5 16 5.5"/></svg>No active enquiries to break down by service yet.</p>
+            <?php else: ?>
             <div class="admin-donut-wrap">
                 <?php
                 $gradParts = []; $cursor = 0;
@@ -433,6 +437,26 @@ $priorities = array_slice($priorities, 0, 3);
                     <?php $i++; endforeach; ?>
                 </div>
             </div>
+            <?php endif; ?>
+        </div>
+        <?php endif; ?>
+
+        <?php if (has_permission('visa.view')): ?>
+        <div class="admin-panel">
+            <div class="admin-panel__head"><h3 class="admin-panel__title">Visa Application Funnel</h3><span class="admin-panel__meta"><?= array_sum($funnelCounts) ?> total</span></div>
+            <?php if (array_sum($funnelCounts) === 0): ?>
+            <p class="admin-empty-state--icon"><svg width="28" height="28" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 8 14.5 16 5.5"/></svg>No active visa applications yet.</p>
+            <?php else: ?>
+            <div class="admin-funnel">
+                <?php foreach ($funnelStages as $key => $label): $count = $funnelCounts[$key] ?? 0; $pct = round($count / $funnelBase * 100); ?>
+                <a href="/admin/visa-applications/?status=<?= e($key) ?>" class="admin-funnel__stage">
+                    <span class="admin-funnel__stage-label"><?= e($label) ?></span>
+                    <span class="admin-funnel__stage-track"><span class="admin-funnel__stage-bar" style="width:<?= max($pct, $count > 0 ? 4 : 0) ?>%"></span></span>
+                    <span class="admin-funnel__stage-count"><strong><?= $count ?></strong> <span class="admin-funnel__stage-pct"><?= $pct ?>%</span></span>
+                </a>
+                <?php endforeach; ?>
+            </div>
+            <?php endif; ?>
         </div>
         <?php endif; ?>
 
@@ -457,42 +481,6 @@ $priorities = array_slice($priorities, 0, 3);
         </div>
         <?php endif; ?>
 
-        <?php if (has_permission('visa.view') && array_sum($funnelCounts) > 0): ?>
-        <div class="admin-panel" style="grid-column: 1 / -1;">
-            <div class="admin-panel__head"><h3 class="admin-panel__title">Visa Application Funnel</h3><span class="admin-panel__meta"><?= array_sum($funnelCounts) ?> total applications</span></div>
-            <div class="admin-funnel">
-                <?php foreach ($funnelStages as $key => $label): $count = $funnelCounts[$key] ?? 0; $pct = round($count / $funnelBase * 100); ?>
-                <a href="/admin/visa-applications/?status=<?= e($key) ?>" class="admin-funnel__stage">
-                    <span class="admin-funnel__stage-label"><?= e($label) ?></span>
-                    <span class="admin-funnel__stage-track"><span class="admin-funnel__stage-bar" style="width:<?= max($pct, $count > 0 ? 4 : 0) ?>%"></span></span>
-                    <span class="admin-funnel__stage-count"><strong><?= $count ?></strong> <span class="admin-funnel__stage-pct"><?= $pct ?>%</span></span>
-                </a>
-                <?php endforeach; ?>
-            </div>
-        </div>
-        <?php endif; ?>
-
-        <?php if ($teamPerformance): ?>
-        <div class="admin-panel" style="grid-column: 1 / -1;">
-            <div class="admin-panel__head"><h3 class="admin-panel__title">Team Performance <span style="font-weight:400;color:var(--text-muted);">(This Month)</span></h3></div>
-            <div class="admin-table-scroll">
-            <table class="admin-table admin-team-table">
-                <thead><tr><th>Employee</th><th>Assigned (Open)</th><th>Completed</th><th>Breaches</th></tr></thead>
-                <tbody>
-                <?php foreach ($teamPerformance as $t): $breaches = (int) $t['breaches']; ?>
-                <tr>
-                    <td><?= e($t['full_name']) ?></td>
-                    <td><?= (int) $t['assigned_open'] ?></td>
-                    <td><?= (int) $t['completed_month'] ?></td>
-                    <td><span class="badge <?= $breaches > 0 ? 'badge-danger' : 'badge-success' ?>"><?= $breaches ?></span></td>
-                </tr>
-                <?php endforeach; ?>
-                </tbody>
-            </table>
-            </div>
-        </div>
-        <?php endif; ?>
-
     </div>
     </div>
 </div>
@@ -508,7 +496,7 @@ $priorities = array_slice($priorities, 0, 3);
         </button>
     </div>
     <div class="admin-layer__body">
-    <div class="admin-panel-grid admin-panel-grid--dig">
+    <div class="admin-panel-grid admin-panel-grid--dig<?= $teamPerformance ? '3' : '' ?>">
 
         <?php if (has_permission('enquiries.view')): ?>
         <div class="admin-panel admin-panel--recent-enquiries">
@@ -580,6 +568,27 @@ $priorities = array_slice($priorities, 0, 3);
                 <?php endforeach; ?>
             </ul>
             <?php endif; ?>
+        </div>
+        <?php endif; ?>
+
+        <?php if ($teamPerformance): ?>
+        <div class="admin-panel admin-panel--team">
+            <div class="admin-panel__head"><h3 class="admin-panel__title">Team Performance</h3><span class="admin-panel__meta">This month</span></div>
+            <div class="admin-table-scroll">
+            <table class="admin-table admin-team-table">
+                <thead><tr><th>Employee</th><th>Open</th><th>Done</th><th>Breach</th></tr></thead>
+                <tbody>
+                <?php foreach ($teamPerformance as $t): $breaches = (int) $t['breaches']; ?>
+                <tr>
+                    <td><?= e($t['full_name']) ?></td>
+                    <td><?= (int) $t['assigned_open'] ?></td>
+                    <td><?= (int) $t['completed_month'] ?></td>
+                    <td><span class="badge <?= $breaches > 0 ? 'badge-danger' : 'badge-success' ?>"><?= $breaches ?></span></td>
+                </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+            </div>
         </div>
         <?php endif; ?>
 
