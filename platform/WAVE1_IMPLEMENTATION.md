@@ -44,3 +44,11 @@ Local, isolated development only. No production, staging, or hosting changes. Ex
 ## Files changed outside `platform/`
 
 None. `git status` at the repository root shows only new, untracked content under `platform/`.
+
+## Wave 1 acceptance conditions — closure status
+
+| Condition | Status | Evidence |
+|---|---|---|
+| PHP-RECHECK-01 (verify under PHP 8.5.x) | **BLOCKED — ENVIRONMENT** | `apt-get install php8.5-cli` fails with `403 Forbidden` from the sandbox's own egress proxy (`ppa.launchpadcontent.net` blocked by organization policy), re-confirmed fresh at acceptance-review time. PHP 8.4.19 remains a temporary execution substitute only, not a redefinition of the target. |
+| PostgreSQL 18.x verification | **BLOCKED — ENVIRONMENT** | `apt.postgresql.org` connection rejected (`403`, same proxy policy), re-confirmed fresh at acceptance-review time. No PostgreSQL of any version was substituted; no database connection was ever established. |
+| Document-download audit gap | **PASS** | `DocumentDownloadController` now logs both a denied attempt (`document_download_denied`, outcome `denied`) and a successful download (`document_download`, outcome `success`), each with actor id, storage key, and timestamp. Verified by 2 new feature tests (`DocumentDownloadAuditTest`), both passing; full suite re-run afterward with zero regressions (18/18 PHPUnit, 2/2 Playwright). |
