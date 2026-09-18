@@ -1,0 +1,45 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+/*
+ * Foundation design tokens — one design system for the whole new
+ * platform (Architecture Phase 8 Section 17). Deliberately restrained:
+ * no gradients, no decorative effects, no oversized empty panels.
+ * Semantic status colors are never the only signal (paired with text/
+ * icon in components), matching the existing CMS's frozen SLA-color
+ * rule (RED=breached, ORANGE=at risk, YELLOW=pending, GREEN=on track,
+ * BLUE=informational) so a future shared color vocabulary is possible
+ * without redesigning either system now.
+ */
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --color-surface: #ffffff;
+    --color-surface-muted: #f8f9fb;
+    --color-border: #e2e5ea;
+    --color-text: #1a1d23;
+    --color-text-muted: #5b6270;
+
+    --color-brand: #1e3a8a;
+    --color-brand-hover: #16306f;
+
+    /* Semantic status — same 5-color vocabulary as the existing CMS. */
+    --color-status-breached: #dc2626;
+    --color-status-at-risk: #ea580c;
+    --color-status-pending: #ca8a04;
+    --color-status-on-track: #16a34a;
+    --color-status-info: #2563eb;
+}
+
+@media (prefers-color-scheme: dark) {
+    @theme {
+        --color-surface: #14161a;
+        --color-surface-muted: #1b1e24;
+        --color-border: #2b2f38;
+        --color-text: #e8e9ec;
+        --color-text-muted: #9aa0ab;
+    }
+}
