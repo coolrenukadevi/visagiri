@@ -53,13 +53,37 @@
 }
 .admin-sidebar__collapse-all:hover { color: rgba(255,255,255,0.85); }
 
-/* ---------- Greeting bar ---------- */
-.admin-greeting { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-5); margin-bottom: var(--space-5); flex-wrap: wrap; }
-.admin-greeting__text h1 { font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--text-dark); margin: 0 0 var(--space-1); }
+/* ---------- Greeting bar ----------
+ * Subtle CSS-only "destination" treatment (dotted arc + soft radial
+ * glow, both built from existing brand tokens) instead of a shipped
+ * photo/illustration asset — keeps this pass to dashboard.php +
+ * this stylesheet only, no new binary asset to source/license. */
+.admin-greeting {
+    position: relative; overflow: hidden;
+    display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-5);
+    margin-bottom: var(--space-5); flex-wrap: wrap;
+    background: var(--white); border-radius: var(--radius-md); padding: var(--space-5);
+    box-shadow: var(--shadow-sm);
+}
+.admin-greeting__illustration {
+    position: absolute; inset: 0; pointer-events: none; z-index: 0;
+    background:
+        radial-gradient(circle at 88% 15%, rgba(18, 63, 145, 0.07), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(244, 180, 0, 0.08), transparent 50%);
+}
+.admin-greeting__illustration::before {
+    content: ""; position: absolute; top: -30%; right: -6%; width: 260px; height: 260px;
+    border: 1.5px dashed rgba(18, 63, 145, 0.14); border-radius: 50%;
+}
+.admin-greeting__text, .admin-greeting__side { position: relative; z-index: 1; }
+.admin-greeting__text h1 { font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--text-dark); margin: 0 0 var(--space-1); display: flex; align-items: center; gap: var(--space-2); }
+.admin-greeting__wave { font-size: 1.1em; }
 .admin-greeting__text p { color: var(--text-muted); font-size: var(--font-size-sm); margin: 0; }
-.admin-greeting__quote { color: var(--text-muted); font-size: var(--font-size-sm); font-style: italic; text-align: right; max-width: 260px; }
+.admin-greeting__side { display: flex; flex-direction: column; align-items: flex-end; gap: var(--space-2); }
+.admin-greeting__quote { color: var(--text-muted); font-size: var(--font-size-sm); font-style: italic; text-align: right; max-width: 260px; margin: 0; }
 .admin-greeting__actions { display: flex; align-items: center; gap: var(--space-3); }
-@media (max-width: 900px) { .admin-greeting__quote { display: none; } }
+.admin-freshness--live { display: inline-flex; align-items: center; gap: var(--space-1); }
+@media (max-width: 900px) { .admin-greeting__side { align-items: flex-start; width: 100%; } .admin-greeting__quote { display: none; } }
 
 /* ---------- SLA alert banner ---------- */
 .admin-sla-banner {
@@ -76,23 +100,35 @@
 .admin-sla-banner__dismiss { background: none; border: none; cursor: pointer; color: var(--text-muted); padding: var(--space-2); flex-shrink: 0; }
 .admin-sla-banner__dismiss:hover { color: var(--text-dark); }
 .admin-sla-banner[hidden] { display: none; }
+@media (max-width: 480px) {
+    .admin-sla-banner { flex-wrap: wrap; }
+    .admin-sla-banner__body { flex-basis: 100%; }
+}
 
 /* ---------- Top priorities ---------- */
-.admin-priorities { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-3); margin-bottom: var(--space-5); }
+.admin-priorities-section { margin-bottom: var(--space-5); }
+.admin-priorities-section__head { display: flex; align-items: baseline; gap: var(--space-2); margin-bottom: var(--space-3); flex-wrap: wrap; }
+.admin-priorities-section__head h2 { font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--text-dark); margin: 0; }
+.admin-priorities-section__head span { color: var(--text-muted); font-size: var(--font-size-sm); }
+.admin-priorities { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-3); }
 .admin-priority-card {
-    display: flex; gap: var(--space-3); align-items: flex-start;
-    background: var(--white); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4);
-    box-shadow: var(--shadow-sm); border-left: 4px solid var(--status-red);
+    display: flex; gap: var(--space-3); align-items: center;
+    background: var(--white); border-radius: var(--radius-md); padding: var(--space-4);
+    box-shadow: var(--shadow-sm); text-decoration: none; transition: box-shadow var(--transition-fast);
 }
-.admin-priority-card__rank {
-    width: 24px; height: 24px; border-radius: var(--radius-full); background: var(--status-red); color: var(--white);
-    font-size: var(--font-size-xs); font-weight: var(--font-weight-bold); display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+.admin-priority-card:hover { box-shadow: var(--shadow-md); }
+.admin-priority-card__icon {
+    width: 40px; height: 40px; border-radius: var(--radius-full); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
 }
+.admin-priority-card--red .admin-priority-card__icon { background: var(--status-red-bg); color: var(--status-red); }
+.admin-priority-card--amber .admin-priority-card__icon { background: var(--status-orange-bg); color: var(--status-orange); }
+.admin-priority-card--blue .admin-priority-card__icon { background: var(--status-blue-bg); color: var(--status-blue); }
 .admin-priority-card__body { flex: 1; min-width: 0; }
 .admin-priority-card__title { font-weight: var(--font-weight-bold); color: var(--text-dark); font-size: var(--font-size-sm); margin: 0 0 2px; }
-.admin-priority-card__meta { color: var(--text-muted); font-size: var(--font-size-xs); margin: 0 0 var(--space-1); }
-.admin-priority-card__flag { color: var(--status-red); font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); }
-.admin-priority-card__action { margin-top: var(--space-2); }
+.admin-priority-card__meta { color: var(--text-muted); font-size: var(--font-size-xs); margin: 0; }
+.admin-priority-card--red .admin-priority-card__flag { color: var(--status-red); font-weight: var(--font-weight-semibold); }
+.admin-priority-card__chevron { color: var(--text-muted); flex-shrink: 0; }
 
 /* ---------- Collapsible layer sections (Scan / Dig) ---------- */
 .admin-layer { margin-bottom: var(--space-5); }
@@ -139,6 +175,12 @@ body.focus-mode .admin-layer[data-layer="dig-analytics"] { display: none; }
 
 /* ---------- Panel grid (Scan layer: funnel / SLA ring / analytics) ---------- */
 .admin-panel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-5); align-items: start; }
+/* 1fr tracks default to minmax(auto,1fr); without this, a cell whose
+ * content has an intrinsic min-width (e.g. .admin-table-scroll's own
+ * 720px table min-width) expands the whole grid instead of scrolling
+ * internally — this is what let Team Performance's wider table (new
+ * avatar/SLA-bar columns) push the page beyond 1440px. */
+.admin-panel-grid > * { min-width: 0; }
 .admin-panel-grid--dig { grid-template-columns: 1.4fr 1fr; }
 .admin-panel-grid--dig3 { grid-template-columns: 1.3fr 1fr 1fr; }
 @media (max-width: 1300px) { .admin-panel-grid--dig3 { grid-template-columns: 1fr 1fr; } }
@@ -240,17 +282,50 @@ body.focus-mode .admin-layer[data-layer="dig-analytics"] { display: none; }
 .admin-team-table__bar-fill.is-warn { background: var(--status-orange); }
 .admin-team-table__bar-fill.is-danger { background: var(--status-red); }
 
-/* ---------- Unassigned / Quick actions ---------- */
-.admin-unassigned-bar {
-    display: flex; align-items: center; gap: var(--space-4); background: var(--status-yellow-bg);
-    border: 1px solid var(--status-yellow); border-radius: var(--radius-md); padding: var(--space-4) var(--space-5); margin-bottom: var(--space-5);
-}
-.admin-unassigned-bar__icon { color: var(--status-yellow); flex-shrink: 0; }
-.admin-unassigned-bar__body { flex: 1; }
-.admin-unassigned-bar__count { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); color: var(--text-dark); }
-.admin-unassigned-bar__label { color: var(--text-muted); font-size: var(--font-size-sm); }
+/* ---------- Bottom operations: Unassigned Cases + Quick Actions ---------- */
+.admin-bottom-ops { display: grid; grid-template-columns: 1fr 2fr; gap: var(--space-5); margin-top: var(--space-5); align-items: start; }
+@media (max-width: 900px) { .admin-bottom-ops { grid-template-columns: 1fr; } }
 
-.admin-quick-actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+.admin-unassigned-block {
+    display: flex; align-items: center; gap: var(--space-3);
+    background: var(--status-yellow-bg); border: 1px solid var(--status-yellow);
+}
+.admin-unassigned-block__icon { color: var(--status-yellow); flex-shrink: 0; }
+.admin-unassigned-block__body { flex: 1; min-width: 0; }
+.admin-unassigned-block__body h3 { margin: 0 0 2px; }
+.admin-unassigned-block__body p { margin: 0; color: var(--text-muted); font-size: var(--font-size-sm); }
+.admin-unassigned-block__count { font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); color: var(--text-dark); }
+
+.admin-quick-actions h3 { margin: 0 0 var(--space-3); }
+.admin-quick-actions__row { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.admin-quick-action {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-2) var(--space-3); border-radius: var(--radius-md);
+    border: 1px solid var(--border); background: var(--surface); color: var(--text-dark);
+    font-size: var(--font-size-sm); font-weight: var(--font-weight-medium); text-decoration: none;
+    transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+.admin-quick-action:hover { border-color: var(--visa-blue); background: var(--visa-blue-light); color: var(--visa-blue); }
+
+/* ---------- Recent Enquiries: SLA countdown chip ---------- */
+.admin-sla-chip { font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); padding: 2px var(--space-2); border-radius: var(--radius-sm); white-space: nowrap; }
+.admin-sla-chip.is-red { color: var(--status-red); background: var(--status-red-bg); }
+.admin-sla-chip.is-orange { color: var(--status-orange); background: var(--status-orange-bg); }
+.admin-sla-chip.is-yellow { color: #8a6d00; background: var(--status-yellow-bg); }
+.admin-sla-chip.is-green { color: var(--status-green); background: var(--status-green-bg); }
+.admin-sla-chip.is-none { color: var(--text-muted); }
+
+/* ---------- Team Performance: avatar chip + SLA bar ---------- */
+.admin-avatar-chip { display: inline-flex; align-items: center; gap: var(--space-2); }
+.admin-avatar-chip__initials {
+    width: 26px; height: 26px; border-radius: var(--radius-full); background: var(--visa-blue); color: var(--white);
+    font-size: 11px; font-weight: var(--font-weight-bold); display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.admin-sla-bar { display: flex; align-items: center; gap: var(--space-2); min-width: 90px; }
+.admin-sla-bar__track { flex: 1; height: 6px; border-radius: var(--radius-full); background: var(--border); overflow: hidden; }
+.admin-sla-bar__fill { height: 100%; background: var(--status-green); border-radius: var(--radius-full); }
+.admin-sla-bar__fill.is-low { background: var(--status-orange); }
+.admin-sla-bar__pct { font-size: var(--font-size-xs); font-weight: var(--font-weight-semibold); color: var(--text-dark); flex-shrink: 0; }
 
 /* ---------- Empty / skeleton / error states ---------- */
 .admin-empty-state--icon { display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--space-2); padding: var(--space-6) var(--space-4); color: var(--text-muted); }

@@ -273,8 +273,9 @@ $slaSignature = 'breach-' . $slaBreachedCount . '-' . date('Y-m-d');
 admin_header_start('Dashboard', 'dashboard');
 ?>
 <div class="admin-greeting">
+    <div class="admin-greeting__illustration" aria-hidden="true"></div>
     <div class="admin-greeting__text">
-        <h1><?= e($greetingWord) ?>, <?= e($firstName ?: 'Admin') ?>!</h1>
+        <h1><span class="admin-greeting__wave" aria-hidden="true">&#128075;</span> <?= e($greetingWord) ?>, <?= e($firstName ?: 'Admin') ?>!</h1>
         <p>
             <?php if ($slaBreachedCount > 0): ?>
                 <?= $slaBreachedCount ?> case<?= $slaBreachedCount === 1 ? '' : 's' ?> need<?= $slaBreachedCount === 1 ? 's' : '' ?> attention before their SLA slips further.
@@ -285,14 +286,17 @@ admin_header_start('Dashboard', 'dashboard');
             <?php endif; ?>
         </p>
     </div>
-    <div class="admin-greeting__actions">
-        <span class="admin-freshness admin-freshness--live"><span class="admin-freshness__dot"></span> Live &middot; <?= e(date('D, d M Y, H:i')) ?></span>
-        <button type="button" class="btn btn-sm btn-outline admin-focus-toggle" id="admin-focus-toggle">Focus Mode</button>
-        <button type="button" class="btn btn-sm btn-outline" id="admin-customize-toggle">Customize</button>
+    <div class="admin-greeting__side">
+        <div class="admin-greeting__actions">
+            <span class="admin-freshness admin-freshness--live">
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="14" height="13" rx="1.5"/><path d="M3 8h14M6 2.5v3M14 2.5v3"/></svg>
+                <span class="admin-freshness__dot"></span> Live &middot; <?= e(date('D, d M Y, H:i')) ?>
+            </span>
+            <button type="button" class="btn btn-sm btn-outline admin-focus-toggle" id="admin-focus-toggle">Focus Mode</button>
+            <button type="button" class="btn btn-sm btn-outline" id="admin-customize-toggle">Customize</button>
+        </div>
+        <p class="admin-greeting__quote">&ldquo;People to Places. Possibilities Together.&rdquo;</p>
     </div>
-    <?php if ($slaBreachedCount === 0): ?>
-    <p class="admin-greeting__quote">&ldquo;People to Places. Possibilities Together.&rdquo;</p>
-    <?php endif; ?>
 </div>
 
 <?php if (has_permission('enquiries.view')): ?>
@@ -321,21 +325,20 @@ admin_header_start('Dashboard', 'dashboard');
 </div>
 <?php endif; ?>
 
-<?php if ($unassignedCount > 0): ?>
-<div class="admin-unassigned-bar">
-    <span class="admin-unassigned-bar__icon"><svg width="24" height="24" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10" cy="6.5" r="3"/><path d="M4.5 17c0-3.6 2.4-5.8 5.5-5.8" stroke-dasharray="2 2"/></svg></span>
-    <span class="admin-unassigned-bar__body"><span class="admin-unassigned-bar__count"><?= $unassignedCount ?></span> <span class="admin-unassigned-bar__label">case<?= $unassignedCount === 1 ? '' : 's' ?> waiting for assignment</span></span>
-    <a href="/admin/enquiries/?status=new_enquiry" class="btn btn-sm btn-primary">Assign Now</a>
-</div>
-<?php endif; ?>
-
 <?php
 // ---- Top Priorities (max 3, real cases, not repeated KPI numbers) ----
+$priorityIcons = [
+    'sla' => '<svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2 18 16H2Z"/><line x1="10" y1="8" x2="10" y2="11.5"/><circle cx="10" cy="14" r="0.6" fill="currentColor" stroke="none"/></svg>',
+    'documents' => '<svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2.5h6l3 3V17a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1Z"/><path d="M7.5 9h5M7.5 12h5"/></svg>',
+    'followup' => '<svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h12v9H8l-4 3.5V13H4Z"/></svg>',
+];
 $priorities = [];
 if ($worstOverdue) {
     $due = new DateTimeImmutable((string) $worstOverdue['sla_due_at']);
     $hoursOverdue = (int) round((time() - $due->getTimestamp()) / 3600);
     $priorities[] = [
+        'tone' => 'red',
+        'icon' => $priorityIcons['sla'],
         'title' => e($worstOverdue['name']) . ' &mdash; ' . e(ucfirst($worstOverdue['service_category'])) . ($worstOverdue['country_name'] ? ' (' . e($worstOverdue['country_name']) . ')' : ''),
         'meta' => 'Assigned: ' . e($worstOverdue['assigned_name'] ?? 'Unassigned'),
         'flag' => $hoursOverdue > 0 ? $hoursOverdue . 'h overdue' : 'Due now',
@@ -345,6 +348,8 @@ if ($worstOverdue) {
 }
 if ($pendingDocuments > 0) {
     $priorities[] = [
+        'tone' => 'amber',
+        'icon' => $priorityIcons['documents'],
         'title' => $pendingDocuments . ' document' . ($pendingDocuments === 1 ? '' : 's') . ' pending verification',
         'meta' => 'Awaiting document review',
         'flag' => null,
@@ -354,6 +359,8 @@ if ($pendingDocuments > 0) {
 }
 if ($reminderCounts['today'] > 0) {
     $priorities[] = [
+        'tone' => 'blue',
+        'icon' => $priorityIcons['followup'],
         'title' => $reminderCounts['today'] . ' follow-up' . ($reminderCounts['today'] === 1 ? '' : 's') . ' due today',
         'meta' => 'Customer responses pending',
         'flag' => null,
@@ -364,18 +371,23 @@ if ($reminderCounts['today'] > 0) {
 $priorities = array_slice($priorities, 0, 3);
 ?>
 <?php if ($priorities): ?>
-<div class="admin-priorities">
-    <?php foreach ($priorities as $i => $p): ?>
-    <div class="admin-priority-card">
-        <span class="admin-priority-card__rank"><?= $i + 1 ?></span>
-        <div class="admin-priority-card__body">
-            <p class="admin-priority-card__title"><?= $p['title'] ?></p>
-            <p class="admin-priority-card__meta"><?= $p['meta'] ?></p>
-            <?php if ($p['flag']): ?><span class="admin-priority-card__flag"><?= e($p['flag']) ?></span><?php endif; ?>
-            <div class="admin-priority-card__action"><a href="<?= e($p['href']) ?>" class="btn btn-sm btn-outline"><?= e($p['action']) ?></a></div>
-        </div>
+<div class="admin-priorities-section">
+    <div class="admin-priorities-section__head">
+        <h2>Top Priorities</h2>
+        <span>Your most important actions right now.</span>
     </div>
-    <?php endforeach; ?>
+    <div class="admin-priorities">
+        <?php foreach ($priorities as $p): ?>
+        <a href="<?= e($p['href']) ?>" class="admin-priority-card admin-priority-card--<?= e($p['tone']) ?>">
+            <span class="admin-priority-card__icon"><?= $p['icon'] ?></span>
+            <div class="admin-priority-card__body">
+                <p class="admin-priority-card__title"><?= $p['title'] ?></p>
+                <p class="admin-priority-card__meta"><?= $p['meta'] ?><?php if ($p['flag']): ?> &middot; <span class="admin-priority-card__flag"><?= e($p['flag']) ?></span><?php endif; ?></p>
+            </div>
+            <svg class="admin-priority-card__chevron" width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 4.5 13 10l-5.5 5.5"/></svg>
+        </a>
+        <?php endforeach; ?>
+    </div>
 </div>
 <?php endif; ?>
 
@@ -471,10 +483,10 @@ $priorities = array_slice($priorities, 0, 3);
                     <div class="admin-sla-ring__inner"><span class="admin-sla-ring__pct"><?= $slaOnTrackPct ?>%</span><span class="admin-sla-ring__label">On Track</span></div>
                 </div>
                 <div class="admin-sla-legend">
-                    <div class="admin-sla-legend__item"><span class="admin-sla-legend__dot is-green"></span>On Track<span class="admin-sla-legend__count"><?= $slaBuckets['green'] ?></span></div>
-                    <div class="admin-sla-legend__item"><span class="admin-sla-legend__dot is-yellow"></span>Due Soon (24h)<span class="admin-sla-legend__count"><?= $slaBuckets['yellow'] ?></span></div>
-                    <div class="admin-sla-legend__item"><span class="admin-sla-legend__dot is-orange"></span>At Risk (6h)<span class="admin-sla-legend__count"><?= $slaBuckets['orange'] ?></span></div>
-                    <div class="admin-sla-legend__item"><span class="admin-sla-legend__dot is-red"></span>Breached<span class="admin-sla-legend__count"><?= $slaBuckets['red'] ?></span></div>
+                    <div class="admin-sla-legend__item"><span class="admin-sla-legend__dot is-green"></span>On Track<span class="admin-sla-legend__count"><?= $slaBuckets['green'] ?> &middot; <?= round($slaBuckets['green'] / $slaTotal * 100) ?>%</span></div>
+                    <div class="admin-sla-legend__item"><span class="admin-sla-legend__dot is-yellow"></span>Due Soon (24h)<span class="admin-sla-legend__count"><?= $slaBuckets['yellow'] ?> &middot; <?= round($slaBuckets['yellow'] / $slaTotal * 100) ?>%</span></div>
+                    <div class="admin-sla-legend__item"><span class="admin-sla-legend__dot is-orange"></span>At Risk (6h)<span class="admin-sla-legend__count"><?= $slaBuckets['orange'] ?> &middot; <?= round($slaBuckets['orange'] / $slaTotal * 100) ?>%</span></div>
+                    <div class="admin-sla-legend__item"><span class="admin-sla-legend__dot is-red"></span>Breached<span class="admin-sla-legend__count"><?= $slaBuckets['red'] ?> &middot; <?= round($slaBuckets['red'] / $slaTotal * 100) ?>%</span></div>
                 </div>
             </div>
             <?php endif; ?>
@@ -511,18 +523,40 @@ $priorities = array_slice($priorities, 0, 3);
             <?php if (!$recentEnquiries): ?>
             <p class="admin-empty-state--icon"><svg width="28" height="28" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 8 14.5 16 5.5"/></svg>No new enquiries today.</p>
             <?php else: ?>
+            <?php
+            // SLA countdown per row — same overdue/due-soon math already
+            // used for Top Priorities/KPI Risk bucket, just rendered per
+            // enquiry rather than aggregated.
+            $slaCell = static function (?string $dueAt): string {
+                if ($dueAt === null) {
+                    return '<span class="admin-sla-chip is-none">&mdash;</span>';
+                }
+                $hoursLeft = ((new DateTimeImmutable($dueAt))->getTimestamp() - time()) / 3600;
+                if ($hoursLeft < 0) {
+                    return '<span class="admin-sla-chip is-red">' . (int) round(abs($hoursLeft)) . 'h overdue</span>';
+                }
+                if ($hoursLeft <= 6) {
+                    return '<span class="admin-sla-chip is-orange">' . (int) round($hoursLeft) . 'h left</span>';
+                }
+                if ($hoursLeft <= 24) {
+                    return '<span class="admin-sla-chip is-yellow">' . (int) round($hoursLeft) . 'h left</span>';
+                }
+                return '<span class="admin-sla-chip is-green">' . (int) round($hoursLeft / 24) . 'd left</span>';
+            };
+            ?>
             <div class="admin-table-scroll">
             <table class="admin-table">
-                <thead><tr><th>Reference</th><th>Customer</th><th>Service</th><th>Status</th><th>Priority</th><th>Assigned</th><th>Created</th></tr></thead>
+                <thead><tr><th>Reference</th><th>Customer</th><th>Service</th><th>Country</th><th>Status</th><th>Priority</th><th>SLA</th><th>Created</th></tr></thead>
                 <tbody>
                 <?php foreach ($recentEnquiries as $enq): ?>
                 <tr>
                     <td><a href="/admin/enquiries/?id=<?= (int) $enq['id'] ?>"><?= e($enq['enquiry_number']) ?></a></td>
                     <td><?= e($enq['name']) ?></td>
-                    <td><?= e(ucfirst($enq['service_category'])) ?><?= $enq['country_name'] ? ' — ' . e($enq['country_name']) : '' ?></td>
+                    <td><?= e(ucfirst($enq['service_category'])) ?></td>
+                    <td><?= $enq['country_name'] ? e($enq['country_name']) : '—' ?></td>
                     <td><span class="badge badge-info"><?= e(enquiry_customer_status_label($enq['status'])) ?></span></td>
                     <td><span class="badge <?= $enq['priority'] === 'urgent' ? 'badge-danger' : ($enq['priority'] === 'high' ? 'badge-warning' : 'badge-neutral') ?>"><?= e(ucfirst($enq['priority'])) ?></span></td>
-                    <td><?= $enq['assigned_name'] ? e($enq['assigned_name']) : '—' ?></td>
+                    <td><?= $slaCell($enq['sla_due_at']) ?></td>
                     <td><?= e(date('d M, H:i', strtotime($enq['created_at']))) ?></td>
                 </tr>
                 <?php endforeach; ?>
@@ -535,7 +569,7 @@ $priorities = array_slice($priorities, 0, 3);
                     <p class="admin-record-card__title"><?= e($enq['name']) ?></p>
                     <div class="admin-record-card__row"><span>Service</span><strong><?= e(ucfirst($enq['service_category'])) ?><?= $enq['country_name'] ? ' — ' . e($enq['country_name']) : '' ?></strong></div>
                     <div class="admin-record-card__row"><span>Status</span><strong><?= e(enquiry_customer_status_label($enq['status'])) ?></strong></div>
-                    <div class="admin-record-card__row"><span>Assigned</span><strong><?= $enq['assigned_name'] ? e($enq['assigned_name']) : '—' ?></strong></div>
+                    <div class="admin-record-card__row"><span>SLA</span><strong><?= $slaCell($enq['sla_due_at']) ?></strong></div>
                     <div class="admin-record-card__action"><a href="/admin/enquiries/?id=<?= (int) $enq['id'] ?>" class="btn btn-sm btn-outline">Open Case</a></div>
                 </div>
                 <?php endforeach; ?>
@@ -576,14 +610,27 @@ $priorities = array_slice($priorities, 0, 3);
             <div class="admin-panel__head"><h3 class="admin-panel__title">Team Performance</h3><span class="admin-panel__meta">This month</span></div>
             <div class="admin-table-scroll">
             <table class="admin-table admin-team-table">
-                <thead><tr><th>Employee</th><th>Open</th><th>Done</th><th>Breach</th></tr></thead>
+                <thead><tr><th>Employee</th><th>Open</th><th>Done</th><th>SLA</th></tr></thead>
                 <tbody>
-                <?php foreach ($teamPerformance as $t): $breaches = (int) $t['breaches']; ?>
+                <?php foreach ($teamPerformance as $t):
+                    $open = (int) $t['assigned_open'];
+                    $breaches = (int) $t['breaches'];
+                    // Real, derived from the same counts already computed
+                    // above — no new query, no invented figure.
+                    $slaPct = $open > 0 ? (int) round(($open - $breaches) / $open * 100) : 100;
+                ?>
                 <tr>
-                    <td><?= e($t['full_name']) ?></td>
-                    <td><?= (int) $t['assigned_open'] ?></td>
+                    <td>
+                        <span class="admin-avatar-chip"><span class="admin-avatar-chip__initials"><?= e(admin_initials($t['full_name'])) ?></span><?= e($t['full_name']) ?></span>
+                    </td>
+                    <td><?= $open ?></td>
                     <td><?= (int) $t['completed_month'] ?></td>
-                    <td><span class="badge <?= $breaches > 0 ? 'badge-danger' : 'badge-success' ?>"><?= $breaches ?></span></td>
+                    <td>
+                        <div class="admin-sla-bar" title="<?= $slaPct ?>% breach-free">
+                            <div class="admin-sla-bar__track"><div class="admin-sla-bar__fill<?= $slaPct < 80 ? ' is-low' : '' ?>" style="width:<?= $slaPct ?>%"></div></div>
+                            <span class="admin-sla-bar__pct"><?= $slaPct ?>%</span>
+                        </div>
+                    </td>
                 </tr>
                 <?php endforeach; ?>
                 </tbody>
@@ -597,6 +644,46 @@ $priorities = array_slice($priorities, 0, 3);
 </div>
 
 </div>
+
+<?php
+$quickActions = [];
+if (has_permission('customers.manage')) {
+    $quickActions[] = ['label' => 'Add Customer', 'href' => '/admin/customers/?action=create', 'icon' => '<svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="6.5" r="3"/><path d="M2.5 17c0-3.6 2.5-5.8 5.5-5.8M14 5v6M11 8h6"/></svg>'];
+}
+if (has_permission('visa.manage')) {
+    $quickActions[] = ['label' => 'Visa Application', 'href' => '/admin/visa-applications/?action=create', 'icon' => '<svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="14" height="14" rx="1.5"/><path d="M7 10h6M10 7v6"/></svg>'];
+}
+if (has_permission('reminders.manage')) {
+    $quickActions[] = ['label' => 'Create Task', 'href' => '/admin/reminders/?action=create', 'icon' => '<svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5 8 14.5 16 5.5"/></svg>'];
+}
+if (has_permission('forex.requests.manage')) {
+    $quickActions[] = ['label' => 'Forex Request', 'href' => '/admin/forex-requests/?action=create', 'icon' => '<svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="M7.5 8.5c0-1 1-1.7 2.5-1.7s2.5.6 2.5 1.5c0 2-5 1.3-5 3.4 0 .9 1 1.5 2.5 1.5s2.5-.7 2.5-1.7M10 5.5v9"/></svg>'];
+}
+?>
+<?php if ($unassignedCount > 0 || $quickActions): ?>
+<div class="admin-bottom-ops">
+    <?php if ($unassignedCount > 0): ?>
+    <div class="admin-panel admin-unassigned-block">
+        <span class="admin-unassigned-block__icon"><svg width="22" height="22" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="10" cy="6.5" r="3"/><path d="M4.5 17c0-3.6 2.4-5.8 5.5-5.8" stroke-dasharray="2 2"/></svg></span>
+        <div class="admin-unassigned-block__body">
+            <h3 class="admin-panel__title">Unassigned Cases</h3>
+            <p><span class="admin-unassigned-block__count"><?= $unassignedCount ?></span> case<?= $unassignedCount === 1 ? '' : 's' ?> waiting for assignment</p>
+        </div>
+        <a href="/admin/enquiries/?status=new_enquiry" class="btn btn-sm btn-primary">Assign Now</a>
+    </div>
+    <?php endif; ?>
+    <?php if ($quickActions): ?>
+    <div class="admin-panel admin-quick-actions">
+        <h3 class="admin-panel__title">Quick Actions</h3>
+        <div class="admin-quick-actions__row">
+            <?php foreach ($quickActions as $qa): ?>
+            <a href="<?= e($qa['href']) ?>" class="admin-quick-action"><?= $qa['icon'] ?><?= e($qa['label']) ?></a>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <?php endif; ?>
+</div>
+<?php endif; ?>
 
 <?php if (has_permission('audit.view')): ?>
 <div class="admin-panel">
