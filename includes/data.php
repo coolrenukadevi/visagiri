@@ -18,7 +18,8 @@ function countries_all(): array
     if ($countries === null) {
         $countries = db()->query(
             'SELECT c.id, c.name, c.slug, c.iso2, c.iso3, r.name AS region,
-                    c.is_popular_destination, c.is_schengen, c.is_active
+                    c.is_popular_destination, c.is_schengen, c.is_active,
+                    c.meta_title, c.meta_description
              FROM countries c
              LEFT JOIN regions r ON r.id = c.region_id
              WHERE c.is_active = 1
@@ -50,7 +51,8 @@ function visa_types_all(): array
     static $types = null;
     if ($types === null) {
         $types = db()->query(
-            'SELECT id, name, slug, description, icon, sort_order, is_active
+            'SELECT id, name, slug, description, icon, sort_order, is_active,
+                    meta_title, meta_description
              FROM visa_types WHERE is_active = 1 ORDER BY sort_order'
         )->fetchAll();
         foreach ($types as &$t) {

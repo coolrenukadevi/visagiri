@@ -68,16 +68,20 @@ if ($typeSlug !== null) {
     $fee = fetch_visa_fee((int) $country['id'], (int) $visaType['id']);
     $hasChecklistAccess = $checklist !== null && has_checklist_access((int) $country['id'], (int) $visaType['id']);
 
-    $pageTitle = $checklist !== null
-        ? "{$country['name']} {$visaType['name']} Checklist for Indians | Documents Required | Visagiri"
-        : ($hasRichRequirement
-            ? "{$country['name']} {$visaType['name']} Consultant in India | Visagiri"
-            : "{$visaType['name']} for {$country['name']} - Visagiri");
-    $pageDescription = $checklist !== null
-        ? "Complete, independently maintained {$country['name']} {$visaType['name']} document checklist for Indian applicants — core requirements shown here, with the full checklist available after a quick enquiry."
-        : ($hasRichRequirement
-            ? "{$country['name']} {$visaType['name']} eligibility, documents, application process, and consultant support for Indian applicants, including Patna and Bihar — enquire with Visagiri."
-            : "{$visaType['name']} eligibility, required documents, fees, and processing time for {$country['name']} — enquire with Visagiri.");
+    $pageTitle = !empty($visaType['meta_title'])
+        ? $visaType['meta_title']
+        : ($checklist !== null
+            ? "{$country['name']} {$visaType['name']} Checklist for Indians | Documents Required | Visagiri"
+            : ($hasRichRequirement
+                ? "{$country['name']} {$visaType['name']} Consultant in India | Visagiri"
+                : "{$visaType['name']} for {$country['name']} - Visagiri"));
+    $pageDescription = !empty($visaType['meta_description'])
+        ? $visaType['meta_description']
+        : ($checklist !== null
+            ? "Complete, independently maintained {$country['name']} {$visaType['name']} document checklist for Indian applicants — core requirements shown here, with the full checklist available after a quick enquiry."
+            : ($hasRichRequirement
+                ? "{$country['name']} {$visaType['name']} eligibility, documents, application process, and consultant support for Indian applicants, including Patna and Bihar — enquire with Visagiri."
+                : "{$visaType['name']} eligibility, required documents, fees, and processing time for {$country['name']} — enquire with Visagiri."));
     $canonicalUrl = APP_URL . "/visa/{$country['slug']}/{$visaType['slug']}/";
     $structuredData = [[
         '@context' => 'https://schema.org',
@@ -656,12 +660,16 @@ $countryName = $country['name'];
 
 $hasRichContent = $countryContent !== null;
 
-$pageTitle = $hasRichContent
-    ? "{$country['name']} Visa Consultant in India | {$country['name']} Visa Services | Visagiri"
-    : "{$country['name']} Visa Requirements - Visagiri";
-$pageDescription = $hasRichContent
-    ? "Visagiri is a {$country['name']} visa consultant serving Indian applicants nationwide, with local support for Patna and Bihar — eligibility, documents, application assistance, and enquiry support for every {$country['name']} visa category."
-    : "Visa types, eligibility, and application information for {$country['name']}. Explore requirements by visa type and enquire with Visagiri.";
+$pageTitle = !empty($country['meta_title'])
+    ? $country['meta_title']
+    : ($hasRichContent
+        ? "{$country['name']} Visa Consultant in India | {$country['name']} Visa Services | Visagiri"
+        : "{$country['name']} Visa Requirements - Visagiri");
+$pageDescription = !empty($country['meta_description'])
+    ? $country['meta_description']
+    : ($hasRichContent
+        ? "Visagiri is a {$country['name']} visa consultant serving Indian applicants nationwide, with local support for Patna and Bihar — eligibility, documents, application assistance, and enquiry support for every {$country['name']} visa category."
+        : "Visa types, eligibility, and application information for {$country['name']}. Explore requirements by visa type and enquire with Visagiri.");
 $canonicalUrl = APP_URL . "/visa/{$country['slug']}/";
 $structuredData = [[
     '@context' => 'https://schema.org',

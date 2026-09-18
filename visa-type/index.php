@@ -30,8 +30,12 @@ if ($typeSlug !== null) {
 
     $faqs = faqs_general();
 
-    $pageTitle = "{$visaType['name']} Requirements & How to Apply | Visagiri";
-    $pageDescription = mb_substr($visaType['description'], 0, 110) . ' See popular destinations and enquire with Visagiri.';
+    $pageTitle = !empty($visaType['meta_title'])
+        ? $visaType['meta_title']
+        : "{$visaType['name']} Requirements & How to Apply | Visagiri";
+    $pageDescription = !empty($visaType['meta_description'])
+        ? $visaType['meta_description']
+        : mb_substr($visaType['description'], 0, 110) . ' See popular destinations and enquire with Visagiri.';
     $canonicalUrl = APP_URL . "/visa-type/{$visaType['slug']}/";
     $structuredData = [[
         '@context' => 'https://schema.org',
@@ -42,6 +46,17 @@ if ($typeSlug !== null) {
             ['@type' => 'ListItem', 'position' => 3, 'name' => $visaType['name'], 'item' => $canonicalUrl],
         ],
     ]];
+    if ($faqs) {
+        $structuredData[] = [
+            '@context' => 'https://schema.org',
+            '@type' => 'FAQPage',
+            'mainEntity' => array_map(static fn($f) => [
+                '@type' => 'Question',
+                'name' => $f['question'],
+                'acceptedAnswer' => ['@type' => 'Answer', 'text' => $f['answer']],
+            ], $faqs),
+        ];
+    }
     require __DIR__ . '/../includes/header.php';
     ?>
     <section class="visa-detail">
