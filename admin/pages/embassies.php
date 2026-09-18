@@ -39,7 +39,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pdo->prepare("DELETE FROM $table WHERE id = :id")->execute(['id' => $id]);
         log_action('delete', $table, $id, $oldName, null);
         flash_set('admin_notice', $tables[$postType]['label'] . ' deleted.');
-        redirect('/admin/embassies/?type=' . $postType);
+        // Preserves the list's current search/filter state across the
+        // delete — reconstructed only from a fixed whitelist of known
+        // param names posted back as hidden fields.
+        $returnQuery = http_build_query(array_filter([
+            'type' => $postType,
+            'q' => trim((string) ($_POST['q'] ?? '')),
+            'country_id' => $_POST['filter_country_id'] ?? '',
+            'city' => trim((string) ($_POST['filter_city'] ?? '')),
+        ], static fn($v) => $v !== ''));
+        redirect('/admin/embassies/?' . $returnQuery);
     }
 
     if ($postAction === 'save') {
@@ -169,7 +178,37 @@ if ($action === 'create' || $action === 'edit') {
 }
 
 $table = $tables[$type]['table'];
-$entries = $pdo->query("SELECT e.*, c.name AS country_name FROM $table e JOIN countries c ON c.id = e.country_id ORDER BY c.name, e.name")->fetchAll();
+
+$search = trim((string) ($_GET['q'] ?? ''));
+$countryFilter = (int) ($_GET['country_id'] ?? 0) ?: null;
+$cityFilter = trim((string) ($_GET['city'] ?? ''));
+
+$conditions = [];
+$params = [];
+if ($search !== '') {
+    $conditions[] = 'e.name LIKE :search';
+    $params['search'] = "%$search%";
+}
+if ($countryFilter) {
+    $conditions[] = 'e.country_id = :country_id';
+    $params['country_id'] = $countryFilter;
+}
+if ($cityFilter !== '') {
+    $conditions[] = 'e.city LIKE :city';
+    $params['city'] = "%$cityFilter%";
+}
+$where = $conditions ? 'WHERE ' . implode(' AND ', $conditions) : '';
+
+$stmt = $pdo->prepare("SELECT e.*, c.name AS country_name FROM $table e JOIN countries c ON c.id = e.country_id $where ORDER BY c.name, e.name");
+$stmt->execute($params);
+$entries = $stmt->fetchAll();
+
+$filterState = array_filter([
+    'q' => $search,
+    'country_id' => $countryFilter ?: '',
+    'city' => $cityFilter,
+], static fn($v) => $v !== '' && $v !== null);
+$hasFilters = $filterState !== [];
 
 admin_header_start('Embassies / Consulates / VACs', 'embassies');
 admin_subnav('content', 'embassies');
@@ -184,11 +223,27 @@ admin_subnav('content', 'embassies');
     <a href="/admin/embassies/?action=create&type=<?= e($type) ?>" class="btn btn-primary">+ Add <?= e($tables[$type]['label']) ?></a>
     <?php endif; ?>
 </div>
+<form method="get" action="/admin/embassies/" style="display:flex;gap:var(--space-2);flex-wrap:wrap;align-items:center;margin-top:var(--space-3)">
+    <input type="hidden" name="type" value="<?= e($type) ?>">
+    <input class="form-input" type="search" name="q" value="<?= e($search) ?>" placeholder="Search by name…" style="min-width:200px">
+    <select class="form-select" name="country_id">
+        <option value="">All countries</option>
+        <?php foreach ($countries as $c): ?>
+        <option value="<?= (int) $c['id'] ?>" <?= $countryFilter === (int) $c['id'] ? 'selected' : '' ?>><?= e($c['name']) ?></option>
+        <?php endforeach; ?>
+    </select>
+    <input class="form-input" type="text" name="city" value="<?= e($cityFilter) ?>" placeholder="City…" style="max-width:160px">
+    <button type="submit" class="btn btn-outline">Filter</button>
+    <?php if ($hasFilters): ?>
+    <a href="/admin/embassies/?type=<?= e($type) ?>" class="btn btn-outline">Reset</a>
+    <?php endif; ?>
+</form>
 <?php if ($entries): ?>
-<table class="admin-table">
+<table class="admin-table" style="margin-top:var(--space-4)">
     <thead><tr><th>Country</th><th>Name</th><th>City</th><th>Phone</th><th></th></tr></thead>
     <tbody>
     <?php $canManageContent = has_permission('content.manage'); ?>
+    <?php $returnFieldsHtml = '<input type="hidden" name="q" value="' . e($search) . '"><input type="hidden" name="filter_country_id" value="' . (int) ($countryFilter ?? 0) . '"><input type="hidden" name="filter_city" value="' . e($cityFilter) . '">'; ?>
     <?php foreach ($entries as $entry): ?>
         <tr>
             <td><?= e($entry['country_name']) ?></td>
@@ -199,7 +254,7 @@ admin_subnav('content', 'embassies');
                 <?php if ($canManageContent): ?>
                 <a href="/admin/embassies/?action=edit&id=<?= (int) $entry['id'] ?>&type=<?= e($type) ?>" class="btn btn-outline btn-sm">Edit</a>
                 <form method="post" action="/admin/embassies/" style="display:inline" onsubmit="return confirm('Delete this entry?');">
-                    <?= csrf_field() ?><input type="hidden" name="action" value="delete"><input type="hidden" name="type" value="<?= e($type) ?>"><input type="hidden" name="id" value="<?= (int) $entry['id'] ?>">
+                    <?= csrf_field() ?><input type="hidden" name="action" value="delete"><input type="hidden" name="type" value="<?= e($type) ?>"><input type="hidden" name="id" value="<?= (int) $entry['id'] ?>"><?= $returnFieldsHtml ?>
                     <button type="submit" class="btn btn-outline btn-sm">Delete</button>
                 </form>
                 <?php endif; ?>
@@ -209,7 +264,7 @@ admin_subnav('content', 'embassies');
     </tbody>
 </table>
 <?php else: ?>
-<p class="empty-state">No <?= strtolower(e($tables[$type]['label'])) ?> entries published yet.</p>
+<p class="empty-state" style="margin-top:var(--space-4)"><?= $hasFilters ? 'No ' . strtolower(e($tables[$type]['label'])) . ' entries match your filters.' : 'No ' . strtolower(e($tables[$type]['label'])) . ' entries published yet.' ?></p>
 <?php endif; ?>
 <?php
 admin_header_end();
