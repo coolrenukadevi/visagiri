@@ -48,6 +48,7 @@ rsync -a \
   --exclude 'legacy-site' \
   --exclude 'docs' \
   --exclude 'bin' \
+  --exclude 'platform' \
   --exclude 'google-apps-script' \
   --exclude '*.zip' \
   --exclude '*.log' \
