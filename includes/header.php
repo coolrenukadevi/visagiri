@@ -126,7 +126,7 @@ $companyMenu = [
     'Discover' => [
         ['label' => 'About Us', 'desc' => 'Who we are, our mission, vision and values', 'href' => '/about/', 'icon' => 'about'],
         ['label' => 'Why Us', 'desc' => 'Our expertise, technology, transparency and service advantage', 'href' => '/why-visagiri/', 'icon' => 'shield'],
-        ['label' => 'Our Story', 'desc' => 'Our journey and evolution', 'href' => '/about/#our-story', 'icon' => 'compass'],
+        ['label' => 'Our Story', 'desc' => 'Our journey and evolution', 'href' => '/our-story/', 'icon' => 'compass'],
     ],
     'People' => [
         ['label' => 'Leadership', 'desc' => 'Leadership and management', 'href' => '/leadership/', 'icon' => 'star'],

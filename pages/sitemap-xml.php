@@ -28,6 +28,8 @@ $visaTypes = visa_types_all();
 $staticUrls = [
     ['loc' => '/', 'priority' => '1.0', 'changefreq' => 'weekly'],
     ['loc' => '/about/', 'priority' => '0.6', 'changefreq' => 'monthly'],
+    ['loc' => '/why-visagiri/', 'priority' => '0.5', 'changefreq' => 'monthly'],
+    ['loc' => '/our-story/', 'priority' => '0.4', 'changefreq' => 'monthly'],
     ['loc' => '/leadership/', 'priority' => '0.4', 'changefreq' => 'monthly'],
     ['loc' => '/our-team/', 'priority' => '0.4', 'changefreq' => 'monthly'],
     ['loc' => '/countries/', 'priority' => '0.9', 'changefreq' => 'weekly'],
