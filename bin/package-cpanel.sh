@@ -59,7 +59,17 @@ rsync -a \
   --exclude 'storage/cache/*' \
   --exclude 'storage/forex-documents/*' \
   --exclude 'storage/hrms-documents/*' \
+  --exclude 'database/seed-all-visa-checklists-combined.sql' \
+  --exclude 'database/seed-all-visa-checklists-combined.sql.gz' \
   ./ "$BUILD_DIR/"
+
+# The combined checklist file is 100% redundant with the 190 individual
+# database/seed-checklist-*.sql files already included above — it's
+# only a convenience for a single phpMyAdmin import instead of 190,
+# and at ~8MB uncompressed it would push the whole package over common
+# chat/email attachment limits for no benefit (the same content is
+# already in the zip, just split across files). Deliver it separately,
+# gzipped, when it's actually needed.
 
 # config/database.php and config/encryption.php are gitignored for a
 # reason (the real DB password and the real AES key that will encrypt
