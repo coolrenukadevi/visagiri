@@ -68,15 +68,25 @@ if ($typeSlug !== null) {
     $fee = fetch_visa_fee((int) $country['id'], (int) $visaType['id']);
     $hasChecklistAccess = $checklist !== null && has_checklist_access((int) $country['id'], (int) $visaType['id']);
 
-    $pageTitle = !empty($visaType['meta_title'])
-        ? $visaType['meta_title']
+    // Priority: this specific country+type checklist's own meta_title/
+    // description (SEO Wave 3, database/schema-visa-checklist-seo.sql)
+    // first, since it's the only field genuinely unique to THIS page.
+    // $visaType['meta_title'] (the visa TYPE's own, shared across every
+    // country) used to be checked here ahead of the generated fallback
+    // — a latent duplicate-title bug: the moment an editor set it via
+    // the CMS, every country's page for that type would get the exact
+    // same title, which is the opposite of what unique per-page
+    // metadata is for. It's no longer consulted for this per-pair page
+    // (it still correctly drives /visa-type/{slug}/ itself, see below).
+    $pageTitle = !empty($checklist['meta_title'])
+        ? $checklist['meta_title']
         : ($checklist !== null
             ? "{$country['name']} {$visaType['name']} Checklist for Indians | Documents Required | Visagiri"
             : ($hasRichRequirement
                 ? "{$country['name']} {$visaType['name']} Consultant in India | Visagiri"
                 : "{$visaType['name']} for {$country['name']} - Visagiri"));
-    $pageDescription = !empty($visaType['meta_description'])
-        ? $visaType['meta_description']
+    $pageDescription = !empty($checklist['meta_description'])
+        ? $checklist['meta_description']
         : ($checklist !== null
             ? "Complete, independently maintained {$country['name']} {$visaType['name']} document checklist for Indian applicants — core requirements shown here, with the full checklist available after a quick enquiry."
             : ($hasRichRequirement
