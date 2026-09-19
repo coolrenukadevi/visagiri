@@ -48,6 +48,18 @@ $searchContext = array_filter([
     'travel_date' => $_GET['travel_date'] ?? '',
 ]);
 
+// The home page search widget's nationality dropdown submits raw option
+// values — "in" for its hardcoded Indian option, or a country slug for
+// every other option (it reuses the same popular-countries list as the
+// destination dropdown) — never a display label. Resolve to one here so
+// the banner below never echoes a slug like "in" or "united-states" back
+// at the visitor.
+if (!empty($searchContext['nationality'])) {
+    $searchContext['nationality'] = $searchContext['nationality'] === 'in'
+        ? 'Indian'
+        : (country_by_slug($searchContext['nationality'])['name'] ?? $searchContext['nationality']);
+}
+
 if ($typeSlug !== null) {
     $visaType = visa_type_by_slug($typeSlug);
 
