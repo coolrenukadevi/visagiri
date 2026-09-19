@@ -1,0 +1,24 @@
+/*
+ * Page-specific styles for the standalone /about/ page. Shared
+ * header/nav/footer/hero/ledger/etc. styles live in
+ * pages-standalone.css, loaded before this file.
+ */
+
+.route{background:var(--mist);border:1px solid var(--line);border-radius:10px;padding:22px 22px 14px}
+.route figcaption{font-size:.9rem;color:var(--ink-soft);margin-top:6px;padding-top:12px;border-top:1px solid var(--line)}
+.route svg text{font-family:var(--sans)}
+
+/* One orchestrated moment: the four stamps press in, in order. */
+.stamp{opacity:0;transform-box:fill-box;transform-origin:center;animation:press .45s cubic-bezier(.2,.8,.2,1) forwards}
+.stamp:nth-of-type(1){animation-delay:.25s}
+.stamp:nth-of-type(2){animation-delay:.75s}
+.stamp:nth-of-type(3){animation-delay:1.25s}
+.stamp:nth-of-type(4){animation-delay:1.75s}
+.trail{stroke-dasharray:300;stroke-dashoffset:300;animation:draw 1.8s .2s ease-out forwards}
+@keyframes press{from{opacity:0;transform:scale(1.25) rotate(-6deg)}to{opacity:1;transform:none}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){
+  .stamp{animation:none;opacity:1}
+  .trail{animation:none;stroke-dashoffset:0}
+  html{scroll-behavior:auto}
+}

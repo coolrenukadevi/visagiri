@@ -52,10 +52,19 @@ function send_security_headers(): void
     // to ask at all.
     header('Permissions-Policy: geolocation=(), microphone=(self), camera=()');
     // style-src/font-src extended for fonts.googleapis.com/fonts.gstatic.com
-    // specifically for the /why-visagiri/ page's Newsreader/IBM Plex
-    // pairing (public/assets/css/why-visagiri.css) — every other page
+    // for the standalone /about/, /why-visagiri/ and /our-story/ pages'
+    // Instrument Sans/Source Serif 4 pairing (pages/about.php,
+    // pages/why-visagiri.php, pages/our-story.php) — every other page
     // still only uses the system font stack, so this doesn't widen what
-    // any other page can load.
+    // any other page can load. style-src's 'unsafe-inline' (needed
+    // sitewide for inline style="" attributes) covers those three
+    // pages' CSS too, since it's all in external stylesheets
+    // (public/assets/css/pages-standalone.css + about.css /
+    // why-visagiri.css / our-story.css) rather than inline <style>
+    // blocks. script-src has no 'unsafe-inline', which is why those
+    // pages' mobile-menu toggle lives in the external
+    // public/assets/js/pages-standalone.js instead of an inline
+    // <script>.
     header("Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; frame-ancestors 'none'");
     // Browsers ignore this entirely over plain HTTP (harmless in local
     // dev), and public/.htaccess already forces HTTP -> HTTPS, so this
