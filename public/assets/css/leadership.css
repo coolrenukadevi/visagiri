@@ -1,0 +1,15 @@
+/*
+ * Page-specific styles for the standalone /leadership/ page. Shared
+ * header/nav/footer/hero/ledger/etc. styles live in
+ * pages-standalone.css, loaded before this file.
+ */
+
+.lead-hero{padding-block:36px clamp(28px,4vw,48px)}
+.lead-hero h1{max-width:22ch;margin-bottom:.5em}
+.people{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(20px,4vw,48px);max-width:880px}
+.person img{width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;object-position:50% 20%;border-radius:8px;background:var(--mist)}
+.person h3{margin:18px 0 2px;font-size:1.7rem}
+.person .role{margin:0 0 12px;color:var(--ink-soft)}
+.person .in{display:inline-block;padding:8px 14px;border:1px solid var(--line);border-radius:999px;text-decoration:none;font-size:.95rem;font-weight:500}
+.person .in:hover{border-color:var(--stamp)}
+@media (max-width:480px){.people{grid-template-columns:1fr}}

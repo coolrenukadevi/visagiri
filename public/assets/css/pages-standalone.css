@@ -1,19 +1,26 @@
 /*
- * Shared stylesheet for the standalone /about/ and /why-visagiri/ pages.
- * These two pages deliberately don't use the site's shared
- * includes/header.php / includes/footer.php or public/assets/css/
- * tokens.css + components.css — they carry their own header, nav,
- * footer and component styles. This file is still shared BETWEEN the
- * two of them (identical nav/footer/hero/ledger/FAQ markup) so a color
- * or spacing fix doesn't have to be made twice.
+ * Shared stylesheet for the standalone /about/, /why-visagiri/,
+ * /our-story/ and /leadership/ pages. These pages deliberately don't
+ * use the site's shared includes/header.php / includes/footer.php or
+ * public/assets/css/tokens.css + components.css — they carry their
+ * own header, nav, footer and component styles. This file is still
+ * shared BETWEEN all of them (identical nav/footer/hero/ledger/FAQ
+ * markup) so a color or spacing fix doesn't have to be made in four
+ * places.
  *
  * Brand colors below are not invented — they're the same navy/gold
  * pulled straight from the real logo (public/assets/images/
  * logo-horizontal.png) and already defined as --visa-blue/--visa-gold
  * in public/assets/css/tokens.css; kept as a separate --stamp/--go
  * token set here rather than importing tokens.css itself, since these
- * two pages intentionally don't inherit the rest of the site's design
+ * pages intentionally don't inherit the rest of the site's design
  * system.
+ *
+ * .wrap is deliberately edge-to-edge (full viewport width, gutter
+ * padding only, no centered max-width column) at the client's request
+ * — accepted tradeoff: on very wide screens, text lines and multi-
+ * column grids (ledger, hero-grid, people, reasons, ...) stretch
+ * wider than typical readable line-length.
  */
 :root{
   --ink:#172033;
@@ -28,7 +35,6 @@
   --go-dark:#C98F00;
   --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
   --sans:"Instrument Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --wrap:1120px;
 }
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:16px}
@@ -37,7 +43,7 @@ img,svg{max-width:100%;display:block}
 a{color:var(--stamp);text-underline-offset:3px;text-decoration-thickness:1px}
 a:hover{text-decoration-thickness:2px}
 :focus-visible{outline:3px solid var(--stamp);outline-offset:3px;border-radius:3px}
-.wrap{max-width:var(--wrap);margin-inline:auto;padding-inline:clamp(18px,4vw,32px)}
+.wrap{width:100%;margin-inline:0;padding-inline:clamp(18px,4vw,48px)}
 .skip{position:absolute;left:-999px;top:8px;background:var(--ink);color:#fff;padding:10px 14px;z-index:20;border-radius:4px}
 .skip:focus{left:8px}
 
