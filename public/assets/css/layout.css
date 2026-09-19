@@ -13,6 +13,14 @@
   border-bottom: 1px solid var(--border);
   box-shadow: 0 1px 0 rgba(23, 32, 51, 0.02);
   transition: background-color var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+  /* The utility bar below collapses (height change) when .is-scrolled
+     toggles, which shifts page layout while this element is sticky.
+     Without this, Chrome's scroll anchoring "corrects" scrollY to
+     compensate for that shift, which can push it back across the JS
+     threshold in site.js and re-toggle the class — a feedback loop
+     that reads as the header visibly vibrating at that scroll
+     position. Scroll anchoring elsewhere on the page is unaffected. */
+  overflow-anchor: none;
 }
 
 /* Premium scroll state: a soft frosted-glass bar with real depth,

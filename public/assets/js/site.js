@@ -8,8 +8,20 @@
 
   var header = document.getElementById('site-header');
   if (header) {
+    // Two thresholds (not one) so the class can't flip-flop from a
+    // single scrollY value sitting right at the boundary — it must
+    // clear 40px to collapse, then drop back under 8px to expand
+    // again. Paired with overflow-anchor: none on .site-header
+    // (layout.css) to fully stop the header-vibrates-on-scroll bug
+    // this combination previously caused.
+    var scrolledState = false;
     var onScroll = function () {
-      header.classList.toggle('is-scrolled', window.scrollY > 12);
+      if (!scrolledState && window.scrollY > 40) {
+        scrolledState = true;
+      } else if (scrolledState && window.scrollY < 8) {
+        scrolledState = false;
+      }
+      header.classList.toggle('is-scrolled', scrolledState);
     };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
