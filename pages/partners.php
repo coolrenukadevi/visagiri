@@ -103,18 +103,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $pageTitle = 'Become a Visa Partner - B2B Partner Onboarding | Visagiri';
 $pageDescription = 'Join the Visagiri B2B Partner Program: register your agency, complete legal verification with GST/PAN/IATA details and document upload, and start referring visa customers through a dedicated partner dashboard with tiered commissions.';
 $canonicalUrl = APP_URL . '/partners/';
-$structuredData = [[
-    '@context' => 'https://schema.org',
-    '@type' => 'BreadcrumbList',
-    'itemListElement' => [
-        ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => APP_URL . '/'],
-        ['@type' => 'ListItem', 'position' => 2, 'name' => 'Become a Partner', 'item' => $canonicalUrl],
-    ],
-]];
+$breadcrumbItems = [
+    ['name' => 'Home', 'url' => APP_URL . '/'],
+    ['name' => 'Become a Partner', 'url' => $canonicalUrl],
+];
+$structuredData = [breadcrumb_schema($breadcrumbItems)];
 require __DIR__ . '/../includes/header.php';
 ?>
 <section class="section" style="padding-top:var(--space-8)">
     <div class="container" style="max-width:760px;text-align:center">
+        <?= breadcrumb_html($breadcrumbItems) ?>
         <span class="section-eyebrow">B2B Partner Onboarding</span>
         <h1>Grow Your Travel Business With Visagiri</h1>
         <p>If you run a travel agency, tour operation, or independent consultancy and regularly handle visa cases for your customers, the Visagiri Partner Program lets you refer that work to a dedicated visa and attestation team while staying visible in every step of it. Every application you send us is tracked from submission to decision inside your own partner dashboard, every commission is calculated automatically against your tier, and every document you exchange with us — theirs or yours — moves through the same secure, audit-logged storage the rest of our operations run on. Onboarding is a one-time process: register your business, complete a short legal verification with your registration documents, and once our team approves your account, referrals can start the same day.</p>

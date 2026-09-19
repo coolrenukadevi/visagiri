@@ -11,14 +11,11 @@ declare(strict_types=1);
 $pageTitle = 'Partner With Visagiri - B2B Travel Partner Portal';
 $pageDescription = 'Grow your visa business with Visagiri: dedicated B2B visa support, competitive partner pricing, real-time application tracking, and a dedicated partner dashboard for travel agencies, tour operators, DMCs and consultants.';
 $canonicalUrl = APP_URL . '/b2b-partner/';
-$structuredData = [[
-    '@context' => 'https://schema.org',
-    '@type' => 'BreadcrumbList',
-    'itemListElement' => [
-        ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => APP_URL . '/'],
-        ['@type' => 'ListItem', 'position' => 2, 'name' => 'B2B Travel Partner Portal', 'item' => $canonicalUrl],
-    ],
-]];
+$breadcrumbItems = [
+    ['name' => 'Home', 'url' => APP_URL . '/'],
+    ['name' => 'B2B Travel Partner Portal', 'url' => $canonicalUrl],
+];
+$structuredData = [breadcrumb_schema($breadcrumbItems)];
 require __DIR__ . '/../includes/header.php';
 
 $benefits = [
@@ -40,6 +37,7 @@ $benefits = [
 ?>
 <section class="section" style="padding-top:var(--space-8)">
     <div class="container" style="max-width:760px;text-align:center">
+        <?= breadcrumb_html($breadcrumbItems) ?>
         <span class="section-eyebrow">B2B Travel Partner Portal</span>
         <h1>Grow Your Visa Business With Visagiri</h1>
         <p>Partner with Visagiri for professional visa processing, document support, transparent tracking and dedicated B2B assistance. Built for travel agencies, tour operators, corporate travel desks, DMCs, and independent visa/immigration consultants who need a reliable processing partner behind their own customer relationships.</p>

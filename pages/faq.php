@@ -21,14 +21,16 @@ $structuredData = $faqs ? [[
         'acceptedAnswer' => ['@type' => 'Answer', 'text' => $f['answer']],
     ], $faqs),
 ]] : [];
-$structuredData[] = breadcrumb_schema([
+$breadcrumbItems = [
     ['name' => 'Home', 'url' => APP_URL . '/'],
     ['name' => 'FAQs', 'url' => $canonicalUrl],
-]);
+];
+$structuredData[] = breadcrumb_schema($breadcrumbItems);
 require __DIR__ . '/../includes/header.php';
 ?>
 <section class="section" style="padding-top:var(--space-8)">
     <div class="container">
+        <?= breadcrumb_html($breadcrumbItems) ?>
         <div class="section-heading" style="text-align:left;margin-left:0;max-width:none">
             <span class="section-eyebrow">FAQ</span>
             <h1>Frequently Asked Questions</h1>

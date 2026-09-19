@@ -120,14 +120,11 @@ $sections = [
 $pageTitle = 'Sitemap | Visagiri';
 $pageDescription = 'A full directory of Visagiri pages — visa services, attestation, country guides, documents, travel and forex, resources, and legal and support pages, all in one place.';
 $canonicalUrl = APP_URL . '/sitemap/';
-$structuredData = [[
-    '@context' => 'https://schema.org',
-    '@type' => 'BreadcrumbList',
-    'itemListElement' => [
-        ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => APP_URL . '/'],
-        ['@type' => 'ListItem', 'position' => 2, 'name' => 'Sitemap', 'item' => $canonicalUrl],
-    ],
-]];
+$breadcrumbItems = [
+    ['name' => 'Home', 'url' => APP_URL . '/'],
+    ['name' => 'Sitemap', 'url' => $canonicalUrl],
+];
+$structuredData = [breadcrumb_schema($breadcrumbItems)];
 require __DIR__ . '/../includes/header.php';
 
 // $companyMenu is defined inside header.php (shared with the Company
@@ -143,7 +140,7 @@ $sections['About Visagiri'] = ['icon' => 'company', 'links' => $companyItems];
 ?>
 <section class="section">
     <div class="container" style="max-width:1100px">
-        <ul class="breadcrumb"><li><a href="/">Home</a></li><li>Sitemap</li></ul>
+        <?= breadcrumb_html($breadcrumbItems) ?>
         <div class="section-heading" style="text-align:left;margin-left:0;max-width:none">
             <span class="section-eyebrow">Sitemap</span>
             <h1>Every Page, One Click Away</h1>

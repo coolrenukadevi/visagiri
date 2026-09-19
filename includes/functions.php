@@ -628,6 +628,50 @@ function breadcrumb_schema(array $items): array
     ];
 }
 
+/**
+ * Renders the visible breadcrumb nav for the SAME $items array passed
+ * to breadcrumb_schema() — call both on one array (see breadcrumb_trail()
+ * below for the common case of doing so in one step) so the visible
+ * hierarchy and the BreadcrumbList JSON-LD can never drift apart, which
+ * is the failure mode of hand-rolling <ul class="breadcrumb"> markup
+ * separately per template (the pattern this replaces). The current page
+ * (last item) renders as plain text with aria-current="page", never a
+ * link — do not pass the current page's own URL expecting it to be
+ * clickable. Semantic <nav aria-label="Breadcrumb"> wrapper for
+ * accessibility; markup/classes otherwise match the pre-existing
+ * .breadcrumb CSS in public/assets/css/components.css exactly, so no
+ * stylesheet changes were needed.
+ */
+function breadcrumb_html(array $items): string
+{
+    $last = count($items) - 1;
+    $html = '<nav class="breadcrumb-nav" aria-label="Breadcrumb"><ul class="breadcrumb">';
+    foreach ($items as $i => $item) {
+        if ($i < $last) {
+            $html .= '<li><a href="' . e($item['url']) . '">' . e($item['name']) . '</a></li>';
+        } else {
+            $html .= '<li aria-current="page">' . e($item['name']) . '</li>';
+        }
+    }
+    $html .= '</ul></nav>';
+    return $html;
+}
+
+/**
+ * Convenience wrapper for the common case: build the visible breadcrumb
+ * HTML AND append the matching BreadcrumbList JSON-LD onto the caller's
+ * $structuredData in one call, from one $items array, so there is
+ * exactly one place per page that defines the breadcrumb hierarchy.
+ * Usage: echo breadcrumb_trail($items, $structuredData); — pass
+ * $structuredData by reference (declare it as an array first if the
+ * page hasn't already).
+ */
+function breadcrumb_trail(array $items, array &$structuredData): string
+{
+    $structuredData[] = breadcrumb_schema($items);
+    return breadcrumb_html($items);
+}
+
 /** Shared "Why Visagiri" feature list — used on the homepage and the About page. */
 function why_visagiri_features(): array
 {

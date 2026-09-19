@@ -15,15 +15,11 @@ declare(strict_types=1);
 $pageTitle = 'Visa & Travel Terms | Visagiri';
 $pageDescription = 'Terms covering flight, hotel, tour, travel insurance and travel-documentation assistance connected to a Visagiri visa or attestation service.';
 $canonicalUrl = APP_URL . '/travel-terms/';
-$structuredData = [[
-    '@context' => 'https://schema.org',
-    '@type' => 'BreadcrumbList',
-    'itemListElement' => [
-        ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => APP_URL . '/'],
-        ['@type' => 'ListItem', 'position' => 2, 'name' => 'Legal & Support', 'item' => $canonicalUrl],
-        ['@type' => 'ListItem', 'position' => 3, 'name' => 'Travel Terms', 'item' => $canonicalUrl],
-    ],
-]];
+$breadcrumbItems = [
+    ['name' => 'Home', 'url' => APP_URL . '/'],
+    ['name' => 'Travel Terms', 'url' => $canonicalUrl],
+];
+$structuredData = [breadcrumb_schema($breadcrumbItems)];
 require __DIR__ . '/../includes/header.php';
 
 $sections = [
@@ -42,7 +38,8 @@ render_legal_hero(
     'Travel Terms & Conditions',
     'Terms covering the travel-related assistance connected to your visa or attestation service.',
     'legal_travel_terms_updated_at',
-    $sections
+    $sections,
+    $breadcrumbItems
 );
 ?>
 <section id="scope">

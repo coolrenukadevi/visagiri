@@ -31,19 +31,16 @@ $recentlyUpdated = db()->query(
 $pageTitle = 'Visa Requirements for 200+ Countries - Visagiri';
 $pageDescription = 'Search visa requirements, document checklists, fees, and processing times for 200+ countries, by continent or visa status — for Indian passport holders.';
 $canonicalUrl = APP_URL . '/visa/';
-$structuredData = [[
-    '@context' => 'https://schema.org',
-    '@type' => 'BreadcrumbList',
-    'itemListElement' => [
-        ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => APP_URL . '/'],
-        ['@type' => 'ListItem', 'position' => 2, 'name' => 'Visa Requirements', 'item' => $canonicalUrl],
-    ],
-]];
+$breadcrumbItems = [
+    ['name' => 'Home', 'url' => APP_URL . '/'],
+    ['name' => 'Visa Requirements', 'url' => $canonicalUrl],
+];
+$structuredData = [breadcrumb_schema($breadcrumbItems)];
 require __DIR__ . '/../includes/header.php';
 ?>
 <section class="visa-detail" style="padding-top:var(--space-8)">
     <div class="container">
-        <ul class="breadcrumb"><li><a href="/">Home</a></li><li>Visa Requirements</li></ul>
+        <?= breadcrumb_html($breadcrumbItems) ?>
 
         <div class="section-heading" style="text-align:left;margin-left:0;max-width:none">
             <span class="section-eyebrow">200+ Destinations</span>

@@ -83,16 +83,13 @@ if ($typeSlug !== null) {
                 ? "{$country['name']} {$visaType['name']} eligibility, documents, application process, and consultant support for Indian applicants, including Patna and Bihar — enquire with Visagiri."
                 : "{$visaType['name']} eligibility, required documents, fees, and processing time for {$country['name']} — enquire with Visagiri."));
     $canonicalUrl = APP_URL . "/visa/{$country['slug']}/{$visaType['slug']}/";
-    $structuredData = [[
-        '@context' => 'https://schema.org',
-        '@type' => 'BreadcrumbList',
-        'itemListElement' => [
-            ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => APP_URL . '/'],
-            ['@type' => 'ListItem', 'position' => 2, 'name' => 'Countries', 'item' => APP_URL . '/countries/'],
-            ['@type' => 'ListItem', 'position' => 3, 'name' => $country['name'], 'item' => APP_URL . "/visa/{$country['slug']}/"],
-            ['@type' => 'ListItem', 'position' => 4, 'name' => $visaType['name'], 'item' => $canonicalUrl],
-        ],
-    ]];
+    $breadcrumbItems = [
+        ['name' => 'Home', 'url' => APP_URL . '/'],
+        ['name' => 'Visa', 'url' => APP_URL . '/countries/'],
+        ['name' => $country['name'], 'url' => APP_URL . "/visa/{$country['slug']}/"],
+        ['name' => $visaType['name'], 'url' => $canonicalUrl],
+    ];
+    $structuredData = [breadcrumb_schema($breadcrumbItems)];
     if ($faqs) {
         $structuredData[] = [
             '@context' => 'https://schema.org',
@@ -166,12 +163,7 @@ if ($typeSlug !== null) {
             <div class="visa-checklist-page">
                 <div class="vc-hero-full"<?= $heroStyle ?>>
                     <div class="vc-hero-inner">
-                        <ul class="breadcrumb">
-                            <li><a href="/">Home</a></li>
-                            <li><a href="/countries/">Visa</a></li>
-                            <li><a href="/visa/<?= e($country['slug']) ?>/"><?= e($country['name']) ?></a></li>
-                            <li><?= e($visaType['name']) ?></li>
-                        </ul>
+                        <?= breadcrumb_html($breadcrumbItems) ?>
                         <div class="vc-hero-grid">
                             <h1><?= e($country['name']) ?> <?= e($visaType['name']) ?><?php if ($heroSubtitle !== ''): ?><span><?= e($heroSubtitle) ?></span><?php endif; ?></h1>
                             <?php if ($heroLede !== ''): ?><p class="vc-hero-lede"><?= e($heroLede) ?></p><?php endif; ?>
@@ -612,6 +604,20 @@ if ($typeSlug !== null) {
             </div>
             <?php endif; ?>
 
+            <div style="margin-top:var(--space-10)">
+                <h2 class="country-directory__subheading">Do Your Documents Need Attestation First?</h2>
+                <p style="max-width:70ch">
+                    Educational, personal, or commercial documents submitted with a visa application sometimes need to be
+                    authenticated before submission. Which process applies depends on whether the destination country is
+                    a member of the Hague Apostille Convention — apostille for member countries, attestation for the rest.
+                </p>
+                <div style="display:flex;gap:var(--space-3);flex-wrap:wrap;margin-top:var(--space-3)">
+                    <a href="/attestation/mea-apostille/" class="btn btn-outline">MEA Apostille &rarr;</a>
+                    <a href="/attestation/mea-attestation/" class="btn btn-outline">MEA Attestation &rarr;</a>
+                    <a href="/attestation/" class="btn btn-outline">All Attestation Services &rarr;</a>
+                </div>
+            </div>
+
             <?php if ($faqs): ?>
             <div style="margin-top:var(--space-10)">
                 <h2 class="country-directory__subheading">Frequently Asked Questions</h2>
@@ -671,15 +677,12 @@ $pageDescription = !empty($country['meta_description'])
         ? "Visagiri is a {$country['name']} visa consultant serving Indian applicants nationwide, with local support for Patna and Bihar — eligibility, documents, application assistance, and enquiry support for every {$country['name']} visa category."
         : "Visa types, eligibility, and application information for {$country['name']}. Explore requirements by visa type and enquire with Visagiri.");
 $canonicalUrl = APP_URL . "/visa/{$country['slug']}/";
-$structuredData = [[
-    '@context' => 'https://schema.org',
-    '@type' => 'BreadcrumbList',
-    'itemListElement' => [
-        ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => APP_URL . '/'],
-        ['@type' => 'ListItem', 'position' => 2, 'name' => 'Countries', 'item' => APP_URL . '/countries/'],
-        ['@type' => 'ListItem', 'position' => 3, 'name' => $country['name'], 'item' => $canonicalUrl],
-    ],
-]];
+$breadcrumbItems = [
+    ['name' => 'Home', 'url' => APP_URL . '/'],
+    ['name' => 'Visa', 'url' => APP_URL . '/countries/'],
+    ['name' => $country['name'], 'url' => $canonicalUrl],
+];
+$structuredData = [breadcrumb_schema($breadcrumbItems)];
 if ($hasRichContent) {
     $structuredData[] = [
         '@context' => 'https://schema.org',
@@ -706,11 +709,7 @@ require __DIR__ . '/../includes/header.php';
 ?>
 <section class="visa-detail">
     <div class="container">
-        <ul class="breadcrumb">
-            <li><a href="/">Home</a></li>
-            <li><a href="/countries/">Countries</a></li>
-            <li><?= e($country['name']) ?></li>
-        </ul>
+        <?= breadcrumb_html($breadcrumbItems) ?>
 
         <div class="visa-detail__header">
             <span class="destination-card__flag"><?= flag_emoji($country['iso2']) ?></span>

@@ -248,6 +248,7 @@
 
 .breadcrumb a { color: var(--text-muted); }
 .breadcrumb a:hover { color: var(--visa-blue); }
+.breadcrumb a:focus-visible { outline: 2px solid var(--visa-blue); outline-offset: 2px; border-radius: 2px; }
 .breadcrumb li:last-child { color: var(--text-dark); font-weight: var(--font-weight-medium); }
 
 /* ---------- Accordion (FAQ) — native <details>/<summary>, no JS required ---------- */

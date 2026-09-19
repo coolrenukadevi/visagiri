@@ -17,11 +17,16 @@ if ($statusSlug === null) {
     $pageTitle = 'Visa Status Directory - Visagiri';
     $pageDescription = 'Browse destinations by visa status: visa-free, visa on arrival, eVisa, Schengen, GCC, ASEAN, and SAARC countries — for Indian passport holders.';
     $canonicalUrl = APP_URL . '/visa-status/';
+    $breadcrumbItems = [
+        ['name' => 'Home', 'url' => APP_URL . '/'],
+        ['name' => 'Visa Status Directory', 'url' => $canonicalUrl],
+    ];
+    $structuredData = [breadcrumb_schema($breadcrumbItems)];
     require __DIR__ . '/../includes/header.php';
     ?>
     <section class="visa-detail">
         <div class="container">
-            <ul class="breadcrumb"><li><a href="/">Home</a></li><li>Visa Status Directory</li></ul>
+            <?= breadcrumb_html($breadcrumbItems) ?>
             <div class="visa-detail__header"><div><h1>Visa Status Directory</h1><p style="margin-top:var(--space-3)">Browse destinations grouped by visa status.</p></div></div>
             <div class="card-grid">
                 <?php foreach (VISA_STATUS_DIRECTORIES as $slug => $dir): ?>
@@ -47,24 +52,17 @@ $countries = countries_by_visa_status_slug($statusSlug);
 $pageTitle = "{$dir['label']} - Visagiri";
 $pageDescription = "{$dir['label']}: the full list of destinations, for Indian passport holders — from Visagiri.";
 $canonicalUrl = APP_URL . "/visa-status/{$statusSlug}/";
-$structuredData = [[
-    '@context' => 'https://schema.org',
-    '@type' => 'BreadcrumbList',
-    'itemListElement' => [
-        ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => APP_URL . '/'],
-        ['@type' => 'ListItem', 'position' => 2, 'name' => 'Visa Status Directory', 'item' => APP_URL . '/visa-status/'],
-        ['@type' => 'ListItem', 'position' => 3, 'name' => $dir['label'], 'item' => $canonicalUrl],
-    ],
-]];
+$breadcrumbItems = [
+    ['name' => 'Home', 'url' => APP_URL . '/'],
+    ['name' => 'Visa Status Directory', 'url' => APP_URL . '/visa-status/'],
+    ['name' => $dir['label'], 'url' => $canonicalUrl],
+];
+$structuredData = [breadcrumb_schema($breadcrumbItems)];
 require __DIR__ . '/../includes/header.php';
 ?>
 <section class="visa-detail">
     <div class="container">
-        <ul class="breadcrumb">
-            <li><a href="/">Home</a></li>
-            <li><a href="/visa-status/">Visa Status Directory</a></li>
-            <li><?= e($dir['label']) ?></li>
-        </ul>
+        <?= breadcrumb_html($breadcrumbItems) ?>
 
         <div class="visa-detail__header">
             <div>

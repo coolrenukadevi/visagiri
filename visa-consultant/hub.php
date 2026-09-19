@@ -18,19 +18,16 @@ uksort($byZone, static fn($a, $b) => array_search($a, $zoneOrder, true) <=> arra
 $pageTitle = 'Visa Consultant & Visa Agency in India | Visagiri';
 $pageDescription = 'Visagiri provides visa consultancy, application-management assistance, and document attestation services to applicants across India — find your state or union territory below.';
 $canonicalUrl = APP_URL . '/visa-consultant/';
-$structuredData = [[
-    '@context' => 'https://schema.org',
-    '@type' => 'BreadcrumbList',
-    'itemListElement' => [
-        ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => APP_URL . '/'],
-        ['@type' => 'ListItem', 'position' => 2, 'name' => 'Visa Consultant', 'item' => $canonicalUrl],
-    ],
-]];
+$breadcrumbItems = [
+    ['name' => 'Home', 'url' => APP_URL . '/'],
+    ['name' => 'Visa Consultant', 'url' => $canonicalUrl],
+];
+$structuredData = [breadcrumb_schema($breadcrumbItems)];
 require __DIR__ . '/../includes/header.php';
 ?>
 <section class="section" style="padding-top:var(--space-8)">
     <div class="container" style="max-width:1100px">
-        <ul class="breadcrumb"><li><a href="/">Home</a></li><li>Visa Consultant</li></ul>
+        <?= breadcrumb_html($breadcrumbItems) ?>
         <div class="section-heading" style="text-align:left;margin-left:0;max-width:none">
             <span class="section-eyebrow">Visa Consultant &amp; Visa Agency in India</span>
             <h1>Visa Assistance Wherever You Are in India</h1>

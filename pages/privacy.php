@@ -19,15 +19,11 @@ declare(strict_types=1);
 $pageTitle = 'Privacy Policy | Visagiri';
 $pageDescription = 'How Visagiri collects, uses, protects and manages customer information across our visa, attestation, forex and travel-related services.';
 $canonicalUrl = APP_URL . '/privacy/';
-$structuredData = [[
-    '@context' => 'https://schema.org',
-    '@type' => 'BreadcrumbList',
-    'itemListElement' => [
-        ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => APP_URL . '/'],
-        ['@type' => 'ListItem', 'position' => 2, 'name' => 'Legal & Support', 'item' => $canonicalUrl],
-        ['@type' => 'ListItem', 'position' => 3, 'name' => 'Privacy Policy', 'item' => $canonicalUrl],
-    ],
-]];
+$breadcrumbItems = [
+    ['name' => 'Home', 'url' => APP_URL . '/'],
+    ['name' => 'Privacy Policy', 'url' => $canonicalUrl],
+];
+$structuredData = [breadcrumb_schema($breadcrumbItems)];
 require __DIR__ . '/../includes/header.php';
 
 $registeredAddress = setting('legal_registered_office_address', '');
@@ -54,7 +50,8 @@ render_legal_hero(
     'Privacy Policy',
     'Your information, your trust, our responsibility.',
     'legal_privacy_updated_at',
-    $sections
+    $sections,
+    $breadcrumbItems
 );
 ?>
 <section id="introduction">

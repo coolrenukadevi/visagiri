@@ -13,11 +13,11 @@ declare(strict_types=1);
 $pageTitle = 'Disclaimer - Visagiri';
 $pageDescription = "Visagiri's visa services disclaimer — visa decisions are made solely by the relevant embassy, consulate, or government authority.";
 $canonicalUrl = APP_URL . '/disclaimer/';
-$structuredData = [breadcrumb_schema([
+$breadcrumbItems = [
     ['name' => 'Home', 'url' => APP_URL . '/'],
-    ['name' => 'Legal & Support', 'url' => $canonicalUrl],
     ['name' => 'Disclaimer', 'url' => $canonicalUrl],
-])];
+];
+$structuredData = [breadcrumb_schema($breadcrumbItems)];
 require __DIR__ . '/../includes/header.php';
 
 $sections = [
@@ -32,7 +32,8 @@ render_legal_hero(
     'Disclaimer',
     'Please read this before relying on any visa or immigration information on this website.',
     'disclaimer_last_updated',
-    $sections
+    $sections,
+    $breadcrumbItems
 );
 ?>
 <section id="no-guarantee">

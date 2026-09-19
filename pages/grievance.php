@@ -131,15 +131,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $pageTitle = 'Grievance Redressal | Visagiri';
 $pageDescription = 'Have a concern about a Visagiri service? Submit a grievance and get a tracked reference number — we take customer concerns seriously.';
 $canonicalUrl = APP_URL . '/grievance/';
-$structuredData = [[
-    '@context' => 'https://schema.org',
-    '@type' => 'BreadcrumbList',
-    'itemListElement' => [
-        ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => APP_URL . '/'],
-        ['@type' => 'ListItem', 'position' => 2, 'name' => 'Legal & Support', 'item' => $canonicalUrl],
-        ['@type' => 'ListItem', 'position' => 3, 'name' => 'Grievance Redressal', 'item' => $canonicalUrl],
-    ],
-]];
+$breadcrumbItems = [
+    ['name' => 'Home', 'url' => APP_URL . '/'],
+    ['name' => 'Grievance Redressal', 'url' => $canonicalUrl],
+];
+$structuredData = [breadcrumb_schema($breadcrumbItems)];
 require __DIR__ . '/../includes/header.php';
 
 $slaHours = (int) setting('grievance_sla_hours', '72');
@@ -157,7 +153,8 @@ render_legal_hero(
     'Grievance Redressal',
     'We take customer concerns seriously.',
     'legal_grievance_updated_at',
-    $sections
+    $sections,
+    $breadcrumbItems
 );
 ?>
 <section id="our-commitment">

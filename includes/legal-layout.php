@@ -46,19 +46,25 @@ const GRIEVANCE_CONTACT_METHODS = [
  *                                        anchor ids the calling page's
  *                                        own <section id="..."> blocks
  *                                        must use.
+ * @param list<array{name:string,url:string}> $breadcrumbItems Same array the
+ *                                        caller already passed to
+ *                                        breadcrumb_schema() for its
+ *                                        JSON-LD, so the visible trail
+ *                                        can never drift from the
+ *                                        structured data. There is no
+ *                                        real "/legal/" hub page on this
+ *                                        site, so this is a plain
+ *                                        Home -> {page} trail, not a
+ *                                        fabricated 3-level hierarchy.
  */
-function render_legal_hero(string $slug, string $title, string $description, string $lastUpdatedSetting, array $sections): void
+function render_legal_hero(string $slug, string $title, string $description, string $lastUpdatedSetting, array $sections, array $breadcrumbItems): void
 {
     $lastUpdated = setting($lastUpdatedSetting, '');
     $lastUpdatedDisplay = $lastUpdated !== '' ? date('F j, Y', strtotime($lastUpdated)) : '';
     ?>
     <section class="section" style="padding-top:var(--space-8);padding-bottom:0">
         <div class="container">
-            <ul class="breadcrumb">
-                <li><a href="/">Home</a></li>
-                <li>Legal &amp; Support</li>
-                <li><?= e($title) ?></li>
-            </ul>
+            <?= breadcrumb_html($breadcrumbItems) ?>
             <div class="legal-hero">
                 <span class="section-eyebrow">Legal &amp; Support</span>
                 <h1><?= e($title) ?></h1>

@@ -449,19 +449,17 @@ if ($slug !== null) {
             'value' => ['@type' => 'QuantitativeValue', 'minValue' => (float) $vacancy['salary_min'], 'maxValue' => (float) $vacancy['salary_max'], 'unitText' => 'MONTH'],
         ] : null,
     ], static fn($v) => $v !== null)];
-    $structuredData[] = breadcrumb_schema([
+    $breadcrumbItems = [
         ['name' => 'Home', 'url' => APP_URL . '/'],
         ['name' => 'Careers', 'url' => APP_URL . '/careers/'],
         ['name' => $vacancy['job_title'], 'url' => $canonicalUrl],
-    ]);
+    ];
+    $structuredData[] = breadcrumb_schema($breadcrumbItems);
     require __DIR__ . '/../includes/header.php';
     ?>
     <section class="visa-detail">
         <div class="container">
-            <ul class="breadcrumb">
-                <li><a href="/">Home</a></li>
-                <li><a href="/careers/">Careers</a></li>
-                <li><?= e($vacancy['job_title']) ?></li>
+            <?= breadcrumb_html($breadcrumbItems) ?>
             </ul>
             <div class="visa-detail__header">
                 <div>
@@ -525,14 +523,16 @@ $vacancies = hrms_published_vacancies();
 $pageTitle = 'Careers at Visagiri';
 $pageDescription = 'Explore current job openings at Visagiri and apply online.';
 $canonicalUrl = APP_URL . '/careers/';
-$structuredData = [breadcrumb_schema([
+$breadcrumbItems = [
     ['name' => 'Home', 'url' => APP_URL . '/'],
     ['name' => 'Careers', 'url' => $canonicalUrl],
-])];
+];
+$structuredData = [breadcrumb_schema($breadcrumbItems)];
 require __DIR__ . '/../includes/header.php';
 ?>
 <section class="section">
     <div class="container">
+        <?= breadcrumb_html($breadcrumbItems) ?>
         <div class="section-heading" style="text-align:left;margin-left:0;max-width:none">
             <span class="section-eyebrow">Join Our Team</span>
             <h1>Careers</h1>

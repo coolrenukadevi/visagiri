@@ -25,15 +25,16 @@ $countriesWithContacts = db()->query(
 $pageTitle = 'Embassy Directory - Visagiri';
 $pageDescription = 'Embassy, consulate, and visa application centre contact information by country.';
 $canonicalUrl = APP_URL . '/embassy-directory/';
-$structuredData = [breadcrumb_schema([
+$breadcrumbItems = [
     ['name' => 'Home', 'url' => APP_URL . '/'],
     ['name' => 'Embassy Directory', 'url' => $canonicalUrl],
-])];
+];
+$structuredData = [breadcrumb_schema($breadcrumbItems)];
 require __DIR__ . '/../includes/header.php';
 ?>
 <section class="visa-detail">
     <div class="container">
-        <ul class="breadcrumb"><li><a href="/">Home</a></li><li>Embassy Directory</li></ul>
+        <?= breadcrumb_html($breadcrumbItems) ?>
         <div class="visa-detail__header">
             <div>
                 <h1>Embassy Directory</h1>

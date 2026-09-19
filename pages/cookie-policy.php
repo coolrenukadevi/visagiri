@@ -16,15 +16,11 @@ declare(strict_types=1);
 $pageTitle = 'Cookie Policy | Visagiri';
 $pageDescription = 'What cookies visagiri.com actually uses — and just as importantly, which categories we don\'t use.';
 $canonicalUrl = APP_URL . '/cookie-policy/';
-$structuredData = [[
-    '@context' => 'https://schema.org',
-    '@type' => 'BreadcrumbList',
-    'itemListElement' => [
-        ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => APP_URL . '/'],
-        ['@type' => 'ListItem', 'position' => 2, 'name' => 'Legal & Support', 'item' => $canonicalUrl],
-        ['@type' => 'ListItem', 'position' => 3, 'name' => 'Cookie Policy', 'item' => $canonicalUrl],
-    ],
-]];
+$breadcrumbItems = [
+    ['name' => 'Home', 'url' => APP_URL . '/'],
+    ['name' => 'Cookie Policy', 'url' => $canonicalUrl],
+];
+$structuredData = [breadcrumb_schema($breadcrumbItems)];
 require __DIR__ . '/../includes/header.php';
 
 $sections = [
@@ -41,7 +37,8 @@ render_legal_hero(
     'Cookie Policy',
     'What cookies this website actually uses — nothing more.',
     'legal_cookie_policy_updated_at',
-    $sections
+    $sections,
+    $breadcrumbItems
 );
 ?>
 <section id="what-are-cookies">

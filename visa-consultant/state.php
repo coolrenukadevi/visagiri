@@ -23,16 +23,13 @@ $noindex = !$state['is_indexable'];
 $pageTitle = $state['meta_title'] ?: "Visa Consultant & Visa Agency in {$state['name']} | Visagiri";
 $pageDescription = $state['meta_description'] ?: "Visagiri offers visa consultancy, application assistance, and document attestation services to applicants across {$state['name']}. Enquire online.";
 $canonicalUrl = APP_URL . "/visa-consultant/{$state['slug']}/";
+$breadcrumbItems = [
+    ['name' => 'Home', 'url' => APP_URL . '/'],
+    ['name' => 'Visa Consultant', 'url' => APP_URL . '/visa-consultant/'],
+    ['name' => $state['name'], 'url' => $canonicalUrl],
+];
 $structuredData = [
-    [
-        '@context' => 'https://schema.org',
-        '@type' => 'BreadcrumbList',
-        'itemListElement' => [
-            ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => APP_URL . '/'],
-            ['@type' => 'ListItem', 'position' => 2, 'name' => 'Visa Consultant', 'item' => APP_URL . '/visa-consultant/'],
-            ['@type' => 'ListItem', 'position' => 3, 'name' => $state['name'], 'item' => $canonicalUrl],
-        ],
-    ],
+    breadcrumb_schema($breadcrumbItems),
     [
         '@context' => 'https://schema.org',
         '@type' => 'Service',
@@ -56,7 +53,7 @@ require __DIR__ . '/../includes/header.php';
 ?>
 <section class="section" style="padding-top:var(--space-8)">
     <div class="container" style="max-width:900px">
-        <ul class="breadcrumb"><li><a href="/">Home</a></li><li><a href="/visa-consultant/">Visa Consultant</a></li><li><?= e($state['name']) ?></li></ul>
+        <?= breadcrumb_html($breadcrumbItems) ?>
 
         <div class="section-heading" style="text-align:left;margin-left:0;max-width:none">
             <span class="section-eyebrow">Visa Consultant &amp; Visa Agency in <?= e($state['name']) ?></span>

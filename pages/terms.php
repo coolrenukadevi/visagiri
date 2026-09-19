@@ -13,15 +13,11 @@ declare(strict_types=1);
 $pageTitle = 'Terms & Conditions | Visagiri';
 $pageDescription = 'Clear terms for a transparent customer experience — the scope of Visagiri\'s visa, attestation, forex and travel-related services, and the terms under which we provide them.';
 $canonicalUrl = APP_URL . '/terms/';
-$structuredData = [[
-    '@context' => 'https://schema.org',
-    '@type' => 'BreadcrumbList',
-    'itemListElement' => [
-        ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => APP_URL . '/'],
-        ['@type' => 'ListItem', 'position' => 2, 'name' => 'Legal & Support', 'item' => $canonicalUrl],
-        ['@type' => 'ListItem', 'position' => 3, 'name' => 'Terms & Conditions', 'item' => $canonicalUrl],
-    ],
-]];
+$breadcrumbItems = [
+    ['name' => 'Home', 'url' => APP_URL . '/'],
+    ['name' => 'Terms & Conditions', 'url' => $canonicalUrl],
+];
+$structuredData = [breadcrumb_schema($breadcrumbItems)];
 require __DIR__ . '/../includes/header.php';
 
 $governingLaw = setting('legal_governing_law', '');
@@ -49,7 +45,8 @@ render_legal_hero(
     'Terms & Conditions',
     'Clear terms for a transparent customer experience.',
     'legal_terms_updated_at',
-    $sections
+    $sections,
+    $breadcrumbItems
 );
 ?>
 <section id="about">

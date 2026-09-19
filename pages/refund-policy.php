@@ -16,15 +16,11 @@ declare(strict_types=1);
 $pageTitle = 'Refund & Cancellation Policy | Visagiri';
 $pageDescription = 'How refunds and cancellations work across Visagiri\'s visa, flight, hotel, travel package, apostille/attestation and forex services.';
 $canonicalUrl = APP_URL . '/refund-policy/';
-$structuredData = [[
-    '@context' => 'https://schema.org',
-    '@type' => 'BreadcrumbList',
-    'itemListElement' => [
-        ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => APP_URL . '/'],
-        ['@type' => 'ListItem', 'position' => 2, 'name' => 'Legal & Support', 'item' => $canonicalUrl],
-        ['@type' => 'ListItem', 'position' => 3, 'name' => 'Refund & Cancellation Policy', 'item' => $canonicalUrl],
-    ],
-]];
+$breadcrumbItems = [
+    ['name' => 'Home', 'url' => APP_URL . '/'],
+    ['name' => 'Refund & Cancellation Policy', 'url' => $canonicalUrl],
+];
+$structuredData = [breadcrumb_schema($breadcrumbItems)];
 require __DIR__ . '/../includes/header.php';
 
 $sections = [
@@ -44,7 +40,8 @@ render_legal_hero(
     'Refund & Cancellation Policy',
     'A transparent look at how refunds and cancellations work, service by service.',
     'legal_refund_policy_updated_at',
-    $sections
+    $sections,
+    $breadcrumbItems
 );
 ?>
 <section id="visa-services">

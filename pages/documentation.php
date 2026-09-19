@@ -31,14 +31,11 @@ $faqs = faqs_general();
 $pageTitle = 'Visa & Travel Documentation Assistance | Visagiri';
 $pageDescription = 'Understand exactly what documents your visa application needs — passport, financial, employment, sponsorship, student, business and authentication documents — and get a personalised checklist from Visagiri.';
 $canonicalUrl = APP_URL . '/documentation/';
-$structuredData = [[
-    '@context' => 'https://schema.org',
-    '@type' => 'BreadcrumbList',
-    'itemListElement' => [
-        ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => APP_URL . '/'],
-        ['@type' => 'ListItem', 'position' => 2, 'name' => 'Documentation Assistance', 'item' => $canonicalUrl],
-    ],
-]];
+$breadcrumbItems = [
+    ['name' => 'Home', 'url' => APP_URL . '/'],
+    ['name' => 'Documentation Assistance', 'url' => $canonicalUrl],
+];
+$structuredData = [breadcrumb_schema($breadcrumbItems)];
 require __DIR__ . '/../includes/header.php';
 
 /** @param list<array{title:string,body:string}> $items */
@@ -50,7 +47,7 @@ $renderCardGroup = static function (array $items): void {
 ?>
 <section class="visa-detail">
     <div class="container">
-        <ul class="breadcrumb"><li><a href="/">Home</a></li><li>Documentation Assistance</li></ul>
+        <?= breadcrumb_html($breadcrumbItems) ?>
 
         <div class="visa-detail__header">
             <div>

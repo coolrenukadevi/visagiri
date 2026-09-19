@@ -57,18 +57,16 @@ $resourceCategories = [
 $pageTitle = 'Visa Resources - Guides, Tools & Information | Visagiri';
 $pageDescription = 'Visa guides, document templates, application tools and FAQs — everything you need to prepare and track your visa application with Visagiri.';
 $canonicalUrl = APP_URL . '/resources/';
-$structuredData = [[
-    '@context' => 'https://schema.org',
-    '@type' => 'BreadcrumbList',
-    'itemListElement' => [
-        ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => APP_URL . '/'],
-        ['@type' => 'ListItem', 'position' => 2, 'name' => 'Resources', 'item' => $canonicalUrl],
-    ],
-]];
+$breadcrumbItems = [
+    ['name' => 'Home', 'url' => APP_URL . '/'],
+    ['name' => 'Resources', 'url' => $canonicalUrl],
+];
+$structuredData = [breadcrumb_schema($breadcrumbItems)];
 require __DIR__ . '/../includes/header.php';
 ?>
 <section class="section" style="padding-top:var(--space-8)">
     <div class="container" style="max-width:760px;text-align:center">
+        <?= breadcrumb_html($breadcrumbItems) ?>
         <span class="section-eyebrow">Resources</span>
         <h1>Visa Resources</h1>
         <p>Guides, document templates, tools and answers to help you prepare, submit and track your visa application.</p>

@@ -37,15 +37,12 @@ if ($typeSlug !== null) {
         ? $visaType['meta_description']
         : mb_substr($visaType['description'], 0, 110) . ' See popular destinations and enquire with Visagiri.';
     $canonicalUrl = APP_URL . "/visa-type/{$visaType['slug']}/";
-    $structuredData = [[
-        '@context' => 'https://schema.org',
-        '@type' => 'BreadcrumbList',
-        'itemListElement' => [
-            ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => APP_URL . '/'],
-            ['@type' => 'ListItem', 'position' => 2, 'name' => 'Visa Services', 'item' => APP_URL . '/visa-type/'],
-            ['@type' => 'ListItem', 'position' => 3, 'name' => $visaType['name'], 'item' => $canonicalUrl],
-        ],
-    ]];
+    $breadcrumbItems = [
+        ['name' => 'Home', 'url' => APP_URL . '/'],
+        ['name' => 'Visa Services', 'url' => APP_URL . '/visa-type/'],
+        ['name' => $visaType['name'], 'url' => $canonicalUrl],
+    ];
+    $structuredData = [breadcrumb_schema($breadcrumbItems)];
     if ($faqs) {
         $structuredData[] = [
             '@context' => 'https://schema.org',
@@ -61,11 +58,7 @@ if ($typeSlug !== null) {
     ?>
     <section class="visa-detail">
         <div class="container">
-            <ul class="breadcrumb">
-                <li><a href="/">Home</a></li>
-                <li><a href="/visa-type/">Visa Services</a></li>
-                <li><?= e($visaType['name']) ?></li>
-            </ul>
+            <?= breadcrumb_html($breadcrumbItems) ?>
             <div class="visa-detail__header">
                 <span class="destination-card__flag"><?= visa_type_icon($visaType['slug']) ?></span>
                 <div>
@@ -120,10 +113,16 @@ $visaTypes = visa_types_all();
 $pageTitle = 'Visa Types & Categories Explained | Visagiri';
 $pageDescription = 'Compare 9 visa categories — tourist, business, student, work, family visit, transit, medical, conference, and sports — and find the right one for your trip.';
 $canonicalUrl = APP_URL . '/visa-type/';
+$breadcrumbItems = [
+    ['name' => 'Home', 'url' => APP_URL . '/'],
+    ['name' => 'Visa Services', 'url' => $canonicalUrl],
+];
+$structuredData = [breadcrumb_schema($breadcrumbItems)];
 require __DIR__ . '/../includes/header.php';
 ?>
 <section class="section" style="padding-top:var(--space-8)">
     <div class="container">
+        <?= breadcrumb_html($breadcrumbItems) ?>
         <div class="section-heading" style="text-align:left;margin-left:0;max-width:none">
             <span class="section-eyebrow">Visa Services</span>
             <h1>Visa Types We Assist With</h1>

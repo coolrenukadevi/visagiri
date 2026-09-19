@@ -17,15 +17,11 @@ declare(strict_types=1);
 $pageTitle = 'Payment Policy | Visagiri';
 $pageDescription = 'Simple, secure and transparent payments — how Visagiri\'s service fees, government/embassy charges, and third-party costs are billed.';
 $canonicalUrl = APP_URL . '/payment-policy/';
-$structuredData = [[
-    '@context' => 'https://schema.org',
-    '@type' => 'BreadcrumbList',
-    'itemListElement' => [
-        ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => APP_URL . '/'],
-        ['@type' => 'ListItem', 'position' => 2, 'name' => 'Legal & Support', 'item' => $canonicalUrl],
-        ['@type' => 'ListItem', 'position' => 3, 'name' => 'Payment Policy', 'item' => $canonicalUrl],
-    ],
-]];
+$breadcrumbItems = [
+    ['name' => 'Home', 'url' => APP_URL . '/'],
+    ['name' => 'Payment Policy', 'url' => $canonicalUrl],
+];
+$structuredData = [breadcrumb_schema($breadcrumbItems)];
 require __DIR__ . '/../includes/header.php';
 
 $sections = [
@@ -44,7 +40,8 @@ render_legal_hero(
     'Payment Policy',
     'Simple, secure and transparent payments.',
     'legal_payment_policy_updated_at',
-    $sections
+    $sections,
+    $breadcrumbItems
 );
 ?>
 <section id="payment-methods">

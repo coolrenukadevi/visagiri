@@ -16,24 +16,17 @@ $countries = countries_by_continent_slug($continentSlug);
 $pageTitle = "{$hub['label']} Visa Guide - Visagiri";
 $pageDescription = "Visa requirements, document checklists, and application guidance for {$hub['label']} destinations — for Indian passport holders, from Visagiri.";
 $canonicalUrl = APP_URL . "/visa/{$continentSlug}/";
-$structuredData = [[
-    '@context' => 'https://schema.org',
-    '@type' => 'BreadcrumbList',
-    'itemListElement' => [
-        ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => APP_URL . '/'],
-        ['@type' => 'ListItem', 'position' => 2, 'name' => 'Countries', 'item' => APP_URL . '/countries/'],
-        ['@type' => 'ListItem', 'position' => 3, 'name' => $hub['label'], 'item' => $canonicalUrl],
-    ],
-]];
+$breadcrumbItems = [
+    ['name' => 'Home', 'url' => APP_URL . '/'],
+    ['name' => 'Visa', 'url' => APP_URL . '/countries/'],
+    ['name' => $hub['label'], 'url' => $canonicalUrl],
+];
+$structuredData = [breadcrumb_schema($breadcrumbItems)];
 require __DIR__ . '/../includes/header.php';
 ?>
 <section class="visa-detail">
     <div class="container">
-        <ul class="breadcrumb">
-            <li><a href="/">Home</a></li>
-            <li><a href="/countries/">Countries</a></li>
-            <li><?= e($hub['label']) ?></li>
-        </ul>
+        <?= breadcrumb_html($breadcrumbItems) ?>
 
         <div class="visa-detail__header">
             <div>

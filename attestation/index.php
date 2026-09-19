@@ -114,24 +114,17 @@ if ($slug !== null) {
     $pageTitle = "{$service['name']} | Visagiri";
     $pageDescription = $service['meta_description'];
     $canonicalUrl = APP_URL . "/attestation/{$slug}/";
-    $structuredData = [[
-        '@context' => 'https://schema.org',
-        '@type' => 'BreadcrumbList',
-        'itemListElement' => [
-            ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => APP_URL . '/'],
-            ['@type' => 'ListItem', 'position' => 2, 'name' => 'Attestation Services', 'item' => APP_URL . '/attestation/'],
-            ['@type' => 'ListItem', 'position' => 3, 'name' => $service['name'], 'item' => $canonicalUrl],
-        ],
-    ]];
+    $breadcrumbItems = [
+        ['name' => 'Home', 'url' => APP_URL . '/'],
+        ['name' => 'Attestation', 'url' => APP_URL . '/attestation/'],
+        ['name' => $service['name'], 'url' => $canonicalUrl],
+    ];
+    $structuredData = [breadcrumb_schema($breadcrumbItems)];
     require __DIR__ . '/../includes/header.php';
     ?>
     <section class="visa-detail">
         <div class="container">
-            <ul class="breadcrumb">
-                <li><a href="/">Home</a></li>
-                <li><a href="/attestation/">Attestation Services</a></li>
-                <li><?= e($service['name']) ?></li>
-            </ul>
+            <?= breadcrumb_html($breadcrumbItems) ?>
             <div class="visa-detail__header">
                 <span class="destination-card__flag"><?= $service['icon'] ?></span>
                 <div>
@@ -223,6 +216,18 @@ if ($slug !== null) {
                 </div>
             </div>
             <?php endif; ?>
+
+            <div style="margin-top:var(--space-10)">
+                <h2 class="country-directory__subheading">Applying for a Visa Too?</h2>
+                <p style="max-width:70ch">
+                    Attestation is often one step in a wider visa application. Browse visa requirements by destination, or
+                    talk to a consultant about how this service fits into your specific application.
+                </p>
+                <div style="display:flex;gap:var(--space-3);flex-wrap:wrap;margin-top:var(--space-3)">
+                    <a href="/countries/" class="btn btn-outline">Browse Visa Requirements by Country &rarr;</a>
+                    <a href="/visa-type/" class="btn btn-outline">Explore Visa Types &rarr;</a>
+                </div>
+            </div>
         </div>
     </section>
     <?php
@@ -235,10 +240,16 @@ $categories = attestation_categories();
 $pageTitle = 'Document Attestation Services | Visagiri';
 $pageDescription = 'Apostille, attestation, document-category, and legalization services for documents used abroad — apply online with Visagiri.';
 $canonicalUrl = APP_URL . '/attestation/';
+$breadcrumbItems = [
+    ['name' => 'Home', 'url' => APP_URL . '/'],
+    ['name' => 'Attestation', 'url' => $canonicalUrl],
+];
+$structuredData = [breadcrumb_schema($breadcrumbItems)];
 require __DIR__ . '/../includes/header.php';
 ?>
 <section class="section">
     <div class="container">
+        <?= breadcrumb_html($breadcrumbItems) ?>
         <div class="section-heading" style="text-align:left;margin-left:0;max-width:none">
             <span class="section-eyebrow">Document Services</span>
             <h1>Attestation Services</h1>

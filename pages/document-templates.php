@@ -49,15 +49,16 @@ if ($templateSlug === null) {
     $pageTitle = 'Document Templates - Visagiri';
     $pageDescription = 'Free downloadable formats for cover letters, NOC, consent letters, sponsor letters, self-declarations, and travel itineraries for your visa application.';
     $canonicalUrl = APP_URL . '/document-templates/';
-    $structuredData = [breadcrumb_schema([
+    $breadcrumbItems = [
         ['name' => 'Home', 'url' => APP_URL . '/'],
         ['name' => 'Document Templates', 'url' => $canonicalUrl],
-    ])];
+    ];
+    $structuredData = [breadcrumb_schema($breadcrumbItems)];
     require __DIR__ . '/../includes/header.php';
     ?>
     <section class="visa-detail">
         <div class="container">
-            <ul class="breadcrumb"><li><a href="/">Home</a></li><li>Document Templates</li></ul>
+            <?= breadcrumb_html($breadcrumbItems) ?>
             <div class="visa-detail__header">
                 <div>
                     <h1>Document Templates</h1>
@@ -92,20 +93,17 @@ $tpl = $templates[$templateSlug];
 $pageTitle = "{$tpl['label']} Format - Visagiri";
 $pageDescription = $tpl['summary'];
 $canonicalUrl = APP_URL . "/document-templates/{$templateSlug}/";
-$structuredData = [breadcrumb_schema([
+$breadcrumbItems = [
     ['name' => 'Home', 'url' => APP_URL . '/'],
     ['name' => 'Document Templates', 'url' => APP_URL . '/document-templates/'],
     ['name' => $tpl['label'], 'url' => $canonicalUrl],
-])];
+];
+$structuredData = [breadcrumb_schema($breadcrumbItems)];
 require __DIR__ . '/../includes/header.php';
 ?>
 <section class="visa-detail">
     <div class="container">
-        <ul class="breadcrumb">
-            <li><a href="/">Home</a></li>
-            <li><a href="/document-templates/">Document Templates</a></li>
-            <li><?= e($tpl['label']) ?></li>
-        </ul>
+        <?= breadcrumb_html($breadcrumbItems) ?>
         <div class="visa-detail__header">
             <div>
                 <h1><?= e($tpl['label']) ?></h1>

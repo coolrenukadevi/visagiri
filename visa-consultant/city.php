@@ -22,18 +22,13 @@ $noindex = !$city['is_indexable'];
 $pageTitle = $city['meta_title'] ?: "Visa Consultant & Visa Agency in {$city['name']} | Visagiri";
 $pageDescription = $city['meta_description'] ?: "Visagiri offers visa consultancy, application assistance, and document attestation services in {$city['name']}. Enquire online.";
 $canonicalUrl = APP_URL . "/visa-consultant/{$state['slug']}/{$city['slug']}/";
-$structuredData = [
-    [
-        '@context' => 'https://schema.org',
-        '@type' => 'BreadcrumbList',
-        'itemListElement' => [
-            ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => APP_URL . '/'],
-            ['@type' => 'ListItem', 'position' => 2, 'name' => 'Visa Consultant', 'item' => APP_URL . '/visa-consultant/'],
-            ['@type' => 'ListItem', 'position' => 3, 'name' => $state['name'], 'item' => APP_URL . "/visa-consultant/{$state['slug']}/"],
-            ['@type' => 'ListItem', 'position' => 4, 'name' => $city['name'], 'item' => $canonicalUrl],
-        ],
-    ],
+$breadcrumbItems = [
+    ['name' => 'Home', 'url' => APP_URL . '/'],
+    ['name' => 'Visa Consultant', 'url' => APP_URL . '/visa-consultant/'],
+    ['name' => $state['name'], 'url' => APP_URL . "/visa-consultant/{$state['slug']}/"],
+    ['name' => $city['name'], 'url' => $canonicalUrl],
 ];
+$structuredData = [breadcrumb_schema($breadcrumbItems)];
 if ($hasOffice) {
     $structuredData[] = [
         '@context' => 'https://schema.org',
@@ -67,7 +62,7 @@ require __DIR__ . '/../includes/header.php';
 ?>
 <section class="section" style="padding-top:var(--space-8)">
     <div class="container" style="max-width:900px">
-        <ul class="breadcrumb"><li><a href="/">Home</a></li><li><a href="/visa-consultant/">Visa Consultant</a></li><li><a href="/visa-consultant/<?= e($state['slug']) ?>/"><?= e($state['name']) ?></a></li><li><?= e($city['name']) ?></li></ul>
+        <?= breadcrumb_html($breadcrumbItems) ?>
 
         <div class="section-heading" style="text-align:left;margin-left:0;max-width:none">
             <span class="section-eyebrow">Visa Consultant &amp; Visa Agency in <?= e($city['name']) ?></span>
