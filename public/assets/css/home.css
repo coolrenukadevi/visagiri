@@ -371,3 +371,43 @@
 .final-cta h2 {
   color: var(--white);
 }
+
+/* Homepage-only additions: a modifier class plus brand-new
+   sub-element classes layered on the shared .final-cta component
+   above (also used as-is by pages/documentation.php,
+   pages/process.php, pages/corporate-services.php and
+   visa/index.php) — nothing here touches the base .final-cta/.section
+   rules, so those other pages' CTAs are unaffected. Reduces the
+   compounding whitespace from .section's own padding-block stacking
+   with .final-cta's internal padding, per the client's explicit
+   request to tighten this section without touching any other
+   homepage section. */
+.final-cta-section {
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-8);
+}
+.final-cta--compact {
+  padding: var(--space-8) var(--space-6);
+}
+.final-cta__lede {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: var(--font-size-lg);
+  max-width: 42rem;
+  margin: 0 auto var(--space-3);
+}
+.final-cta__services {
+  color: rgba(255, 255, 255, 0.68);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0 0 var(--space-6);
+}
+@media (max-width: 640px) {
+  .final-cta--compact {
+    padding: var(--space-6) var(--space-4);
+  }
+  .final-cta__services {
+    letter-spacing: 0.02em;
+  }
+}

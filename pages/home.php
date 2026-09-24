@@ -251,11 +251,13 @@ require __DIR__ . '/../includes/header.php';
 </section>
 
 <!-- Section 11: Final CTA -->
-<section class="section">
+<section class="section final-cta-section">
     <div class="container">
-        <div class="final-cta">
-            <h2>Ready to start your visa journey?</h2>
-            <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to start my visa journey.")) ?>" class="btn btn-gold btn-lg" target="_blank" rel="noopener noreferrer">Enquire Now</a>
+        <div class="final-cta final-cta--compact">
+            <h2>Not sure which visa you need?</h2>
+            <p class="final-cta__lede">Tell us where you&rsquo;re going &mdash; we&rsquo;ll help you plan the next step.</p>
+            <p class="final-cta__services">Visa&nbsp;guidance&nbsp;&bull; Document&nbsp;checklist&nbsp;&bull; Application&nbsp;assistance</p>
+            <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like help figuring out which visa I need.")) ?>" class="btn btn-gold btn-lg" target="_blank" rel="noopener noreferrer">Get Visa Assistance</a>
         </div>
     </div>
 </section>
