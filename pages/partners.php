@@ -43,6 +43,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!rate_limit_check('partner-enquiry:' . ($_SERVER['REMOTE_ADDR'] ?? ''), 5, 900)) {
         $errors[] = 'Too many submissions. Please try again later, or reach us directly on WhatsApp.';
     }
+    if (!turnstile_verify(trim((string) ($_POST['cf-turnstile-response'] ?? '')))) {
+        $errors[] = 'We couldn\'t verify you\'re not a robot. Please try again.';
+    }
     if ($values['company_name'] === '') {
         $errors[] = 'Please enter your company or agency name.';
     }
@@ -437,6 +440,9 @@ $jsonLd = [
           </select>
         </div>
         <div><label for="message">Message <span class="opt">(optional)</span></label><textarea id="message" name="message"><?= e($values['message']) ?></textarea></div>
+        <?php if (turnstile_enabled()): ?>
+        <div><?= turnstile_widget_html() ?></div>
+        <?php endif; ?>
         <div><button class="btn primary" type="submit">Submit enquiry</button></div>
       </form>
       <?php endif; ?>

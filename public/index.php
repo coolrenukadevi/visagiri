@@ -36,6 +36,7 @@ require_once "$root/includes/settings.php";
 require_once "$root/includes/functions.php";
 require_once "$root/includes/data.php";
 require_once "$root/includes/security.php";
+require_once "$root/includes/turnstile.php";
 require_once "$root/includes/auth.php";
 require_once "$root/includes/customer-auth.php";
 require_once "$root/includes/partner-auth.php";

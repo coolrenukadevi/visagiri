@@ -65,7 +65,12 @@ function send_security_headers(): void
     // pages' mobile-menu toggle lives in the external
     // public/assets/js/pages-standalone.js instead of an inline
     // <script>.
-    header("Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'; frame-ancestors 'none'");
+    // script-src/frame-src extended for challenges.cloudflare.com so the
+    // Turnstile anti-spam widget (see includes/turnstile.php) can load its
+    // script and render its verification iframe on /contact/, /enquire/
+    // and /partners/. Every other page's CSP is unaffected — the widget's
+    // own markup/script tag only appears on those three forms.
+    header("Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; frame-ancestors 'none'");
     // Browsers ignore this entirely over plain HTTP (harmless in local
     // dev), and public/.htaccess already forces HTTP -> HTTPS, so this
     // just closes the one-request gap before that redirect lands and

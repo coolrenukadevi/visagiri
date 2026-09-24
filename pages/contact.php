@@ -88,6 +88,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!rate_limit_check('contact:' . ($_SERVER['REMOTE_ADDR'] ?? ''), 5, 900)) {
         $errors[] = 'Too many submissions. Please try again later, or reach us directly on WhatsApp.';
     }
+    if (!turnstile_verify(trim((string) ($_POST['cf-turnstile-response'] ?? '')))) {
+        $errors[] = 'We couldn\'t verify you\'re not a robot. Please try again.';
+    }
     if ($values['name'] === '') {
         $errors[] = 'Please enter your name.';
     }
@@ -286,6 +289,9 @@ require __DIR__ . '/../includes/header.php';
                     <label class="form-label" for="message">Message</label>
                     <textarea class="form-input" id="message" name="message" rows="5" required><?= e($values['message']) ?></textarea>
                 </div>
+                <?php if (turnstile_enabled()): ?>
+                <div class="form-group"><?= turnstile_widget_html() ?></div>
+                <?php endif; ?>
                 <button type="submit" class="btn btn-primary" style="width:100%">Send Message</button>
             </form>
         </div>

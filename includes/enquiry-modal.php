@@ -81,6 +81,9 @@ declare(strict_types=1);
                         <label class="form-label" for="enquiry-modal-simple-message">Message</label>
                         <textarea class="form-input" id="enquiry-modal-simple-message" name="message" rows="4" required></textarea>
                     </div>
+                    <?php if (turnstile_enabled()): ?>
+                    <div class="form-group"><?= turnstile_widget_html() ?></div>
+                    <?php endif; ?>
                     <button type="submit" class="btn btn-primary" style="width:100%" id="enquiry-modal-simple-submit">Send Message</button>
                 </form>
             </div>

@@ -191,6 +191,20 @@
       return div.innerHTML;
     }
 
+    // A Turnstile token is single-use: once the server has verified it
+    // (even if the submission then fails other validation, e.g. a
+    // missing required field), resubmitting with the same token fails.
+    // Resetting after every ajax failure gets a fresh, valid token
+    // ready for the retry instead of a confusing "couldn't verify
+    // you're not a robot" on a legitimate second attempt.
+    function resetTurnstile() {
+      if (typeof window.turnstile !== 'undefined' && window.turnstile.reset) {
+        root.querySelectorAll('.cf-turnstile').forEach(function (el) {
+          window.turnstile.reset(el);
+        });
+      }
+    }
+
     function showFormErrors(errors) {
       root.querySelectorAll('.enquiry-wizard-ajax-error').forEach(function (el) {
         el.remove();
@@ -270,6 +284,7 @@
               submitBtn.disabled = false;
               submitBtn.textContent = 'Submit Enquiry';
             }
+            resetTurnstile();
             var errors = (data && data.errors) || ['Something went wrong submitting your enquiry. Please try again, or reach us on WhatsApp.'];
             if (typeof options.onError === 'function') {
               options.onError(errors);
@@ -283,6 +298,7 @@
             submitBtn.disabled = false;
             submitBtn.textContent = 'Submit Enquiry';
           }
+          resetTurnstile();
           var errors = ['Something went wrong submitting your enquiry. Please check your connection and try again.'];
           if (typeof options.onError === 'function') {
             options.onError(errors);

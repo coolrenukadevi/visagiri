@@ -253,6 +253,10 @@ $ajaxMode = $ajaxMode ?? false;
                 </label>
             </div>
 
+            <?php if (turnstile_enabled()): ?>
+            <div class="form-group" style="margin-top:var(--space-4)"><?= turnstile_widget_html() ?></div>
+            <?php endif; ?>
+
             <div class="button-group" style="justify-content:space-between;margin-top:var(--space-5)">
                 <button type="button" class="btn btn-outline" data-step-back>&larr; Back / Edit Details</button>
                 <button type="submit" class="btn btn-gold" id="enquiry-submit-btn">Submit Enquiry</button>

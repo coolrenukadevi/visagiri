@@ -190,6 +190,17 @@
     });
   });
 
+  // See the matching comment in enquiry-wizard.js — a Turnstile token
+  // is single-use, so a failed ajax submission needs a fresh one
+  // before the visitor can retry.
+  function resetTurnstile(form) {
+    if (typeof window.turnstile !== 'undefined' && window.turnstile.reset) {
+      form.querySelectorAll('.cf-turnstile').forEach(function (el) {
+        window.turnstile.reset(el);
+      });
+    }
+  }
+
   function showSimpleFormErrors(errors) {
     simpleForm.querySelectorAll('.enquiry-modal-ajax-error').forEach(function (el) { el.remove(); });
     var fragment = document.createDocumentFragment();
@@ -223,12 +234,14 @@
             simpleForm.reset();
             showSuccess(data);
           } else {
+            resetTurnstile(simpleForm);
             showSimpleFormErrors((data && data.errors && data.errors.length) ? data.errors : ['Something went wrong sending your message. Please try again, or reach us on WhatsApp.']);
           }
         })
         .catch(function () {
           simpleSubmitBtn.disabled = false;
           simpleSubmitBtn.textContent = 'Send Message';
+          resetTurnstile(simpleForm);
           showSimpleFormErrors(['Something went wrong sending your message. Please check your connection and try again.']);
         });
     });

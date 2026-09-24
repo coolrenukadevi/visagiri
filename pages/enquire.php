@@ -72,6 +72,9 @@ if (!isset($confirmed) && $_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!rate_limit_check('enquire:' . ($_SERVER['REMOTE_ADDR'] ?? ''), 5, 900)) {
         $errors[] = 'Too many submissions. Please try again later, or reach us directly on WhatsApp.';
     }
+    if (!turnstile_verify(trim((string) ($_POST['cf-turnstile-response'] ?? '')))) {
+        $errors[] = 'We couldn\'t verify you\'re not a robot. Please try again.';
+    }
 
     foreach (array_keys($values) as $key) {
         if ($key === 'service_category') {
