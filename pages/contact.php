@@ -168,9 +168,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     db()->prepare('UPDATE general_enquiries SET pdf_path = :path WHERE id = :id')
                         ->execute(['path' => $relativePath, 'id' => $insertedId]);
                 } catch (Throwable $e) {
-                    if (APP_DEBUG) {
-                        error_log('[contact.php] PDF generation failed: ' . $e->getMessage());
-                    }
+                    // mail_log() (includes/mail.php) rather than a bare
+                    // error_log() — not just under APP_DEBUG, since a
+                    // production submission failure with zero trace
+                    // anywhere is worse than a noisy log, and this way
+                    // it shows up in the same /admin/mail-log/ viewer the
+                    // client already knows how to check, instead of a
+                    // host-specific PHP error log that's often hard to
+                    // find. APP_DEBUG still controls whether the raw
+                    // message ever reaches the visitor (never, either way).
+                    mail_log('[FORM-ERROR] contact.php PDF generation failed: ' . get_class($e) . ': ' . $e->getMessage());
                 }
             }
 
@@ -185,9 +192,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $values = ['name' => '', 'email' => '', 'phone' => '', 'destination' => '', 'message' => ''];
         } catch (Throwable $e) {
-            if (APP_DEBUG) {
-                error_log('[contact.php] failed to save message: ' . $e->getMessage());
-            }
+            // mail_log(), always — see the PDF-generation catch above for why.
+            mail_log('[FORM-ERROR] contact.php failed to save message: ' . get_class($e) . ': ' . $e->getMessage());
             $success = false;
         }
     }

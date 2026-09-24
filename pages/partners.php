@@ -97,9 +97,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'submitted_at' => date('c'),
             ]);
         } catch (Throwable $e) {
-            if (APP_DEBUG) {
-                error_log('[partners.php] failed to save enquiry: ' . $e->getMessage());
-            }
+            // mail_log(), always — see contact.php's matching catch block for why.
+            mail_log('[FORM-ERROR] partners.php failed to save enquiry: ' . get_class($e) . ': ' . $e->getMessage());
             $submitted = false;
             $errors[] = 'Something went wrong submitting your enquiry. Please try again, or reach us on WhatsApp.';
         }

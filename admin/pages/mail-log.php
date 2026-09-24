@@ -6,7 +6,10 @@ declare(strict_types=1);
  * mail.php's mail_log()) — lets a non-technical client see exactly
  * why an SMTP send failed (or that it succeeded) without needing to
  * find their host's PHP error log, which varies by provider and
- * isn't always easy to locate in cPanel.
+ * isn't always easy to locate in cPanel. Also used (via the same
+ * mail_log() call, "[FORM-ERROR]"-prefixed) by /contact/, /enquire/
+ * and /partners/'s exception handlers, so an unexpected submission
+ * failure on any of those shows up here too, not just SMTP issues.
  */
 
 require_permission('settings.manage');

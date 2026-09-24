@@ -363,9 +363,8 @@ if (!isset($confirmed) && $_SERVER['REQUEST_METHOD'] === 'POST') {
             if (db()->inTransaction()) {
                 db()->rollBack();
             }
-            if (APP_DEBUG) {
-                error_log('[enquire.php] failed to save enquiry: ' . $e->getMessage());
-            }
+            // mail_log(), always — see contact.php's matching catch block for why.
+            mail_log('[FORM-ERROR] enquire.php failed to save enquiry: ' . get_class($e) . ': ' . $e->getMessage());
             $errors[] = 'Something went wrong submitting your enquiry. Please try again, or reach us on WhatsApp.';
         }
     }

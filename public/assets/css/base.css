@@ -3,6 +3,23 @@
  * Loaded after tokens.css, before components.css.
  */
 
+/* The browser's own [hidden] { display: none } is a normal-priority
+   user-agent rule, so any normal-priority author rule that also sets
+   display on the same element (e.g. .btn's display: inline-flex) wins
+   the cascade and the element stays visible despite the hidden
+   attribute being set — a real, sitewide bug this caught: the
+   Enquire Now modal's success-step buttons (View Complete Checklist /
+   Download PDF Receipt / Track Enquiry, includes/enquiry-modal.php)
+   all toggle `hidden` via JS depending on what the submission actually
+   returned, but with .btn's own display rule winning, they showed up
+   regardless — including a dead View Complete Checklist button with
+   its default href="#" on submissions that never actually unlocked a
+   checklist. This restores hidden's real, standard behavior everywhere
+   on the site, not just for .btn. */
+[hidden] {
+  display: none !important;
+}
+
 *,
 *::before,
 *::after {
