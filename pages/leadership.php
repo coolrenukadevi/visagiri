@@ -164,7 +164,7 @@ $jsonLd = [
         <li><a href="/visa-type/">Visa services</a></li>
         <li><a href="/attestation/">Attestation</a></li>
         <li><a href="/countries/">Countries</a></li>
-        <li><a href="/contact/?service=forex">Forex</a></li>
+        <li><a href="/forex/">Forex</a></li>
         <li><a href="/resources/">Resources</a></li>
         <li><a href="/about/" aria-current="page">Company</a></li>
       </ul>

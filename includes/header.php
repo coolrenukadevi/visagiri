@@ -40,7 +40,7 @@ $supportPhoneDial = setting('contact_phone_dial', '+917065819819');
 $supportPhoneDisplay = setting('contact_phone_display', '+91 7065 819 819');
 
 $navLinks = [
-    ['label' => 'Forex', 'href' => '/contact/?service=forex', 'icon' => 'forex'],
+    ['label' => 'Forex', 'href' => '/forex/', 'icon' => 'forex'],
 ];
 
 // Resources mega-menu — every link points to a genuinely real, already
@@ -168,7 +168,10 @@ $attestationCategories = attestation_categories();
 
 // strtok(...,'?') strips any query string off $href before comparing —
 // $currentPath (from parse_url's PHP_URL_PATH) never has one, so a nav
-// link like '/contact/?service=forex' would otherwise never match.
+// link with a query string (e.g. '/contact/?service=...') would
+// otherwise never match. No current $navLinks entry has one (Forex
+// now links straight to /forex/), but this stays defensive for any
+// future nav link that does.
 $isActive = static fn(string $href): bool => $href !== '/' && str_starts_with($currentPath, strtok($href, '?'));
 ?>
 <!doctype html>

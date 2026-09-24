@@ -55,6 +55,7 @@ $sections = [
         'links' => [
             '/travel-terms/' => 'Travel Terms',
             '/contact/?service=travel' => 'Travel Enquiry',
+            '/forex/' => 'Forex Assistance',
             '/forex/track/' => 'Track a Forex Request',
             '/contact/?service=forex' => 'Forex Enquiry',
         ],
