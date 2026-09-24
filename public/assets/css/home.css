@@ -8,9 +8,10 @@
 .hero {
   background-color: var(--visa-blue-dark);
   /* "contain", not "cover" — the source photos are narrow crops
-     (~500-807px wide); "cover" was stretching them to fill the full
-     section width and upscaling them well past their native
-     resolution into a blurry mess. "contain" shows the whole photo,
+     (~500-807px wide); "cover" stretches them to fill the full section
+     width, which both blurs them badly and crops out most of the
+     traveller figure (only a thin vertical sliver of the tall photo
+     fits a section this wide). "contain" shows the whole photo,
      uncropped, scaled down to fit the section's height instead. */
   background-size: contain;
   background-position: right center;
