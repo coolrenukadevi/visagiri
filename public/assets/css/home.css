@@ -23,13 +23,73 @@
 }
 
 .hero__label {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
   color: var(--visa-gold);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-bold);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   margin-bottom: var(--space-3);
+}
+
+.hero__label-line {
+  width: 22px;
+  height: 1px;
+  background: var(--visa-gold);
+  opacity: 0.7;
+}
+
+.hero__accent {
+  color: var(--visa-gold);
+}
+
+.hero__stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3) var(--space-5);
+  list-style: none;
+  margin: 0 0 var(--space-5);
+  padding: 0;
+}
+
+.hero__stat {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  line-height: 1.35;
+}
+
+.hero__stat strong {
+  color: var(--white);
+  font-size: var(--font-size-base);
+}
+
+.hero__stat-icon {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 640px) and (max-width: 767px) {
+  /* Hero is still single-column here (2-col kicks in at 768px below),
+     so the stat row has the full container width to itself. */
+  .hero__stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1024px) {
+  /* Past 768px the hero itself goes 2-column and the left half
+     narrows — wait for extra room before flattening the stats back
+     out to one row. */
+  .hero__stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 
 .hero h1 {
@@ -70,6 +130,182 @@
   width: 100%;
   max-width: 420px;
   height: auto;
+}
+
+.hero__visual img {
+  /* A fixed display frame rather than each source photo's own
+     aspect-ratio — the four hero photos aren't all cropped to the
+     same ratio (they range from roughly 3:5 to nearly square), so a
+     shared frame + object-fit:cover keeps the slider's visual column
+     a consistent size as it cycles between slides. */
+  width: 100%;
+  max-width: 360px;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+/* ---------- Hero slider (4 slides — see pages/home.php's $heroSlides) ---------- */
+
+.hero-slider {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-slider__track {
+  display: flex;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-slider__track {
+    transition: none;
+  }
+}
+
+.hero-slide {
+  flex: 0 0 100%;
+  min-width: 100%;
+}
+
+/* Light-theme slide (slide 2) — everything else stays the dark navy
+   .hero look already defined above. */
+.hero-slide--light {
+  background: linear-gradient(135deg, #eaf2ff 0%, #ffffff 65%);
+  background-image: linear-gradient(135deg, #eaf2ff 0%, #ffffff 65%);
+  color: var(--text-dark);
+}
+
+.hero-slide--light h1 {
+  color: var(--visa-blue-dark);
+}
+
+.hero-slide--light .hero__accent {
+  color: var(--visa-blue-secondary);
+}
+
+.hero-slide--light .hero__subtitle {
+  color: var(--text-muted);
+}
+
+.hero-slide--light .hero__label {
+  color: var(--visa-gold-dark);
+}
+
+.hero-slide--light .hero__label-line {
+  background: var(--visa-gold-dark);
+}
+
+.hero-slide--light .hero__stat {
+  color: var(--text-muted);
+}
+
+.hero-slide--light .hero__stat strong {
+  color: var(--visa-blue-dark);
+}
+
+.hero-slide--light .hero__stat-icon {
+  background: var(--visa-blue-light);
+  color: var(--visa-blue);
+}
+
+.hero-slide--light .hero__actions .btn-outline {
+  border-color: var(--visa-blue);
+  color: var(--visa-blue);
+}
+
+.hero-slide--light .hero__actions .btn-outline:hover {
+  background: var(--visa-blue-light);
+  color: var(--visa-blue-dark);
+}
+
+/* Arrows + dots sit on the slider chrome, not inside any one slide,
+   so their default (dark-slide) look is overridden as a unit via
+   .hero-slider.is-light-slide when JS reports slide 2 is active —
+   keeps them readable against that slide's light background too. */
+.hero-slider__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 6;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.hero-slider__arrow:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.hero-slider__arrow--prev {
+  left: var(--space-3);
+}
+
+.hero-slider__arrow--next {
+  right: var(--space-3);
+}
+
+.hero-slider.is-light-slide .hero-slider__arrow {
+  background: rgba(11, 59, 145, 0.08);
+  color: var(--visa-blue);
+}
+
+.hero-slider.is-light-slide .hero-slider__arrow:hover {
+  background: rgba(11, 59, 145, 0.16);
+}
+
+.hero-slider__dots {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--space-10) + var(--space-2));
+  transform: translateX(-50%);
+  z-index: 6;
+  display: flex;
+  gap: var(--space-2);
+}
+
+.hero-slider__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: background-color 0.15s, width 0.15s;
+}
+
+.hero-slider__dot.is-active {
+  width: 20px;
+  border-radius: 4px;
+  background: var(--visa-gold);
+}
+
+.hero-slider.is-light-slide .hero-slider__dot {
+  background: rgba(11, 59, 145, 0.25);
+}
+
+.hero-slider.is-light-slide .hero-slider__dot.is-active {
+  background: var(--visa-gold-dark);
+}
+
+@media (max-width: 767px) {
+  .hero-slider__arrow {
+    width: 34px;
+    height: 34px;
+  }
+  .hero-slider__dots {
+    bottom: calc(var(--space-8) + var(--space-2));
+  }
 }
 
 /* ---------- Search widget (floats over the hero on desktop) ---------- */

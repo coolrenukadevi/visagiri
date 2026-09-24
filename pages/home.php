@@ -9,7 +9,9 @@ declare(strict_types=1);
  * "Explore Visa Resources" section below covers that role honestly.
  */
 
-$popularCountries = array_values(array_filter(countries_all(), static fn(array $c): bool => $c['is_popular_destination']));
+$allCountries = countries_all();
+$countryCount = count($allCountries);
+$popularCountries = array_values(array_filter($allCountries, static fn(array $c): bool => $c['is_popular_destination']));
 usort($popularCountries, static fn(array $a, array $b): int => $a['name'] <=> $b['name']);
 $visaTypes = visa_types_all();
 $faqs = faqs_general();
@@ -25,6 +27,96 @@ $processSteps = [
 
 $whyFeatures = why_visagiri_features();
 
+// Hero icon set — small flat outline SVGs, inline (zero external
+// dependency, matches the pattern already used in visa/index.php's
+// $vcIcons). Reused across all four slides below by key.
+$heroIcons = [
+    'globe' => '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>',
+    'document' => '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/></svg>',
+    'checklist' => '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 9l1.5 1.5L13.5 7M9 15h6"/></svg>',
+    'people' => '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c1.5-4 5-5.5 7.5-5.5s6 1.5 7.5 5.5"/></svg>',
+    'shield' => '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>',
+    'clock' => '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>',
+];
+
+// Four hero slides. Images are real (client-supplied, cropped from
+// their source templates to isolate just the photo — see AUDIT.md for
+// why the flattened templates themselves weren't used directly: their
+// headline/stat text was baked into the raster image, which would
+// have meant losing real crawlable/accessible/responsive text in
+// favor of a picture of text). "200+" claims use the live
+// $countryCount rather than a hardcoded figure so they can't drift
+// from the real catalog.
+$heroSlides = [
+    [
+        'theme' => 'dark',
+        'eyebrow' => 'Global Visa Support',
+        'heading' => 'Your Destination, Our Visa Expertise.',
+        'accent' => 'Visa Expertise.',
+        'subtitle' => "Expert guidance for tourist, business, employment, transit, medical and conference visas to {$countryCount}+ countries.",
+        'image' => '/assets/images/hero/hero-slide-1.jpg',
+        'imageWidth' => 500,
+        'imageHeight' => 828,
+        'imageAlt' => 'Traveller with a backpack looking out over a European city skyline',
+        'stats' => [
+            ['icon' => 'globe', 'label' => "{$countryCount}+ Countries", 'sub' => 'Wide coverage'],
+            ['icon' => 'document', 'label' => 'Visa Guidance', 'sub' => 'Step-by-step support'],
+            ['icon' => 'people', 'label' => 'Expert Team', 'sub' => 'Personalised assistance'],
+            ['icon' => 'shield', 'label' => 'Secure Process', 'sub' => 'Reliable & transparent'],
+        ],
+    ],
+    [
+        'theme' => 'light',
+        'eyebrow' => "Visa Services for {$countryCount}+ Countries",
+        'heading' => 'Explore the World Without Visa Worries.',
+        'accent' => 'Without Visa Worries.',
+        'subtitle' => 'Get end-to-end visa support — from requirements to application guidance, all in one place.',
+        'image' => '/assets/images/hero/hero-slide-2.jpg',
+        'imageWidth' => 807,
+        'imageHeight' => 828,
+        'imageAlt' => 'Traveller looking at a collage of famous landmarks including the Eiffel Tower and Big Ben',
+        'stats' => [
+            ['icon' => 'checklist', 'label' => 'Document Checklist', 'sub' => 'Country-wise guidance'],
+            ['icon' => 'people', 'label' => 'Application Support', 'sub' => 'End-to-end help'],
+            ['icon' => 'clock', 'label' => 'Save Time', 'sub' => 'Hassle-free process'],
+        ],
+    ],
+    [
+        'theme' => 'dark',
+        'eyebrow' => 'Simple Process, Global Possibilities',
+        'heading' => 'From Your First Query to Visa Approval.',
+        'accent' => 'Visa Approval.',
+        'subtitle' => 'Reliable support, clear guidance and expert assistance for a smooth visa application experience.',
+        'image' => '/assets/images/hero/hero-slide-3.jpg',
+        'imageWidth' => 404,
+        'imageHeight' => 828,
+        'imageAlt' => 'Traveller with a backpack and suitcase watching a plane take off from an airport window',
+        'stats' => [
+            ['icon' => 'document', 'label' => 'Visa Guidance', 'sub' => 'Step-by-step support'],
+            ['icon' => 'checklist', 'label' => 'Document Support', 'sub' => 'Complete checklist'],
+            ['icon' => 'people', 'label' => 'Expert Assistance', 'sub' => 'Personalised guidance'],
+            ['icon' => 'shield', 'label' => 'Track Your Application', 'sub' => 'Stay informed'],
+        ],
+    ],
+    [
+        'theme' => 'dark',
+        'eyebrow' => 'Trusted Visa Assistance',
+        'heading' => 'Your Travel Plans, Our Visa Support.',
+        'accent' => 'Visa Support.',
+        'subtitle' => "Get expert help with visa requirements, documentation and application guidance for {$countryCount}+ destinations.",
+        'image' => '/assets/images/hero/hero-slide-4.jpg',
+        'imageWidth' => 500,
+        'imageHeight' => 828,
+        'imageAlt' => 'Passport and boarding passes resting on a wooden desk',
+        'stats' => [
+            ['icon' => 'globe', 'label' => "{$countryCount}+ Destinations", 'sub' => 'Global coverage'],
+            ['icon' => 'document', 'label' => 'Clear Guidance', 'sub' => 'Step-by-step process'],
+            ['icon' => 'people', 'label' => 'Dedicated Team', 'sub' => 'End-to-end support'],
+            ['icon' => 'shield', 'label' => 'Reliable & Transparent', 'sub' => 'Your trusted partner'],
+        ],
+    ],
+];
+
 $pageTitle = 'Your Visa Journey, Simplified - Visagiri';
 $pageDescription = 'Expert visa guidance and document attestation assistance for 200+ destinations. Check visa requirements and enquire with Visagiri.';
 $canonicalUrl = APP_URL . '/';
@@ -32,31 +124,52 @@ $canonicalUrl = APP_URL . '/';
 require __DIR__ . '/../includes/header.php';
 ?>
 
-<!-- Section 1: Hero -->
-<section class="hero">
-    <div class="container hero__grid">
-        <div>
-            <span class="hero__label">Smart Visa Management</span>
-            <h1>Your Visa Journey,<br>Simplified.</h1>
-            <p class="hero__subtitle">Expert visa guidance and document attestation assistance.</p>
-            <div class="hero__actions">
-                <a href="#visa-search" class="btn btn-gold">Check Visa Requirements</a>
-                <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to know more about your visa services.")) ?>" class="btn btn-primary" style="background:var(--white);color:var(--visa-blue)" target="_blank" rel="noopener noreferrer">Enquire Now</a>
+<!-- Section 1: Hero slider — 4 slides, see $heroSlides above. -->
+<section class="hero-slider" id="hero-slider" aria-roledescription="carousel" aria-label="Visagiri services">
+    <div class="hero-slider__track">
+        <?php foreach ($heroSlides as $i => $slide): ?>
+        <div class="hero hero-slide<?= $slide['theme'] === 'light' ? ' hero-slide--light' : '' ?>" role="group" aria-roledescription="slide" aria-label="Slide <?= $i + 1 ?> of <?= count($heroSlides) ?>"<?= $i > 0 ? ' aria-hidden="true"' : '' ?>>
+            <div class="container hero__grid">
+                <div>
+                    <span class="hero__label"><span class="hero__label-line" aria-hidden="true"></span><?= e($slide['eyebrow']) ?><span class="hero__label-line" aria-hidden="true"></span></span>
+                    <h1><?= e(str_replace($slide['accent'], '', $slide['heading'])) ?><span class="hero__accent"><?= e($slide['accent']) ?></span></h1>
+                    <p class="hero__subtitle"><?= e($slide['subtitle']) ?></p>
+                    <ul class="hero__stats">
+                        <?php foreach ($slide['stats'] as $stat): ?>
+                        <li class="hero__stat">
+                            <span class="hero__stat-icon" aria-hidden="true"><?= $heroIcons[$stat['icon']] ?></span>
+                            <span><strong><?= e($stat['label']) ?></strong><br><?= e($stat['sub']) ?></span>
+                        </li>
+                        <?php endforeach; ?>
+                    </ul>
+                    <div class="hero__actions">
+                        <a href="#visa-search" class="btn btn-gold">Check Visa Requirements</a>
+                        <?php if ($slide['theme'] === 'light'): ?>
+                        <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to know more about your visa services.")) ?>" class="btn btn-outline" target="_blank" rel="noopener noreferrer">Enquire Now</a>
+                        <?php else: ?>
+                        <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to know more about your visa services.")) ?>" class="btn btn-primary" style="background:var(--white);color:var(--visa-blue)" target="_blank" rel="noopener noreferrer">Enquire Now</a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <div class="hero__visual">
+                    <img src="<?= e(asset_url($slide['image'])) ?>" alt="<?= e($slide['imageAlt']) ?>" width="<?= e((string) $slide['imageWidth']) ?>" height="<?= e((string) $slide['imageHeight']) ?>"<?= $i === 0 ? ' fetchpriority="high"' : ' loading="lazy"' ?>>
+                </div>
             </div>
         </div>
-        <div class="hero__visual" aria-hidden="true">
-            <svg viewBox="0 0 360 320" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="180" cy="160" r="120" stroke="#EAF2FF" stroke-width="1.5" opacity="0.4"/>
-                <circle cx="180" cy="160" r="90" stroke="#EAF2FF" stroke-width="1.5" opacity="0.4"/>
-                <path d="M60 160a120 120 0 0 1 240 0" stroke="#F4B400" stroke-width="2" stroke-dasharray="4 8" opacity="0.7"/>
-                <rect x="120" y="90" width="120" height="160" rx="12" fill="#0B3B91" stroke="#F4B400" stroke-width="2"/>
-                <circle cx="180" cy="150" r="26" fill="none" stroke="#F4B400" stroke-width="2"/>
-                <path d="M180 124v52M154 150h52" stroke="#F4B400" stroke-width="2"/>
-                <rect x="140" y="196" width="80" height="8" rx="4" fill="#EAF2FF" opacity="0.6"/>
-                <rect x="140" y="212" width="56" height="8" rx="4" fill="#EAF2FF" opacity="0.4"/>
-                <path d="M255 95l25-14 8 27-27 8-6-21z" fill="#F4B400"/>
-            </svg>
-        </div>
+        <?php endforeach; ?>
+    </div>
+
+    <button type="button" class="hero-slider__arrow hero-slider__arrow--prev" aria-label="Previous slide">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <button type="button" class="hero-slider__arrow hero-slider__arrow--next" aria-label="Next slide">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+
+    <div class="hero-slider__dots" role="tablist" aria-label="Choose slide">
+        <?php foreach ($heroSlides as $i => $slide): ?>
+        <button type="button" class="hero-slider__dot<?= $i === 0 ? ' is-active' : '' ?>" role="tab" aria-selected="<?= $i === 0 ? 'true' : 'false' ?>" aria-label="Slide <?= $i + 1 ?> of <?= count($heroSlides) ?>"></button>
+        <?php endforeach; ?>
     </div>
 </section>
 
@@ -262,4 +375,5 @@ require __DIR__ . '/../includes/header.php';
     </div>
 </section>
 
+<script src="<?= e(asset_url('/assets/js/hero-slider.js')) ?>" defer></script>
 <?php require __DIR__ . '/../includes/footer.php'; ?>
