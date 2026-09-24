@@ -2,22 +2,30 @@
 declare(strict_types=1);
 
 /**
- * Standalone Our Team page — same treatment as the rest of this
- * family (see pages/about.php's docblock). No individual team-member
- * names/photos have been confirmed beyond the two directors already
- * on /leadership/, so this describes the real functional roles behind
- * Visagiri's actual services generically — unchanged policy from the
- * previous version of this page — rather than inventing headcounts,
- * names or bios. See the HTML comment below for what to add once
- * profiles are confirmed.
+ * Standalone Forex landing page — same treatment as the other pages
+ * in this family (see pages/about.php's docblock). New page: /forex/
+ * previously 404'd at the root (only /forex/track/, the real forex
+ * status-tracking feature, existed — see public/index.php's 'forex'
+ * case). This page doesn't duplicate that tracker; it links to it.
+ *
+ * No forex-specific facts are stated here beyond what the rest of the
+ * site already says (the enquiry form exists, WhatsApp/call/email
+ * channels exist) — rates, providers, regulatory status, currencies
+ * offered and document requirements are explicitly left as a flagged
+ * gap (see the HTML comment below) rather than invented, matching the
+ * source draft's own note.
  */
 
 $contactEmail = setting('contact_email', 'info@visagiri.com');
+$contactPhoneDisplay = setting('contact_phone_display', '+91 7065 819 819');
+$contactPhoneDial = setting('contact_phone_dial', '+917065819819');
 $companyCin = setting('company_cin', 'U63030UP2020PTC128661');
 $foundingYear = date('Y', strtotime((string) setting('company_founding_date', '2015-04')));
 $whatsappHrefStart = whatsapp_enquiry_href("Hi Visagiri, I'd like to start my visa journey.");
+$whatsappHrefForex = whatsapp_enquiry_href("Hi Visagiri, I'd like help with a forex/currency exchange requirement.");
+$countryCount = count(countries_all());
 
-$canonicalUrl = APP_URL . '/our-team/';
+$canonicalUrl = APP_URL . '/forex/';
 $ogImage = APP_URL . '/assets/images/og-image.png';
 $orgId = APP_URL . '/#organization';
 $websiteId = APP_URL . '/#website';
@@ -46,7 +54,7 @@ $jsonLd = [
             'contactPoint' => [
                 '@type' => 'ContactPoint',
                 'contactType' => 'customer support',
-                'telephone' => '+91-' . setting('whatsapp_number', '917844819819'),
+                'telephone' => $contactPhoneDial,
             ],
             'areaServed' => ['@type' => 'Country', 'name' => 'India'],
             'sameAs' => [
@@ -57,11 +65,11 @@ $jsonLd = [
             ],
         ],
         [
-            '@type' => 'AboutPage',
+            '@type' => 'WebPage',
             '@id' => $canonicalUrl . '#webpage',
             'url' => $canonicalUrl,
-            'name' => 'Meet the Visagiri Team - Visa Consultants & Attestation Specialists',
-            'description' => 'Meet the Visagiri team: visa consultants, document and attestation specialists and application support, working from offices in Patna, Ranchi, Raipur and Bhopal.',
+            'name' => 'Forex Assistance for Travellers | Visagiri',
+            'description' => "Enquire about forex and currency exchange with Visagiri's forex desk. Share your currency requirement and travel plans and the team will get back to you.",
             'isPartOf' => ['@id' => $websiteId],
             'about' => ['@id' => $orgId],
             'breadcrumb' => ['@id' => $canonicalUrl . '#breadcrumb'],
@@ -72,30 +80,18 @@ $jsonLd = [
             '@id' => $canonicalUrl . '#breadcrumb',
             'itemListElement' => [
                 ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => APP_URL . '/'],
-                ['@type' => 'ListItem', 'position' => 2, 'name' => 'About', 'item' => APP_URL . '/about/'],
-                ['@type' => 'ListItem', 'position' => 3, 'name' => 'Our team', 'item' => $canonicalUrl],
+                ['@type' => 'ListItem', 'position' => 2, 'name' => 'Forex', 'item' => $canonicalUrl],
             ],
         ],
         [
-            '@type' => 'FAQPage',
-            '@id' => $canonicalUrl . '#faq',
-            'mainEntity' => [
-                [
-                    '@type' => 'Question',
-                    'name' => 'Who works on my case?',
-                    'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'A typical case involves three roles. A visa consultant assesses your eligibility and requirements up front, a document and attestation specialist reviews the paperwork where apostille or attestation is involved, and application support keeps you updated as the case moves through submission and decision.'],
-                ],
-                [
-                    '@type' => 'Question',
-                    'name' => 'How will I know where my application stands?',
-                    'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'Application support keeps you updated on your application status, and you can follow its progress online on the Track your application page rather than relying on one-off phone updates.'],
-                ],
-                [
-                    '@type' => 'Question',
-                    'name' => 'Who leads Visagiri?',
-                    'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'Visagiri is led by its directors, Anisha Bharti and Renuka Devi, under Tripgation Pvt Ltd. Day-to-day case work runs through the wider team.'],
-                ],
-            ],
+            '@type' => 'Service',
+            '@id' => $canonicalUrl . '#service',
+            'name' => 'Forex assistance',
+            'serviceType' => 'Foreign currency exchange assistance',
+            'provider' => ['@id' => $orgId],
+            'areaServed' => ['@type' => 'Country', 'name' => 'India'],
+            'url' => $canonicalUrl,
+            'description' => 'Enquire about forex and currency exchange for travel. Share your currency requirement and travel plans and the forex desk will get back to you.',
         ],
     ],
 ];
@@ -105,16 +101,16 @@ $jsonLd = [
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Meet the Visagiri Team - Visa Consultants &amp; Attestation Specialists</title>
-<meta name="description" content="Meet the Visagiri team: visa consultants, document and attestation specialists and application support, working from offices in Patna, Ranchi, Raipur and Bhopal.">
-<meta name="robots" content="index, follow, max-image-preview:large">
+<title>Forex Assistance for Travellers | Visagiri</title>
+<meta name="description" content="Enquire about forex and currency exchange with Visagiri's forex desk. Share your currency requirement and travel plans and the team will get back to you.">
+<meta name="robots" content="index, follow">
 
 <link rel="canonical" href="<?= e($canonicalUrl) ?>">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Visagiri">
 <meta property="og:locale" content="en_IN">
-<meta property="og:title" content="Meet the Visagiri Team - Visa Consultants &amp; Attestation Specialists">
-<meta property="og:description" content="Meet the Visagiri team: visa consultants, document and attestation specialists and application support, working from offices in Patna, Ranchi, Raipur and Bhopal.">
+<meta property="og:title" content="Forex Assistance for Travellers | Visagiri">
+<meta property="og:description" content="Enquire about forex and currency exchange with Visagiri's forex desk. Share your currency requirement and travel plans and the team will get back to you.">
 <meta property="og:url" content="<?= e($canonicalUrl) ?>">
 <meta property="og:image" content="<?= e($ogImage) ?>">
 <meta name="twitter:card" content="summary_large_image">
@@ -124,7 +120,7 @@ $jsonLd = [
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/pages-standalone.css">
-<link rel="stylesheet" href="/assets/css/our-team.css">
+<link rel="stylesheet" href="/assets/css/company-page-kit.css">
 
 <script type="application/ld+json"><?= json_encode($jsonLd, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) ?></script>
 </head>
@@ -141,9 +137,9 @@ $jsonLd = [
         <li><a href="/visa-type/">Visa services</a></li>
         <li><a href="/attestation/">Attestation</a></li>
         <li><a href="/countries/">Countries</a></li>
-        <li><a href="/forex/">Forex</a></li>
+        <li><a href="/forex/" aria-current="page">Forex</a></li>
         <li><a href="/resources/">Resources</a></li>
-        <li><a href="/about/" aria-current="page">Company</a></li>
+        <li><a href="/about/">Company</a></li>
       </ul>
       <a class="btn primary" href="/enquire/">Enquire now</a>
     </nav>
@@ -155,101 +151,84 @@ $jsonLd = [
   <nav class="wrap crumbs" aria-label="Breadcrumb">
     <ol>
       <li><a href="/">Home</a></li>
-      <li><a href="/about/">About</a></li>
-      <li aria-current="page">Our team</li>
+      <li aria-current="page">Forex</li>
     </ol>
   </nav>
 
   <section class="page-hero" aria-labelledby="h1">
     <div class="wrap">
-      <h1 id="h1">The people behind Visagiri</h1>
-      <p class="lede">Behind every application is a team working to get your visa and document attestation right, from your first eligibility question to your final documents.</p>
+      <h1 id="h1">Forex assistance for your trip abroad</h1>
+      <p class="lede">Tell us your currency requirement and travel plans, and Visagiri's forex desk will get back to you.</p>
+      <div class="actions">
+        <a class="btn primary" href="/contact/?service=forex">Send a forex enquiry</a>
+        <a class="btn go" href="<?= e($whatsappHrefForex) ?>" target="_blank" rel="noopener noreferrer">Chat on WhatsApp</a>
+      </div>
     </div>
   </section>
 
-  <section class="section tint" id="roles" aria-labelledby="roles-h">
-    <div class="wrap">
-      <h2 id="roles-h">Three roles, one case</h2>
-      <p class="lede">A typical case passes through all three roles, in this order.</p>
-      <ol class="roles">
-        <li>
-          <div>
-            <h3>Visa consultants</h3>
-            <p>Assess your eligibility, explain the requirements and guide you to the right visa category for your trip.</p>
-            <p class="when"><strong>When:</strong> up front, at the start of your case.</p>
-          </div>
-        </li>
-        <li>
-          <div>
-            <h3>Document and attestation specialists</h3>
-            <p>Review your documents and manage apostille, MEA and embassy attestation requirements.</p>
-            <p class="when"><strong>When:</strong> wherever apostille or attestation is involved.</p>
-          </div>
-        </li>
-        <li>
-          <div>
-            <h3>Application support</h3>
-            <p>Keep you updated on your application status and answer your questions throughout the process.</p>
-            <p class="when"><strong>When:</strong> as your case moves through submission and decision, with online status tracking instead of one-off phone updates.</p>
-          </div>
-        </li>
-      </ol>
-    </div>
-  </section>
-
-  <section class="section" aria-labelledby="meet-h">
+  <section class="section tint" aria-labelledby="include-h">
     <div class="wrap split">
       <div>
-        <h2 id="meet-h">Meet the people</h2>
-        <p>Individual team profiles are being added to this page. In the meantime, you can meet Visagiri's directors.</p>
-        <!--
-          WHEN PROFILES ARE READY (only with each person's consent): add one card per person with photo, name, role, office
-          and, if they want, a LinkedIn link, and add a Person node per member to the JSON-LD (worksFor = the Organization).
-          Do not add names, photos or credentials that have not been confirmed.
-        -->
-        <p><a class="more" href="/leadership/">Meet the leadership team</a></p>
-      </div>
-      <div>
-        <h2 style="font-size:1.25rem">Where the team works</h2>
-        <p>Visagiri's offices are in Patna, Ranchi, Raipur and Bhopal.</p>
-        <ul class="linklist">
-          <li><a href="/offices/patna/">Patna</a></li>
-          <li><a href="/offices/ranchi/">Ranchi</a></li>
-          <li><a href="/offices/raipur/">Raipur</a></li>
-          <li><a href="/offices/bhopal/">Bhopal</a></li>
+        <h2 id="include-h">What to include in your enquiry</h2>
+        <p>The enquiry form asks for your name, email and an optional phone number and destination country, plus a message. It helps the desk if you mention:</p>
+        <ul class="checks">
+          <li>the currency you need</li>
+          <li>the country you are travelling to</li>
+          <li>when you are travelling</li>
         </ul>
       </div>
+      <aside class="notice" aria-labelledby="rates-h">
+        <h3 id="rates-h">About rates</h3>
+        <p>Rates shown on the Visagiri website are indicative and for guidance only.</p>
+        <!--
+          MUST BE COMPLETED BEFORE PUBLISHING (needs input from the company; nothing is invented here):
+          - who provides the forex service and their regulatory status (e.g. the authorised dealer or partner, and licence details)
+          - which currencies and products are offered (cash, cards, remittance, etc.)
+          - documents required and any limits that apply
+          - how quotes are given and how long they are valid
+          Add these as plain sentences here, then add matching FAQs and FAQPage schema.
+        -->
+      </aside>
     </div>
   </section>
 
-  <section class="section tint" id="faq" aria-labelledby="faq-h">
+  <section class="section" aria-labelledby="reach-h">
     <div class="wrap">
-      <h2 id="faq-h">Common questions</h2>
-      <div class="faq">
-        <details>
-          <summary>Who works on my case?</summary>
-          <div><p>A typical case involves three roles. A visa consultant assesses your eligibility and requirements up front, a document and attestation specialist reviews the paperwork where apostille or attestation is involved, and application support keeps you updated as the case moves through submission and decision.</p></div>
-        </details>
-        <details>
-          <summary>How will I know where my application stands?</summary>
-          <div><p>Application support keeps you updated on your application status, and you can follow its progress online on the <a href="/track-visa/">Track your application</a> page rather than relying on one-off phone updates.</p></div>
-        </details>
-        <details>
-          <summary>Who leads Visagiri?</summary>
-          <div><p>Visagiri is led by its directors, <a href="/leadership/">Anisha Bharti and Renuka Devi</a>, under Tripgation Pvt Ltd. Day-to-day case work runs through the wider team.</p></div>
-        </details>
-      </div>
+      <h2 id="reach-h">Reach the forex desk</h2>
+      <ul class="channels">
+        <li class="channel">
+          <h3>Enquiry form</h3>
+          <p>Choose Forex in the form and send your details.</p>
+          <a class="btn primary" href="/contact/?service=forex">Open the form</a>
+        </li>
+        <li class="channel">
+          <h3>WhatsApp</h3>
+          <p>Message the team, 24&times;7.</p>
+          <a class="btn go" href="<?= e($whatsappHrefForex) ?>" target="_blank" rel="noopener noreferrer">WhatsApp us</a>
+        </li>
+        <li class="channel">
+          <h3>Call</h3>
+          <p><?= e($contactPhoneDisplay) ?></p>
+          <a class="btn ghost" href="tel:<?= e($contactPhoneDial) ?>">Call us</a>
+        </li>
+        <li class="channel">
+          <h3>Email</h3>
+          <p><?= e($contactEmail) ?></p>
+          <a class="btn ghost" href="mailto:<?= e($contactEmail) ?>">Email us</a>
+        </li>
+      </ul>
     </div>
   </section>
 
-  <section class="section" aria-labelledby="talk-h">
+  <section class="section tint" aria-labelledby="also-h">
     <div class="wrap">
-      <h2 id="talk-h">Talk to the team</h2>
+      <h2 id="also-h">Planning the rest of your trip?</h2>
+      <p>Visagiri also assists with visas for <?= e((string) $countryCount) ?>+ countries and with document attestation for use abroad.</p>
       <ul class="linklist">
-        <li><a href="/contact/">Contact us</a></li>
-        <li><a href="/track-visa/">Track your application</a></li>
-        <li><a href="/leadership/">Leadership</a></li>
-        <li><a href="/careers/">Careers</a></li>
+        <li><a href="/visa-type/">Visa services</a></li>
+        <li><a href="/countries/">Country directory</a></li>
+        <li><a href="/attestation/">Attestation</a></li>
+        <li><a href="/forex/track/">Track a forex request</a></li>
       </ul>
     </div>
   </section>

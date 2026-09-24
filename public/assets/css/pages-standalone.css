@@ -56,6 +56,13 @@ p{margin:0 0 1em;max-width:68ch}
 .section{padding-block:clamp(44px,7vw,84px)}
 .section.tint{background:var(--mist)}
 
+/* Simple hero (no SVG illustration) used by careers/affiliations/forex/
+   partners/our-team — the more elaborate .hero/.hero-grid above is for
+   About's animated attestation-route figure specifically. */
+.page-hero{padding-block:36px clamp(32px,5vw,60px)}
+.page-hero h1{max-width:22ch;margin-bottom:.5em}
+.page-hero .lede{max-width:62ch;margin-bottom:1.4em}
+
 /* Buttons */
 .btn{display:inline-block;font:600 1rem/1 var(--sans);padding:14px 20px;border-radius:6px;text-decoration:none;border:2px solid var(--stamp);transition:background-color .15s,color .15s,border-color .15s}
 .btn.primary{background:var(--stamp);color:#fff}

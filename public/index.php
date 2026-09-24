@@ -242,6 +242,9 @@ switch ($segments[0] ?? '') {
             }
             $dispatch("$root/forex/track/index.php");
         }
+        if (($segments[1] ?? null) === null) {
+            $dispatch("$root/pages/forex.php");
+        }
         $dispatch("$root/pages/404.php");
 
     case 'login':
