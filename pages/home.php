@@ -55,9 +55,6 @@ $heroSlides = [
         'accent' => 'Visa Expertise.',
         'subtitle' => "Expert guidance for tourist, business, employment, transit, medical and conference visas to {$countryCount}+ countries.",
         'image' => '/assets/images/hero/hero-slide-1.jpg',
-        'imageWidth' => 500,
-        'imageHeight' => 828,
-        'imageAlt' => 'Traveller with a backpack looking out over a European city skyline',
         'stats' => [
             ['icon' => 'globe', 'label' => "{$countryCount}+ Countries", 'sub' => 'Wide coverage'],
             ['icon' => 'document', 'label' => 'Visa Guidance', 'sub' => 'Step-by-step support'],
@@ -72,9 +69,6 @@ $heroSlides = [
         'accent' => 'Without Visa Worries.',
         'subtitle' => 'Get end-to-end visa support — from requirements to application guidance, all in one place.',
         'image' => '/assets/images/hero/hero-slide-2.jpg',
-        'imageWidth' => 807,
-        'imageHeight' => 828,
-        'imageAlt' => 'Traveller looking at a collage of famous landmarks including the Eiffel Tower and Big Ben',
         'stats' => [
             ['icon' => 'checklist', 'label' => 'Document Checklist', 'sub' => 'Country-wise guidance'],
             ['icon' => 'people', 'label' => 'Application Support', 'sub' => 'End-to-end help'],
@@ -88,9 +82,6 @@ $heroSlides = [
         'accent' => 'Visa Approval.',
         'subtitle' => 'Reliable support, clear guidance and expert assistance for a smooth visa application experience.',
         'image' => '/assets/images/hero/hero-slide-3.jpg',
-        'imageWidth' => 404,
-        'imageHeight' => 828,
-        'imageAlt' => 'Traveller with a backpack and suitcase watching a plane take off from an airport window',
         'stats' => [
             ['icon' => 'document', 'label' => 'Visa Guidance', 'sub' => 'Step-by-step support'],
             ['icon' => 'checklist', 'label' => 'Document Support', 'sub' => 'Complete checklist'],
@@ -105,9 +96,6 @@ $heroSlides = [
         'accent' => 'Visa Support.',
         'subtitle' => "Get expert help with visa requirements, documentation and application guidance for {$countryCount}+ destinations.",
         'image' => '/assets/images/hero/hero-slide-4.jpg',
-        'imageWidth' => 500,
-        'imageHeight' => 828,
-        'imageAlt' => 'Passport and boarding passes resting on a wooden desk',
         'stats' => [
             ['icon' => 'globe', 'label' => "{$countryCount}+ Destinations", 'sub' => 'Global coverage'],
             ['icon' => 'document', 'label' => 'Clear Guidance', 'sub' => 'Step-by-step process'],
@@ -128,9 +116,9 @@ require __DIR__ . '/../includes/header.php';
 <section class="hero-slider" id="hero-slider" aria-roledescription="carousel" aria-label="Visagiri services">
     <div class="hero-slider__track">
         <?php foreach ($heroSlides as $i => $slide): ?>
-        <div class="hero hero-slide<?= $slide['theme'] === 'light' ? ' hero-slide--light' : '' ?>" role="group" aria-roledescription="slide" aria-label="Slide <?= $i + 1 ?> of <?= count($heroSlides) ?>"<?= $i > 0 ? ' aria-hidden="true"' : '' ?>>
+        <div class="hero hero-slide<?= $slide['theme'] === 'light' ? ' hero-slide--light' : '' ?>" role="group" aria-roledescription="slide" aria-label="Slide <?= $i + 1 ?> of <?= count($heroSlides) ?>"<?= $i > 0 ? ' aria-hidden="true"' : '' ?> style="background-image:url('<?= e(asset_url($slide['image'])) ?>')">
             <div class="container hero__grid">
-                <div>
+                <div class="hero__content">
                     <span class="hero__label"><span class="hero__label-line" aria-hidden="true"></span><?= e($slide['eyebrow']) ?><span class="hero__label-line" aria-hidden="true"></span></span>
                     <h1><?= e(str_replace($slide['accent'], '', $slide['heading'])) ?><span class="hero__accent"><?= e($slide['accent']) ?></span></h1>
                     <p class="hero__subtitle"><?= e($slide['subtitle']) ?></p>
@@ -150,9 +138,6 @@ require __DIR__ . '/../includes/header.php';
                         <a href="<?= e(whatsapp_enquiry_href("Hi Visagiri, I'd like to know more about your visa services.")) ?>" class="btn btn-primary" style="background:var(--white);color:var(--visa-blue)" target="_blank" rel="noopener noreferrer">Enquire Now</a>
                         <?php endif; ?>
                     </div>
-                </div>
-                <div class="hero__visual">
-                    <img src="<?= e(asset_url($slide['image'])) ?>" alt="<?= e($slide['imageAlt']) ?>" width="<?= e((string) $slide['imageWidth']) ?>" height="<?= e((string) $slide['imageHeight']) ?>"<?= $i === 0 ? ' fetchpriority="high"' : ' loading="lazy"' ?>>
                 </div>
             </div>
         </div>
