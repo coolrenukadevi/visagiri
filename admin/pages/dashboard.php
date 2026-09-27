@@ -140,34 +140,85 @@ $activeCustomers = has_permission('customers.view')
     ? (int) $pdo->query('SELECT COUNT(*) FROM customers WHERE deleted_at IS NULL')->fetchColumn()
     : 0;
 
+/**
+ * A real, honestly-labeled trend: count of matching rows created (or,
+ * for $dateColumn = an "updated_at"-style column, updated into the
+ * given $whereSql state) in the trailing 7 days vs the 7 days before
+ * that. No fabricated numbers, no snapshot-history table this schema
+ * doesn't have — just two real COUNT() queries compared. Returns null
+ * when the prior-period baseline is 0 (a percentage change against
+ * zero is meaningless, not "up 100%"), so the caller can render no
+ * trend indicator rather than a misleading one.
+ */
+function admin_kpi_trend(PDO $pdo, string $table, string $dateColumn, string $extraWhereSql = '', array $params = []): ?array
+{
+    $sql = "SELECT
+        SUM($dateColumn >= DATE_SUB(NOW(), INTERVAL 7 DAY)) AS this_period,
+        SUM($dateColumn >= DATE_SUB(NOW(), INTERVAL 14 DAY) AND $dateColumn < DATE_SUB(NOW(), INTERVAL 7 DAY)) AS prior_period
+        FROM $table WHERE $dateColumn >= DATE_SUB(NOW(), INTERVAL 14 DAY)" . ($extraWhereSql !== '' ? " AND $extraWhereSql" : '');
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+    $row = $stmt->fetch();
+    $thisPeriod = (int) ($row['this_period'] ?? 0);
+    $priorPeriod = (int) ($row['prior_period'] ?? 0);
+    if ($priorPeriod === 0) {
+        return null;
+    }
+    $pct = round((($thisPeriod - $priorPeriod) / $priorPeriod) * 100);
+    return ['pct' => (int) $pct, 'direction' => $pct > 0 ? 'up' : ($pct < 0 ? 'down' : 'flat')];
+}
+
+$kpiIcons = [
+    'sales' => '<svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 15.5 7.5 9.5l3.5 3 6.5-8"/><path d="M13.5 4.5h4v4"/></svg>',
+    'operations' => '<svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="14" height="14" rx="2"/><path d="M7 7h6M7 10h6M7 13h3"/></svg>',
+    'risk' => '<svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2 18 16H2Z"/><line x1="10" y1="8" x2="10" y2="11.5"/><circle cx="10" cy="14" r="0.6" fill="currentColor" stroke="none"/></svg>',
+    'finance' => '<svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="7.5"/><path d="M10 5.5v9M12.5 7.5c0-1-1-1.8-2.5-1.8s-2.5.8-2.5 1.8 1 1.5 2.5 1.8 2.5.8 2.5 1.9-1 1.8-2.5 1.8-2.5-.8-2.5-1.8"/></svg>',
+    'customer' => '<svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7.3" cy="6.8" r="2.6"/><path d="M2.5 16.5c0-3.3 2.1-5.2 4.8-5.2s4.8 1.9 4.8 5.2"/><circle cx="14.2" cy="7.5" r="2"/><path d="M13 11.3C15.3 11.3 17.2 13 17.3 16"/></svg>',
+];
+
 $kpiGroups = [];
 if (has_permission('enquiries.view')) {
     $kpiGroups['Sales'] = [
-        ['label' => 'New Enquiries', 'value' => $newEnquiriesToday, 'href' => '/admin/enquiries/'],
-        ['label' => 'Open Enquiries', 'value' => $activeEnquiries, 'href' => '/admin/enquiries/'],
+        'icon' => $kpiIcons['sales'],
+        'cards' => [
+            ['label' => 'New Enquiries', 'value' => $newEnquiriesToday, 'href' => '/admin/enquiries/', 'trend' => admin_kpi_trend($pdo, 'enquiries', 'created_at', 'deleted_at IS NULL')],
+            ['label' => 'Open Enquiries', 'value' => $activeEnquiries, 'href' => '/admin/enquiries/', 'trend' => admin_kpi_trend($pdo, 'enquiries', 'created_at', 'deleted_at IS NULL')],
+        ],
     ];
 }
 if (has_permission('visa.view') || has_permission('documents.verify')) {
     $ops = [];
-    if (has_permission('visa.view')) { $ops[] = ['label' => 'Visa Applications', 'value' => $activeVisaApplications, 'href' => '/admin/visa-applications/']; }
-    if (has_permission('documents.verify')) { $ops[] = ['label' => 'Documents Pending', 'value' => $pendingDocuments, 'href' => '/admin/enquiries/?status=documents_pending']; }
-    $kpiGroups['Operations'] = $ops;
+    if (has_permission('visa.view')) { $ops[] = ['label' => 'Visa Applications', 'value' => $activeVisaApplications, 'href' => '/admin/visa-applications/', 'trend' => admin_kpi_trend($pdo, 'visa_applications', 'created_at', 'deleted_at IS NULL')]; }
+    if (has_permission('documents.verify')) { $ops[] = ['label' => 'Documents Pending', 'value' => $pendingDocuments, 'href' => '/admin/enquiries/?status=documents_pending', 'trend' => admin_kpi_trend($pdo, 'documents', 'uploaded_at', "deleted_at IS NULL AND verification_status = 'pending'")]; }
+    $kpiGroups['Operations'] = ['icon' => $kpiIcons['operations'], 'cards' => $ops];
 }
 if (has_permission('enquiries.view')) {
+    // SLA due dates that fell in each window, still open — real
+    // newly-at-risk-or-breached volume, not a creation-rate proxy.
+    $slaTrend = admin_kpi_trend($pdo, 'enquiries', 'sla_due_at', "deleted_at IS NULL AND status NOT IN ('completed','closed')");
     $kpiGroups['Risk'] = [
-        ['label' => 'SLA Breached', 'value' => $slaBreachedCount, 'href' => '/admin/enquiries/?sla=breached', 'risk' => true],
+        'icon' => $kpiIcons['risk'],
+        'cards' => [
+            ['label' => 'SLA Breached', 'value' => $slaBreachedCount, 'href' => '/admin/enquiries/?sla=breached', 'risk' => true, 'trend' => $slaTrend],
+        ],
     ];
 }
 if (has_permission('forex.requests.view') || has_permission('partners.manage')) {
+    $paymentsPendingTrend = has_permission('forex.requests.view')
+        ? admin_kpi_trend($pdo, 'forex_requests', 'created_at', "deleted_at IS NULL AND status = 'payment_pending'")
+        : null;
     $kpiGroups['Finance'] = [
-        ['label' => 'Payments Pending', 'value' => $paymentsPending, 'href' => '/admin/finance/'],
+        'icon' => $kpiIcons['finance'],
+        'cards' => [
+            ['label' => 'Payments Pending', 'value' => $paymentsPending, 'href' => '/admin/finance/', 'trend' => $paymentsPendingTrend],
+        ],
     ];
 }
 if (has_permission('customers.view') || has_permission('enquiries.view')) {
     $ct = [];
-    if (has_permission('customers.view')) { $ct[] = ['label' => 'Active Customers', 'value' => $activeCustomers, 'href' => '/admin/customers/']; }
-    if (has_permission('enquiries.view')) { $ct[] = ['label' => 'Cases Completed', 'value' => $resolvedToday, 'href' => '/admin/enquiries/?status=completed']; }
-    $kpiGroups['Customer / Team'] = $ct;
+    if (has_permission('customers.view')) { $ct[] = ['label' => 'Active Customers', 'value' => $activeCustomers, 'href' => '/admin/customers/', 'trend' => admin_kpi_trend($pdo, 'customers', 'created_at', 'deleted_at IS NULL')]; }
+    if (has_permission('enquiries.view')) { $ct[] = ['label' => 'Cases Completed', 'value' => $resolvedToday, 'href' => '/admin/enquiries/?status=completed', 'trend' => admin_kpi_trend($pdo, 'enquiries', 'updated_at', "deleted_at IS NULL AND status IN ('completed','closed')")]; }
+    $kpiGroups['Customer / Team'] = ['icon' => $kpiIcons['customer'], 'cards' => $ct];
 }
 
 // ---------------------------------------------------------------
@@ -396,13 +447,23 @@ $priorities = array_slice($priorities, 0, 3);
 <div class="admin-widget" data-widget-id="kpi-groups">
     <div class="admin-widget__handle"><button type="button" data-widget-drag-handle title="Drag to reorder"><svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><circle cx="7" cy="5" r="1.3"/><circle cx="13" cy="5" r="1.3"/><circle cx="7" cy="10" r="1.3"/><circle cx="13" cy="10" r="1.3"/><circle cx="7" cy="15" r="1.3"/><circle cx="13" cy="15" r="1.3"/></svg></button><button type="button" data-widget-hide title="Hide widget"><svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 10s3-5.5 7-5.5S17 10 17 10s-3 5.5-7 5.5S3 10 3 10Z"/><circle cx="10" cy="10" r="2"/><line x1="3" y1="17" x2="17" y2="3"/></svg></button></div>
 <div class="admin-kpi-groups">
-    <?php foreach ($kpiGroups as $groupLabel => $cards): if (!$cards) continue; ?>
+    <?php foreach ($kpiGroups as $groupLabel => $group): $cards = $group['cards']; if (!$cards) continue; ?>
     <div class="admin-kpi-category<?= $groupLabel === 'Risk' ? ' admin-kpi-category--risk' : '' ?>">
-        <p class="admin-kpi-category__label"><?= e($groupLabel) ?></p>
+        <p class="admin-kpi-category__label"><span class="admin-kpi-category__icon"><?= $group['icon'] ?></span><?= e($groupLabel) ?></p>
         <div class="admin-kpi-category__metrics">
             <?php foreach ($cards as $card): ?>
             <a href="<?= e($card['href']) ?>" class="admin-kpi-metric<?= !empty($card['risk']) && $card['value'] > 0 ? ' admin-kpi-metric--risk' : '' ?>">
-                <span class="admin-kpi-metric__value"><?= (int) $card['value'] ?></span>
+                <span class="admin-kpi-metric__value-row">
+                    <span class="admin-kpi-metric__value"><?= (int) $card['value'] ?></span>
+                    <?php if ($card['trend'] !== null): ?>
+                    <span class="admin-kpi-metric__trend admin-kpi-metric__trend--<?= e($card['trend']['direction']) ?>">
+                        <?php if ($card['trend']['direction'] === 'up'): ?><svg width="10" height="10" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13 9 7l3 3 4-5"/><path d="M12 5h4v4"/></svg>
+                        <?php elseif ($card['trend']['direction'] === 'down'): ?><svg width="10" height="10" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7 9 13l3-3 4 5"/><path d="M12 15h4v-4"/></svg>
+                        <?php endif; ?>
+                        <?= abs($card['trend']['pct']) ?>%
+                    </span>
+                    <?php endif; ?>
+                </span>
                 <span class="admin-kpi-metric__label"><?= e($card['label']) ?></span>
             </a>
             <?php endforeach; ?>
