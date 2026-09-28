@@ -180,23 +180,10 @@ body.focus-mode .admin-layer[data-layer="dig-analytics"] { display: none; }
 .admin-kpi-category--risk .admin-kpi-category__icon { background: var(--status-red-bg); color: var(--status-red); }
 .admin-kpi-category__metrics { display: flex; gap: var(--space-4); }
 .admin-kpi-metric { flex: 1; min-width: 0; text-decoration: none; color: inherit; }
-.admin-kpi-metric__value-row { display: flex; align-items: baseline; gap: var(--space-2); flex-wrap: wrap; }
 .admin-kpi-metric__value { display: block; font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); color: var(--text-dark); line-height: 1.1; }
 .admin-kpi-metric--risk .admin-kpi-metric__value { color: var(--status-red); }
 .admin-kpi-metric__label { display: block; color: var(--text-muted); font-size: var(--font-size-xs); margin-top: 2px; line-height: 1.25; }
 .admin-kpi-metric:hover .admin-kpi-metric__value { text-decoration: underline; }
-.admin-kpi-metric__trend {
-    display: inline-flex; align-items: center; gap: 2px;
-    font-size: 0.7rem; font-weight: var(--font-weight-bold); line-height: 1;
-    padding: 2px 6px; border-radius: var(--radius-full); white-space: nowrap;
-}
-.admin-kpi-metric__trend--up { color: var(--status-green); background: var(--status-green-bg); }
-.admin-kpi-metric__trend--down { color: var(--status-red); background: var(--status-red-bg); }
-/* A metric whose "risk" is that more of it is bad (breaches, pending
-   docs, payments pending) still shows the raw direction it moved in —
-   up/down keeps its plain green/red meaning throughout, deliberately
-   not flipped to "green when breaches went up," so nobody misreads a
-   worsening risk metric as good news at a glance. */
 
 /* ---------- Panel grid (Scan layer: funnel / SLA ring / analytics) ---------- */
 .admin-panel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-5); align-items: start; }
