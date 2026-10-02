@@ -190,12 +190,16 @@ if (!empty($cpc_country) && !empty($cpc_categories)):
                 </div>
                 <?php endif; ?>
 
-                <?php if ($cpc_sources): ?>
+                <?php if ($cpc_sources && ($cpc_cat['content_status'] ?? '') === 'verified'): ?>
                 <p class="visa-info-note mt-3">
                     <?php if ($cpc_cat['last_reviewed_date']): ?>Verified against the official source on <?php echo htmlspecialchars(date('j F Y', strtotime($cpc_cat['last_reviewed_date']))); ?><?php endif; ?>
                     <?php foreach ($cpc_sources as $cpc_src): ?>
                         &middot; Source: <?php if ($cpc_src['source_url']): ?><a href="<?php echo htmlspecialchars($cpc_src['source_url']); ?>" target="_blank" rel="noopener nofollow"><?php echo htmlspecialchars($cpc_src['source_authority']); ?></a><?php else: echo htmlspecialchars($cpc_src['source_authority']); endif; ?>
                     <?php endforeach; ?>
+                </p>
+                <?php elseif ($cpc_sources): ?>
+                <p class="visa-info-note mt-3">
+                    Researched from <?php foreach ($cpc_sources as $cpc_srcI => $cpc_src): ?><?php echo $cpc_srcI > 0 ? ', ' : ''; ?><?php if ($cpc_src['source_url']): ?><a href="<?php echo htmlspecialchars($cpc_src['source_url']); ?>" target="_blank" rel="noopener nofollow"><?php echo htmlspecialchars($cpc_src['source_authority']); ?></a><?php else: echo htmlspecialchars($cpc_src['source_authority']); endif; ?><?php endforeach; ?><?php if ($cpc_cat['last_reviewed_date']): ?> &middot; content last updated <?php echo htmlspecialchars(date('j F Y', strtotime($cpc_cat['last_reviewed_date']))); ?><?php endif; ?>. Fees and processing times change — always confirm current figures on the official source before applying or paying.
                 </p>
                 <?php elseif ($cpc_cat['last_reviewed_date']): ?>
                 <p class="visa-info-note mt-3">Content last updated <?php echo htmlspecialchars(date('j F Y', strtotime($cpc_cat['last_reviewed_date']))); ?>. Always confirm current requirements with the relevant embassy, consulate or immigration authority before applying.</p>

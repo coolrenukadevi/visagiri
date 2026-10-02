@@ -21,6 +21,21 @@ const VISA_COUNTRY_REGIONS = [
 ];
 const VISA_DOC_GROUPS = ['Basic Documents', 'Financial Documents', 'Travel Documents', 'Supporting Documents'];
 
+// Phase 1B content-governance statuses — tracks research confidence on a
+// country_visa_pages record, separate from the publish-workflow `status`
+// column above. 'verified' may only be used when a real visa_sources row
+// with an official URL backs the record; everything else must not imply
+// official verification in its rendered copy.
+const VISA_CONTENT_STATUSES = ['draft', 'generic', 'researched', 'verified', 'needs-review', 'source-unavailable'];
+
+// Structured biometrics/interview signal, kept separate from the existing
+// free-text interview_required/biometric_required columns (which carry the
+// human-readable explanatory note). Blank/unknown must never be rendered or
+// treated as "not required" — blank only means it hasn't been researched yet.
+const VISA_REQUIREMENT_STATUSES = ['required', 'not_required', 'conditional', 'unknown'];
+
+const VISA_DOCUMENT_REQUIREMENT_LEVELS = ['mandatory', 'conditional', 'recommended'];
+
 const VISA_CATEGORY_DEFS = [
     ['slug' => 'tourist-visa',    'name' => 'Tourist Visa',    'icon' => 'fa-umbrella-beach',  'short_description' => 'Holiday, sightseeing and short leisure visits.'],
     ['slug' => 'business-visa',   'name' => 'Business Visa',   'icon' => 'fa-briefcase',       'short_description' => 'Meetings, conferences, negotiations and corporate visits.'],
@@ -120,18 +135,30 @@ function visa_content_db(): PDO
         last_reviewed_date TEXT,
         reviewed_by TEXT,
 
+        -- Phase 1B governance: research-confidence status (see
+        -- VISA_CONTENT_STATUSES) and structured requirement signals, distinct
+        -- from the free-text interview_required/biometric_required columns.
+        content_status TEXT NOT NULL DEFAULT 'generic',
+        biometric_status TEXT,
+        interview_status TEXT,
+
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL,
         UNIQUE(country_id, visa_category_id)
     )");
+    visa_content_db_add_column_if_missing($pdo, 'country_visa_pages', 'content_status', "TEXT NOT NULL DEFAULT 'generic'");
+    visa_content_db_add_column_if_missing($pdo, 'country_visa_pages', 'biometric_status', 'TEXT');
+    visa_content_db_add_column_if_missing($pdo, 'country_visa_pages', 'interview_status', 'TEXT');
 
     $pdo->exec("CREATE TABLE IF NOT EXISTS visa_documents (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         country_visa_page_id INTEGER NOT NULL REFERENCES country_visa_pages(id) ON DELETE CASCADE,
         category TEXT NOT NULL,
         label TEXT NOT NULL,
-        sort_order INTEGER NOT NULL DEFAULT 0
+        sort_order INTEGER NOT NULL DEFAULT 0,
+        requirement_level TEXT NOT NULL DEFAULT 'mandatory'
     )");
+    visa_content_db_add_column_if_missing($pdo, 'visa_documents', 'requirement_level', "TEXT NOT NULL DEFAULT 'mandatory'");
 
     $pdo->exec("CREATE TABLE IF NOT EXISTS visa_process_steps (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -155,8 +182,12 @@ function visa_content_db(): PDO
         label TEXT NOT NULL,
         amount_display TEXT NOT NULL,
         is_government INTEGER NOT NULL DEFAULT 1,
-        sort_order INTEGER NOT NULL DEFAULT 0
+        sort_order INTEGER NOT NULL DEFAULT 0,
+        currency TEXT,
+        fee_notes TEXT
     )");
+    visa_content_db_add_column_if_missing($pdo, 'visa_fees', 'currency', 'TEXT');
+    visa_content_db_add_column_if_missing($pdo, 'visa_fees', 'fee_notes', 'TEXT');
 
     $pdo->exec("CREATE TABLE IF NOT EXISTS visa_sources (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -208,6 +239,11 @@ function visa_content_db(): PDO
 
     require_once __DIR__ . '/visa-seed-data.php';
     foreach (visa_seed_pages_def() as $def) {
+        visa_seed_page($pdo, $def);
+    }
+
+    require_once __DIR__ . '/visa-seed-data-batch1b.php';
+    foreach (visa_seed_pages_def_batch1b() as $def) {
         visa_seed_page($pdo, $def);
     }
 
@@ -350,9 +386,20 @@ function visa_seed_bulk_generic(PDO $pdo): void
  */
 function visa_seed_page(PDO $pdo, array $def): void
 {
-    $exists = $pdo->prepare('SELECT id FROM country_visa_pages WHERE page_slug = ?');
-    $exists->execute([$def['page_slug']]);
-    if ($exists->fetchColumn()) {
+    $existing = $pdo->prepare('SELECT id, content_status FROM country_visa_pages WHERE page_slug = ?');
+    $existing->execute([$def['page_slug']]);
+    $existingRow = $existing->fetch(PDO::FETCH_ASSOC);
+
+    if ($existingRow) {
+        // A page already exists — almost always because visa_seed_bulk_generic()
+        // created the category-generic placeholder on an earlier boot. Only
+        // upgrade it in place if it is still at the bulk-generic default
+        // ('generic'); anything else (researched/verified/needs-review/draft,
+        // or a manual CMS edit) is left untouched so this never blindly
+        // overwrites good existing data.
+        if (($existingRow['content_status'] ?? 'generic') === 'generic') {
+            visa_seed_page_upgrade($pdo, (int) $existingRow['id'], $def);
+        }
         return;
     }
 
@@ -396,6 +443,7 @@ function visa_seed_page(PDO $pdo, array $def): void
         authority_name, authority_url,
         eligibility_html, indian_applicant_html,
         seo_title, meta_description, og_title, og_description,
+        content_status, biometric_status, interview_status,
         last_reviewed_date, reviewed_by, created_at, updated_at
     ) VALUES (
         :country_id, :category_id, :page_slug, 'published',
@@ -405,11 +453,23 @@ function visa_seed_page(PDO $pdo, array $def): void
         :authority_name, :authority_url,
         :eligibility_html, :indian_applicant_html,
         :seo_title, :meta_description, :og_title, :og_description,
+        :content_status, :biometric_status, :interview_status,
         :last_reviewed_date, :reviewed_by, :created_at, :updated_at
     )");
-    $insertPage->execute([
-        'country_id' => $countryId,
-        'category_id' => $categoryId,
+    $def['_country_id'] = $countryId;
+    $def['_category_id'] = $categoryId;
+    $insertPage->execute(visa_seed_page_params($def, $today, $now));
+    $pageId = (int) $pdo->lastInsertId();
+
+    visa_seed_page_children($pdo, $pageId, $def, $today);
+}
+
+/** Shared param-builder for both the first-insert and in-place-upgrade paths. */
+function visa_seed_page_params(array $def, string $today, string $now): array
+{
+    return [
+        'country_id' => $def['_country_id'] ?? null,
+        'category_id' => $def['_category_id'] ?? null,
         'page_slug' => $def['page_slug'],
         'official_visa_name' => $def['official_visa_name'],
         'visa_subclass_code' => $def['visa_subclass_code'] ?? null,
@@ -431,16 +491,22 @@ function visa_seed_page(PDO $pdo, array $def): void
         'meta_description' => $def['meta_description'] ?? null,
         'og_title' => $def['og_title'] ?? null,
         'og_description' => $def['og_description'] ?? null,
+        'content_status' => $def['content_status'] ?? 'researched',
+        'biometric_status' => $def['biometric_status'] ?? null,
+        'interview_status' => $def['interview_status'] ?? null,
         'last_reviewed_date' => $today,
         'reviewed_by' => 'Visa Agency Content Team',
         'created_at' => $now,
         'updated_at' => $now,
-    ]);
-    $pageId = (int) $pdo->lastInsertId();
+    ];
+}
 
-    $docStmt = $pdo->prepare('INSERT INTO visa_documents (country_visa_page_id, category, label, sort_order) VALUES (?, ?, ?, ?)');
+/** Inserts/replaces the document/step/faq/fee/source child rows for a page. */
+function visa_seed_page_children(PDO $pdo, int $pageId, array $def, string $today): void
+{
+    $docStmt = $pdo->prepare('INSERT INTO visa_documents (country_visa_page_id, category, label, sort_order, requirement_level) VALUES (?, ?, ?, ?, ?)');
     foreach ($def['documents'] as $i => $d) {
-        $docStmt->execute([$pageId, $d[0], $d[1], $i]);
+        $docStmt->execute([$pageId, $d[0], $d[1], $i, $d[2] ?? 'mandatory']);
     }
 
     $stepStmt = $pdo->prepare('INSERT INTO visa_process_steps (country_visa_page_id, step_number, title, description) VALUES (?, ?, ?, ?)');
@@ -453,20 +519,67 @@ function visa_seed_page(PDO $pdo, array $def): void
         $faqStmt->execute([$pageId, $f[0], $f[1], $i]);
     }
 
-    $feeStmt = $pdo->prepare('INSERT INTO visa_fees (country_visa_page_id, label, amount_display, is_government, sort_order) VALUES (?, ?, ?, ?, ?)');
+    $feeStmt = $pdo->prepare('INSERT INTO visa_fees (country_visa_page_id, label, amount_display, is_government, sort_order, currency, fee_notes) VALUES (?, ?, ?, ?, ?, ?, ?)');
     foreach ($def['fees'] as $i => $fee) {
-        $feeStmt->execute([$pageId, $fee[0], $fee[1], $fee[2], $i]);
+        $feeStmt->execute([$pageId, $fee[0], $fee[1], $fee[2], $i, $fee[3] ?? null, $fee[4] ?? null]);
     }
 
-    $pdo->prepare('INSERT INTO visa_sources (country_visa_page_id, source_authority, source_url, date_checked, date_reviewed, notes) VALUES (?, ?, ?, ?, ?, ?)')
-        ->execute([
-            $pageId,
-            $def['source']['authority'],
-            $def['source']['url'],
-            $today,
-            $today,
-            $def['source']['notes'] ?? '',
-        ]);
+    if (!empty($def['source'])) {
+        $pdo->prepare('INSERT INTO visa_sources (country_visa_page_id, source_authority, source_url, date_checked, date_reviewed, notes) VALUES (?, ?, ?, ?, ?, ?)')
+            ->execute([
+                $pageId,
+                $def['source']['authority'],
+                $def['source']['url'],
+                $today,
+                $today,
+                $def['source']['notes'] ?? '',
+            ]);
+    }
+}
+
+/**
+ * Upgrades an existing bulk-generic page row in place with researched
+ * content from $def, replacing its generic child rows. Only ever called
+ * when the existing row's content_status is still 'generic' (checked by the
+ * caller), so a page that has already been researched/verified/flagged
+ * needs-review, or hand-edited in the CMS, is never touched here.
+ */
+function visa_seed_page_upgrade(PDO $pdo, int $pageId, array $def): void
+{
+    $now = gmdate('c');
+    $today = gmdate('Y-m-d');
+
+    $params = visa_seed_page_params($def, $today, $now);
+    unset($params['country_id'], $params['category_id'], $params['page_slug'], $params['created_at']);
+    $params['id'] = $pageId;
+
+    $pdo->prepare("UPDATE country_visa_pages SET
+        official_visa_name = :official_visa_name, visa_subclass_code = :visa_subclass_code, intro_html = :intro_html,
+        typical_stay = :typical_stay, entry_type = :entry_type, processing_time_text = :processing_time_text,
+        validity_text = :validity_text, application_method = :application_method,
+        interview_required = :interview_required, biometric_required = :biometric_required,
+        government_fee_text = :government_fee_text, application_centre = :application_centre,
+        authority_name = :authority_name, authority_url = :authority_url,
+        eligibility_html = :eligibility_html, indian_applicant_html = :indian_applicant_html,
+        seo_title = :seo_title, meta_description = :meta_description, og_title = :og_title, og_description = :og_description,
+        content_status = :content_status, biometric_status = :biometric_status, interview_status = :interview_status,
+        last_reviewed_date = :last_reviewed_date, reviewed_by = :reviewed_by, updated_at = :updated_at
+        WHERE id = :id")
+        ->execute($params);
+
+    foreach (['visa_documents', 'visa_process_steps', 'visa_faqs', 'visa_fees', 'visa_sources'] as $childTable) {
+        $pdo->prepare("DELETE FROM {$childTable} WHERE country_visa_page_id = ?")->execute([$pageId]);
+    }
+
+    visa_seed_page_children($pdo, $pageId, $def, $today);
+}
+
+function visa_content_db_add_column_if_missing(PDO $pdo, string $table, string $column, string $definition): void
+{
+    $cols = $pdo->query("PRAGMA table_info({$table})")->fetchAll(PDO::FETCH_COLUMN, 1);
+    if (!in_array($column, $cols, true)) {
+        $pdo->exec("ALTER TABLE {$table} ADD COLUMN {$column} {$definition}");
+    }
 }
 
 function visa_country_url(string $countrySlug): string
