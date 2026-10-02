@@ -100,6 +100,10 @@ if (!empty($cpc_country) && !empty($cpc_categories)):
                     <h2 class="split-text-right split-text-in-right"><?php echo htmlspecialchars($cpc_titleBase); ?></h2>
                 </div>
 
+                <?php if ($cpc_cat['intro_html']): ?>
+                <div class="svc-lede"><?php echo $cpc_cat['intro_html']; ?></div>
+                <?php endif; ?>
+
                 <!-- At a glance -->
                 <div class="visa-info-card">
                     <div><label>Visa Type</label><span><?php echo htmlspecialchars($cpc_cat['category_name']); ?></span></div>
@@ -132,8 +136,8 @@ if (!empty($cpc_country) && !empty($cpc_categories)):
                     <div class="visa-doc-group">
                         <h4><?php echo htmlspecialchars($cpc_catLabel); ?></h4>
                         <div class="svc-checklist">
-                            <?php foreach ($cpc_docsByCategory[$cpc_catLabel] as $cpc_doc): ?>
-                            <div class="svc-checklist-item"><div class="tick"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></div><span class="txt"><?php echo htmlspecialchars($cpc_doc['label']); ?></span></div>
+                            <?php foreach ($cpc_docsByCategory[$cpc_catLabel] as $cpc_doc): $cpc_reqLevel = $cpc_doc['requirement_level'] ?? 'mandatory'; ?>
+                            <div class="svc-checklist-item"><div class="tick"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></div><span class="txt"><?php echo htmlspecialchars($cpc_doc['label']); ?><?php if ($cpc_reqLevel === 'conditional'): ?> <em>(conditional &mdash; where applicable)</em><?php elseif ($cpc_reqLevel === 'recommended'): ?> <em>(recommended, not mandatory)</em><?php endif; ?></span></div>
                             <?php endforeach; ?>
                         </div>
                     </div>
