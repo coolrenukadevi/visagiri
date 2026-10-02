@@ -79,6 +79,10 @@
             </ul>
         </li>
 
+        <li>
+            <a href="visa-consultant">Locations</a>
+        </li>
+
         <li class="has-dropdown">
             <a href="apostille">Apostille</a>
             <ul class="submenu simple-dropdown">

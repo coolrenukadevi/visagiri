@@ -6,7 +6,7 @@ $abCountryCount = count($VISA_AGENCY_COUNTRIES ?? []);
 
 $ab2Board = [
     ['code' => 'DEST', 'label' => 'Destination countries', 'value' => $abCountryCount . '+'],
-    ['code' => 'TERM', 'label' => 'City offices',           'value' => '04'],
+    ['code' => 'TERM', 'label' => 'Cities covered',          'value' => '04'],
     ['code' => 'STAT', 'label' => 'Recognition',            'value' => 'MoT RECOGNISED'],
 ];
 
@@ -207,7 +207,7 @@ $ab2Cities = [
                     <p style="margin-top:10px;">Pick a city to see how we support applicants there.</p>
                 </div>
                 <div class="ab2-city-wrap">
-                    <div class="ab2-city-tabs" role="tablist" aria-label="Office cities" id="ab2CityTabs">
+                    <div class="ab2-city-tabs" role="tablist" aria-label="Cities we serve" id="ab2CityTabs">
                         <?php $first = true; foreach ($ab2Cities as $code => $c): ?>
                         <button type="button" class="ab2-city-tab" role="tab" data-code="<?php echo htmlspecialchars($code); ?>" aria-selected="<?php echo $first ? 'true' : 'false'; ?>">
                             <span><?php echo htmlspecialchars($c['name']); ?></span>

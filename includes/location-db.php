@@ -102,10 +102,13 @@ function location_cities_for_state(PDO $pdo, int $stateId): array
 }
 
 /**
- * Idempotent seed from includes/location-seed-data.php — inserts a
- * state/city/FAQ only if its slug doesn't already exist, so re-running
- * this (it runs on every location_db() bootstrap) never clobbers a manual
- * edit made after the initial seed.
+ * Seed from includes/location-seed-data.php — inserts a state/city on
+ * first boot, and keeps its content columns and FAQs in sync with the PHP
+ * definition on every later boot (this file is the source of truth; there
+ * is no admin UI for location content, so there is no manual edit to
+ * protect against overwriting). Re-running this is always safe: inserts
+ * are identity-keyed by slug, and content updates simply replace the
+ * columns/FAQs with whatever the current PHP definition says.
  */
 function location_seed_all(PDO $pdo): void
 {
@@ -143,11 +146,27 @@ function location_seed_all(PDO $pdo): void
                     'now' => $now,
                 ]);
             $stateId = (int) $pdo->lastInsertId();
+        } else {
+            $pdo->prepare('UPDATE states SET name = :name, kind = :kind, intro_html = :intro_html,
+                service_model_html = :service_model_html, seo_title = :seo_title, meta_description = :meta_description,
+                sort_order = :sort_order, updated_at = :now WHERE id = :id')
+                ->execute([
+                    'name' => $stateDef['name'],
+                    'kind' => $stateDef['kind'] ?? 'state',
+                    'intro_html' => $stateDef['intro_html'] ?? null,
+                    'service_model_html' => $stateDef['service_model_html'] ?? null,
+                    'seo_title' => $stateDef['seo_title'] ?? null,
+                    'meta_description' => $stateDef['meta_description'] ?? null,
+                    'sort_order' => $stateDef['sort_order'] ?? 0,
+                    'now' => $now,
+                    'id' => $stateId,
+                ]);
+        }
 
-            foreach (($stateDef['faqs'] ?? []) as $i => $faq) {
-                $pdo->prepare('INSERT INTO location_faqs (state_id, city_id, question, answer_html, sort_order) VALUES (?, NULL, ?, ?, ?)')
-                    ->execute([$stateId, $faq['q'], $faq['a'], $i]);
-            }
+        $pdo->prepare('DELETE FROM location_faqs WHERE state_id = ? AND city_id IS NULL')->execute([$stateId]);
+        foreach (($stateDef['faqs'] ?? []) as $i => $faq) {
+            $pdo->prepare('INSERT INTO location_faqs (state_id, city_id, question, answer_html, sort_order) VALUES (?, NULL, ?, ?, ?)')
+                ->execute([$stateId, $faq['q'], $faq['a'], $i]);
         }
 
         foreach (($stateDef['cities'] ?? []) as $cityDef) {

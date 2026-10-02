@@ -232,6 +232,7 @@ if (!empty($cpc_country) && !empty($cpc_categories)):
                     <a href="visa-checklist" class="theme-btn style-2">Document Checklist Tool</a>
                     <a href="visa-fee-calculator" class="theme-btn style-2">Fee Calculator</a>
                     <a href="visa-appointment" class="theme-btn style-2">Book an Appointment</a>
+                    <a href="visa-consultant" class="theme-btn style-2">Find Visa Consultant Near You</a>
                 </div>
             </div>
         </section>
