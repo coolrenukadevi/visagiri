@@ -1852,7 +1852,11 @@ function visa_seed_pages_def_batch2_business(): array
             'fees' => [
                 ['Visa Fee', 'Not applicable — no visa is required for business travel or work', 1, null, 'No visa fee applies since no visa is issued for Indian citizens.'],
             ],
-            'source' => null,
+            'source' => [
+                'authority' => 'Department of Immigration, Government of Nepal',
+                'url' => 'https://nepalimmigration.gov.np',
+                'notes' => '[STATUS: GOVERNMENT-LINKED — RECONSTRUCTED FROM LOCAL RECORD] This visa_sources row did not previously exist. Created during Phase 1G using this record\'s own already-present authority_name/authority_url fields (Department of Immigration, Government of Nepal / https://nepalimmigration.gov.np), set during original Batch 2 research but never copied into a visa_sources row. No new research was performed and no URL was invented — this reflects pre-existing local evidence only, not independent verification. Underlying fact (visa-free entry under bilateral treaty) remains content_status=\'researched\', not \'verified\'.',
+            ],
         ],
         [
             'page_slug' => 'mauritius-business-visa',

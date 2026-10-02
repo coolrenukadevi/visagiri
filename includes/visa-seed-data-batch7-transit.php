@@ -418,7 +418,7 @@ function visa_seed_pages_def_batch7_transit(): array
             'government_fee_text' => 'No fee &mdash; no transit visa is required',
             'application_centre' => 'Not applicable',
             'authority_name' => 'German Federal Foreign Office',
-            'authority_url' => 'https://www.germany-visa.org/airport-transit-visa/',
+            'authority_url' => 'https://india.diplo.de',
             'eligibility_html' => '<p>Indian nationals connecting through a German airport, such as Frankfurt or Munich, to a third destination.</p><h4 style=\'margin:20px 0 10px;font-size:16px;\'>No Airport Transit Visa Needed</h4><p>As of 3 June 2026, Germany no longer requires Indian ordinary-passport holders to hold an Airport Transit Visa (ATV) to pass through the international zone of a German airport.</p><h4 style=\'margin:20px 0 10px;font-size:16px;\'>If You Clear Border Control</h4><p>If your transit involves leaving the international transit area and formally entering Germany, the standard Schengen (Type C) visitor-visa rules apply instead.</p><p>This is general guidance, not a guarantee of entry &mdash; every traveller is individually assessed by German border authorities.</p>',
             'indian_applicant_html' => '<h4 style=\'margin:0 0 10px;font-size:16px;\'>Recent Policy Change</h4><p>This exemption followed a 2026 bilateral agreement &mdash; if you are relying on older information that assumed an ATV was required for German airports, note that this requirement has since been removed for Indian ordinary passports.</p><p>Our consultants can confirm whether your specific routing counts as airside-only transit or requires a full Schengen visa.</p>',
             'seo_title' => 'Germany Airport Transit Visa for Indians | Current Rules',
@@ -442,8 +442,8 @@ function visa_seed_pages_def_batch7_transit(): array
             'fees' => [],
             'source' => [
                 'authority' => 'German Federal Foreign Office',
-                'url' => 'https://www.germany-visa.org/airport-transit-visa/',
-                'notes' => 'Researched via WebSearch synthesis of the European Commission Annex 7B airport-transit-visa list and visa-information sites; not independently fetched from a primary government portal in this environment.',
+                'url' => 'https://india.diplo.de',
+                'notes' => '[STATUS: GOVERNMENT-LINKED — CORRECTED] Phase 1G correction: the URL previously recorded here (https://www.germany-visa.org/airport-transit-visa/) was identified during the Phase 1F source-registry audit as a private commercial visa-information site misattributed to the German Federal Foreign Office — not that office\'s own domain. Corrected to india.diplo.de, the German missions-in-India domain already established as correct for this same authority on this database\'s germany-tourist-visa record (Option A: correct authoritative URL already known locally, not guessed). Old URL preserved here for audit trail. Original research notes: Researched via WebSearch synthesis of the European Commission Annex 7B airport-transit-visa list and visa-information sites; not independently fetched from a primary government portal in this environment.',
             ],
         ],
         [
