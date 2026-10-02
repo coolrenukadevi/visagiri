@@ -3,7 +3,22 @@ require_once __DIR__ . '/partner-nav-state.php';
 require_once __DIR__ . '/forex-customer-nav-state.php';
 if (!isset($page_title)) { $page_title = "Visa Agency &ndash; Trusted Visa Consultant in Patna, Ranchi, Raipur & Bhopal"; }
 if (!isset($page_description)) { $page_description = "Visa Agency &ndash; Trusted Visa Consultant in Patna, Ranchi, Raipur & Bhopal."; }
-if (!isset($page_canonical)) { $page_canonical = ''; }
+if (!isset($page_canonical)) {
+    // Self-referencing fallback so every page gets a canonical even if the
+    // including file never set one explicitly (found via full-site audit:
+    // only 20 of ~280 indexable pages were setting this, including all 203
+    // country pages — a real indexability gap, not an intentional omission).
+    // Always points at the production host, matching how pages that do set
+    // $page_canonical by hand already do it (hardcoded https://visaagency.in/...),
+    // since canonical is a statement about the authoritative production URL
+    // regardless of which host actually served this request (local dev, etc.).
+    $__canonicalPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+    $__canonicalPath = '/' . ltrim($__canonicalPath, '/');
+    if ($__canonicalPath !== '/') {
+        $__canonicalPath = rtrim($__canonicalPath, '/');
+    }
+    $page_canonical = 'https://visaagency.in' . $__canonicalPath;
+}
 if (!isset($page_noindex)) { $page_noindex = false; }
 if (!isset($page_og_title)) { $page_og_title = $page_title; }
 if (!isset($page_og_description)) { $page_og_description = $page_description; }

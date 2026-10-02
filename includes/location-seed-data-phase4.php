@@ -83,7 +83,10 @@ function location_seed_states_def_phase4(): array
             'service_model_html' => '<p>We do not have a physical office in the Andaman and Nicobar Islands. Applicants are supported remotely &mdash; phone and video consultations and document review over WhatsApp/email, with courier timelines for original documents adjusted for the islands\' location.</p>',
             'seo_title' => 'Visa Consultant in Andaman and Nicobar Islands | Visa Agency',
             'meta_description' => 'Visa consultancy for residents of the Andaman and Nicobar Islands — tourist, business and family visa application assistance, served remotely.',
-            'faqs' => [['q' => 'Can you courier documents to/from the Andaman and Nicobar Islands?', 'a' => '<p>Yes, though courier timelines are naturally longer given the islands\' location &mdash; we\'ll give you a realistic estimate as part of your consultation.</p>']],
+            'faqs' => [
+                ['q' => 'Can you courier documents to/from the Andaman and Nicobar Islands?', 'a' => '<p>Yes, though courier timelines are naturally longer given the islands\' location &mdash; we\'ll give you a realistic estimate as part of your consultation.</p>'],
+                ['q' => 'Does VisaAgency.in have an office in the Andaman and Nicobar Islands?', 'a' => '<p>No. The Andaman and Nicobar Islands are served remotely from our Patna office, the same as every location outside Bihar.</p>'],
+            ],
             'cities' => [],
         ],
         [

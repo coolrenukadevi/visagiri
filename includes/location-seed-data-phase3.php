@@ -48,7 +48,10 @@ function location_seed_states_def_phase3(): array
                     'local_notes_html' => '<p>We serve Gurugram remotely &mdash; there is no local walk-in office. Company documents can be shared by email, with courier arranged for anything that must be submitted as a physical original.</p>',
                     'seo_title' => 'Visa Consultant in Gurugram | Visa Agency',
                     'meta_description' => 'Business and tourist visa consultancy for applicants in Gurugram — remote application assistance from Visa Agency.',
-                    'faqs' => [['q' => 'Can you help with business visas for Gurugram-based multinational companies?', 'a' => '<p>Yes &mdash; this is one of our most common request types from Gurugram, given the concentration of corporate offices in the city.</p>']],
+                    'faqs' => [
+                        ['q' => 'Can you help with business visas for Gurugram-based multinational companies?', 'a' => '<p>Yes &mdash; this is one of our most common request types from Gurugram, given the concentration of corporate offices in the city.</p>'],
+                        ['q' => 'Does VisaAgency.in have an office in Gurugram?', 'a' => '<p>No &mdash; Gurugram is served remotely, with consultations and document review over phone, video call, WhatsApp and email.</p>'],
+                    ],
                 ],
             ],
         ],
@@ -91,7 +94,10 @@ function location_seed_states_def_phase3(): array
                     'local_notes_html' => '<p>We serve Hyderabad remotely &mdash; there is no local walk-in office. Company documents can be shared by email, with courier arranged for anything that must be submitted as a physical original.</p>',
                     'seo_title' => 'Visa Consultant in Hyderabad | Visa Agency',
                     'meta_description' => 'Business and tourist visa consultancy for applicants in Hyderabad — remote application assistance from Visa Agency.',
-                    'faqs' => [['q' => 'Can you help with business visas for Hyderabad IT and pharma companies?', 'a' => '<p>Yes &mdash; this is one of our more common request types from Hyderabad, given the concentration of technology and pharmaceutical employers in the city.</p>']],
+                    'faqs' => [
+                        ['q' => 'Can you help with business visas for Hyderabad IT and pharma companies?', 'a' => '<p>Yes &mdash; this is one of our more common request types from Hyderabad, given the concentration of technology and pharmaceutical employers in the city.</p>'],
+                        ['q' => 'Does VisaAgency.in have an office in Hyderabad?', 'a' => '<p>No &mdash; Hyderabad is served remotely, with consultations and document review over phone, video call, WhatsApp and email.</p>'],
+                    ],
                 ],
             ],
         ],
