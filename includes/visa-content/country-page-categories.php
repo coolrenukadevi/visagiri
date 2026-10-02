@@ -113,8 +113,14 @@ if (!empty($cpc_country) && !empty($cpc_categories)):
                     <?php if ($cpc_cat['entry_type']): ?><div><label>Entry Type</label><span><?php echo htmlspecialchars($cpc_cat['entry_type']); ?></span></div><?php endif; ?>
                     <?php if ($cpc_cat['validity_text']): ?><div><label>Visa Validity</label><span><?php echo htmlspecialchars($cpc_cat['validity_text']); ?></span></div><?php endif; ?>
                     <?php if ($cpc_cat['application_method']): ?><div><label>Application Method</label><span><?php echo htmlspecialchars($cpc_cat['application_method']); ?></span></div><?php endif; ?>
-                    <?php if ($cpc_cat['interview_required']): ?><div><label>Interview Required</label><span><?php echo htmlspecialchars($cpc_cat['interview_required']); ?></span></div><?php endif; ?>
-                    <?php if ($cpc_cat['biometric_required']): ?><div><label>Biometric Requirement</label><span><?php echo htmlspecialchars($cpc_cat['biometric_required']); ?></span></div><?php endif; ?>
+                    <?php
+                        // Derived from the structured interview_status/biometric_status column,
+                        // not the free-text column alone -- see visa_requirement_display() for why.
+                        $cpc_interviewDisplay = visa_requirement_display($cpc_cat['interview_status'] ?? null, $cpc_cat['interview_required'] ?? null);
+                        $cpc_biometricDisplay = visa_requirement_display($cpc_cat['biometric_status'] ?? null, $cpc_cat['biometric_required'] ?? null);
+                    ?>
+                    <?php if ($cpc_interviewDisplay !== null): ?><div><label>Interview Required</label><span><?php echo htmlspecialchars($cpc_interviewDisplay); ?></span></div><?php endif; ?>
+                    <?php if ($cpc_biometricDisplay !== null): ?><div><label>Biometric Requirement</label><span><?php echo htmlspecialchars($cpc_biometricDisplay); ?></span></div><?php endif; ?>
                     <div><label>Processing Time</label><span><?php echo htmlspecialchars(visa_field_or_fallback($cpc_cat['processing_time_text'], 'Check current official processing times before applying.')); ?></span></div>
                     <div><label>Approx. Government Fee</label><span><?php echo htmlspecialchars(visa_field_or_fallback($cpc_cat['government_fee_text'], 'Check the current official fee before applying.')); ?></span></div>
                     <?php if ($cpc_cat['application_centre']): ?><div><label>Application Centre</label><span><?php echo htmlspecialchars($cpc_cat['application_centre']); ?></span></div><?php endif; ?>

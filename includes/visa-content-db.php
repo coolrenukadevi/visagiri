@@ -633,3 +633,53 @@ function visa_field_or_fallback(?string $value, string $fallback = 'Varies by vi
     $value = trim((string) $value);
     return $value !== '' ? $value : $fallback;
 }
+
+/**
+ * Derives the Quick Info card's displayed Interview/Biometric value from the
+ * structured status column (VISA_REQUIREMENT_STATUSES), never from the
+ * free-text column alone — fixing the governance gap the Phase 1C audit
+ * found on malaysia-transit-visa, where biometric_status/interview_status
+ * were correctly 'unknown' but the free-text biometric_required/
+ * interview_required columns still read "Not required" (left over from a
+ * generator default) and that free text, not the structured status, was
+ * what the template actually rendered.
+ *
+ * Deliberately narrow: only overrides the free text when status is
+ * 'unknown' AND that free text is itself an unhedged "Required"/"Not
+ * required" claim (the actual defect pattern). The other 20 'unknown'
+ * records in the DB already carry an honestly-hedged free-text explanation
+ * ("Requirement not confirmed via research available here — check current
+ * guidance with ..."), which is more specific and useful than a generic
+ * fallback and must not be clobbered by this fix.
+ *
+ * Returns null (render nothing) only when there is truly nothing to show
+ * and no status to fall back on — preserving today's behaviour for the
+ * 1,474 generic-status pages, which never populate these columns and are
+ * out of scope for this remediation phase.
+ */
+function visa_requirement_display(?string $status, ?string $freeText): ?string
+{
+    $freeText = trim((string) $freeText);
+    $unhedgedClaim = $freeText !== '' && preg_match('/^(not required|required)\.?$/i', $freeText) === 1;
+
+    if ($status === 'unknown') {
+        if ($freeText === '' || $unhedgedClaim) {
+            return 'Confirm with the relevant authority';
+        }
+        return $freeText; // already an honest, appropriately-hedged explanation
+    }
+
+    if (in_array($status, ['required', 'not_required', 'conditional'], true)) {
+        if ($freeText !== '') {
+            return $freeText;
+        }
+        return match ($status) {
+            'required' => 'Required',
+            'not_required' => 'Not required',
+            default => 'Conditional — check current guidance',
+        };
+    }
+
+    // No structured status recorded (NULL) -- generic-page behaviour, unchanged.
+    return $freeText !== '' ? $freeText : null;
+}
