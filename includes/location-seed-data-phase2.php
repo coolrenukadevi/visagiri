@@ -151,11 +151,14 @@ function location_seed_states_def_phase2(): array
                     'slug' => 'lucknow',
                     'name' => 'Lucknow',
                     'sort_order' => 1,
-                    'intro_html' => '<p>Lucknow, Uttar Pradesh\'s capital, is our main point of contact in the state. As the administrative centre, Lucknow\'s applicant base includes government-linked and professional travellers alongside the usual tourist and family-visit requests.</p>',
+                    'intro_html' => '<p>Lucknow, Uttar Pradesh\'s capital, is our main point of contact in the state. Beyond the usual government-linked and professional travellers an administrative centre attracts, the city\'s Chikankari embroidery trade &mdash; a globally recognised export craft &mdash; sends us a distinct stream of business and trade-fair applicants alongside the usual tourist and family-visit requests.</p>',
                     'local_notes_html' => '<p>We serve Lucknow remotely &mdash; there is no local walk-in office. Consultations and document review run over phone, video call, WhatsApp and email.</p>',
                     'seo_title' => 'Visa Consultant in Lucknow | Visa Agency',
                     'meta_description' => 'Remote visa consultancy for applicants in Lucknow, Uttar Pradesh — tourist, business and family visa application assistance.',
-                    'faqs' => [['q' => 'Is there a Visa Agency office in Lucknow?', 'a' => '<p>No &mdash; Lucknow is served remotely, with consultations and document review over phone, video call, WhatsApp and email.</p>']],
+                    'faqs' => [
+                        ['q' => 'Is there a Visa Agency office in Lucknow?', 'a' => '<p>No &mdash; Lucknow is served remotely, with consultations and document review over phone, video call, WhatsApp and email.</p>'],
+                        ['q' => 'Do you help Lucknow-based exporters with business visas for trade fairs?', 'a' => '<p>Yes &mdash; business visa applications tied to Lucknow\'s handicraft and export trade, including trade-fair travel, are a category we handle regularly.</p>'],
+                    ],
                 ],
                 [
                     'slug' => 'varanasi',

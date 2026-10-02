@@ -172,28 +172,45 @@ function location_seed_all(PDO $pdo): void
         foreach (($stateDef['cities'] ?? []) as $cityDef) {
             $stmt = $pdo->prepare('SELECT id FROM cities WHERE state_id = ? AND slug = ?');
             $stmt->execute([$stateId, $cityDef['slug']]);
-            if ($stmt->fetchColumn()) {
-                continue;
+            $cityId = $stmt->fetchColumn();
+
+            if (!$cityId) {
+                $pdo->prepare('INSERT INTO cities (state_id, name, slug, intro_html, local_notes_html, seo_title, meta_description, is_hq, office_address, status, sort_order, created_at, updated_at)
+                    VALUES (:state_id, :name, :slug, :intro_html, :local_notes_html, :seo_title, :meta_description, :is_hq, :office_address, :status, :sort_order, :now, :now)')
+                    ->execute([
+                        'state_id' => $stateId,
+                        'name' => $cityDef['name'],
+                        'slug' => $cityDef['slug'],
+                        'intro_html' => $cityDef['intro_html'] ?? null,
+                        'local_notes_html' => $cityDef['local_notes_html'] ?? null,
+                        'seo_title' => $cityDef['seo_title'] ?? null,
+                        'meta_description' => $cityDef['meta_description'] ?? null,
+                        'is_hq' => !empty($cityDef['is_hq']) ? 1 : 0,
+                        'office_address' => $cityDef['office_address'] ?? null,
+                        'status' => 'published',
+                        'sort_order' => $cityDef['sort_order'] ?? 0,
+                        'now' => $now,
+                    ]);
+                $cityId = (int) $pdo->lastInsertId();
+            } else {
+                $pdo->prepare('UPDATE cities SET name = :name, intro_html = :intro_html, local_notes_html = :local_notes_html,
+                    seo_title = :seo_title, meta_description = :meta_description, is_hq = :is_hq, office_address = :office_address,
+                    sort_order = :sort_order, updated_at = :now WHERE id = :id')
+                    ->execute([
+                        'name' => $cityDef['name'],
+                        'intro_html' => $cityDef['intro_html'] ?? null,
+                        'local_notes_html' => $cityDef['local_notes_html'] ?? null,
+                        'seo_title' => $cityDef['seo_title'] ?? null,
+                        'meta_description' => $cityDef['meta_description'] ?? null,
+                        'is_hq' => !empty($cityDef['is_hq']) ? 1 : 0,
+                        'office_address' => $cityDef['office_address'] ?? null,
+                        'sort_order' => $cityDef['sort_order'] ?? 0,
+                        'now' => $now,
+                        'id' => $cityId,
+                    ]);
             }
 
-            $pdo->prepare('INSERT INTO cities (state_id, name, slug, intro_html, local_notes_html, seo_title, meta_description, is_hq, office_address, status, sort_order, created_at, updated_at)
-                VALUES (:state_id, :name, :slug, :intro_html, :local_notes_html, :seo_title, :meta_description, :is_hq, :office_address, :status, :sort_order, :now, :now)')
-                ->execute([
-                    'state_id' => $stateId,
-                    'name' => $cityDef['name'],
-                    'slug' => $cityDef['slug'],
-                    'intro_html' => $cityDef['intro_html'] ?? null,
-                    'local_notes_html' => $cityDef['local_notes_html'] ?? null,
-                    'seo_title' => $cityDef['seo_title'] ?? null,
-                    'meta_description' => $cityDef['meta_description'] ?? null,
-                    'is_hq' => !empty($cityDef['is_hq']) ? 1 : 0,
-                    'office_address' => $cityDef['office_address'] ?? null,
-                    'status' => 'published',
-                    'sort_order' => $cityDef['sort_order'] ?? 0,
-                    'now' => $now,
-                ]);
-            $cityId = (int) $pdo->lastInsertId();
-
+            $pdo->prepare('DELETE FROM location_faqs WHERE city_id = ?')->execute([$cityId]);
             foreach (($cityDef['faqs'] ?? []) as $i => $faq) {
                 $pdo->prepare('INSERT INTO location_faqs (state_id, city_id, question, answer_html, sort_order) VALUES (?, ?, ?, ?, ?)')
                     ->execute([$stateId, $cityId, $faq['q'], $faq['a'], $i]);

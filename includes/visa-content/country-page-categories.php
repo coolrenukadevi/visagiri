@@ -209,6 +209,8 @@ if (!empty($cpc_country) && !empty($cpc_categories)):
                 <p class="visa-info-note mt-3">Content last updated <?php echo htmlspecialchars(date('j F Y', strtotime($cpc_cat['last_reviewed_date']))); ?>. Always confirm current requirements with the relevant embassy, consulate or immigration authority before applying.</p>
                 <?php endif; ?>
 
+                <p class="visa-info-note mt-3"><?php echo htmlspecialchars($cpc_cat['category_name']); ?> assistance is available online for applicants across India, regardless of which state or city you're applying from.</p>
+
                 <div class="text-center mt-5">
                     <a href="contact" class="theme-btn" data-open-enquiry
                        data-country="<?php echo htmlspecialchars($cpc_countryName); ?>"

@@ -147,11 +147,14 @@ function location_seed_states_def_phase3(): array
             'cities' => [
                 [
                     'slug' => 'guwahati', 'name' => 'Guwahati', 'sort_order' => 1,
-                    'intro_html' => '<p>Guwahati, the main gateway city to Northeast India, sends us tourist, business and family-visit applicants, and we apply the same document-first process here as everywhere else.</p>',
+                    'intro_html' => '<p>Guwahati, the main gateway city to Northeast India, sends us tourist, business and family-visit applicants, plus a distinct stream of business travellers connected to Assam\'s tea export trade &mdash; one of the region\'s most significant and longest-established industries, with Guwahati as its principal trading and auction hub.</p>',
                     'local_notes_html' => '<p>We serve Guwahati remotely &mdash; there is no local walk-in office. Consultations and document review run over phone, video call, WhatsApp and email.</p>',
                     'seo_title' => 'Visa Consultant in Guwahati | Visa Agency',
                     'meta_description' => 'Remote visa consultancy for applicants in Guwahati, Assam — tourist, business and family visa application assistance.',
-                    'faqs' => [['q' => 'Is there a Visa Agency office in Guwahati?', 'a' => '<p>No &mdash; Guwahati is served remotely, with consultations and document review over phone, video call, WhatsApp and email.</p>']],
+                    'faqs' => [
+                        ['q' => 'Is there a Visa Agency office in Guwahati?', 'a' => '<p>No &mdash; Guwahati is served remotely, with consultations and document review over phone, video call, WhatsApp and email.</p>'],
+                        ['q' => 'Do you help tea-trade businesses in Guwahati with visas?', 'a' => '<p>Yes &mdash; business visa applications tied to Assam\'s tea export trade, including travel for buyer meetings and trade events, are a category we handle regularly for Guwahati-based applicants.</p>'],
+                    ],
                 ],
             ],
         ],
@@ -167,11 +170,14 @@ function location_seed_states_def_phase3(): array
             'cities' => [
                 [
                     'slug' => 'dehradun', 'name' => 'Dehradun', 'sort_order' => 1,
-                    'intro_html' => '<p>Dehradun, Uttarakhand\'s capital, is our main point of contact in the state. Applicants here come to us for tourist, business and family-visit visas, and we apply the same careful document review regardless of city.</p>',
+                    'intro_html' => '<p>Dehradun, Uttarakhand\'s capital and gateway to Mussoorie and the wider Himalayan tourism circuit, is our main point of contact in the state. The city\'s concentration of residential schools and research institutes also sends us a steady stream of education-linked family travel, alongside the usual tourist and business applications.</p>',
                     'local_notes_html' => '<p>We serve Dehradun remotely &mdash; there is no local walk-in office. Consultations and document review run over phone, video call, WhatsApp and email.</p>',
                     'seo_title' => 'Visa Consultant in Dehradun | Visa Agency',
                     'meta_description' => 'Remote visa consultancy for applicants in Dehradun, Uttarakhand — tourist, business and family visa application assistance.',
-                    'faqs' => [['q' => 'Is there a Visa Agency office in Dehradun?', 'a' => '<p>No &mdash; Dehradun is served remotely, with consultations and document review over phone, video call, WhatsApp and email.</p>']],
+                    'faqs' => [
+                        ['q' => 'Is there a Visa Agency office in Dehradun?', 'a' => '<p>No &mdash; Dehradun is served remotely, with consultations and document review over phone, video call, WhatsApp and email.</p>'],
+                        ['q' => 'Can you help with family-visit visas for Dehradun residents?', 'a' => '<p>Yes &mdash; family-visit visa applications, including the specific supporting documents a host country expects, are a visa category we handle regularly for Dehradun-based applicants.</p>'],
+                    ],
                 ],
             ],
         ],
@@ -187,11 +193,14 @@ function location_seed_states_def_phase3(): array
             'cities' => [
                 [
                     'slug' => 'shimla', 'name' => 'Shimla', 'sort_order' => 1,
-                    'intro_html' => '<p>Shimla, Himachal Pradesh\'s capital, is our main point of contact in the state. Applicants here come to us for tourist, business and family-visit visas.</p>',
+                    'intro_html' => '<p>Shimla, Himachal Pradesh\'s capital and the former summer capital of British India, is our main point of contact in the state. As a long-established Himalayan hill-station tourism hub, Shimla\'s applicant base includes a notable share of travel-trade and hospitality-sector business travellers alongside the usual tourist and family-visit requests.</p>',
                     'local_notes_html' => '<p>We serve Shimla remotely &mdash; there is no local walk-in office. Consultations and document review run over phone, video call, WhatsApp and email.</p>',
                     'seo_title' => 'Visa Consultant in Shimla | Visa Agency',
                     'meta_description' => 'Remote visa consultancy for applicants in Shimla, Himachal Pradesh — tourist, business and family visa application assistance.',
-                    'faqs' => [['q' => 'Is there a Visa Agency office in Shimla?', 'a' => '<p>No &mdash; Shimla is served remotely, with consultations and document review over phone, video call, WhatsApp and email.</p>']],
+                    'faqs' => [
+                        ['q' => 'Is there a Visa Agency office in Shimla?', 'a' => '<p>No &mdash; Shimla is served remotely, with consultations and document review over phone, video call, WhatsApp and email.</p>'],
+                        ['q' => 'Do you help Shimla\'s travel and hospitality businesses with visas?', 'a' => '<p>Yes &mdash; business visa applications tied to the travel-trade and hospitality sector, including conference and familiarisation travel, are a category we handle regularly for Shimla-based applicants.</p>'],
+                    ],
                 ],
             ],
         ],
