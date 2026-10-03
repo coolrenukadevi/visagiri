@@ -287,6 +287,41 @@ function visa_content_db(): PDO
         visa_seed_page($pdo, $def);
     }
 
+    require_once __DIR__ . '/visa-seed-data-batch-tierb-business.php';
+    foreach (visa_seed_pages_def_batch_tierb_business() as $def) {
+        visa_seed_page($pdo, $def);
+    }
+
+    require_once __DIR__ . '/visa-seed-data-batch-tierb-family.php';
+    foreach (visa_seed_pages_def_batch_tierb_family() as $def) {
+        visa_seed_page($pdo, $def);
+    }
+
+    require_once __DIR__ . '/visa-seed-data-batch-tierb-sports.php';
+    foreach (visa_seed_pages_def_batch_tierb_sports() as $def) {
+        visa_seed_page($pdo, $def);
+    }
+
+    require_once __DIR__ . '/visa-seed-data-batch-tierb-transit.php';
+    foreach (visa_seed_pages_def_batch_tierb_transit() as $def) {
+        visa_seed_page($pdo, $def);
+    }
+
+    require_once __DIR__ . '/visa-seed-data-batch-tierb-crew.php';
+    foreach (visa_seed_pages_def_batch_tierb_crew() as $def) {
+        visa_seed_page($pdo, $def);
+    }
+
+    require_once __DIR__ . '/visa-seed-data-batch-tierb-medical.php';
+    foreach (visa_seed_pages_def_batch_tierb_medical() as $def) {
+        visa_seed_page($pdo, $def);
+    }
+
+    require_once __DIR__ . '/visa-seed-data-batch-tierb-extension.php';
+    foreach (visa_seed_pages_def_batch_tierb_extension() as $def) {
+        visa_seed_page($pdo, $def);
+    }
+
     visa_seed_bulk_generic($pdo);
 
     $migrated = true;
