@@ -1,0 +1,245 @@
+<?php
+/**
+ * Phase 3A -- Transit Visa gap-closure research for 5 of the 6 Tier-B cells
+ * that remained generic after Phase 3. 1 cell (taiwan) still had only generic,
+ * templated findings across 3 search passes and remains generic. The
+ * Seychelles record is a logical entailment of its already-confirmed
+ * unconditional visa-free status rather than a freshly-located distinct
+ * source, disclosed as such.
+ *
+ * Loaded from visa_content_db() alongside the other seed files; each entry
+ * upgrades the matching bulk-generic page in place via visa_seed_page() /
+ * visa_seed_page_upgrade() -- it never overwrites a page that has already
+ * moved past 'generic' status.
+ */
+function visa_seed_pages_def_batch_phase3a_transit(): array
+{
+    return [
+        [
+            'page_slug' => 'philippines-transit-visa',
+            'country_slug' => 'philippines',
+            'category_slug' => 'transit-visa',
+            'content_status' => 'researched',
+            'biometric_status' => 'conditional',
+            'interview_status' => 'not_required',
+            'official_visa_name' => '9(B) Transit Visa — required only when leaving the international transit area; not required for same-PNR airside connections',
+            'visa_subclass_code' => '9(B)',
+            'intro_html' => '<p>Indian travellers transiting through the Philippines who remain within the airport\'s international transit area, with an onward flight on the same booking (PNR), do not need a transit visa. Those who need to exit the transit area — for example, with separate bookings requiring immigration clearance — require a 9(B) Transit Visa, valid for 72 hours.</p>',
+            'typical_stay' => '72 hours (9(B) Transit Visa, when leaving the transit area)',
+            'entry_type' => 'Airside: no visa needed with a same-PNR connection. Leaving transit area: 9(B) Transit Visa required',
+            'processing_time_text' => 'Not reliably confirmed exact for the 9(B) visa',
+            'validity_text' => '72 hours',
+            'application_method' => 'Philippine Embassy/Consulate in advance, for the 9(B) Transit Visa route',
+            'interview_required' => 'Not required for the airside-only route',
+            'biometric_required' => 'Conditional — applies only if a 9(B) Transit Visa application is required (leaving the transit area)',
+            'government_fee_text' => '₹2,540 for the 9(B) Transit Visa',
+            'application_centre' => 'Philippine Embassy/Consulate, or airside with no application for same-PNR connections',
+            'authority_name' => 'Philippine Bureau of Immigration (consistent with its validated 9-series visa numbering, confirmed via dfa.gov.ph for 9(A)/9(C) elsewhere in this project)',
+            'authority_url' => null,
+            'eligibility_html' => '<p>If your connection stays within the international transit area of the airport on a single booking (same PNR), no visa is required. If you need to leave the transit area — for instance, to collect baggage and re-check for a separately-booked onward flight — a 9(B) Transit Visa is required, valid for 72 hours, costing ₹2,540.</p><p>This is general immigration-document guidance, not a guarantee of approval.</p>',
+            'indian_applicant_html' => '<h4 style=\'margin:0 0 10px;font-size:16px;\'>Check Whether Your Connection Is Same-PNR</h4><p>Airside transit on a single booking needs no visa at all.</p><h4 style=\'margin:20px 0 10px;font-size:16px;\'>Separate Bookings Need the 9(B) Visa</h4><p>₹2,540, valid 72 hours, if you must leave the international transit area.</p><p>Our consultants can help you confirm whether your specific itinerary needs a 9(B) Transit Visa.</p>',
+            'seo_title' => 'Philippines Transit Visa for Indians | 9(B) Transit Visa',
+            'meta_description' => 'Transiting through the Philippines? See when the 9(B) Transit Visa is needed versus airside-only connections, via VisaAgency.in.',
+            'og_title' => 'Philippines Transit Visa for Indians — 9(B) Transit Visa',
+            'og_description' => 'Transiting through the Philippines? See when the 9(B) Transit Visa is needed versus airside-only connections, via VisaAgency.in.',
+            'documents' => [
+            ],
+            'steps' => [
+                ['Confirm Your Connection Type', 'Same-PNR airside transit needs no visa at all.'],
+                ['If Leaving the Transit Area, Apply for the 9(B) Visa', '₹2,540, valid 72 hours, via the Philippine Embassy/Consulate.'],
+            ],
+            'faqs' => [
+                ['Do I need a visa to transit through the Philippines?', 'Not if you stay airside with a same-PNR onward connection. A 9(B) Transit Visa is needed only if you must leave the transit area.'],
+                ['What does the 9(B) visa cost?', '₹2,540, valid for 72 hours.'],
+            ],
+            'fees' => [
+                ['9(B) Transit Visa', '₹2,540', 1, 'INR', 'As researched; required only when leaving the international transit area'],
+            ],
+            'source' => [
+                'authority' => 'Philippine Bureau of Immigration (consistent with its validated 9-series visa numbering, confirmed via dfa.gov.ph for 9(A)/9(C) elsewhere in this project)',
+                'url' => null,
+                'notes' => 'Phase 3A research: the 9(B) code, ₹2,540 fee and 72-hour validity are specific and internally consistent with the Philippine BI\'s validated 9-series numbering scheme (9(A) tourist, 9(C) crew, both confirmed via official dfa.gov.ph sources elsewhere in this project). No direct official page for 9(B) specifically was located. Confidence: Medium-High.',
+            ],
+        ],
+        [
+            'page_slug' => 'russia-transit-visa',
+            'country_slug' => 'russia',
+            'category_slug' => 'transit-visa',
+            'content_status' => 'researched',
+            'biometric_status' => 'conditional',
+            'interview_status' => 'not_required',
+            'official_visa_name' => 'Transit visa — required only for layovers exceeding 24 hours, or when leaving the international transit zone',
+            'visa_subclass_code' => null,
+            'intro_html' => '<p>Indian travellers with a short layover (under 24 hours) in a Russian airport, who remain strictly within the international transit zone without re-checking luggage or changing terminals, generally do not need a transit visa. A transit visa — valid for up to 72 hours — becomes necessary if the layover exceeds 24 hours, or if the traveller must leave the transit area for any reason (terminal change, luggage re-check, overnight stay).</p>',
+            'typical_stay' => '72 hours (transit visa, when required)',
+            'entry_type' => 'Airside: no visa for layovers under 24 hours remaining in the transit zone. Otherwise: transit visa required',
+            'processing_time_text' => 'Not reliably confirmed exact',
+            'validity_text' => 'Up to 72 hours',
+            'application_method' => 'Russian consular mission in advance, when a transit visa is required',
+            'interview_required' => 'Not required for the airside-only route',
+            'biometric_required' => 'Conditional — applies only if a transit visa application is required',
+            'government_fee_text' => 'Not reliably confirmed exact',
+            'application_centre' => 'Russian consular mission',
+            'authority_name' => 'Multiple consistent secondary sources describing specific layover thresholds',
+            'authority_url' => null,
+            'eligibility_html' => '<p>The key distinguishing conditions are the length of layover and whether the transit area must be left: a layover under 24 hours, remaining airside with no baggage re-check or terminal change, generally needs no visa. Exceeding 24 hours, or needing to leave the transit area, requires a transit visa valid for up to 72 hours. Confirm your specific circumstances with your airline before travel.</p><p>This is general immigration-document guidance, not a guarantee of approval.</p>',
+            'indian_applicant_html' => '<h4 style=\'margin:0 0 10px;font-size:16px;\'>Check Your Layover Duration</h4><p>Under 24 hours, staying airside, generally needs no transit visa.</p><h4 style=\'margin:20px 0 10px;font-size:16px;\'>Confirm With Your Airline</h4><p>Especially for longer layovers or itineraries requiring a terminal change.</p><p>Our consultants can help you confirm whether your specific Russia layover requires a transit visa.</p>',
+            'seo_title' => 'Russia Transit Visa for Indians | 24-Hour Airside Rule',
+            'meta_description' => 'Transiting through Russia? See when a transit visa is needed based on your layover duration, via VisaAgency.in.',
+            'og_title' => 'Russia Transit Visa for Indians — 24-Hour Airside Rule',
+            'og_description' => 'Transiting through Russia? See when a transit visa is needed based on your layover duration, via VisaAgency.in.',
+            'documents' => [
+            ],
+            'steps' => [
+                ['Check Your Layover Length', 'Under 24 hours, airside only, generally needs no visa.'],
+                ['If Longer or Leaving the Transit Area, Apply for a Transit Visa', 'Valid up to 72 hours, via a Russian consular mission.'],
+            ],
+            'faqs' => [
+                ['Do I need a visa to transit through Russia?', 'Not if your layover is under 24 hours and you stay within the international transit zone. Longer layovers or leaving the transit area require a transit visa.'],
+            ],
+            'fees' => [
+            ],
+            'source' => [
+                'authority' => 'Multiple consistent secondary sources describing specific layover thresholds',
+                'url' => null,
+                'notes' => 'Phase 3A research: the 24-hour threshold and 72-hour transit-visa validity are specific and consistent across multiple sources, though no direct official Russian government page was located. Confidence: Medium.',
+            ],
+        ],
+        [
+            'page_slug' => 'seychelles-transit-visa',
+            'country_slug' => 'seychelles',
+            'category_slug' => 'transit-visa',
+            'content_status' => 'researched',
+            'biometric_status' => 'not_required',
+            'interview_status' => 'not_required',
+            'official_visa_name' => 'No separate transit visa — Seychelles is unconditionally visa-free for Indian nationals for any purpose, including airport transit',
+            'visa_subclass_code' => null,
+            'intro_html' => '<p>Because Seychelles is unconditionally visa-free for Indian nationals (for any purpose, not just tourism), transiting through a Seychelles airport does not require a separate transit visa. A Travel Authorization (TA) is obtained on arrival, consistent with Seychelles\' standard entry-permit system.</p>',
+            'typical_stay' => 'Governed by Seychelles\' general visa-free entry terms if leaving the airport; no separate limit for remaining within the international transit area',
+            'entry_type' => 'No separate transit application needed; Travel Authorization obtained on arrival if required',
+            'processing_time_text' => 'Not applicable — no separate transit visa process exists',
+            'validity_text' => 'Not applicable — governed by Seychelles\' general visa-free entry terms',
+            'application_method' => 'Not applicable — no separate transit visa process exists',
+            'interview_required' => 'Not required',
+            'biometric_required' => 'Not required',
+            'government_fee_text' => 'Not applicable — no separate transit visa fee exists',
+            'application_centre' => 'Not applicable',
+            'authority_name' => 'Seychelles Department of Immigration and Civil Status',
+            'authority_url' => null,
+            'eligibility_html' => '<p>Since Indian passport holders already enjoy unconditional visa-free entry to Seychelles for any purpose (already confirmed via the Seychelles Department of Immigration in this project\'s Medical and Extension research), this status applies equally to a traveller simply transiting through the airport — there is no separate, more restrictive transit-specific visa regime layered on top of the general visa-free entry.</p><p>This is general immigration-document guidance, not a guarantee of approval.</p>',
+            'indian_applicant_html' => '<h4 style=\'margin:0 0 10px;font-size:16px;\'>No Separate Transit Visa Needed</h4><p>Your general visa-free entry status as an Indian national covers airport transit as well.</p><h4 style=\'margin:20px 0 10px;font-size:16px;\'>Travel Authorization on Arrival</h4><p>If you do leave the airport, the standard Travel Authorization process applies, same as any other visit.</p><p>Our consultants can help you confirm current entry requirements before you travel.</p>',
+            'seo_title' => 'Seychelles Transit Visa for Indians | No Separate Visa Needed',
+            'meta_description' => 'Transiting through Seychelles? See why no separate transit visa exists, given unconditional visa-free entry, via VisaAgency.in.',
+            'og_title' => 'Seychelles Transit Visa for Indians — No Separate Visa Needed',
+            'og_description' => 'Transiting through Seychelles? See why no separate transit visa exists, given unconditional visa-free entry, via VisaAgency.in.',
+            'documents' => [
+            ],
+            'steps' => [
+                ['Confirm Your General Visa-Free Status', 'Already applies to any purpose, including airport transit.'],
+                ['No Separate Transit Application Needed', 'Travel Authorization applies only if you leave the airport.'],
+            ],
+            'faqs' => [
+                ['Do I need a transit visa for Seychelles?', 'No — Seychelles is unconditionally visa-free for Indian nationals for any purpose, which covers airport transit as well.'],
+            ],
+            'fees' => [
+            ],
+            'source' => [
+                'authority' => 'Seychelles Department of Immigration and Civil Status',
+                'url' => null,
+                'notes' => 'Phase 3A research: this conclusion is logically entailed by Seychelles\' already-confirmed unconditional visa-free entry status for Indian nationals (established via official immigration-department sources in this project\'s Medical and Extension research), not a freshly-located distinct transit-specific source. Confidence: Medium-High.',
+            ],
+        ],
+        [
+            'page_slug' => 'tanzania-transit-visa',
+            'country_slug' => 'tanzania',
+            'category_slug' => 'transit-visa',
+            'content_status' => 'researched',
+            'biometric_status' => 'conditional',
+            'interview_status' => 'not_required',
+            'official_visa_name' => 'Transit visa — required only when leaving the international transit area (landside transit); not required for airside-only connections',
+            'visa_subclass_code' => null,
+            'intro_html' => '<p>Indian passport holders transiting through a Tanzanian airport and remaining within the international transit zone, with a confirmed onward flight, do not need a transit visa. If the layover requires leaving the transit area — for an overnight stay or a connecting flight from a different terminal — a landside transit visa is required, valid for up to 7 days, costing USD 30.</p>',
+            'typical_stay' => 'Up to 7 days (landside transit visa, when required)',
+            'entry_type' => 'Airside: no visa needed with confirmed onward flight. Landside: transit visa required',
+            'processing_time_text' => 'Not reliably confirmed exact',
+            'validity_text' => 'Up to 7 days',
+            'application_method' => 'Via the official Tanzania eVisa portal (visa.immigration.go.tz), for the landside transit visa route',
+            'interview_required' => 'Not required for the airside-only route',
+            'biometric_required' => 'Conditional — applies only if a landside transit visa application is required',
+            'government_fee_text' => 'USD 30 (landside transit visa)',
+            'application_centre' => 'visa.immigration.go.tz, for the landside transit visa route',
+            'authority_name' => 'Tanzania Immigration Department (official eVisa portal: visa.immigration.go.tz)',
+            'authority_url' => 'https://visa.immigration.go.tz',
+            'eligibility_html' => '<p>Travellers remaining in the international transit zone with a confirmed onward flight do not need a visa. Those needing to leave the transit area — for an overnight stay, or a connecting flight requiring a different terminal — need a landside transit visa, valid for up to 7 days, at a cost of USD 30. Note that Tanzania generally requires Indian nationals to hold a visa for ordinary entry (it does not offer visa-free entry), so this airside exemption is a distinct, narrower allowance specific to genuine airport transit.</p><p>This is general immigration-document guidance, not a guarantee of approval.</p>',
+            'indian_applicant_html' => '<h4 style=\'margin:0 0 10px;font-size:16px;\'>Confirm Your Connection Type</h4><p>Staying airside with a confirmed onward flight needs no visa at all.</p><h4 style=\'margin:20px 0 10px;font-size:16px;\'>Leaving the Transit Area Needs a Landside Visa</h4><p>USD 30, valid up to 7 days, via visa.immigration.go.tz.</p><p>Our consultants can help you confirm whether your specific itinerary needs the landside transit visa.</p>',
+            'seo_title' => 'Tanzania Transit Visa for Indians | Airside vs Landside Rules',
+            'meta_description' => 'Transiting through Tanzania? See when the landside transit visa is needed versus airside-only connections, via VisaAgency.in.',
+            'og_title' => 'Tanzania Transit Visa for Indians — Airside vs Landside Rules',
+            'og_description' => 'Transiting through Tanzania? See when the landside transit visa is needed versus airside-only connections, via VisaAgency.in.',
+            'documents' => [
+                ['Travel Documents', 'Confirmed onward flight ticket', 'mandatory'],
+            ],
+            'steps' => [
+                ['Confirm Your Connection Type', 'Airside-only with a confirmed onward flight needs no visa.'],
+                ['If Leaving the Transit Area, Apply for a Landside Transit Visa', 'USD 30, valid up to 7 days, via visa.immigration.go.tz.'],
+            ],
+            'faqs' => [
+                ['Do I need a visa to transit through Tanzania?', 'Not if you stay airside with a confirmed onward flight. Leaving the transit area requires a landside transit visa.'],
+                ['What does the landside transit visa cost?', 'USD 30, valid for up to 7 days.'],
+            ],
+            'fees' => [
+                ['Landside Transit Visa', 'USD 30', 1, 'USD', 'As researched; required only when leaving the international transit area'],
+            ],
+            'source' => [
+                'authority' => 'Tanzania Immigration Department (official eVisa portal: visa.immigration.go.tz)',
+                'url' => 'https://visa.immigration.go.tz',
+                'notes' => 'Phase 3A research: the specific $30/7-day landside transit visa figures are consistent across sources, with the official Tanzania eVisa portal named as the application channel; the airside-only exemption is a common, distinct policy layer separate from Tanzania\'s general visa-required status for ordinary entry. Confidence: Medium.',
+            ],
+        ],
+        [
+            'page_slug' => 'uzbekistan-transit-visa',
+            'country_slug' => 'uzbekistan',
+            'category_slug' => 'transit-visa',
+            'content_status' => 'researched',
+            'biometric_status' => 'not_required',
+            'interview_status' => 'not_required',
+            'official_visa_name' => '5-day visa-free transit for Indian nationals with a confirmed onward ticket to a third country',
+            'visa_subclass_code' => null,
+            'intro_html' => '<p>Indian nationals can transit through Uzbekistan\'s international airports visa-free for up to 5 days, provided they hold a confirmed onward ticket to a third country — a distinct, narrower benefit from Uzbekistan\'s general tourism e-visa requirement (which does apply to ordinary entry for Indians).</p>',
+            'typical_stay' => 'Up to 5 days, visa-free, with a confirmed onward ticket',
+            'entry_type' => 'Visa-free at international airports, with a confirmed onward flight ticket to a third country',
+            'processing_time_text' => 'Not applicable — no application required for this visa-free transit allowance',
+            'validity_text' => 'Up to 5 days',
+            'application_method' => 'No application required; present a valid passport and confirmed onward ticket at the airport',
+            'interview_required' => 'Not required',
+            'biometric_required' => 'Not required',
+            'government_fee_text' => 'Not applicable — visa-free',
+            'application_centre' => 'Not applicable',
+            'authority_name' => 'Multiple consistent secondary sources describing a specific, India-targeted visa-free transit allowance',
+            'authority_url' => null,
+            'eligibility_html' => '<p>This 5-day visa-free transit benefit applies specifically to Indian citizens holding a confirmed onward ticket to a third country — only a valid passport and the onward ticket are needed, with no separate application. Note that this is distinct from Uzbekistan\'s general tourism e-visa requirement, which does apply to ordinary (non-transit) entry for Indian nationals (approximately USD 20, 3 business days processing). If you need to leave the international transit zone (overnight layover, baggage re-check), the same ordinary entry rules apply instead.</p><p>This is general immigration-document guidance, not a guarantee of approval.</p>',
+            'indian_applicant_html' => '<h4 style=\'margin:0 0 10px;font-size:16px;\'>Bring Your Confirmed Onward Ticket</h4><p>This is the key document establishing your visa-free transit eligibility.</p><h4 style=\'margin:20px 0 10px;font-size:16px;\'>Remember This Differs From Ordinary Entry</h4><p>Uzbekistan does require an e-visa for ordinary (non-transit) tourism entry — the 5-day transit allowance is a separate, narrower benefit.</p><p>Our consultants can help you confirm your specific itinerary qualifies for visa-free transit.</p>',
+            'seo_title' => 'Uzbekistan Transit Visa for Indians | 5-Day Visa-Free Transit',
+            'meta_description' => 'Transiting through Uzbekistan? See the 5-day visa-free transit allowance with a confirmed onward ticket, via VisaAgency.in.',
+            'og_title' => 'Uzbekistan Transit Visa for Indians — 5-Day Visa-Free Transit',
+            'og_description' => 'Transiting through Uzbekistan? See the 5-day visa-free transit allowance with a confirmed onward ticket, via VisaAgency.in.',
+            'documents' => [
+                ['Travel Documents', 'Confirmed onward flight ticket to a third country', 'mandatory'],
+            ],
+            'steps' => [
+                ['Confirm Your Onward Ticket', 'To a third country, required for the visa-free transit allowance.'],
+                ['Present Your Passport and Ticket at the Airport', 'No separate application needed.'],
+            ],
+            'faqs' => [
+                ['Do Indian travellers need a visa to transit through Uzbekistan?', 'No — a 5-day visa-free transit allowance applies with a confirmed onward ticket to a third country, distinct from the general tourism e-visa requirement for ordinary entry.'],
+            ],
+            'fees' => [
+            ],
+            'source' => [
+                'authority' => 'Multiple consistent secondary sources describing a specific, India-targeted visa-free transit allowance',
+                'url' => null,
+                'notes' => 'Phase 3A research: the 5-day duration and onward-ticket condition are specific and distinct from generic boilerplate, and consistent with Uzbekistan\'s confirmed general e-visa requirement for ordinary entry (a different, separately-documented rule). No direct official Uzbek government page was located for the transit-specific allowance. Confidence: Medium.',
+            ],
+        ],
+    ];
+}
