@@ -342,6 +342,21 @@ function visa_content_db(): PDO
         visa_seed_page($pdo, $def);
     }
 
+    require_once __DIR__ . '/visa-seed-data-batch-phase3b-medical.php';
+    foreach (visa_seed_pages_def_batch_phase3b_medical() as $def) {
+        visa_seed_page($pdo, $def);
+    }
+
+    require_once __DIR__ . '/visa-seed-data-batch-phase3b-extension.php';
+    foreach (visa_seed_pages_def_batch_phase3b_extension() as $def) {
+        visa_seed_page($pdo, $def);
+    }
+
+    require_once __DIR__ . '/visa-seed-data-batch-phase3b-transit.php';
+    foreach (visa_seed_pages_def_batch_phase3b_transit() as $def) {
+        visa_seed_page($pdo, $def);
+    }
+
     visa_seed_bulk_generic($pdo);
 
     $migrated = true;
