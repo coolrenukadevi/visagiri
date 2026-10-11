@@ -422,6 +422,11 @@ function visa_content_db(): PDO
         visa_seed_page($pdo, $def);
     }
 
+    require_once __DIR__ . '/visa-seed-data-batch-phase5g-tourist.php';
+    foreach (visa_seed_pages_def_batch_phase5g_tourist() as $def) {
+        visa_seed_page($pdo, $def);
+    }
+
     visa_seed_bulk_generic($pdo);
 
     $migrated = true;
