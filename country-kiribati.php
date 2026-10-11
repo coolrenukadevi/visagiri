@@ -1,9 +1,9 @@
 <?php
+$countrySlugForContent = 'kiribati';
 $page_title = "Kiribati Visa Guidance &ndash; Visa Agency";
 $page_description = "Visa assistance and documentation guidance for Kiribati from Visa Agency, Patna.";
 include __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/visa-type-descriptions.php';
-$countrySlugForContent = 'kiribati';
 ?>
         <!-- Breadcrumb-Wrapper Section Start -->
         <section class="breadcrumb-wrapper fix bg-cover" style="background-image: url(assets/img/inner-page/breadcrumb.jpg);">

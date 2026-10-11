@@ -848,3 +848,138 @@ function visa_requirement_display(?string $status, ?string $freeText): ?string
     // No structured status recorded (NULL) -- generic-page behaviour, unchanged.
     return $freeText !== '' ? $freeText : null;
 }
+
+/**
+ * Phase 5F: resolves a safe, database-sourced title override for a
+ * country's primary (tourist-visa) page, for <title>/og:title/twitter:title
+ * rendering in includes/head-meta.php. This is a fail-closed lookup: any
+ * failure at all -- no active country row, no published tourist-visa row,
+ * content_status still 'generic', a missing/empty field, a field over the
+ * safe length, or even an unexpected database error -- returns null, and
+ * the caller must keep using its existing hardcoded title. This function
+ * never writes to the database.
+ *
+ * seo_title and og_title are validated independently via
+ * visa_safe_db_title_text(): an overlength or missing og_title does not
+ * disqualify a valid seo_title, and vice versa. Returns null only when
+ * BOTH are unusable, so the caller can tell "nothing to override" apart
+ * from "override one field, keep the other's existing fallback."
+ *
+ * Deliberately scoped to content_status = 'researched' only, NOT
+ * 'verified' -- 'verified' is reserved, across this whole project, for
+ * exactly five pre-existing anchor records (Australia, UK, USA, Canada,
+ * New Zealand), which must keep their current rendered title untouched.
+ * Their og_title happens to already be a short, independently-authored
+ * value from an earlier phase (40-49 visible characters) even though
+ * their seo_title is long (70-77) -- so with 'verified' accepted here,
+ * independent per-field validation would correctly pass their og_title
+ * while their seo_title correctly keeps failing on length, changing
+ * og:title/twitter:title alone and leaving <title> as the old fallback.
+ * That is a partial change to "their current rendered title," which
+ * conflicts with the explicit requirement to leave these five records'
+ * rendered output fully alone. Excluding 'verified' here costs nothing
+ * today (those five rows are the only 'verified' rows in the database)
+ * and fully protects them on every field; it does not generalize to any
+ * future verified record without a separate, explicit decision.
+ *
+ * The returned strings are canonical PLAIN TEXT (HTML entities already
+ * decoded) -- see visa_safe_db_title_text() for why. The caller is
+ * responsible for escaping exactly once at the point it echoes them.
+ */
+function visa_resolve_primary_seo_title(string $countrySlug): ?array
+{
+    try {
+        $pdo = visa_content_db();
+        $stmt = $pdo->prepare(
+            "SELECT cvp.seo_title, cvp.og_title
+             FROM country_visa_pages cvp
+             JOIN countries co ON co.id = cvp.country_id
+             JOIN visa_categories vc ON vc.id = cvp.visa_category_id
+             WHERE co.slug = :slug
+               AND co.is_active = 1
+               AND vc.slug = 'tourist-visa'
+               AND cvp.status = 'published'
+               AND cvp.content_status = 'researched'
+             LIMIT 1"
+        );
+        $stmt->execute([':slug' => $countrySlug]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (Throwable $e) {
+        return null; // fail closed: any DB error means "use the hardcoded title"
+    }
+
+    if (!$row) {
+        return null;
+    }
+
+    $seoTitle = visa_safe_db_title_text($row['seo_title'] ?? null);
+    $ogTitle = visa_safe_db_title_text($row['og_title'] ?? null);
+
+    if ($seoTitle === null && $ogTitle === null) {
+        return null;
+    }
+
+    return ['seo_title' => $seoTitle, 'og_title' => $ogTitle];
+}
+
+/**
+ * Validates one database-sourced title field for safe head-of-page
+ * rendering: non-empty and at most $maxVisibleChars VISIBLE characters.
+ *
+ * Length is measured after decoding any HTML entities already present in
+ * the stored value, not by counting the raw string -- existing
+ * seo_title/og_title values are an inconsistent mix of already-encoded
+ * fragments (e.g. "Requirements &amp; Application", left over from how
+ * some research batches authored their seed data) and raw, unescaped
+ * characters (bare &, raw "). Counting the raw spelling would both
+ * overcount an encoded ampersand as 5 characters instead of 1, and let
+ * length past the real visible limit. Decoding first normalizes both
+ * cases to the same plain text before measuring.
+ *
+ * Returns that decoded plain text (never pre-escaped -- the caller must
+ * run it through htmlspecialchars() exactly once before echoing it), or
+ * null if the field is missing, empty, or too long.
+ */
+function visa_safe_db_title_text(?string $raw, int $maxVisibleChars = 65): ?string
+{
+    if ($raw === null) {
+        return null;
+    }
+
+    $plain = trim(html_entity_decode($raw, ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+    if ($plain === '') {
+        return null;
+    }
+
+    if (function_exists('mb_strlen')) {
+        $length = mb_strlen($plain, 'UTF-8');
+    } else {
+        // Explicit UTF-8 code-point count, tested against mb_strlen across
+        // ASCII, accented Latin, CJK and 4-byte emoji before being relied
+        // on here -- never silently falls back to byte-length, which would
+        // undercount a multi-byte character (e.g. Curaçao's "ç") as more
+        // than one byte and wrongly let an overlong title through.
+        $length = 0;
+        $byteLen = strlen($plain);
+        for ($i = 0; $i < $byteLen; $length++) {
+            $byte = ord($plain[$i]);
+            if ($byte < 0x80) {
+                $i += 1;
+            } elseif (($byte & 0xE0) === 0xC0) {
+                $i += 2;
+            } elseif (($byte & 0xF0) === 0xE0) {
+                $i += 3;
+            } elseif (($byte & 0xF8) === 0xF0) {
+                $i += 4;
+            } else {
+                $i += 1; // malformed byte -- advance defensively, don't loop forever
+            }
+        }
+    }
+
+    if ($length > $maxVisibleChars) {
+        return null;
+    }
+
+    return $plain;
+}

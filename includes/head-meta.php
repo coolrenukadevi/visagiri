@@ -1,6 +1,34 @@
 <?php
 require_once __DIR__ . '/partner-nav-state.php';
 require_once __DIR__ . '/forex-customer-nav-state.php';
+require_once __DIR__ . '/visa-content-db.php';
+
+// Phase 5F: country-*.php files set $countrySlugForContent (before this
+// include, as of this phase) so a researched tourist-visa record's own
+// seo_title/og_title can override this page's hardcoded title -- but
+// only when visa_resolve_primary_seo_title() confirms the
+// database value is safe to use (see includes/visa-content-db.php for the
+// full fail-closed checks: active country, published + researched row
+// -- deliberately excluding 'verified', which protects the five
+// pre-existing anchor records' current rendered title completely --
+// non-empty, at most 65 visible characters). Any failure at
+// all leaves $page_title / $page_og_title exactly as the including file
+// already set them -- this only ever narrows what gets shown, never
+// invents or breaks it. Runs before the isset() defaults below so a
+// successful override takes effect before anything here falls back to a
+// generic site-wide default.
+if (!empty($countrySlugForContent)) {
+    $__cvhSeoMeta = visa_resolve_primary_seo_title($countrySlugForContent);
+    if ($__cvhSeoMeta !== null) {
+        if ($__cvhSeoMeta['seo_title'] !== null) {
+            $page_title = htmlspecialchars($__cvhSeoMeta['seo_title'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        }
+        if ($__cvhSeoMeta['og_title'] !== null) {
+            $page_og_title = htmlspecialchars($__cvhSeoMeta['og_title'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        }
+    }
+}
+
 if (!isset($page_title)) { $page_title = "Visa Agency &ndash; Trusted Visa Consultant in Patna, Ranchi, Raipur & Bhopal"; }
 if (!isset($page_description)) { $page_description = "Visa Agency &ndash; Trusted Visa Consultant in Patna, Ranchi, Raipur & Bhopal."; }
 if (!isset($page_canonical)) {

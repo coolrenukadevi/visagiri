@@ -1,9 +1,9 @@
 <?php
+$countrySlugForContent = 'new-caledonia';
 $page_title = "New Caledonia Visa Guidance &ndash; Visa Agency";
 $page_description = "Visa assistance and documentation guidance for New Caledonia from Visa Agency, Patna.";
 include __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/visa-type-descriptions.php';
-$countrySlugForContent = 'new-caledonia';
 ?>
         <!-- Breadcrumb-Wrapper Section Start -->
         <section class="breadcrumb-wrapper fix bg-cover" style="background-image: url(assets/img/inner-page/breadcrumb.jpg);">

@@ -1,9 +1,9 @@
 <?php
+$countrySlugForContent = 'belize';
 $page_title = "Belize Visa Guidance &ndash; Visa Agency";
 $page_description = "Visa assistance and documentation guidance for Belize from Visa Agency, Patna.";
 include __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/visa-type-descriptions.php';
-$countrySlugForContent = 'belize';
 ?>
         <!-- Breadcrumb-Wrapper Section Start -->
         <section class="breadcrumb-wrapper fix bg-cover" style="background-image: url(assets/img/inner-page/breadcrumb.jpg);">

@@ -1,9 +1,9 @@
 <?php
+$countrySlugForContent = 'central-african-republic';
 $page_title = "Central African Republic Visa Guidance &ndash; Visa Agency";
 $page_description = "Visa assistance and documentation guidance for Central African Republic from Visa Agency, Patna.";
 include __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/visa-type-descriptions.php';
-$countrySlugForContent = 'central-african-republic';
 ?>
         <!-- Breadcrumb-Wrapper Section Start -->
         <section class="breadcrumb-wrapper fix bg-cover" style="background-image: url(assets/img/inner-page/breadcrumb.jpg);">

@@ -1,9 +1,9 @@
 <?php
+$countrySlugForContent = 'sweden';
 $page_title = "Sweden Visa Guidance &ndash; Visa Agency";
 $page_description = "Visa assistance and documentation guidance for Sweden from Visa Agency, Patna.";
 include __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/visa-type-descriptions.php';
-$countrySlugForContent = 'sweden';
 ?>
         <!-- Breadcrumb-Wrapper Section Start -->
         <section class="breadcrumb-wrapper fix bg-cover" style="background-image: url(assets/img/inner-page/breadcrumb.jpg);">
