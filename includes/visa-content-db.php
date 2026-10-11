@@ -437,6 +437,11 @@ function visa_content_db(): PDO
         visa_seed_page($pdo, $def);
     }
 
+    require_once __DIR__ . '/visa-seed-data-batch-phase6c-business.php';
+    foreach (visa_seed_pages_def_batch_phase6c_business() as $def) {
+        visa_seed_page($pdo, $def);
+    }
+
     visa_seed_bulk_generic($pdo);
 
     $migrated = true;
