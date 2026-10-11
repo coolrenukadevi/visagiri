@@ -402,6 +402,11 @@ function visa_content_db(): PDO
         visa_seed_page($pdo, $def);
     }
 
+    require_once __DIR__ . '/visa-seed-data-batch-phase4d-tourist.php';
+    foreach (visa_seed_pages_def_batch_phase4d_tourist() as $def) {
+        visa_seed_page($pdo, $def);
+    }
+
     visa_seed_bulk_generic($pdo);
 
     $migrated = true;
